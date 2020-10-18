@@ -16,7 +16,7 @@ export default class CmsConstant {
             id: 3,
             name: "CELEBRITIES",
             value: 2,
-            color: "pink-400"
+            color: "sfd-pink"
         },
         {
             id: 4,
@@ -28,7 +28,7 @@ export default class CmsConstant {
             id: 5,
             name: "NATURE",
             value: 4,
-            color: "green-300"
+            color: "sfd-green"
         },
         {
             id: 6,

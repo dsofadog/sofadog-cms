@@ -8,3 +8,16 @@
 html,body{
     background-color: black;
 }
+
+.bg-sfd-pink{
+    background-color: #fc03f8;
+}
+.border-sfd-pink{
+    border-color: #fc03f8;
+}
+.bg-sfd-green{
+    background-color: #54de04;
+}
+.border-sfd-green{
+    border-color: #54de04;
+}
