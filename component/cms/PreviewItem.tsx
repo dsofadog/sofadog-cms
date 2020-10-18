@@ -59,7 +59,7 @@ const PreviewItem = (props) => {
                                                     <div className="border-b border-gray-200">
                                                         <nav className="flex -mb-px">
                                                             {item?.descriptions.map((lang, i) => (
-                                                                <a href={void (0)} onClick={() => showSentences(i)} className={`${creditsData?.title === 'news_credits' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} cursor-pointer ml-8 group inline-flex items-center py-4 px-1 border-b-2 font-medium text-sm leading-5 focus:outline-none focus:text-indigo-800 focus:border-indigo-700 capitalize`} aria-current="page">
+                                                                <a key={i} href={void (0)} onClick={() => showSentences(i)} className={`${creditsData?.title === 'news_credits' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} cursor-pointer ml-8 group inline-flex items-center py-4 px-1 border-b-2 font-medium text-sm leading-5 focus:outline-none focus:text-indigo-800 focus:border-indigo-700 capitalize`} aria-current="page">
                                                                     <span>{lang.language}</span>
                                                                 </a>
                                                             ))}
@@ -67,7 +67,7 @@ const PreviewItem = (props) => {
                                                     </div>
                                                     <div className="mt-4" role="group" aria-labelledby="teams-headline">
                                                         {sentences?.sentences.map((sentence, i) => (
-                                                            <div className="flex items-center space-x-3 pl-3">
+                                                            <div key={i} className="flex items-center space-x-3 pl-3">
                                                                 <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-indigo-500"></div>
                                                                 <div className="truncate hover:text-gray-600 text-xs">
                                                                     <span>{sentence}</span>
@@ -95,7 +95,7 @@ const PreviewItem = (props) => {
                                                 </div>
                                                 <div className="mt-4" role="group" aria-labelledby="teams-headline">
                                                     {creditsData?.data.map((credit, i) => (
-                                                        <div className="flex items-center space-x-3 pl-3">
+                                                        <div key={i} className="flex items-center space-x-3 pl-3">
                                                             <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-indigo-500"></div>
                                                             <div className="truncate hover:text-gray-600 text-xs">
                                                                 <a href={credit.url} target="_blank">{credit.link_text}</a>
@@ -109,7 +109,7 @@ const PreviewItem = (props) => {
                                     <div className="absolute mb-4 mr-4 bottom-0 inset-x-0">
                                         <div className="w-full space-x-2 flex justify-end">
                                             {item?.tags.map(tag => (
-                                                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium leading-4 bg-blue-100 text-blue-800">
+                                                <span key={tag} className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium leading-4 bg-blue-100 text-blue-800">
                                                     {tag}
                                                 </span>
                                             ))}

@@ -1,6 +1,9 @@
 import { useState } from "react";
+import CmsConstant from '../../utils/cms-constant';
 
 const CreateItem = (props) => {
+
+    const category = CmsConstant.Category;
 
     const [openTagDropdown, setOpenTagDropdown] = useState(false);
     const toggleTagDropdown = () => { setOpenTagDropdown(!openTagDropdown) };
@@ -8,28 +11,42 @@ const CreateItem = (props) => {
     const [openCategoryDropdown, setOpenCategoryDropdown] = useState(false);
     const toggleCateDropdown = () => { setOpenCategoryDropdown(!openCategoryDropdown) };
 
-    const [item,setItem] = useState({
-        title: '',
-        descriptions: [],
-        news_credits: [],
-        visual_credits: [],
-        tags: [],
-        category: ''
-    });
+    // const [item, setItem] = useState({
+    //     title: '',
+    //     descriptions: [],
+    //     news_credits: [],
+    //     visual_credits: [],
+    //     tags: [],
+    //     category: ''
+    // });
 
-    function handleChangeInput(e){
-        console.log(e.target.value)
+    const [item, setItem] = useState(null);
+
+    function handleChangeInput(e) {
+        //console.log(e.target.value)
         setItem({
             ...item,
             title: e.target.value
         });
     }
 
-    function handleClickSingleDropdown(e){
-        
+    function handleClickSingleDropdown(cat) {
+        console.log(cat)
+        setItem({
+            ...item,
+            category: cat.value
+        });
+        toggleCateDropdown();
     }
 
-    
+    function clearCategory() {
+        setItem({
+            ...item,
+            category: ''
+        });
+    }
+
+
     return (
         <div className="w-full mx-auto">
             <div className="flex flex-no-wrap justify-center">
@@ -52,7 +69,7 @@ const CreateItem = (props) => {
                                 <div className="w-full">
                                     <label htmlFor="about" className="block text-sm font-medium leading-5 text-gray-700">Title</label>
                                     <div className="mt-1 rounded-md shadow-sm">
-                                        <textarea id="about" value={item.title} rows={2} onChange={(e) => handleChangeInput(e)} className="form-textarea block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5" placeholder="Enter Title"></textarea>
+                                        <textarea id="about" value={item?.title} rows={2} onChange={(e) => handleChangeInput(e)} className="form-textarea block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5" placeholder="Enter Title"></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -119,48 +136,47 @@ const CreateItem = (props) => {
                                 <div className="w-full ml-4 space-x-2 flex justify-start">
                                     <div className="relative inline-block text-left">
                                         <div>
-                                            <span onClick={toggleCateDropdown} className="rounded-md shadow-sm">
-                                                <button type="button" className="inline-flex justify-center w-full rounded-md border border-gray-300 px-2 py-0.5 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150" id="options-menu" aria-haspopup="true" aria-expanded="true">
-                                                    Category
+                                            {category && (
+                                                <span onClick={toggleCateDropdown} className="rounded-md shadow-sm">
+                                                    <button type="button" className="inline-flex justify-center w-full rounded-md border border-gray-300 px-2 py-0.5 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150" id="options-menu" aria-haspopup="true" aria-expanded="true">
+                                                        Choose Category
                                                         <svg className="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                                        <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                                                    </svg>
-                                                </button>
-                                            </span>
+                                                            <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                                                        </svg>
+                                                    </button>
+                                                </span>
+                                            )}
                                         </div>
                                         {openCategoryDropdown && (
                                             <div className="origin-top-left absolute left-0 mt-2 w-56 rounded-md shadow-lg z-20">
                                                 <div className="rounded-md bg-white shadow-xs">
                                                     <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                                                        <a href="#" className="block px-4 py-1 text-xs leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900" role="menuitem">
-                                                            LIFE & POLITICS
-                                                                </a>
-                                                        <a href="#" className="block px-4 py-1 text-xs leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900" role="menuitem">
-                                                            FASHION & ART
-                                                                </a>
-                                                        <a href="#" className="block px-4 py-1 text-xs leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900" role="menuitem">
-                                                            CELEBRITIES
-                                                                </a>
-                                                        <a href="#" className="block px-4 py-1 text-xs leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900" role="menuitem">
-                                                            ENTERTAINMENT
-                                                                </a>
-                                                        <a href="#" className="block px-4 py-1 text-xs leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900" role="menuitem">
-                                                            NATURE
-                                                                </a>
-                                                        <a href="#" className="block px-4 py-1 text-xs leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900" role="menuitem">
-                                                            SCIENCE
-                                                                </a>
-                                                        <a href="#" className="block px-4 py-1 text-xs leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900" role="menuitem">
-                                                            BUSINESS & TECH
-                                                                </a>
-                                                        <a href="#" className="block px-4 py-1 text-xs leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900" role="menuitem">
-                                                            SELF-IMPROVEMENT
-                                                                </a>
+                                                        {category?.map((cat, i) => (
+                                                            <a key={i} href={void (0)} onClick={() => handleClickSingleDropdown(cat)} className="cursor-pointer block px-4 py-1 text-xs leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900" role="menuitem">
+                                                                {cat.name}
+                                                            </a>
+                                                        ))}
                                                     </div>
                                                 </div>
                                             </div>
                                         )}
                                     </div>
+                                    {item && category && (
+                                        <>
+                                            {item?.category != '' && (
+                                                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium leading-4 bg-blue-100 text-blue-800">
+                                                    {category[item?.category].name}
+                                                    <button onClick={() => clearCategory()} type="button" className="flex-shrink-0 ml-1.5 inline-flex text-indigo-500 focus:outline-none focus:text-indigo-700" aria-label="Remove small badge">
+                                                        <svg className="h-2 w-2" stroke="currentColor" fill="none" viewBox="0 0 8 8">
+                                                            <path strokeLinecap="round" strokeWidth="1.5" d="M1 1l6 6m0-6L1 7" />
+                                                        </svg>
+                                                    </button>
+                                                </span>
+                                            )}
+                                        </>
+
+                                    )}
+
                                 </div>
                                 <div className="w-full space-x-2 flex justify-end">
                                     <div className="relative inline-block text-left">
@@ -197,7 +213,7 @@ const CreateItem = (props) => {
                         </div>
 
                         <div className="w-full md:w-1/5 relative z-10 bg-gray-100 border-l border-gray-200 p-2 rounded-lg rounded-l-none">
-                            
+
                         </div>
 
                     </div>
