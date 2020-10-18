@@ -4,49 +4,49 @@ export default class CmsConstant {
             id: 1,
             name: "LIFE & POLITICS",
             value: 0,
-            color: "PURPLE"
+            color: "purple-700"
         },
         {
             id: 2,
             name: "FASHION & ART",
             value: 1,
-            color: "ORANGE"
+            color: "orange-300"
         },
         {
             id: 3,
             name: "CELEBRITIES",
             value: 2,
-            color: "PINK"
+            color: "pink-400"
         },
         {
             id: 4,
             name: "ENTERTAINMENT",
             value: 3,
-            color: "RED"
+            color: "red-600"
         },
         {
             id: 5,
             name: "NATURE",
             value: 4,
-            color: "GREEN"
+            color: "green-300"
         },
         {
             id: 6,
             name: "SCIENCE",
             value: 5,
-            color: "BLACK"
+            color: "gray-900"
         },
         {
             id: 7,
             name: "BUSINESS & TECH",
             value: 6,
-            color: "BLUE"
+            color: "blue-600"
         },
         {
             id: 8,
             name: "SELF-IMPROVEMENT",
             value: 7,
-            color: "YELLOW"
+            color: "yellow-300"
         }
     ]
 
