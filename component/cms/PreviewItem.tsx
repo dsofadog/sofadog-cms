@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useDropzone } from 'react-dropzone';
 import CmsConstant from '../../utils/cms-constant';
 import HttpCms from '../../utils/http-cms';
@@ -20,7 +20,6 @@ const PreviewItem = (props) => {
     const [creditsData, setCreditsData] = useState(null);
     const [activeLang, setActiveLang] = useState(0);
     const [video, setVideo] = useState(null);
-    const inputRef = useRef(null);
     const [isClips, setIsClips] = useState(false);
     const [clips, setClips] = useState({ video: null, thumbnails: null });
 

@@ -14,6 +14,8 @@ const CreateItem = (props) => {
 
     const [item, setItem] = useState(null);
     const [selectedTag, setSelectedTag] = useState([]);
+    const [activeLang, setActiveLang] = useState(0);
+    const [activeCredit, setActiveCredit] = useState(0);
 
     function handleChangeInput(e) {
         setItem({
@@ -39,9 +41,9 @@ const CreateItem = (props) => {
 
     function handleClickMultiDropdown(tag) {
         //console.log(tag)
-        if(selectedTag.includes(tag.value)){
+        if (selectedTag.includes(tag.value)) {
             return;
-        }else{
+        } else {
             setSelectedTag([...selectedTag, tag.value])
             setItem({
                 ...item,
@@ -59,8 +61,16 @@ const CreateItem = (props) => {
         });
     }
 
-    function saveData(){
-        console.log("Save Data: ",item);
+    function showSentences(i) {
+        setActiveLang(i);
+    }
+
+    function showCredits(i) {
+        setActiveCredit(i);
+    }
+
+    function saveData() {
+        console.log("Save Data: ", item);
     }
 
 
@@ -78,7 +88,7 @@ const CreateItem = (props) => {
                         <div className="relative w-full h-full md:w-4/5 px-4 py-2 bg-white rounded-l-lg border-l-8 border-white">
                             <div className="py-2">
                                 <div className="w-full flex justify-end space-x-2">
-                                    <button onClick={() => saveData() } className="px-2 py-1 bg-green-500 text-white rounded text-xs cursor-pointer">Save Data</button>
+                                    <button onClick={() => saveData()} className="px-2 py-1 bg-green-500 text-white rounded text-xs cursor-pointer">Save Data</button>
                                     <button onClick={() => props.close(false)} className="px-2 py-1 bg-blue-500 text-white rounded text-xs cursor-pointer">Cancel</button>
                                 </div>
                             </div>
@@ -95,10 +105,10 @@ const CreateItem = (props) => {
                                     <div className="block">
                                         <div className="border-b border-gray-200">
                                             <nav className="flex -mb-px">
-                                                <a href="#" className="ml-8 group inline-flex items-center py-2 px-1 border-b-2 border-indigo-500 font-medium text-sm leading-5 text-indigo-600 focus:outline-none focus:text-indigo-800 focus:border-indigo-700" aria-current="page">
+                                                <a href={void (0)} onClick={() => showSentences(0)} className={`${activeLang === 0 ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} cursor-pointer ml-8 group inline-flex items-center py-4 px-1 border-b-2 font-medium text-sm leading-5 focus:outline-none focus:text-indigo-800 focus:border-indigo-700 capitalize`} aria-current="page">
                                                     <span>English</span>
                                                 </a>
-                                                <a href="#" className="ml-8 group inline-flex items-center py-2 px-1 border-b-2 border-transparent font-medium text-sm leading-5 text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300">
+                                                <a href={void (0)} onClick={() => showSentences(1)} className={`${activeLang === 1 ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} cursor-pointer ml-8 group inline-flex items-center py-4 px-1 border-b-2 font-medium text-sm leading-5 focus:outline-none focus:text-indigo-800 focus:border-indigo-700 capitalize`} aria-current="page">
                                                     <span>Estonian</span>
                                                 </a>
                                             </nav>
@@ -132,10 +142,10 @@ const CreateItem = (props) => {
                                     <div className="block">
                                         <div className="border-b border-gray-200">
                                             <nav className="flex -mb-px">
-                                                <a href="#" className="ml-8 group inline-flex items-center py-2 px-1 border-b-2 border-indigo-500 font-medium text-sm leading-5 text-indigo-600 focus:outline-none focus:text-indigo-800 focus:border-indigo-700" aria-current="page">
+                                                <a href={void (0)} onClick={() => showCredits(0)} className={`${activeCredit === 0 ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} cursor-pointer ml-8 group inline-flex items-center py-4 px-1 border-b-2 font-medium text-sm leading-5  focus:outline-none focus:text-indigo-800 focus:border-indigo-700`} aria-current="page">
                                                     <span>News Credits</span>
                                                 </a>
-                                                <a href="#" className="ml-8 group inline-flex items-center py-2 px-1 border-b-2 border-transparent font-medium text-sm leading-5 text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300">
+                                                <a href={void (0)} onClick={() => showCredits(1)} className={`${activeCredit === 1 ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} cursor-pointer ml-8 group inline-flex items-center py-4 px-1 border-b-2 font-medium text-sm leading-5 focus:outline-none focus:text-gray-700 focus:border-gray-300`}>
                                                     <span>Visual Credits</span>
                                                 </a>
                                             </nav>
@@ -212,7 +222,7 @@ const CreateItem = (props) => {
                                                 <div className="rounded-md bg-white shadow-xs">
                                                     <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
                                                         {tags?.map((tag, i) => (
-                                                            <a key={i} href={void (0)} onClick={() => handleClickMultiDropdown(tag)} className="block px-4 py-1 text-xs leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900" role="menuitem">
+                                                            <a key={i} href={void (0)} onClick={() => handleClickMultiDropdown(tag)} className="cursor-pointer block px-4 py-1 text-xs leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900" role="menuitem">
                                                                 {tag.name}
                                                             </a>
                                                         ))}
