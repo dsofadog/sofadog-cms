@@ -1,6 +1,16 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useDropzone } from 'react-dropzone';
 import CmsConstant from '../../utils/cms-constant';
 import HttpCms from '../../utils/http-cms';
+import PreviewClip from "./PreviewClip";
+
+import { config as f_config, library } from '@fortawesome/fontawesome-svg-core';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { fas } from '@fortawesome/free-solid-svg-icons';
+import { fab } from '@fortawesome/free-brands-svg-icons';
+
+f_config.autoAddCss = false;
+library.add(fas, fab);
 
 const PreviewItem = (props) => {
 
@@ -11,6 +21,8 @@ const PreviewItem = (props) => {
     const [activeLang, setActiveLang] = useState(0);
     const [video, setVideo] = useState(null);
     const inputRef = useRef(null);
+    const [isClips, setIsClips] = useState(false);
+	const [clips, setClips] = useState({ video: null, thumbnails: null });
 
     const status = {
         'new': 'New',
@@ -34,16 +46,16 @@ const PreviewItem = (props) => {
         }
     }, [item]);
 
-    function refreshData(e){
+    function refreshData(e) {
         e.preventDefault();
         HttpCms.get(`https://cms-int.so.fa.dog/news_items/${item.id}?token=abcdef`)
-        .then(response => {
-            setItem(response.data.news_items[0]);
-            console.log(response.data.news_items[0], "response.data.data");
-        })
-        .catch(e => {
-            console.log(e);
-        });
+            .then(response => {
+                setItem(response.data.news_items[0]);
+                console.log(response.data.news_items[0], "response.data.data");
+            })
+            .catch(e => {
+                console.log(e);
+            });
     }
 
     function showSentences(i) {
@@ -72,8 +84,8 @@ const PreviewItem = (props) => {
     function actionPerformed(item, apiEndPoint, e) {
         if (apiEndPoint == "Preview Clips") {
             console.log(item.clips, "item====");
-            //setIsClips(true);
-            //setClips({ video: item.clips, thumbnails: item.thumbnails });
+            setIsClips(true);
+            setClips({ video: item.clips, thumbnails: item.thumbnails });
             return false;
         }
         e.preventDefault();
@@ -86,8 +98,8 @@ const PreviewItem = (props) => {
     }
 
     const handleVideoPreview = (e) => {
-        let video_as_base64 = URL.createObjectURL(e.target.files[0]);
-        let video_as_files = e.target.files[0];
+        let video_as_base64 = URL.createObjectURL(e[0]);
+        let video_as_files = e[0];
 
         setVideo({
             video_preview: video_as_base64,
@@ -97,13 +109,19 @@ const PreviewItem = (props) => {
 
     function uplaodVideo(item, apiEndPoint, e) {
         e.preventDefault();
-        props.uplaodVideo(item, apiEndPoint,video);
+        props.uplaodVideo(item, apiEndPoint, video);
     }
 
 
     function handleClick() {
         inputRef.current.click();
     }
+
+    const onDrop = useCallback(acceptedFiles => {
+        console.log("acceptedFiles: ", acceptedFiles);
+        handleVideoPreview(acceptedFiles);
+    }, [])
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
 
     function actionRender(item) {
         switch (item.state) {
@@ -148,30 +166,34 @@ const PreviewItem = (props) => {
                         ) : (
                                 <>
                                     <div className="w-full p-2">
-                                        <div className="w-full flex justify-center px-6 pt-5 pb-6 border-2 border-gray-100 border-dashed rounded-md">
-                                            <div onClick={handleClick} className="cursor-pointer text-center">
+                                        <div {...getRootProps()} className="w-full flex justify-center px-6 pt-5 pb-6 border-2 border-gray-100 border-dashed rounded-md">
+                                            <input {...getInputProps()} />
+                                            <div className="cursor-pointer text-center">
                                                 <svg className="mx-auto h-12 w-12 text-gray-200" stroke="currentColor" fill="none" viewBox="0 0 48 48">
                                                     <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                                                 </svg>
-                                                <p className="mt-1 text-sm text-gray-400">
-                                                    <button type="button" className="font-medium text-gray-50 hover:text-gray-100 pr-2 focus:outline-none focus:underline transition duration-150 ease-in-out">
-                                                        Upload a file
-                                                    </button>
-                                                    or drag and drop
-                                                </p>
-                                                <p className="mt-1 text-xs text-gray-200">
-                                                    MP4, MOV, WMV up to 500MB
-                                                </p>
+                                                {
+                                                    isDragActive ?
+                                                        <p className="mt-1 text-sm text-gray-400">
+                                                            Drop the files here ...
+                                                        </p>
+                                                        :
+                                                        <>
+                                                            <p className="mt-1 text-sm text-gray-400">
+                                                                <button type="button" className="font-medium text-gray-50 hover:text-gray-100 pr-2 focus:outline-none focus:underline transition duration-150 ease-in-out">
+                                                                    Upload a file
+                                                                </button>
+                                                                or drag and drop
+                                                            </p>
+                                                            <p className="mt-1 text-xs text-gray-200">
+                                                                MP4, MOV, WMV up to 500MB
+                                                            </p>
+                                                        </>
+                                                }
+
                                             </div>
                                         </div>
-                                        <input
-                                            ref={inputRef}
-                                            className="invisible w-full"
-                                            type="file"
-                                            onChange={handleVideoPreview}
-                                        />
                                     </div>
-
                                 </>
                             )}
                     </div>
@@ -339,6 +361,47 @@ const PreviewItem = (props) => {
                     </div>
                 </div>
             ) : null}
+
+            {isClips && (
+                <div className="fixed z-30 inset-0 overflow-y-auto">
+                    <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                        <div className="fixed inset-0 transition-opacity">
+                            <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+                        </div>
+                        <span className="hidden sm:inline-block sm:align-middle sm:h-screen"></span>&#8203;
+						<div className="w-full h-screen overflow-y-auto inline-block align-bottom bg-white rounded-lg px-4 pb-4 text-left overflow-hidden shadow-xl transform transition-all md:align-middle md:max-w-6xl" role="dialog" aria-modal="true" aria-labelledby="modal-headline">
+                            <div>
+                                <div className="flex py-4 top-0 sticky bg-white z-10">
+                                    <div className="w-1/2 px-4 sm:px-6 flex justify-start">
+                                        <h2 className="text-gray-500 text-base font-bold uppercase tracking-wide">Clips</h2>
+                                    </div>
+                                    <div className="w-1/2 flex justify-end">
+                                        <FontAwesomeIcon onClick={() => setIsClips(false)} className="w-4 h-4 text-gray-400 hover:text-indigo-600 cursor-pointer" icon={['fas', 'times']} />
+                                    </div>
+                                </div>
+                                <div className="mt-2">
+
+                                    <div className="h-full overflow-y-auto align-middle md:flex flex-wrap min-w-full px-4 sm:px-6 md:px-6 py-4">
+                                        {clips?.video.sort((a, b) => a.aspect_ratio - b.aspect_ratio)
+											.map((clip, i) => (
+												<div key={i} className="mx-auto sm:mx-0 w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5 h-82 sm:pr-4 mb-4">
+													<div className="w-full text-sm text-center">Aspect Ratio: {clip.aspect_ratio}</div>
+													<PreviewClip videoUrl={clip.url} />
+												</div>
+											))}
+                                        {/* {clips?.video.map((clip, i) => (
+                                            <div key={i} className="mx-auto sm:mx-0 w-full md:w-1/4 lg:w-1/5 h-82 sm:pr-4 mb-4">
+                                                <div className="w-full text-sm text-center">Aspect Ratio: {clip.aspect_ratio}</div>
+                                                <PreviewClip videoUrl={clip.url} image={clips.thumbnails[i].url} />
+                                            </div>
+                                        ))} */}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </>
 
     )
