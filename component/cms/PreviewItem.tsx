@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import CmsConstant from '../../utils/cms-constant';
 
 const PreviewItem = (props) => {
@@ -8,6 +8,8 @@ const PreviewItem = (props) => {
     const [sentences, setSentences] = useState(null);
     const [creditsData, setCreditsData] = useState(null);
     const [activeLang, setActiveLang] = useState(0);
+    const [video, setVideo] = useState(null);
+	const inputRef = useRef(null);
 
     const status = {
         'new': 'New',
@@ -51,6 +53,161 @@ const PreviewItem = (props) => {
         });
 
         return statusReturn;
+    }
+
+    function actionPerformed(item, apiEndPoint, e) {
+        if (apiEndPoint == "Preview Clips") {
+            console.log(item.clips, "item====");
+            //setIsClips(true);
+            //setClips({ video: item.clips, thumbnails: item.thumbnails });
+            return false;
+        }
+        e.preventDefault();
+        processedDataInfo(item, apiEndPoint, e);
+    }
+
+    function processedDataInfo(item, apiEndPoint, e) {
+        e.preventDefault();
+    }
+
+    const handleVideoPreview = (e) => {
+		let video_as_base64 = URL.createObjectURL(e.target.files[0]);
+		let video_as_files = e.target.files[0];
+
+		setVideo({
+			video_preview: video_as_base64,
+			video_file: video_as_files,
+		});
+    };
+    
+    function uplaodVideo(item, apiEndPoint, e) {
+		e.preventDefault();
+		const formData = new FormData();
+		formData.append("source_file", video.video_file);
+		const config = {
+			headers: {
+				'content-type': 'multipart/form-data',
+				'Accept': 'multipart/form-data',
+			}
+		};
+		// let data = FetchDataService.uplaodVideo(item, apiEndPoint, formData, config)
+		// 	.then((response) => {
+		// 		//console.log("upload response: ", response);
+		// 		if (response.data.success) {
+		// 			fetchData1();
+		// 		}
+		// 	})
+		// 	.catch((e) => {
+		// 		console.log(e);
+		// 	});
+	}
+
+
+	function handleClick() {
+		inputRef.current.click();
+	}
+
+    function actionRender(item) {
+        switch (item.state) {
+            case "new": {
+                return (
+                    <button onClick={(e) => actionPerformed(item, "submit", e)} className="px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer">
+                        Submit
+                    </button>
+                );
+            }
+            case "awaiting_review_by_lead_journalist": {
+                // return  'Approve | Reject'
+                return (
+                    <div className="flex space-x-2 items-center justify-center">
+                        <svg onClick={(e) => actionPerformed(item, "lead_journalist_approve", e)} className="h-8 w-8 text-green-400 hover:text-green-600 cursor-pointer" x-description="Heroicon name: check-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path>
+                        </svg>
+                        <svg onClick={(e) => actionPerformed(item, "lead_journalist_reject", e)} className="h-8 w-8 text-red-500 hover:text-red-600 cursor-pointer" x-description="Heroicon name: x-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd"></path>
+                        </svg>
+                    </div>
+                );
+            }
+            case "awaiting_video_upload": {
+                return (
+                    <div className="block text-center justify-center items-center">
+                        {video != null ? (
+                            <>
+                                <div className="flex justify-center items-center">
+                                    <video className="w-4/6" controls src={video.video_preview} />
+                                </div>
+                                <div className="flex justify-center space-x-1">
+                                    <span onClick={(e) => uplaodVideo(item, 'upload_video', e)} className="px-2 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-blue-800 bg-blue-100 hover:bg-blue-200 text-blue-800 cursor-pointer">
+                                        Upload
+									</span>
+                                    <span onClick={() => setVideo(null)} className="px-2 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-blue-800 bg-blue-100 hover:bg-blue-200 text-blue-800 cursor-pointer">
+                                        Cancel
+									</span>
+                                </div>
+
+                            </>
+                        ) : (
+                                <>
+                                    <div className="w-40">
+                                        <input
+                                            ref={inputRef}
+                                            className="invisible"
+                                            type="file"
+                                            onChange={handleVideoPreview}
+                                        >
+                                        </input>
+                                        <span onClick={handleClick} className="px-2 py-0.5 inline-flex text-xs leading-5 font-semibold rounded border border-blue-800 bg-blue-100 hover:bg-blue-200 text-blue-800 cursor-pointer">Upload a video</span>
+                                    </div>
+
+                                </>
+                            )}
+                    </div>
+
+                );
+                // return  (<form encType="multipart/form-data" method="POST" action="/news_items/upload_video?token=abcdef" > <input name='source_file' type='file'/><input type="submit"/> </form>)
+            }
+            case "awaiting_review_by_lead_video_editor": {
+                return (
+                    <div className="flex space-x-2 items-center justify-center">
+                        <span onClick={(e) => actionPerformed(item, "Preview Clips", e)} className="px-2 my-1 inline-flex text-xs leading-5 font-semibold rounded-full border border-blue-800 bg-blue-100 hover:bg-blue-200 text-blue-800 cursor-pointer">
+                            Preview Clips
+						</span>
+                        <svg onClick={(e) => actionPerformed(item, "lead_video_editor_approve", e)} className="h-8 w-8 text-green-400 hover:text-green-600 cursor-pointer" x-description="Heroicon name: check-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path>
+                        </svg>
+                        <svg onClick={(e) => actionPerformed(item, "lead_video_editor_reject", e)} className="h-8 w-8 text-red-500 hover:text-red-600 cursor-pointer" x-description="Heroicon name: x-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd"></path>
+                        </svg>
+                    </div>
+                );
+            }
+            case "ready_for_push": {
+                return (
+                    <span onClick={(e) => actionPerformed(item, "push_to_feed", e)} className="px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-green-800 bg-green-100 hover:bg-green-200 text-green-800 cursor-pointer">
+                        Push To Feed
+                    </span>
+                );
+            }
+            case "pushed_to_feed": {
+                return (
+                    <span onClick={(e) => actionPerformed(item, "remove_from_feed", e)} className="px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-red-800 bg-red-100 hover:bg-red-200 text-red-800 cursor-pointer">
+                        Remove Feed
+                    </span>
+                );
+            }
+            case "removed_from_feed": {
+                return (
+                    <span onClick={(e) => actionPerformed(item, "push_to_feed", e)} className="px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-green-800 bg-green-100 hover:bg-green-200 text-green-800 cursor-pointer">
+                        Push To Feed
+                    </span>
+                );
+            }
+
+            default: {
+                return "";
+            }
+        }
     }
 
     return (
@@ -141,18 +298,21 @@ const PreviewItem = (props) => {
                                 </div>
 
                                 <div className={`bg-${category[item?.category].color} w-full md:w-1/5 relative z-10 rounded-lg rounded-l-none`}>
-                                    <div className="absolute inset-x-0 top-0 transform translate-y-px">
-                                        <div className="flex justify-center transform translate-y-1/2">
-                                            <span className={`bg-${category[item?.category].color} bg-opacity-75 shadow inline-flex w-full h-10 flex items-center justify-center text-center px-4 py-1 text-sm leading-5 font-semibold tracking-wider uppercase text-white`}>
+                                    <div className="inset-x-0 top-0 transform">
+                                        <div className="flex justify-center transform">
+                                            <span className={`bg-${category[item?.category].color} shadow inline-flex w-full h-10 flex items-center justify-center text-center px-4 py-1 text-sm leading-5 font-semibold tracking-wider uppercase text-white`}>
                                                 {showStatus(item?.state)}
                                             </span>
                                         </div>
                                     </div>
-                                    <div className="h-full w-full flex items-start">
+                                    <div className="h-auto w-full flex items-start">
                                         {item.thumbnails.length > 0 && (
-                                            <img className="h-auto w-full shadow-2xl rounded-lg rounded-l-none rounded-b-none"
+                                            <img className="h-auto w-full shadow-2xl"
                                                 src={item.thumbnails[0].url} alt="" />
                                         )}
+                                    </div>
+                                    <div className="w-full flex justify-center mt-8">
+                                        {actionRender(item)}
                                     </div>
                                 </div>
                             </div>
