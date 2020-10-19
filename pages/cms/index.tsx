@@ -165,7 +165,7 @@ const Demo = () => {
                         </div>
                         <div className="flex items-center space-x-2">
                             <div className="">
-                                <button onClick={()=> fetchItems()} className="relative inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-400 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-600 active:bg-indigo-600 transition duration-150 ease-in-out">
+                                <button onClick={() => fetchItems()} className="relative inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-400 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-600 active:bg-indigo-600 transition duration-150 ease-in-out">
                                     Refresh
                                 </button>
                             </div>
@@ -221,9 +221,7 @@ const Demo = () => {
 
                 <>
                     {newsItems?.news_items.map((item, i) => (
-                        <div key={i}>
-                            <PreviewItem item={item} processedData={processedData} uplaodVideo={uplaodVideo} deleteItem={deleteItem} />
-                        </div>
+                        <PreviewItem item={item} processedData={processedData} uplaodVideo={uplaodVideo} deleteItem={deleteItem} />
                     ))}
                 </>
             </div>
