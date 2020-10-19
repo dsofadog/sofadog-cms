@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import CmsConstant from '../../utils/cms-constant';
+import HttpCms from '../../utils/http-cms';
 
 const PreviewItem = (props) => {
 
@@ -9,7 +10,7 @@ const PreviewItem = (props) => {
     const [creditsData, setCreditsData] = useState(null);
     const [activeLang, setActiveLang] = useState(0);
     const [video, setVideo] = useState(null);
-	const inputRef = useRef(null);
+    const inputRef = useRef(null);
 
     const status = {
         'new': 'New',
@@ -18,7 +19,8 @@ const PreviewItem = (props) => {
         'awaiting_review_by_lead_video_editor': 'Awaiting review by lead video editor',
         'ready_for_push': 'Ready For Push',
         'pushed_to_feed': 'Pushed To Feed',
-        'removed_from_feed': 'Removed From Feed'
+        'removed_from_feed': 'Removed From Feed',
+        'transcoding': 'Transcoding'
     };
 
     useEffect(() => {
@@ -31,6 +33,18 @@ const PreviewItem = (props) => {
             showCredits('news_credits', item.news_credits);
         }
     }, [item]);
+
+    function refreshData(e){
+        e.preventDefault();
+        HttpCms.get(`https://cms-int.so.fa.dog/news_items/${item.id}?token=abcdef`)
+        .then(response => {
+            setItem(response.data.news_items[0]);
+            console.log(response.data.news_items[0], "response.data.data");
+        })
+        .catch(e => {
+            console.log(e);
+        });
+    }
 
     function showSentences(i) {
         //console.log(item.descriptions[i])
@@ -68,44 +82,28 @@ const PreviewItem = (props) => {
 
     function processedDataInfo(item, apiEndPoint, e) {
         e.preventDefault();
+        props.processedData(item, apiEndPoint);
     }
 
     const handleVideoPreview = (e) => {
-		let video_as_base64 = URL.createObjectURL(e.target.files[0]);
-		let video_as_files = e.target.files[0];
+        let video_as_base64 = URL.createObjectURL(e.target.files[0]);
+        let video_as_files = e.target.files[0];
 
-		setVideo({
-			video_preview: video_as_base64,
-			video_file: video_as_files,
-		});
+        setVideo({
+            video_preview: video_as_base64,
+            video_file: video_as_files,
+        });
     };
-    
+
     function uplaodVideo(item, apiEndPoint, e) {
-		e.preventDefault();
-		const formData = new FormData();
-		formData.append("source_file", video.video_file);
-		const config = {
-			headers: {
-				'content-type': 'multipart/form-data',
-				'Accept': 'multipart/form-data',
-			}
-		};
-		// let data = FetchDataService.uplaodVideo(item, apiEndPoint, formData, config)
-		// 	.then((response) => {
-		// 		//console.log("upload response: ", response);
-		// 		if (response.data.success) {
-		// 			fetchData1();
-		// 		}
-		// 	})
-		// 	.catch((e) => {
-		// 		console.log(e);
-		// 	});
-	}
+        e.preventDefault();
+        props.uplaodVideo(item, apiEndPoint,video);
+    }
 
 
-	function handleClick() {
-		inputRef.current.click();
-	}
+    function handleClick() {
+        inputRef.current.click();
+    }
 
     function actionRender(item) {
         switch (item.state) {
@@ -135,13 +133,13 @@ const PreviewItem = (props) => {
                         {video != null ? (
                             <>
                                 <div className="flex justify-center items-center">
-                                    <video className="w-4/6" controls src={video.video_preview} />
+                                    <video className="w-4/5" controls src={video.video_preview} />
                                 </div>
                                 <div className="flex justify-center space-x-1">
-                                    <span onClick={(e) => uplaodVideo(item, 'upload_video', e)} className="px-2 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-blue-800 bg-blue-100 hover:bg-blue-200 text-blue-800 cursor-pointer">
+                                    <span onClick={(e) => uplaodVideo(item, 'upload_video', e)} className="px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-blue-800 bg-blue-100 hover:bg-blue-200 text-blue-800 cursor-pointer">
                                         Upload
 									</span>
-                                    <span onClick={() => setVideo(null)} className="px-2 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-blue-800 bg-blue-100 hover:bg-blue-200 text-blue-800 cursor-pointer">
+                                    <span onClick={() => setVideo(null)} className="px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-blue-800 bg-blue-100 hover:bg-blue-200 text-blue-800 cursor-pointer">
                                         Cancel
 									</span>
                                 </div>
@@ -149,15 +147,29 @@ const PreviewItem = (props) => {
                             </>
                         ) : (
                                 <>
-                                    <div className="w-40">
+                                    <div className="w-full p-2">
+                                        <div className="w-full flex justify-center px-6 pt-5 pb-6 border-2 border-gray-100 border-dashed rounded-md">
+                                            <div onClick={handleClick} className="cursor-pointer text-center">
+                                                <svg className="mx-auto h-12 w-12 text-gray-200" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                                                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                                </svg>
+                                                <p className="mt-1 text-sm text-gray-400">
+                                                    <button type="button" className="font-medium text-gray-50 hover:text-gray-100 pr-2 focus:outline-none focus:underline transition duration-150 ease-in-out">
+                                                        Upload a file
+                                                    </button>
+                                                    or drag and drop
+                                                </p>
+                                                <p className="mt-1 text-xs text-gray-200">
+                                                    MP4, MOV, WMV up to 500MB
+                                                </p>
+                                            </div>
+                                        </div>
                                         <input
                                             ref={inputRef}
-                                            className="invisible"
+                                            className="invisible w-full"
                                             type="file"
                                             onChange={handleVideoPreview}
-                                        >
-                                        </input>
-                                        <span onClick={handleClick} className="px-2 py-0.5 inline-flex text-xs leading-5 font-semibold rounded border border-blue-800 bg-blue-100 hover:bg-blue-200 text-blue-800 cursor-pointer">Upload a video</span>
+                                        />
                                     </div>
 
                                 </>
@@ -165,12 +177,12 @@ const PreviewItem = (props) => {
                     </div>
 
                 );
-                // return  (<form encType="multipart/form-data" method="POST" action="/news_items/upload_video?token=abcdef" > <input name='source_file' type='file'/><input type="submit"/> </form>)
+                // return  (<form encType="multipart/form-data" method="POST" action="/news_items/upload_video?token=abcdef" > <input name='source_file' type='file' /><input type="submit" /> </form>)
             }
             case "awaiting_review_by_lead_video_editor": {
                 return (
                     <div className="flex space-x-2 items-center justify-center">
-                        <span onClick={(e) => actionPerformed(item, "Preview Clips", e)} className="px-2 my-1 inline-flex text-xs leading-5 font-semibold rounded-full border border-blue-800 bg-blue-100 hover:bg-blue-200 text-blue-800 cursor-pointer">
+                        <span onClick={(e) => actionPerformed(item, "Preview Clips", e)} className="px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-blue-800 bg-blue-100 hover:bg-blue-200 text-blue-800 cursor-pointer">
                             Preview Clips
 						</span>
                         <svg onClick={(e) => actionPerformed(item, "lead_video_editor_approve", e)} className="h-8 w-8 text-green-400 hover:text-green-600 cursor-pointer" x-description="Heroicon name: check-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -200,6 +212,13 @@ const PreviewItem = (props) => {
                 return (
                     <span onClick={(e) => actionPerformed(item, "push_to_feed", e)} className="px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-green-800 bg-green-100 hover:bg-green-200 text-green-800 cursor-pointer">
                         Push To Feed
+                    </span>
+                );
+            }
+            case "transcoding": {
+                return (
+                    <span onClick={(e) => refreshData(e)} className="px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-green-800 bg-green-100 hover:bg-green-200 text-green-800 cursor-pointer">
+                        Refresh
                     </span>
                 );
             }

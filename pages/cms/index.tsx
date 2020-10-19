@@ -51,6 +51,36 @@ const Demo = () => {
         setIsCreate(flag);
     }
 
+    function processedData(data, apiCallEndPoint) {
+        HttpCms.post("/news_items/" + data.id + "/" + apiCallEndPoint + "?token=abcdef", {})
+        .then((response) => {
+            fetchItems();
+        })
+        .catch((e) => {
+            console.log(e);
+        });
+
+    }
+    
+    function uplaodVideo(item, apiEndPoint, video) {
+        const formData = new FormData();
+        formData.append("source_file", video.video_file);
+        const config = {
+            headers: {
+                'content-type': 'multipart/form-data',
+                'Accept': 'multipart/form-data',
+            }
+        };
+
+        HttpCms.post("/news_items/" + item.id + "/" + apiEndPoint + "?token=abcdef", formData, config)
+        .then((response) => {
+            fetchItems();
+        })
+        .catch((e) => {
+            console.log(e);
+        });
+    }
+
     return (
         <div className="w-full h-full bg-gray-500">
             <nav className="bg-gray-800 sticky top-0 z-30">
@@ -130,7 +160,7 @@ const Demo = () => {
                 
                 <>
                     {newsItems?.news_items.map((item,i)=>(
-                        <PreviewItem item={item}/>
+                        <PreviewItem item={item} processedData={processedData} uplaodVideo={uplaodVideo}/>
                     ))}                    
                 </>
             </div>
