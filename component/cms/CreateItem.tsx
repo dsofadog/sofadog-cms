@@ -3,7 +3,8 @@ import CmsConstant from '../../utils/cms-constant';
 
 const CreateItem = (props) => {
 
-    const category = CmsConstant.Category;
+    const categories = CmsConstant.Category;
+    const tags = CmsConstant.Tags;
 
     const [openTagDropdown, setOpenTagDropdown] = useState(false);
     const toggleTagDropdown = () => { setOpenTagDropdown(!openTagDropdown) };
@@ -11,19 +12,10 @@ const CreateItem = (props) => {
     const [openCategoryDropdown, setOpenCategoryDropdown] = useState(false);
     const toggleCateDropdown = () => { setOpenCategoryDropdown(!openCategoryDropdown) };
 
-    // const [item, setItem] = useState({
-    //     title: '',
-    //     descriptions: [],
-    //     news_credits: [],
-    //     visual_credits: [],
-    //     tags: [],
-    //     category: ''
-    // });
-
     const [item, setItem] = useState(null);
+    const [selectedTag, setSelectedTag] = useState([]);
 
     function handleChangeInput(e) {
-        //console.log(e.target.value)
         setItem({
             ...item,
             title: e.target.value
@@ -31,10 +23,9 @@ const CreateItem = (props) => {
     }
 
     function handleClickSingleDropdown(cat) {
-        console.log(cat)
         setItem({
             ...item,
-            category: cat.value
+            category: `${cat.value}`
         });
         toggleCateDropdown();
     }
@@ -44,6 +35,32 @@ const CreateItem = (props) => {
             ...item,
             category: ''
         });
+    }
+
+    function handleClickMultiDropdown(tag) {
+        //console.log(tag)
+        if(selectedTag.includes(tag.value)){
+            return;
+        }else{
+            setSelectedTag([...selectedTag, tag.value])
+            setItem({
+                ...item,
+                tags: selectedTag
+            });
+        }
+        //toggleTagDropdown();
+    }
+
+    function clearTag(tag) {
+        setSelectedTag(selectedTag.filter(item => item !== tag));
+        setItem({
+            ...item,
+            tags: selectedTag
+        });
+    }
+
+    function saveData(){
+        console.log("Save Data: ",item);
     }
 
 
@@ -61,7 +78,7 @@ const CreateItem = (props) => {
                         <div className="relative w-full h-full md:w-4/5 px-4 py-2 bg-white rounded-l-lg border-l-8 border-white">
                             <div className="py-2">
                                 <div className="w-full flex justify-end space-x-2">
-                                    <button className="px-2 py-1 bg-green-500 text-white rounded text-xs cursor-pointer">Save Data</button>
+                                    <button onClick={() => saveData() } className="px-2 py-1 bg-green-500 text-white rounded text-xs cursor-pointer">Save Data</button>
                                     <button onClick={() => props.close(false)} className="px-2 py-1 bg-blue-500 text-white rounded text-xs cursor-pointer">Cancel</button>
                                 </div>
                             </div>
@@ -136,7 +153,7 @@ const CreateItem = (props) => {
                                 <div className="w-full ml-4 space-x-2 flex justify-start">
                                     <div className="relative inline-block text-left">
                                         <div>
-                                            {category && (
+                                            {categories && (
                                                 <span onClick={toggleCateDropdown} className="rounded-md shadow-sm">
                                                     <button type="button" className="inline-flex justify-center w-full rounded-md border border-gray-300 px-2 py-0.5 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150" id="options-menu" aria-haspopup="true" aria-expanded="true">
                                                         Choose Category
@@ -151,7 +168,7 @@ const CreateItem = (props) => {
                                             <div className="origin-top-left absolute left-0 mt-2 w-56 rounded-md shadow-lg z-20">
                                                 <div className="rounded-md bg-white shadow-xs">
                                                     <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                                                        {category?.map((cat, i) => (
+                                                        {categories?.map((cat, i) => (
                                                             <a key={i} href={void (0)} onClick={() => handleClickSingleDropdown(cat)} className="cursor-pointer block px-4 py-1 text-xs leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900" role="menuitem">
                                                                 {cat.name}
                                                             </a>
@@ -161,11 +178,11 @@ const CreateItem = (props) => {
                                             </div>
                                         )}
                                     </div>
-                                    {item && category && (
+                                    {item && categories && (
                                         <>
-                                            {item?.category != '' && (
+                                            {item.category?.length > 0 && (
                                                 <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium leading-4 bg-blue-100 text-blue-800">
-                                                    {category[item?.category].name}
+                                                    {categories[item?.category].name}
                                                     <button onClick={() => clearCategory()} type="button" className="flex-shrink-0 ml-1.5 inline-flex text-indigo-500 focus:outline-none focus:text-indigo-700" aria-label="Remove small badge">
                                                         <svg className="h-2 w-2" stroke="currentColor" fill="none" viewBox="0 0 8 8">
                                                             <path strokeLinecap="round" strokeWidth="1.5" d="M1 1l6 6m0-6L1 7" />
@@ -194,20 +211,31 @@ const CreateItem = (props) => {
                                             <div className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg">
                                                 <div className="rounded-md bg-white shadow-xs">
                                                     <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                                                        <a href="#" className="block px-4 py-1 text-xs leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900" role="menuitem">
-                                                            Local Estonian Content
-                                                                </a>
-                                                        <a href="#" className="block px-4 py-1 text-xs leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900" role="menuitem">
-                                                            NSFW
-                                                                </a>
-                                                        <a href="#" className="block px-4 py-1 text-xs leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900" role="menuitem">
-                                                            NSFL
-                                                                </a>
+                                                        {tags?.map((tag, i) => (
+                                                            <a key={i} href={void (0)} onClick={() => handleClickMultiDropdown(tag)} className="block px-4 py-1 text-xs leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900" role="menuitem">
+                                                                {tag.name}
+                                                            </a>
+                                                        ))}
                                                     </div>
                                                 </div>
                                             </div>
                                         )}
                                     </div>
+                                    {selectedTag?.length > 0 && (
+                                        <>
+                                            {selectedTag.map((tag, i) => (
+                                                <span key={i} className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium leading-4 bg-blue-100 text-blue-800">
+                                                    {tag}
+                                                    <button onClick={() => clearTag(tag)} type="button" className="flex-shrink-0 ml-1.5 inline-flex text-indigo-500 focus:outline-none focus:text-indigo-700" aria-label="Remove small badge">
+                                                        <svg className="h-2 w-2" stroke="currentColor" fill="none" viewBox="0 0 8 8">
+                                                            <path strokeLinecap="round" strokeWidth="1.5" d="M1 1l6 6m0-6L1 7" />
+                                                        </svg>
+                                                    </button>
+                                                </span>
+                                            ))}
+                                        </>
+
+                                    )}
                                 </div>
                             </div>
                         </div>
