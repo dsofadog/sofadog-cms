@@ -256,7 +256,7 @@ const PreviewItem = (props) => {
     return (
         <>
             {category && item ? (
-                <div className="w-full mx-auto">
+                <div className="w-full mx-auto h-auto max-h-2xl">
                     <div className="flex flex-no-wrap justify-center">
                         <div className="w-1/12 mx-auto flex-none float-left">
                             <div className="bg-purple-700 p-1 h-32 w-1 mx-auto"></div>
@@ -264,7 +264,7 @@ const PreviewItem = (props) => {
                     </div>
                     <div className="flex flex-no-wrap justify-center">
                         <div className="w-11/12 mx-auto flex-none float-left">
-                            <div className="md:flex shadow-lg mx-6 md:mx-auto w-full h-xl">
+                            <div className="md:flex shadow-lg mx-6 md:mx-auto w-full h-full">
 
                                 <div className={`border-${category[item?.category].color} relative w-full h-full md:w-4/5 px-4 py-2 bg-white rounded-l-lg border-l-8`}>
                                     <div className="mb-4">
@@ -297,7 +297,7 @@ const PreviewItem = (props) => {
                                                     <div className="border-b border-gray-200">
                                                         <nav className="flex -mb-px">
                                                             {item?.descriptions.map((lang, i) => (
-                                                                <a key={i} href={void (0)} onClick={() => showSentences(i)} className={`${activeLang === i ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} cursor-pointer ml-8 group inline-flex items-center py-4 px-1 border-b-2 font-medium text-sm leading-5 focus:outline-none focus:text-indigo-800 focus:border-indigo-700 capitalize`} aria-current="page">
+                                                                <a key={i} href={void (0)} onClick={() => showSentences(i)} className={`${activeLang === i ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} cursor-pointer ml-8 group inline-flex items-center py-2 px-1 border-b-2 font-medium text-sm leading-5 focus:outline-none focus:text-indigo-800 focus:border-indigo-700 capitalize`} aria-current="page">
                                                                     <span>{lang.language}</span>
                                                                 </a>
                                                             ))}
@@ -323,15 +323,15 @@ const PreviewItem = (props) => {
                                             <div className="block">
                                                 <div className="border-b border-gray-200">
                                                     <nav className="flex -mb-px">
-                                                        <a href={void (0)} onClick={() => showCredits('news_credits', item?.news_credits)} className={`${creditsData?.title === 'news_credits' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} cursor-pointer ml-8 group inline-flex items-center py-4 px-1 border-b-2 font-medium text-sm leading-5  focus:outline-none focus:text-indigo-800 focus:border-indigo-700`} aria-current="page">
+                                                        <a href={void (0)} onClick={() => showCredits('news_credits', item?.news_credits)} className={`${creditsData?.title === 'news_credits' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} cursor-pointer ml-8 group inline-flex items-center py-2 px-1 border-b-2 font-medium text-sm leading-5  focus:outline-none focus:text-indigo-800 focus:border-indigo-700`} aria-current="page">
                                                             <span>News Credits</span>
                                                         </a>
-                                                        <a href={void (0)} onClick={() => showCredits('visual_credits', item?.visual_credits)} className={`${creditsData?.title === 'visual_credits' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} cursor-pointer ml-8 group inline-flex items-center py-4 px-1 border-b-2 font-medium text-sm leading-5 focus:outline-none focus:text-gray-700 focus:border-gray-300`}>
+                                                        <a href={void (0)} onClick={() => showCredits('visual_credits', item?.visual_credits)} className={`${creditsData?.title === 'visual_credits' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} cursor-pointer ml-8 group inline-flex items-center py-2 px-1 border-b-2 font-medium text-sm leading-5 focus:outline-none focus:text-gray-700 focus:border-gray-300`}>
                                                             <span>Visual Credits</span>
                                                         </a>
                                                     </nav>
                                                 </div>
-                                                <div className="mt-4" role="group" aria-labelledby="teams-headline">
+                                                <div className="mt-4 max-h-24 overflow-y-scroll" role="group" aria-labelledby="teams-headline">
                                                     {creditsData?.data.map((credit, i) => (
                                                         <div key={i} className="flex items-center space-x-3 pl-3">
                                                             <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-indigo-500"></div>
@@ -369,7 +369,7 @@ const PreviewItem = (props) => {
                                                 src={item.thumbnails[0].url} alt="" />
                                         )}
                                     </div>
-                                    <div className="w-full flex justify-center mt-8">
+                                    <div className="w-full flex justify-center my-8">
                                         {actionRender(item)}
                                     </div>
                                 </div>

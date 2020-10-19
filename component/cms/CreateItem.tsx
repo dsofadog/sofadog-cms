@@ -1,6 +1,15 @@
 import { useState } from "react";
 import CmsConstant from '../../utils/cms-constant';
 
+import { config as f_config, library } from '@fortawesome/fontawesome-svg-core';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { fas } from '@fortawesome/free-solid-svg-icons';
+import { fab } from '@fortawesome/free-brands-svg-icons';
+import { far } from '@fortawesome/free-regular-svg-icons';
+
+f_config.autoAddCss = false;
+library.add(fas, fab, far);
+
 const CreateItem = (props) => {
 
     const categories = CmsConstant.Category;
@@ -83,7 +92,7 @@ const CreateItem = (props) => {
             </div>
             <div className="flex flex-no-wrap justify-center">
                 <div className="w-11/12 mx-auto flex-none float-left">
-                    <div className="md:flex shadow-lg mx-6 md:mx-auto w-full h-xl">
+                    <div className="md:flex shadow-lg mx-6 md:mx-auto w-full h-2xl">
 
                         <div className="relative w-full h-full md:w-4/5 px-4 py-2 bg-white rounded-l-lg border-l-8 border-white">
                             <div className="py-2">
@@ -105,34 +114,39 @@ const CreateItem = (props) => {
                                     <div className="block">
                                         <div className="border-b border-gray-200">
                                             <nav className="flex -mb-px">
-                                                <a href={void (0)} onClick={() => showSentences(0)} className={`${activeLang === 0 ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} cursor-pointer ml-8 group inline-flex items-center py-4 px-1 border-b-2 font-medium text-sm leading-5 focus:outline-none focus:text-indigo-800 focus:border-indigo-700 capitalize`} aria-current="page">
+                                                <a href={void (0)} onClick={() => showSentences(0)} className={`${activeLang === 0 ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} cursor-pointer ml-8 group inline-flex items-center py-2 px-1 border-b-2 font-medium text-sm leading-5 focus:outline-none focus:text-indigo-800 focus:border-indigo-700 capitalize`} aria-current="page">
                                                     <span>English</span>
                                                 </a>
-                                                <a href={void (0)} onClick={() => showSentences(1)} className={`${activeLang === 1 ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} cursor-pointer ml-8 group inline-flex items-center py-4 px-1 border-b-2 font-medium text-sm leading-5 focus:outline-none focus:text-indigo-800 focus:border-indigo-700 capitalize`} aria-current="page">
+                                                <a href={void (0)} onClick={() => showSentences(1)} className={`${activeLang === 1 ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} cursor-pointer ml-8 group inline-flex items-center py-2 px-1 border-b-2 font-medium text-sm leading-5 focus:outline-none focus:text-indigo-800 focus:border-indigo-700 capitalize`} aria-current="page">
                                                     <span>Estonian</span>
                                                 </a>
                                             </nav>
                                         </div>
                                         <div className="mt-4 space-y-1" role="group" aria-labelledby="teams-headline">
-                                            {/* <div className="flex items-center space-x-3 pl-3">
-                                                        <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-indigo-500"></div>
-                                                        <div className="truncate hover:text-gray-600 text-xs">
-                                                            <span>12K people are at risk of dying every day from hunger linked to the virusOver 2B people lack access to safe, nutritious and sufficient food, 7M died of hunger this year World Food Programme says US$6.8B needed in six months to avert famine amid pandemic</span>
-                                                        </div>
-                                                    </div> */}
-                                            <div className="group px-3 flex items-center leading-5 font-medium">
-                                                <span className="w-2.5 h-2.5 mr-4 bg-indigo-500 rounded-full"></span>
+                                            <div className="w-full flex items-center space-x-3 px-3">
+                                                <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-indigo-500"></div>
+                                                <div className="w-11/12 truncate hover:text-gray-600 text-xs">
+                                                    <span>12K people are at risk of dying every day from hunger linked to the virusOver 2B people lack access to safe, nutritious and sufficient food, 7M died of hunger this year World Food Programme says US$6.8B needed in six months to avert famine amid pandemic</span>
+                                                </div>
+                                                <div className="w-1/12 text-xs text-gray-600 flex space-x-2 justify-end">
+                                                    <FontAwesomeIcon className="w-5 cursor-pointer hover:text-blue-600" icon={['fas', 'edit']} />
+                                                    <FontAwesomeIcon className="w-3.5 cursor-pointer hover:text-red-800" icon={['fas', 'trash-alt']} />
+                                                </div>
+                                            </div>
+                                            <div className="w-full flex items-center space-x-3 px-3">
+                                                <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-indigo-500"></div>
+                                                <div className="w-11/12 mt-1 relative rounded-md shadow-sm">
+                                                    <input id="text" className="form-input block w-full text-xs sm:leading-3" placeholder="Enter sentence" />
+                                                </div>
+                                                <div className="w-1/12 text-xs text-gray-600 flex space-x-2 justify-end">
+                                                    <FontAwesomeIcon className="w-5 cursor-pointer hover:text-white rounded-full bg-gray-300 hover:bg-green-500 p-1" icon={['fas', 'check']} />
+                                                    <FontAwesomeIcon className="w-3.5 cursor-pointer hover:text-red-800" icon={['fas', 'trash-alt']} />
+                                                </div>
+                                            </div>
+                                            <div className="flex items-center space-x-3 px-3">
+                                                <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-indigo-500"></div>
                                                 <button className="text-white px-2 py-1 bg-indigo-600 rounded text-xs">+ Add Sentence</button>
                                             </div>
-                                            <div className="group px-3 flex items-center leading-5 font-medium">
-                                                <span className="w-2.5 h-2.5 mr-4 bg-indigo-500 rounded-full"></span>
-                                                <button className="text-white px-2 py-1 bg-indigo-600 rounded text-xs">+ Add Sentence</button>
-                                            </div>
-                                            <div className="group px-3 flex items-center leading-5 font-medium">
-                                                <span className="w-2.5 h-2.5 mr-4 bg-indigo-500 rounded-full"></span>
-                                                <button className="text-white px-2 py-1 bg-indigo-600 rounded text-xs">+ Add Sentence</button>
-                                            </div>
-
                                         </div>
                                     </div>
                                 </div>
@@ -142,18 +156,39 @@ const CreateItem = (props) => {
                                     <div className="block">
                                         <div className="border-b border-gray-200">
                                             <nav className="flex -mb-px">
-                                                <a href={void (0)} onClick={() => showCredits(0)} className={`${activeCredit === 0 ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} cursor-pointer ml-8 group inline-flex items-center py-4 px-1 border-b-2 font-medium text-sm leading-5  focus:outline-none focus:text-indigo-800 focus:border-indigo-700`} aria-current="page">
+                                                <a href={void (0)} onClick={() => showCredits(0)} className={`${activeCredit === 0 ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} cursor-pointer ml-8 group inline-flex items-center py-2 px-1 border-b-2 font-medium text-sm leading-5  focus:outline-none focus:text-indigo-800 focus:border-indigo-700`} aria-current="page">
                                                     <span>News Credits</span>
                                                 </a>
-                                                <a href={void (0)} onClick={() => showCredits(1)} className={`${activeCredit === 1 ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} cursor-pointer ml-8 group inline-flex items-center py-4 px-1 border-b-2 font-medium text-sm leading-5 focus:outline-none focus:text-gray-700 focus:border-gray-300`}>
+                                                <a href={void (0)} onClick={() => showCredits(1)} className={`${activeCredit === 1 ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} cursor-pointer ml-8 group inline-flex items-center py-2 px-1 border-b-2 font-medium text-sm leading-5 focus:outline-none focus:text-gray-700 focus:border-gray-300`}>
                                                     <span>Visual Credits</span>
                                                 </a>
                                             </nav>
                                         </div>
-                                        <div className="mt-4 space-y-1" role="group" aria-labelledby="teams-headline">
-                                            <div className="group px-3 flex items-center leading-5 font-medium">
-                                                <span className="w-2.5 h-2.5 mr-4 bg-indigo-500 rounded-full"></span>
-                                                <button className="text-white px-2 py-1 bg-indigo-600 rounded text-xs">+ Add News Credit</button>
+                                        <div className="mt-4 space-y-1 max-h-24 overflow-y-scroll" role="group" aria-labelledby="teams-headline">
+                                            <div className="w-full flex items-center space-x-3 px-3">
+                                                <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-indigo-500"></div>
+                                                <div className="w-11/12 truncate hover:text-gray-600 text-xs">
+                                                    <a href="#" target="_blank">YT: BFI</a>
+                                                </div>
+                                                <div className="w-1/12 text-xs text-gray-600 flex space-x-2 justify-end">
+                                                    <FontAwesomeIcon className="w-5 cursor-pointer hover:text-blue-600" icon={['fas', 'edit']} />
+                                                    <FontAwesomeIcon className="w-3.5 cursor-pointer hover:text-red-800" icon={['fas', 'trash-alt']} />
+                                                </div>
+                                            </div>
+                                            <div className="w-full flex items-center space-x-3 px-3">
+                                                <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-indigo-500"></div>
+                                                <div className="w-11/12 mt-1 relative rounded-md shadow-sm flex space-x-4">
+                                                    <input id="text" className="form-input block w-full text-xs sm:leading-3" placeholder="Enter Title" />
+                                                    <input id="text" className="form-input block w-full text-xs sm:leading-3" placeholder="Enter URL" />
+                                                </div>
+                                                <div className="w-1/12 text-xs text-gray-600 flex space-x-2 justify-end">
+                                                    <FontAwesomeIcon className="w-5 cursor-pointer hover:text-white rounded-full bg-gray-300 hover:bg-green-500 p-1" icon={['fas', 'check']} />
+                                                    <FontAwesomeIcon className="w-3.5 cursor-pointer hover:text-red-800" icon={['fas', 'trash-alt']} />
+                                                </div>
+                                            </div>
+                                            <div className="flex items-center space-x-3 px-3">
+                                                <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-indigo-500"></div>
+                                                <button className="text-white px-2 py-1 bg-indigo-600 rounded text-xs">+ Add News Credits</button>
                                             </div>
                                         </div>
                                     </div>
