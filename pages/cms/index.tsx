@@ -14,13 +14,7 @@ const Demo = () => {
         }
     );
 
-    const [openTagDropdown, setOpenTagDropdown] = useState(false);
-    const toggleTagDropdown = () => { setOpenTagDropdown(!openTagDropdown) };
-
-    const [openCategoryDropdown, setOpenCategoryDropdown] = useState(false);
-    const toggleCateDropdown = () => { setOpenCategoryDropdown(!openCategoryDropdown) };
-
-    const [isCreate,setIsCreate] = useState(false);
+    const [isCreate, setIsCreate] = useState(false);
 
     const [newsItems, setNewsItems] = useState(null);
 
@@ -40,28 +34,88 @@ const Demo = () => {
                     ...paginationData,
                     total_data: response.data.total_items
                 });
-                console.log(response.data, "response.data.data");
+                //console.log(response.data, "response.data.data");
             })
             .catch(e => {
                 console.log(e);
             });
     }
 
-    function openCreateBox(flag){
+    function deleteItem(item) {
+        HttpCms.delete("/news_items/" + item.id + "?token=abcdef")
+            .then((response: any) => {
+                console.log(response);
+                if (response.data.success == true) {
+                    //console.log(response, "onssdsdas");
+                    transformNewItems(item, "delete");
+                }
+                //fetchData1();
+
+            })
+            .catch((e) => {
+                console.log(e);
+            });
+    }
+
+    function transformNewItems(itemValue, actionType) {
+        let arr = { "news_items": [] };
+        let old_index, new_index;
+
+        switch (actionType) {
+            case "delete":
+                arr.news_items = newsItems.news_items.filter(item => item.id != itemValue.id);
+                setNewsItems(arr);
+                break;
+            case "decrement_ordinal":
+
+                old_index = newsItems.news_items.findIndex(item => item.id == itemValue.id);
+                new_index = old_index + 1;
+                arr.news_items = array_move(newsItems.news_items, old_index, new_index);
+                setNewsItems(arr);
+                break;
+
+            case "increment_ordinal":
+                old_index = newsItems.news_items.findIndex(item => item.id == itemValue.id);
+                new_index = old_index - 1;
+                arr.news_items = array_move(newsItems.news_items, old_index, new_index);
+                setNewsItems(arr);
+                break;
+
+
+            default:
+            // code block
+        }
+
+    }
+
+    function array_move(arr, old_index, new_index) {
+        console.log(arr, old_index, new_index);
+        if (new_index >= arr.length) {
+            var k = new_index - arr.length + 1;
+            while (k--) {
+                arr.push(undefined);
+            }
+        }
+        arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
+        console.log(arr);
+        return arr; // for testing
+    };
+
+    function openCreateBox(flag) {
         setIsCreate(flag);
     }
 
     function processedData(data, apiCallEndPoint) {
         HttpCms.post("/news_items/" + data.id + "/" + apiCallEndPoint + "?token=abcdef", {})
-        .then((response) => {
-            fetchItems();
-        })
-        .catch((e) => {
-            console.log(e);
-        });
+            .then((response) => {
+                fetchItems();
+            })
+            .catch((e) => {
+                console.log(e);
+            });
 
     }
-    
+
     function uplaodVideo(item, apiEndPoint, video) {
         const formData = new FormData();
         formData.append("source_file", video.video_file);
@@ -73,12 +127,12 @@ const Demo = () => {
         };
 
         HttpCms.post("/news_items/" + item.id + "/" + apiEndPoint + "?token=abcdef", formData, config)
-        .then((response) => {
-            fetchItems();
-        })
-        .catch((e) => {
-            console.log(e);
-        });
+            .then((response) => {
+                fetchItems();
+            })
+            .catch((e) => {
+                console.log(e);
+            });
     }
 
     return (
@@ -112,7 +166,7 @@ const Demo = () => {
                         <div className="flex items-center">
                             <div className="flex-shrink-0">
                                 <span className="rounded-md shadow-sm">
-                                    <button onClick={()=> openCreateBox(true)} type="button" className="relative inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-400 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-600 active:bg-indigo-600 transition duration-150 ease-in-out">
+                                    <button onClick={() => openCreateBox(true)} type="button" className="relative inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-400 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-600 active:bg-indigo-600 transition duration-150 ease-in-out">
 
                                         <svg className="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                             <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
@@ -153,15 +207,17 @@ const Demo = () => {
                     </div>
                 </div>
                 <>
-                {isCreate &&(
-                    <CreateItem close={openCreateBox}/>
-                )} 
-                </>               
-                
+                    {isCreate && (
+                        <CreateItem close={openCreateBox} />
+                    )}
+                </>
+
                 <>
-                    {newsItems?.news_items.map((item,i)=>(
-                        <PreviewItem item={item} processedData={processedData} uplaodVideo={uplaodVideo}/>
-                    ))}                    
+                    {newsItems?.news_items.map((item, i) => (
+                        <div key={i}>
+                            <PreviewItem item={item} processedData={processedData} uplaodVideo={uplaodVideo} deleteItem={deleteItem} />
+                        </div>
+                    ))}
                 </>
             </div>
         </div>

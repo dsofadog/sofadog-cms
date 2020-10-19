@@ -22,7 +22,7 @@ const PreviewItem = (props) => {
     const [video, setVideo] = useState(null);
     const inputRef = useRef(null);
     const [isClips, setIsClips] = useState(false);
-	const [clips, setClips] = useState({ video: null, thumbnails: null });
+    const [clips, setClips] = useState({ video: null, thumbnails: null });
 
     const status = {
         'new': 'New',
@@ -112,9 +112,9 @@ const PreviewItem = (props) => {
         props.uplaodVideo(item, apiEndPoint, video);
     }
 
-
-    function handleClick() {
-        inputRef.current.click();
+    function deleteItem(item, e) {
+        e.preventDefault();
+        props.deleteItem(item)
     }
 
     const onDrop = useCallback(acceptedFiles => {
@@ -267,7 +267,7 @@ const PreviewItem = (props) => {
                                 <div className={`border-${category[item?.category].color} relative w-full h-full md:w-4/5 px-4 py-2 bg-white rounded-l-lg border-l-8`}>
                                     <div className="mb-4">
                                         <div className="w-full flex justify-end">
-                                            <button className="px-2 py-1 bg-red-500 text-white rounded text-xs cursor-pointer">Delete</button>
+                                            <button onClick={(e) => deleteItem(item, e)} className="px-2 py-1 bg-red-500 text-white rounded text-xs cursor-pointer">Delete</button>
                                         </div>
                                     </div>
                                     <div className="flex items-center mb-4">
@@ -383,12 +383,12 @@ const PreviewItem = (props) => {
 
                                     <div className="h-full overflow-y-auto align-middle md:flex flex-wrap min-w-full px-4 sm:px-6 md:px-6 py-4">
                                         {clips?.video.sort((a, b) => a.aspect_ratio - b.aspect_ratio)
-											.map((clip, i) => (
-												<div key={i} className="mx-auto sm:mx-0 w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5 h-82 sm:pr-4 mb-4">
-													<div className="w-full text-sm text-center">Aspect Ratio: {clip.aspect_ratio}</div>
-													<PreviewClip videoUrl={clip.url} />
-												</div>
-											))}
+                                            .map((clip, i) => (
+                                                <div key={i} className="mx-auto sm:mx-0 w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5 h-82 sm:pr-4 mb-4">
+                                                    <div className="w-full text-sm text-center">Aspect Ratio: {clip.aspect_ratio}</div>
+                                                    <PreviewClip videoUrl={clip.url} />
+                                                </div>
+                                            ))}
                                         {/* {clips?.video.map((clip, i) => (
                                             <div key={i} className="mx-auto sm:mx-0 w-full md:w-1/4 lg:w-1/5 h-82 sm:pr-4 mb-4">
                                                 <div className="w-full text-sm text-center">Aspect Ratio: {clip.aspect_ratio}</div>
