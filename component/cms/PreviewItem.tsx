@@ -83,7 +83,6 @@ const PreviewItem = (props) => {
 
     function actionPerformed(item, apiEndPoint, e) {
         if (apiEndPoint == "Preview Clips") {
-            console.log(item.clips, "item====");
             setIsClips(true);
             setClips({ video: item.clips, thumbnails: item.thumbnails });
             return false;
@@ -117,8 +116,12 @@ const PreviewItem = (props) => {
         props.deleteItem(item)
     }
 
+    function moveItem(item, apiEndPoint, e) {
+        e.preventDefault();
+        props.move(item,apiEndPoint);
+    }
+
     const onDrop = useCallback(acceptedFiles => {
-        console.log("acceptedFiles: ", acceptedFiles);
         handleVideoPreview(acceptedFiles);
     }, [])
     const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
@@ -266,8 +269,23 @@ const PreviewItem = (props) => {
 
                                 <div className={`border-${category[item?.category].color} relative w-full h-full md:w-4/5 px-4 py-2 bg-white rounded-l-lg border-l-8`}>
                                     <div className="mb-4">
-                                        <div className="w-full flex justify-end">
+                                        <div className="w-full flex justify-end space-x-2">
                                             <button onClick={(e) => deleteItem(item, e)} className="px-2 py-1 bg-red-500 text-white rounded text-xs cursor-pointer">Delete</button>
+                                            {
+                                                props.index != 0 && (
+                                                    <button className="px-2 py-0.5 text-gray-600 text-xs rounded">
+                                                        <FontAwesomeIcon onClick={(e) => moveItem(item, "increment_ordinal", e)} className="w-5 hover:text-gray-900" icon={['fas', 'chevron-up']} />
+                                                    </button>
+                                                )
+                                            }
+
+                                            {
+                                                props.index != props.totalData && (
+                                                    <button className="px-2 py-0.5 text-gray-600 text-xs rounded">
+                                                        <FontAwesomeIcon onClick={(e) => moveItem(item, "decrement_ordinal", e)} className="w-5 hover:text-gray-900" icon={['fas', 'chevron-down']} />
+                                                    </button>
+                                                )
+                                            }
                                         </div>
                                     </div>
                                     <div className="flex items-center mb-4">

@@ -8,7 +8,7 @@ const Demo = () => {
 
     const [paginationData, setPaginationData] = useState(
         {
-            limit: 150,
+            limit: 50,
             last_id: "",
             total_data: 0
         }
@@ -135,6 +135,20 @@ const Demo = () => {
             });
     }
 
+    function decrement_increment_ordinal(item, apiEndPoint){
+		HttpCms.post("/news_items/" + item.id + "/" + apiEndPoint + "?token=abcdef", {})
+			.then((response:any) => {
+				console.log(response);
+				if(response.data.success==true){
+					console.log(response,"onssdsdas");
+					transformNewItems(item,apiEndPoint);
+				}
+			})
+			.catch((e) => {
+				console.log(e);
+			});
+	}
+
     return (
         <div className="w-full h-full bg-gray-500">
             <nav className="bg-gray-800 sticky top-0 z-30">
@@ -221,7 +235,15 @@ const Demo = () => {
 
                 <>
                     {newsItems?.news_items.map((item, i) => (
-                        <PreviewItem item={item} processedData={processedData} uplaodVideo={uplaodVideo} deleteItem={deleteItem} />
+                        <PreviewItem 
+                            index={i} 
+                            totalData={paginationData?.total_data} 
+                            item={item} 
+                            processedData={processedData} 
+                            uplaodVideo={uplaodVideo} 
+                            deleteItem={deleteItem} 
+                            move={decrement_increment_ordinal}
+                        />
                     ))}
                 </>
             </div>
