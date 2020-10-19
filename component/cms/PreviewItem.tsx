@@ -7,6 +7,17 @@ const PreviewItem = (props) => {
     const category = CmsConstant.Category;
     const [sentences, setSentences] = useState(null);
     const [creditsData, setCreditsData] = useState(null);
+    const [activeLang, setActiveLang] = useState(0);
+
+    const status = {
+        'new': 'New',
+        'awaiting_review_by_lead_journalist': 'Awaiting review by lead journalist',
+        'awaiting_video_upload': 'Awaiting video upload',
+        'awaiting_review_by_lead_video_editor': 'Awaiting review by lead video editor',
+        'ready_for_push': 'Ready For Push',
+        'pushed_to_feed': 'Pushed To Feed',
+        'removed_from_feed': 'Removed From Feed'
+    };
 
     useEffect(() => {
         setItem(props.item);
@@ -21,6 +32,7 @@ const PreviewItem = (props) => {
 
     function showSentences(i) {
         //console.log(item.descriptions[i])
+        setActiveLang(i);
         setSentences(item.descriptions[i]);
     }
 
@@ -28,6 +40,17 @@ const PreviewItem = (props) => {
         //console.log(data)
         setCreditsData({ title: title, data: data });
         //console.log("creditsData: ",creditsData)
+    }
+
+    function showStatus(itemkey) {
+        let statusReturn = '';
+        Object.keys(status).forEach(key => {
+            if (itemkey == key) {
+                statusReturn = status[key];
+            }
+        });
+
+        return statusReturn;
     }
 
     return (
@@ -59,7 +82,7 @@ const PreviewItem = (props) => {
                                                     <div className="border-b border-gray-200">
                                                         <nav className="flex -mb-px">
                                                             {item?.descriptions.map((lang, i) => (
-                                                                <a key={i} href={void (0)} onClick={() => showSentences(i)} className={`${creditsData?.title === 'news_credits' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} cursor-pointer ml-8 group inline-flex items-center py-4 px-1 border-b-2 font-medium text-sm leading-5 focus:outline-none focus:text-indigo-800 focus:border-indigo-700 capitalize`} aria-current="page">
+                                                                <a key={i} href={void (0)} onClick={() => showSentences(i)} className={`${activeLang === i ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} cursor-pointer ml-8 group inline-flex items-center py-4 px-1 border-b-2 font-medium text-sm leading-5 focus:outline-none focus:text-indigo-800 focus:border-indigo-700 capitalize`} aria-current="page">
                                                                     <span>{lang.language}</span>
                                                                 </a>
                                                             ))}
@@ -120,8 +143,8 @@ const PreviewItem = (props) => {
                                 <div className={`bg-${category[item?.category].color} w-full md:w-1/5 relative z-10 rounded-lg rounded-l-none`}>
                                     <div className="absolute inset-x-0 top-0 transform translate-y-px">
                                         <div className="flex justify-center transform translate-y-1/2">
-                                            <span className={`bg-${category[item?.category].color} bg-opacity-75 shadow inline-flex w-full h-10 flex items-center justify-center text-center px-4 py-1 text-xs leading-5 font-semibold tracking-wider uppercase text-white`}>
-                                                {item?.state}
+                                            <span className={`bg-${category[item?.category].color} bg-opacity-75 shadow inline-flex w-full h-10 flex items-center justify-center text-center px-4 py-1 text-sm leading-5 font-semibold tracking-wider uppercase text-white`}>
+                                                {showStatus(item?.state)}
                                             </span>
                                         </div>
                                     </div>
