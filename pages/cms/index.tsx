@@ -8,7 +8,7 @@ const Demo = () => {
 
     const [paginationData, setPaginationData] = useState(
         {
-            limit: 50,
+            limit: 150,
             last_id: "",
             total_data: 0
         }
@@ -163,7 +163,13 @@ const Demo = () => {
 
                             </div>
                         </div>
-                        <div className="flex items-center">
+                        <div className="flex items-center space-x-2">
+                            <div className="">
+                                <button onClick={()=> fetchItems()} className="relative inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-400 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-600 active:bg-indigo-600 transition duration-150 ease-in-out">
+                                    Refresh
+                                </button>
+                            </div>
+
                             <div className="flex-shrink-0">
                                 <span className="rounded-md shadow-sm">
                                     <button onClick={() => openCreateBox(true)} type="button" className="relative inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-400 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-600 active:bg-indigo-600 transition duration-150 ease-in-out">
@@ -175,6 +181,7 @@ const Demo = () => {
                                     </button>
                                 </span>
                             </div>
+
 
                         </div>
                     </div>
