@@ -245,7 +245,7 @@ const Demo = () => {
                 </div>
                 <>
                     {isCreate && (
-                        <CreateItem close={openCreateBox} create={createNewItem}/>
+                        <CreateItem state="new" close={openCreateBox} create={createNewItem}/>
                     )}
                 </>
 

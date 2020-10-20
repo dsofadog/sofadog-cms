@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CmsConstant from '../../utils/cms-constant';
 
 import { config as f_config, library } from '@fortawesome/fontawesome-svg-core';
@@ -23,6 +23,7 @@ const CreateItem = (props) => {
 
     const [item, setItem] = useState(null);
     const [selectedTag, setSelectedTag] = useState([]);
+    const [selectedCategory, setSelectedCategory] = useState(null);
     const [activeLang, setActiveLang] = useState(0);
     const [activeCredit, setActiveCredit] = useState(0);
 
@@ -53,6 +54,39 @@ const CreateItem = (props) => {
             }
         ]
     );
+
+    useEffect(() => {
+        if (props.state === 'edit') {
+            console.log("In update item: ", props.data);
+            let data = props.data;
+            setItem({
+                ...item,
+                title: data.title,
+                category: data.category
+            });
+            setSelectedCategory(data.category);
+            if(data.tags.length > 0){
+                setSelectedTag(data.tags);
+            }
+            if(data.news_credits.length > 0){
+                const c = [...credits];
+                data.news_credits.map((news,i)=>{
+                    console.log("news: ",news);
+                    c[0].creditSentences.push({link_text: news.link_text, url: news.url, editable: false});
+                    setCredits(c);
+                });
+            }
+            if(data.visual_credits.length > 0){
+                const c = [...credits];
+                data.visual_credits.map((visual,i)=>{
+                    console.log("visual: ",visual);
+                    c[1].creditSentences.push({link_text: visual.link_text, url: visual.url, editable: false});
+                    setCredits(c);
+                });
+            }
+            
+        }
+    }, [props]);
 
     function addBlankSentence(e) {
         e.preventDefault();
@@ -120,18 +154,16 @@ const CreateItem = (props) => {
     }
 
     function handleClickSingleDropdown(cat) {
-        setItem({
-            ...item,
-            category: `${cat.value}`
-        });
+        // setItem({
+        //     ...item,
+        //     category: `${cat.value}`
+        // });
+        setSelectedCategory(cat);
         toggleCateDropdown();
     }
 
     function clearCategory() {
-        setItem({
-            ...item,
-            category: ''
-        });
+        setSelectedCategory(null);
     }
 
     function handleClickMultiDropdown(tag) {
@@ -238,7 +270,7 @@ const CreateItem = (props) => {
                 <div className="w-11/12 mx-auto flex-none float-left">
                     <div className="md:flex shadow-lg mx-6 md:mx-auto w-full h-2xl">
 
-                        <div className={`border-${ item?.category != undefined ? categories[item?.category].color : 'gray-200'} relative w-full h-full md:w-4/5 px-4 py-2 bg-white rounded-l-lg border-l-8`}>
+                        <div className={`border-${item?.category != undefined ? categories[item?.category].color : 'gray-200'} relative w-full h-full md:w-4/5 px-4 py-2 bg-white rounded-l-lg border-l-8`}>
                             <div className="py-2">
                                 <div className="w-full flex justify-end space-x-2">
                                     <button onClick={() => saveData()} className="px-2 py-1 bg-green-500 text-white rounded text-xs cursor-pointer">Save Data</button>
@@ -430,22 +462,16 @@ const CreateItem = (props) => {
                                             </div>
                                         )}
                                     </div>
-                                    {item && categories && (
-                                        <>
-                                            {item.category?.length > 0 && (
-                                                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium leading-4 bg-blue-100 text-blue-800">
-                                                    {categories[item?.category].name}
-                                                    <button onClick={() => clearCategory()} type="button" className="flex-shrink-0 ml-1.5 inline-flex text-indigo-500 focus:outline-none focus:text-indigo-700" aria-label="Remove small badge">
-                                                        <svg className="h-2 w-2" stroke="currentColor" fill="none" viewBox="0 0 8 8">
-                                                            <path strokeLinecap="round" strokeWidth="1.5" d="M1 1l6 6m0-6L1 7" />
-                                                        </svg>
-                                                    </button>
-                                                </span>
-                                            )}
-                                        </>
-
+                                    {selectedCategory && (
+                                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium leading-4 bg-blue-100 text-blue-800">
+                                            {categories[selectedCategory].name}
+                                            <button onClick={() => clearCategory()} type="button" className="flex-shrink-0 ml-1.5 inline-flex text-indigo-500 focus:outline-none focus:text-indigo-700" aria-label="Remove small badge">
+                                                <svg className="h-2 w-2" stroke="currentColor" fill="none" viewBox="0 0 8 8">
+                                                    <path strokeLinecap="round" strokeWidth="1.5" d="M1 1l6 6m0-6L1 7" />
+                                                </svg>
+                                            </button>
+                                        </span>
                                     )}
-
                                 </div>
                                 <div className="w-full space-x-2 flex justify-end">
                                     <div className="relative inline-block text-left">

@@ -8,6 +8,7 @@ import { config as f_config, library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons';
+import CreateItem from "./CreateItem";
 
 f_config.autoAddCss = false;
 library.add(fas, fab);
@@ -15,13 +16,14 @@ library.add(fas, fab);
 const PreviewItem = (props) => {
 
     const [item, setItem] = useState(null);
-    const category = CmsConstant.Category;
+    const categories = CmsConstant.Category;
     const [sentences, setSentences] = useState(null);
     const [creditsData, setCreditsData] = useState(null);
     const [activeLang, setActiveLang] = useState(0);
     const [video, setVideo] = useState(null);
     const [isClips, setIsClips] = useState(false);
     const [clips, setClips] = useState({ video: null, thumbnails: null });
+    const [isEdit, setIsEdit] = useState(false);
 
     const status = {
         'new': 'New',
@@ -117,7 +119,7 @@ const PreviewItem = (props) => {
 
     function moveItem(item, apiEndPoint, e) {
         e.preventDefault();
-        props.move(item,apiEndPoint);
+        props.move(item, apiEndPoint);
     }
 
     const onDrop = useCallback(acceptedFiles => {
@@ -253,174 +255,194 @@ const PreviewItem = (props) => {
         }
     }
 
+    function openCreateBox(flag) {
+        setIsEdit(flag);
+    }
+
+    function updateNewsItem(item) {
+        console.log("Update Item: ", item)
+    }
+
     return (
         <>
-            {category && item ? (
-                <div className="w-full mx-auto h-auto max-h-2xl">
-                    <div className="flex flex-no-wrap justify-center">
-                        <div className="w-1/12 mx-auto flex-none float-left">
-                            <div className="bg-purple-700 p-1 h-32 w-1 mx-auto"></div>
-                        </div>
-                    </div>
-                    <div className="flex flex-no-wrap justify-center">
-                        <div className="w-11/12 mx-auto flex-none float-left">
-                            <div className="md:flex shadow-lg mx-6 md:mx-auto w-full h-full">
+            {!isEdit ?
+                <>
+                    {categories && item ? (
+                        <div className="w-full mx-auto h-auto max-h-2xl">
+                            <div className="flex flex-no-wrap justify-center">
+                                <div className="w-1/12 mx-auto flex-none float-left">
+                                    <div className="bg-purple-700 p-1 h-32 w-1 mx-auto"></div>
+                                </div>
+                            </div>
+                            <div className="flex flex-no-wrap justify-center">
+                                <div className="w-11/12 mx-auto flex-none float-left">
+                                    <div className="md:flex shadow-lg mx-6 md:mx-auto w-full h-full">
 
-                                <div className={`border-${category[item?.category].color} relative w-full h-full md:w-4/5 px-4 py-2 bg-white rounded-l-lg border-l-8`}>
-                                    <div className="mb-4">
-                                        <div className="w-full flex justify-end space-x-2">
-                                            <button onClick={(e) => deleteItem(item, e)} className="px-2 py-1 bg-red-500 text-white rounded text-xs cursor-pointer">Delete</button>
-                                            {
-                                                props.index != 0 && (
-                                                    <button className="px-2 py-0.5 text-gray-600 text-xs rounded">
-                                                        <FontAwesomeIcon onClick={(e) => moveItem(item, "increment_ordinal", e)} className="w-5 hover:text-gray-900" icon={['fas', 'chevron-up']} />
+                                        <div className={`border-${categories[item?.category].color} relative w-full h-full md:w-4/5 px-4 py-2 bg-white rounded-l-lg border-l-8`}>
+                                            <div className="mb-4">
+                                                <div className="w-full flex justify-end space-x-2">
+                                                    <button onClick={() => openCreateBox(true)} className="px-2 py-1 bg-blue-500 hover:bg-blue-700 text-white rounded text-xs cursor-pointer flex items-center">
+                                                        <FontAwesomeIcon className="w-4 mr-1 cursor-pointer" icon={['fas', 'edit']} />
+                                                        Edit
                                                     </button>
-                                                )
-                                            }
+                                                    <button onClick={(e) => deleteItem(item, e)} className="px-2 py-1 bg-red-500 hover:bg-red-700 text-white rounded text-xs cursor-pointer">Delete</button>
+                                                    {
+                                                        props.index != 0 && (
+                                                            <button className="px-2 py-0.5 text-gray-600 text-xs rounded">
+                                                                <FontAwesomeIcon onClick={(e) => moveItem(item, "increment_ordinal", e)} className="w-5 hover:text-gray-900" icon={['fas', 'chevron-up']} />
+                                                            </button>
+                                                        )
+                                                    }
 
-                                            {
-                                                props.index != props.totalData && (
-                                                    <button className="px-2 py-0.5 text-gray-600 text-xs rounded">
-                                                        <FontAwesomeIcon onClick={(e) => moveItem(item, "decrement_ordinal", e)} className="w-5 hover:text-gray-900" icon={['fas', 'chevron-down']} />
-                                                    </button>
-                                                )
-                                            }
-                                        </div>
-                                    </div>
-                                    <div className="flex items-center mb-4">
-                                        <h2 className="text-base text-gray-800 font-medium mr-auto">{item?.title}</h2>
-                                    </div>
-                                    {item?.descriptions.length > 0 && (
-                                        <div className="w-full mb-4">
-                                            <div className="p-4 shadow rounded border border-gray-300">
-                                                <div className="block">
-                                                    <div className="border-b border-gray-200">
-                                                        <nav className="flex -mb-px">
-                                                            {item?.descriptions.map((lang, i) => (
-                                                                <a key={i} href={void (0)} onClick={() => showSentences(i)} className={`${activeLang === i ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} cursor-pointer ml-8 group inline-flex items-center py-2 px-1 border-b-2 font-medium text-sm leading-5 focus:outline-none focus:text-indigo-800 focus:border-indigo-700 capitalize`} aria-current="page">
-                                                                    <span>{lang.language}</span>
-                                                                </a>
-                                                            ))}
-                                                        </nav>
-                                                    </div>
-                                                    <div className="mt-4" role="group" aria-labelledby="teams-headline">
-                                                        {sentences?.sentences.map((sentence, i) => (
-                                                            <div key={i} className="flex items-center space-x-3 pl-3">
-                                                                <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-indigo-500"></div>
-                                                                <div className="truncate hover:text-gray-600 text-xs">
-                                                                    <span>{sentence}</span>
-                                                                </div>
+                                                    {
+                                                        props.index != props.totalData && (
+                                                            <button className="px-2 py-0.5 text-gray-600 text-xs rounded">
+                                                                <FontAwesomeIcon onClick={(e) => moveItem(item, "decrement_ordinal", e)} className="w-5 hover:text-gray-900" icon={['fas', 'chevron-down']} />
+                                                            </button>
+                                                        )
+                                                    }
+                                                </div>
+                                            </div>
+                                            <div className="flex items-center mb-4">
+                                                <h2 className="text-base text-gray-800 font-medium mr-auto">{item?.title}</h2>
+                                            </div>
+                                            {item?.descriptions.length > 0 && (
+                                                <div className="w-full mb-4">
+                                                    <div className="p-4 shadow rounded border border-gray-300">
+                                                        <div className="block">
+                                                            <div className="border-b border-gray-200">
+                                                                <nav className="flex -mb-px">
+                                                                    {item?.descriptions.map((lang, i) => (
+                                                                        <a key={i} href={void (0)} onClick={() => showSentences(i)} className={`${activeLang === i ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} cursor-pointer ml-8 group inline-flex items-center py-2 px-1 border-b-2 font-medium text-sm leading-5 focus:outline-none focus:text-indigo-800 focus:border-indigo-700 capitalize`} aria-current="page">
+                                                                            <span>{lang.language}</span>
+                                                                        </a>
+                                                                    ))}
+                                                                </nav>
                                                             </div>
-                                                        ))}
+                                                            <div className="mt-4" role="group" aria-labelledby="teams-headline">
+                                                                {sentences?.sentences.map((sentence, i) => (
+                                                                    <div key={i} className="flex items-center space-x-3 pl-3">
+                                                                        <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-indigo-500"></div>
+                                                                        <div className="truncate hover:text-gray-600 text-xs">
+                                                                            <span>{sentence}</span>
+                                                                        </div>
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            <div className="w-full">
+                                                <div className="p-4 shadow rounded border border-gray-300">
+                                                    <div className="block">
+                                                        <div className="border-b border-gray-200">
+                                                            <nav className="flex -mb-px">
+                                                                <a href={void (0)} onClick={() => showCredits('news_credits', item?.news_credits)} className={`${creditsData?.title === 'news_credits' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} cursor-pointer ml-8 group inline-flex items-center py-2 px-1 border-b-2 font-medium text-sm leading-5  focus:outline-none focus:text-indigo-800 focus:border-indigo-700`} aria-current="page">
+                                                                    <span>News Credits</span>
+                                                                </a>
+                                                                <a href={void (0)} onClick={() => showCredits('visual_credits', item?.visual_credits)} className={`${creditsData?.title === 'visual_credits' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} cursor-pointer ml-8 group inline-flex items-center py-2 px-1 border-b-2 font-medium text-sm leading-5 focus:outline-none focus:text-gray-700 focus:border-gray-300`}>
+                                                                    <span>Visual Credits</span>
+                                                                </a>
+                                                            </nav>
+                                                        </div>
+                                                        <div className="mt-4 max-h-24 overflow-y-scroll" role="group" aria-labelledby="teams-headline">
+                                                            {creditsData?.data.map((credit, i) => (
+                                                                <div key={i} className="flex items-center space-x-3 pl-3">
+                                                                    <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-indigo-500"></div>
+                                                                    <div className="truncate hover:text-gray-600 text-xs">
+                                                                        <a href={credit.url} target="_blank">{credit.link_text}</a>
+                                                                    </div>
+                                                                </div>
+                                                            ))}
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    )}
-
-                                    <div className="w-full">
-                                        <div className="p-4 shadow rounded border border-gray-300">
-                                            <div className="block">
-                                                <div className="border-b border-gray-200">
-                                                    <nav className="flex -mb-px">
-                                                        <a href={void (0)} onClick={() => showCredits('news_credits', item?.news_credits)} className={`${creditsData?.title === 'news_credits' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} cursor-pointer ml-8 group inline-flex items-center py-2 px-1 border-b-2 font-medium text-sm leading-5  focus:outline-none focus:text-indigo-800 focus:border-indigo-700`} aria-current="page">
-                                                            <span>News Credits</span>
-                                                        </a>
-                                                        <a href={void (0)} onClick={() => showCredits('visual_credits', item?.visual_credits)} className={`${creditsData?.title === 'visual_credits' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} cursor-pointer ml-8 group inline-flex items-center py-2 px-1 border-b-2 font-medium text-sm leading-5 focus:outline-none focus:text-gray-700 focus:border-gray-300`}>
-                                                            <span>Visual Credits</span>
-                                                        </a>
-                                                    </nav>
-                                                </div>
-                                                <div className="mt-4 max-h-24 overflow-y-scroll" role="group" aria-labelledby="teams-headline">
-                                                    {creditsData?.data.map((credit, i) => (
-                                                        <div key={i} className="flex items-center space-x-3 pl-3">
-                                                            <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-indigo-500"></div>
-                                                            <div className="truncate hover:text-gray-600 text-xs">
-                                                                <a href={credit.url} target="_blank">{credit.link_text}</a>
-                                                            </div>
-                                                        </div>
+                                            <div className="absolute mb-4 mr-4 bottom-0 inset-x-0">
+                                                <div className="w-full space-x-2 flex justify-end">
+                                                    {item?.tags.map(tag => (
+                                                        <span key={tag} className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium leading-4 bg-blue-100 text-blue-800">
+                                                            {tag}
+                                                        </span>
                                                     ))}
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div className="absolute mb-4 mr-4 bottom-0 inset-x-0">
-                                        <div className="w-full space-x-2 flex justify-end">
-                                            {item?.tags.map(tag => (
-                                                <span key={tag} className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium leading-4 bg-blue-100 text-blue-800">
-                                                    {tag}
-                                                </span>
-                                            ))}
-                                        </div>
-                                    </div>
-                                </div>
 
-                                <div className={`bg-${category[item?.category].color} w-full md:w-1/5 relative z-10 rounded-lg rounded-l-none`}>
-                                    <div className="inset-x-0 top-0 transform">
-                                        <div className="flex justify-center transform">
-                                            <span className={`bg-${category[item?.category].color} shadow inline-flex w-full h-10 flex items-center justify-center text-center px-4 py-1 text-sm leading-5 font-semibold tracking-wider uppercase text-white`}>
-                                                {showStatus(item?.state)}
-                                            </span>
+                                        <div className={`bg-${categories[item?.category].color} w-full md:w-1/5 relative z-10 rounded-lg rounded-l-none`}>
+                                            <div className="inset-x-0 top-0 transform">
+                                                <div className="flex justify-center transform">
+                                                    <span className={`bg-${categories[item?.category].color} shadow inline-flex w-full h-10 flex items-center justify-center text-center px-4 py-1 text-sm leading-5 font-semibold tracking-wider uppercase text-white`}>
+                                                        {showStatus(item?.state)}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div className="h-auto w-full flex items-start">
+                                                {item.thumbnails.length > 0 && (
+                                                    <img className="h-auto w-full shadow-2xl"
+                                                        src={item.thumbnails[0].url} alt="" />
+                                                )}
+                                            </div>
+                                            <div className="w-full flex justify-center my-8">
+                                                {actionRender(item)}
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className="h-auto w-full flex items-start">
-                                        {item.thumbnails.length > 0 && (
-                                            <img className="h-auto w-full shadow-2xl"
-                                                src={item.thumbnails[0].url} alt="" />
-                                        )}
-                                    </div>
-                                    <div className="w-full flex justify-center my-8">
-                                        {actionRender(item)}
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            ) : null}
+                    ) : null}
 
-            {isClips && (
-                <div className="fixed z-30 inset-0 overflow-y-auto">
-                    <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                        <div className="fixed inset-0 transition-opacity">
-                            <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
-                        </div>
-                        <span className="hidden sm:inline-block sm:align-middle sm:h-screen"></span>&#8203;
-						<div className="w-full h-screen overflow-y-auto inline-block align-bottom bg-white rounded-lg px-4 pb-4 text-left overflow-hidden shadow-xl transform transition-all md:align-middle md:max-w-6xl" role="dialog" aria-modal="true" aria-labelledby="modal-headline">
-                            <div>
-                                <div className="flex py-4 top-0 sticky bg-white z-10">
-                                    <div className="w-1/2 px-4 sm:px-6 flex justify-start">
-                                        <h2 className="text-gray-500 text-base font-bold uppercase tracking-wide">Clips</h2>
-                                    </div>
-                                    <div className="w-1/2 flex justify-end">
-                                        <FontAwesomeIcon onClick={() => setIsClips(false)} className="w-4 h-4 text-gray-400 hover:text-indigo-600 cursor-pointer" icon={['fas', 'times']} />
-                                    </div>
+                    {isClips && (
+                        <div className="fixed z-30 inset-0 overflow-y-auto">
+                            <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                                <div className="fixed inset-0 transition-opacity">
+                                    <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
                                 </div>
-                                <div className="mt-2">
+                                <span className="hidden sm:inline-block sm:align-middle sm:h-screen"></span>&#8203;
+						<div className="w-full h-screen overflow-y-auto inline-block align-bottom bg-white rounded-lg px-4 pb-4 text-left overflow-hidden shadow-xl transform transition-all md:align-middle md:max-w-6xl" role="dialog" aria-modal="true" aria-labelledby="modal-headline">
+                                    <div>
+                                        <div className="flex py-4 top-0 sticky bg-white z-10">
+                                            <div className="w-1/2 px-4 sm:px-6 flex justify-start">
+                                                <h2 className="text-gray-500 text-base font-bold uppercase tracking-wide">Clips</h2>
+                                            </div>
+                                            <div className="w-1/2 flex justify-end">
+                                                <FontAwesomeIcon onClick={() => setIsClips(false)} className="w-4 h-4 text-gray-400 hover:text-indigo-600 cursor-pointer" icon={['fas', 'times']} />
+                                            </div>
+                                        </div>
+                                        <div className="mt-2">
 
-                                    <div className="h-full overflow-y-auto align-middle md:flex flex-wrap min-w-full px-4 sm:px-6 md:px-6 py-4">
-                                        {clips?.video.sort((a, b) => a.aspect_ratio - b.aspect_ratio)
-                                            .map((clip, i) => (
-                                                <div key={i} className="mx-auto sm:mx-0 w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5 h-82 sm:pr-4 mb-4">
-                                                    <div className="w-full text-sm text-center">Aspect Ratio: {clip.aspect_ratio}</div>
-                                                    <PreviewClip videoUrl={clip.url} />
-                                                </div>
-                                            ))}
-                                        {/* {clips?.video.map((clip, i) => (
+                                            <div className="h-full overflow-y-auto align-middle md:flex flex-wrap min-w-full px-4 sm:px-6 md:px-6 py-4">
+                                                {clips?.video.sort((a, b) => a.aspect_ratio - b.aspect_ratio)
+                                                    .map((clip, i) => (
+                                                        <div key={i} className="mx-auto sm:mx-0 w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5 h-82 sm:pr-4 mb-4">
+                                                            <div className="w-full text-sm text-center">Aspect Ratio: {clip.aspect_ratio}</div>
+                                                            <PreviewClip videoUrl={clip.url} />
+                                                        </div>
+                                                    ))}
+                                                {/* {clips?.video.map((clip, i) => (
                                             <div key={i} className="mx-auto sm:mx-0 w-full md:w-1/4 lg:w-1/5 h-82 sm:pr-4 mb-4">
                                                 <div className="w-full text-sm text-center">Aspect Ratio: {clip.aspect_ratio}</div>
                                                 <PreviewClip videoUrl={clip.url} image={clips.thumbnails[i].url} />
                                             </div>
                                         ))} */}
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            )}
-        </>
+                    )}
+                </>
+                :
+                <>
+                    <CreateItem state="edit" close={openCreateBox} update={updateNewsItem} data={props.item} />
+                </>
+            }
 
+        </>
     )
 }
 
