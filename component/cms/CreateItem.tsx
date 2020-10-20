@@ -466,9 +466,12 @@ const CreateItem = (props) => {
                                             </div>
                                         )}
                                     </div>
+
+                                  
+                                   
                                     {categories && (
                                         <>
-                                            {item?.category && (
+                                            {item?.category != null && (
                                                 <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium leading-4 bg-blue-100 text-blue-800">
                                                     {categories[item?.category].name}
                                                     <button onClick={() => clearCategory()} type="button" className="flex-shrink-0 ml-1.5 inline-flex text-indigo-500 focus:outline-none focus:text-indigo-700" aria-label="Remove small badge">
