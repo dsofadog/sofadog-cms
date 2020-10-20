@@ -31,11 +31,11 @@ const CreateItem = (props) => {
         [
             {
                 language: "english",
-                sentences: [blankSentence]
+                sentences: []
             },
             {
                 language: "estonian",
-                sentences: [blankSentence]
+                sentences: []
             }
         ]
     );
@@ -45,11 +45,11 @@ const CreateItem = (props) => {
         [
             {
                 credit: "News Credits",
-                creditSentences: [blankCreditSentence]
+                creditSentences: []
             },
             {
                 credit: "Visual Credits",
-                creditSentences: [blankCreditSentence]
+                creditSentences: []
             }
         ]
     );
@@ -165,7 +165,32 @@ const CreateItem = (props) => {
     }
 
     function saveData() {
+        console.log("descriptions: ",descriptions);
+        console.log("credits: ",credits);
         console.log("Save Data: ", item);
+        
+
+        if(descriptions){   
+            let d = [];         
+            descriptions.map(description =>{
+                let lang = description.language;
+                let sent = [];
+                description.sentences.map(sentence=>{
+                    sent.push(sentence.sentence);
+                });
+                d.push({
+                    language: lang,
+                    sentences: sent
+                })
+            })
+            setItem({
+                ...item,
+                descriptions: d
+            });
+        }
+
+        
+        console.log("Final Item Data: ",item);
     }
 
 
