@@ -26,6 +26,92 @@ const CreateItem = (props) => {
     const [activeLang, setActiveLang] = useState(0);
     const [activeCredit, setActiveCredit] = useState(0);
 
+    const blankSentence = { sentence: "", editable: true }
+    const [descriptions, setDescriptions] = useState(
+        [
+            {
+                language: "english",
+                sentences: [blankSentence]
+            },
+            {
+                language: "estonian",
+                sentences: [blankSentence]
+            }
+        ]
+    );
+
+    const blankCreditSentence = { link_text: "", url: "", editable: true }
+    const [credits, setCredits] = useState(
+        [
+            {
+                credit: "News Credits",
+                creditSentences: [blankCreditSentence]
+            },
+            {
+                credit: "Visual Credits",
+                creditSentences: [blankCreditSentence]
+            }
+        ]
+    );
+
+    function addBlankSentence(e) {
+        e.preventDefault();
+        const d = [...descriptions];
+        d[activeLang].sentences.push(blankSentence);
+        setDescriptions(d);
+    }
+
+    function handleSentenceChange(e, i) {
+        e.preventDefault();
+        const d = [...descriptions];
+        d[activeLang].sentences[i].sentence = e.target.value;
+        setDescriptions(d);
+    }
+
+    function changeSentenceState(e, i, state) {
+        e.preventDefault();
+        const d = [...descriptions];
+        if (state === 'edit') {
+            d[activeLang].sentences[i].editable = true;
+        } else if (state === 'save') {
+            d[activeLang].sentences[i].editable = false;
+        } else if (state === 'delete') {
+            d[activeLang].sentences.splice(i, 1);
+        }
+        setDescriptions(d);
+    }
+
+    function addBlankCreditSentence(e) {
+        e.preventDefault();
+        const c = [...credits];
+        c[activeCredit].creditSentences.push(blankCreditSentence);
+        setCredits(c);
+    }
+
+    function handleCreditSentenceChange(e, i, to) {
+        e.preventDefault();
+        const c = [...credits];
+        if (to === 'text') {
+            c[activeCredit].creditSentences[i].link_text = e.target.value;
+        } else if (to === 'url') {
+            c[activeCredit].creditSentences[i].url = e.target.value;
+        }
+        setCredits(c);
+    }
+
+    function changeCreditSentenceState(e, i, state) {
+        e.preventDefault();
+        const c = [...credits];
+        if (state === 'edit') {
+            c[activeCredit].creditSentences[i].editable = true;
+        } else if (state === 'save') {
+            c[activeCredit].creditSentences[i].editable = false;
+        } else if (state === 'delete') {
+            c[activeCredit].creditSentences.splice(i, 1);
+        }
+        setCredits(c);
+    }
+
     function handleChangeInput(e) {
         setItem({
             ...item,
@@ -120,10 +206,14 @@ const CreateItem = (props) => {
                                                 <a href={void (0)} onClick={() => showSentences(1)} className={`${activeLang === 1 ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} cursor-pointer ml-8 group inline-flex items-center py-2 px-1 border-b-2 font-medium text-sm leading-5 focus:outline-none focus:text-indigo-800 focus:border-indigo-700 capitalize`} aria-current="page">
                                                     <span>Estonian</span>
                                                 </a>
+                                                {/* <span className="ml-4">
+                                                    <FontAwesomeIcon className="w-4 cursor-pointer text-blue-500 hover:text-blue-600" icon={['fas', 'plus-circle']} />
+                                                </span> */}
+
                                             </nav>
                                         </div>
                                         <div className="mt-4 space-y-1" role="group" aria-labelledby="teams-headline">
-                                            <div className="w-full flex items-center space-x-3 px-3">
+                                            {/* <div className="w-full flex items-center space-x-3 px-3">
                                                 <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-indigo-500"></div>
                                                 <div className="w-11/12 truncate hover:text-gray-600 text-xs">
                                                     <span>12K people are at risk of dying every day from hunger linked to the virusOver 2B people lack access to safe, nutritious and sufficient food, 7M died of hunger this year World Food Programme says US$6.8B needed in six months to avert famine amid pandemic</span>
@@ -142,11 +232,42 @@ const CreateItem = (props) => {
                                                     <FontAwesomeIcon className="w-5 cursor-pointer hover:text-white rounded-full bg-gray-300 hover:bg-green-500 p-1" icon={['fas', 'check']} />
                                                     <FontAwesomeIcon className="w-3.5 cursor-pointer hover:text-red-800" icon={['fas', 'trash-alt']} />
                                                 </div>
-                                            </div>
-                                            <div className="flex items-center space-x-3 px-3">
-                                                <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-indigo-500"></div>
-                                                <button className="text-white px-2 py-1 bg-indigo-600 rounded text-xs">+ Add Sentence</button>
-                                            </div>
+                                            </div> */}
+                                            {descriptions[activeLang].sentences.map((sentence, i) => (
+                                                <>
+                                                    {sentence.editable ?
+                                                        <div className="w-full flex items-center space-x-3 px-3">
+                                                            <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-indigo-500"></div>
+                                                            <div className="w-11/12 mt-1 relative rounded-md shadow-sm">
+                                                                <input value={sentence.sentence} onChange={(e) => handleSentenceChange(e, i)} className="form-input block w-full text-xs sm:leading-3" placeholder="Enter sentence" />
+                                                            </div>
+                                                            <div className="w-1/12 text-xs text-gray-600 flex space-x-2 justify-end">
+                                                                <FontAwesomeIcon onClick={(e) => changeSentenceState(e, i, 'save')} className="w-5 cursor-pointer hover:text-white rounded-full bg-gray-300 hover:bg-green-500 p-1" icon={['fas', 'check']} />
+                                                                <FontAwesomeIcon onClick={(e) => changeSentenceState(e, i, 'delete')} className="w-3.5 cursor-pointer hover:text-red-800" icon={['fas', 'trash-alt']} />
+                                                            </div>
+                                                        </div>
+                                                        :
+                                                        <div className="w-full flex items-center space-x-3 px-3">
+                                                            <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-indigo-500"></div>
+                                                            <div className="w-11/12 truncate hover:text-gray-600 text-xs">
+                                                                <span>{sentence.sentence}</span>
+                                                            </div>
+                                                            <div className="w-1/12 text-xs text-gray-600 flex space-x-2 justify-end">
+                                                                <FontAwesomeIcon onClick={(e) => changeSentenceState(e, i, 'edit')} className="w-5 cursor-pointer hover:text-blue-600" icon={['fas', 'edit']} />
+                                                                <FontAwesomeIcon onClick={(e) => changeSentenceState(e, i, 'delete')} className="w-3.5 cursor-pointer hover:text-red-800" icon={['fas', 'trash-alt']} />
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                </>
+                                            ))}
+
+                                            {descriptions[activeLang].sentences.length < 3 && (
+                                                <div className="flex items-center space-x-3 px-3">
+                                                    <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-indigo-500"></div>
+                                                    <button onClick={(e) => addBlankSentence(e)} className="text-white px-2 py-1 bg-indigo-600 rounded text-xs">+ Add Sentence</button>
+                                                </div>
+                                            )}
+
                                         </div>
                                     </div>
                                 </div>
@@ -165,7 +286,7 @@ const CreateItem = (props) => {
                                             </nav>
                                         </div>
                                         <div className="mt-4 space-y-1 max-h-24 overflow-y-scroll" role="group" aria-labelledby="teams-headline">
-                                            <div className="w-full flex items-center space-x-3 px-3">
+                                            {/* <div className="w-full flex items-center space-x-3 px-3">
                                                 <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-indigo-500"></div>
                                                 <div className="w-11/12 truncate hover:text-gray-600 text-xs">
                                                     <a href="#" target="_blank">YT: BFI</a>
@@ -185,10 +306,38 @@ const CreateItem = (props) => {
                                                     <FontAwesomeIcon className="w-5 cursor-pointer hover:text-white rounded-full bg-gray-300 hover:bg-green-500 p-1" icon={['fas', 'check']} />
                                                     <FontAwesomeIcon className="w-3.5 cursor-pointer hover:text-red-800" icon={['fas', 'trash-alt']} />
                                                 </div>
-                                            </div>
+                                            </div> */}
+                                            {credits[activeCredit].creditSentences.map((sentence, i) => (
+                                                <>
+                                                    {sentence.editable ?
+                                                        <div className="w-full flex items-center space-x-3 px-3">
+                                                            <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-indigo-500"></div>
+                                                            <div className="w-11/12 mt-1 relative rounded-md shadow-sm flex space-x-4">
+                                                                <input value={sentence.link_text} onChange={(e) => handleCreditSentenceChange(e, i, 'text')} className="form-input block w-full text-xs sm:leading-3" placeholder="Enter Title" />
+                                                                <input value={sentence.url} onChange={(e) => handleCreditSentenceChange(e, i, 'url')} className="form-input block w-full text-xs sm:leading-3" placeholder="Enter URL" />
+                                                            </div>
+                                                            <div className="w-1/12 text-xs text-gray-600 flex space-x-2 justify-end">
+                                                                <FontAwesomeIcon onClick={(e) => changeCreditSentenceState(e, i, 'save')} className="w-5 cursor-pointer hover:text-white rounded-full bg-gray-300 hover:bg-green-500 p-1" icon={['fas', 'check']} />
+                                                                <FontAwesomeIcon onClick={(e) => changeCreditSentenceState(e, i, 'delete')} className="w-3.5 cursor-pointer hover:text-red-800" icon={['fas', 'trash-alt']} />
+                                                            </div>
+                                                        </div>
+                                                        :
+                                                        <div className="w-full flex items-center space-x-3 px-3">
+                                                            <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-indigo-500"></div>
+                                                            <div className="w-11/12 truncate hover:text-gray-600 text-xs">
+                                                                <a href={sentence.url} target="_blank">{sentence.link_text}</a>
+                                                            </div>
+                                                            <div className="w-1/12 text-xs text-gray-600 flex space-x-2 justify-end">
+                                                                <FontAwesomeIcon onClick={(e) => changeCreditSentenceState(e, i, 'edit')} className="w-5 cursor-pointer hover:text-blue-600" icon={['fas', 'edit']} />
+                                                                <FontAwesomeIcon onClick={(e) => changeCreditSentenceState(e, i, 'delete')} className="w-3.5 cursor-pointer hover:text-red-800" icon={['fas', 'trash-alt']} />
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                </>
+                                            ))}
                                             <div className="flex items-center space-x-3 px-3">
                                                 <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-indigo-500"></div>
-                                                <button className="text-white px-2 py-1 bg-indigo-600 rounded text-xs">+ Add News Credits</button>
+                                                <button onClick={(e) => addBlankCreditSentence(e)} className="text-white px-2 py-1 bg-indigo-600 rounded text-xs capitalize">+ Add {credits[activeCredit].credit}</button>
                                             </div>
                                         </div>
                                     </div>
