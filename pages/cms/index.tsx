@@ -3,8 +3,19 @@ import Link from "next/link";
 import HttpCms from '../../utils/http-cms';
 import CreateItem from '../../component/cms/CreateItem';
 import PreviewItem from '../../component/cms/PreviewItem';
+import CmsConstant from '../../utils/cms-constant';
 
 const Demo = () => {
+    const categories = CmsConstant.Category;
+    const [openCategoryDropdown, setOpenCategoryDropdown] = useState(false);
+    const toggleCateDropdown = () => { setOpenCategoryDropdown(!openCategoryDropdown) };
+    const [item, setItem] = useState(null);
+    const [selectedCategory, setSelectedCategory] = useState(null);
+    const tags = CmsConstant.Tags;
+    const [selectedTag, setSelectedTag] = useState([]);
+
+    const [openTagDropdown, setOpenTagDropdown] = useState(false);
+    const toggleTagDropdown = () => { setOpenTagDropdown(!openTagDropdown) };
 
     const [paginationData, setPaginationData] = useState(
         {
@@ -57,6 +68,77 @@ const Demo = () => {
                 console.log(e);
             });
     }
+
+    function handleClickSingleDropdown(cat) {       
+        setItem({
+            ...item,
+            category: `${cat.value}`
+        });
+        setSelectedCategory(cat.value);
+        toggleCateDropdown();
+    }
+
+    function handleClickMultiDropdown(tag) {
+        //console.log(tag)
+        if (selectedTag.includes(tag.value)) {
+            return;
+        } else {
+            setSelectedTag([...selectedTag, tag.value])
+            setItem({
+                ...item,
+                tags: selectedTag
+            });
+        }
+        toggleTagDropdown();
+    }
+    function clearCategory() {
+        setSelectedCategory(null);
+    }
+    function clearTag(tag) {       
+        setSelectedTag(selectedTag.filter(item => item !== tag));
+        setItem({
+            ...item,
+            tags: selectedTag
+        });
+    }
+
+    function  filteringCategoryTag(){    
+         let urlcategory= `news_items?category=${paginationData.limit}`;
+         let commaseperatedTags = ''
+         let urltag ='';
+         if(Array.isArray(selectedTag) && selectedTag.length>0 ){
+            commaseperatedTags =  selectedTag.join();
+         }
+         if(commaseperatedTags != ''){
+            urltag= `&tags=${commaseperatedTags}`;
+         }
+         let url = '';
+         if(urltag ==''){
+             url = `${urlcategory}?token=abcdef&limit=${paginationData.limit}`; 
+         }else{          
+            url = `${urlcategory}${urltag}?token=abcdef&limit=${paginationData.limit}`;
+         }
+      
+        if (paginationData.last_id != "") {
+            url += `&last_id=${paginationData.last_id}`;
+        }
+        HttpCms.get(url)
+            .then(response => {
+                console.log("fetch res: ",response.data);
+                setNewsItems(response.data);
+                setPaginationData({
+                    ...paginationData,
+                    total_data: response.data.total_items
+                });
+                //console.log(response.data, "response.data.data");
+            })
+            .catch(e => {
+                console.log(e);
+            });
+
+    }
+
+   
 
     function transformNewItems(itemValue, actionType) {
         let arr = { "news_items": [] };
@@ -219,6 +301,12 @@ const Demo = () => {
                                 </button>
                             </div>
 
+                            <div className="">
+                                <button onClick={() => filteringCategoryTag()} className="relative inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-400 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-600 active:bg-indigo-600 transition duration-150 ease-in-out">
+                                    filter
+                                </button>
+                            </div>
+
                             <div className="flex-shrink-0">
                                 <span className="rounded-md shadow-sm">
                                     <button onClick={() => openCreateBox(true)} type="button" className="relative inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-400 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-600 active:bg-indigo-600 transition duration-150 ease-in-out">
@@ -230,6 +318,105 @@ const Demo = () => {
                                     </button>
                                 </span>
                             </div>
+
+                            {/* categories */}
+
+                            <div className="absolute mb-4 mr-4 bottom-0 inset-x-0 flex">
+                                <div className="w-full ml-4 space-x-2 flex ">
+                                    <div className="relative inline-block text-left">
+                                        <div>
+                                            {categories && (
+                                                <span onClick={toggleCateDropdown} className="rounded-md shadow-sm">
+                                                    <button type="button" className="inline-flex justify-center w-full rounded-md border border-gray-300 px-2 py-0.5 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150" id="options-menu" aria-haspopup="true" aria-expanded="true">
+                                                        Choose Category
+                                                        <svg className="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                            <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                                                        </svg>
+                                                    </button>
+                                                </span>
+                                            )}
+                                        </div>
+                                        {openCategoryDropdown && (
+                                            <div className="origin-top-left absolute left-0 mt-2 w-56 rounded-md shadow-lg z-20">
+                                                <div className="rounded-md bg-white shadow-xs">
+                                                    <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                                                        {categories?.map((cat, i) => (
+                                                            <a key={i} href={void (0)} onClick={() => handleClickSingleDropdown(cat)} className="cursor-pointer block px-4 py-1 text-xs leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900" role="menuitem">
+                                                                {cat.name}
+                                                            </a>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                    {categories && (
+                                        <>
+                                           {item?.category && (
+                                                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium leading-4 bg-blue-100 text-blue-800">
+                                                    {categories[item?.category].name}
+                                                    <button onClick={() => clearCategory()} type="button" className="flex-shrink-0 ml-1.5 inline-flex text-indigo-500 focus:outline-none focus:text-indigo-700" aria-label="Remove small badge">
+                                                        <svg className="h-2 w-2" stroke="currentColor" fill="none" viewBox="0 0 8 8">
+                                                            <path strokeLinecap="round" strokeWidth="1.5" d="M1 1l6 6m0-6L1 7" />
+                                                        </svg>
+                                                    </button>
+                                                </span>
+                                            )}
+                                        </>
+
+                                    )}
+                                </div>                                
+                            </div>
+
+
+                            {/* categories */}
+
+                            {/* tags */}
+
+                            <div className="w-full space-x-2 flex ">
+                                    <div className="relative inline-block text-left">
+                                        <div>
+                                            <span onClick={toggleTagDropdown} className="rounded-md shadow-sm">
+                                                <button type="button" className="inline-flex justify-center w-full rounded-md border border-gray-300 px-2 py-0.5 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150" id="options-menu" aria-haspopup="true" aria-expanded="true">
+                                                    Tags
+                                                        <svg className="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                        <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                                                    </svg>
+                                                </button>
+                                            </span>
+                                        </div>
+                                        {openTagDropdown && (
+                                            <div className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg">
+                                                <div className="rounded-md bg-white shadow-xs">
+                                                    <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                                                        {tags?.map((tag, i) => (
+                                                            <a key={i} href={void (0)} onClick={() => handleClickMultiDropdown(tag)} className="cursor-pointer block px-4 py-1 text-xs leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900" role="menuitem">
+                                                                {tag.name}
+                                                            </a>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                    {selectedTag?.length > 0 && (
+                                        <>
+                                            {selectedTag.map((tag, i) => (
+                                                <span key={i} className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium leading-4 bg-blue-100 text-blue-800">
+                                                    {tag}
+                                                    <button onClick={() => clearTag(tag)} type="button" className="flex-shrink-0 ml-1.5 inline-flex text-indigo-500 focus:outline-none focus:text-indigo-700" aria-label="Remove small badge">
+                                                        <svg className="h-2 w-2" stroke="currentColor" fill="none" viewBox="0 0 8 8">
+                                                            <path strokeLinecap="round" strokeWidth="1.5" d="M1 1l6 6m0-6L1 7" />
+                                                        </svg>
+                                                    </button>
+                                                </span>
+                                            ))}
+                                        </>
+
+                                    )}
+                                </div>
+
+                            {/* tags */}
 
 
                         </div>
