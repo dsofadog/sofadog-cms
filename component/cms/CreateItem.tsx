@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import { far } from '@fortawesome/free-regular-svg-icons';
+import DescriptionInputs from './DescriptionInputs';
 
 f_config.autoAddCss = false;
 library.add(fas, fab, far);
@@ -25,6 +26,23 @@ const CreateItem = (props) => {
     const [selectedTag, setSelectedTag] = useState([]);
     const [activeLang, setActiveLang] = useState(0);
     const [activeCredit, setActiveCredit] = useState(0);
+
+    const blankdescription = [
+        { language: 'english', sentence1: 'sdasdadsadsdsads', sentence2: '', sentence3: '' },
+        { language: 'english222', sentence1: '', sentence2: '', sentence3: '' }
+    ] 
+    const [descriptionState, setdescriptionState] = useState(blankdescription);
+
+    const handleDescriptionsChange = (e) => {
+        console.log(e);
+        let index = 0;
+        if (e.target.dataset.idx.length > 0) {
+            index = e.target.dataset.idx;
+        }
+        const updatedDescriptionState = [...descriptionState];
+        updatedDescriptionState[index][e.target.dataset.classx] = e.target.value;
+        setdescriptionState(updatedDescriptionState);
+    };
 
     function handleChangeInput(e) {
         setItem({
@@ -123,30 +141,23 @@ const CreateItem = (props) => {
                                             </nav>
                                         </div>
                                         <div className="mt-4 space-y-1" role="group" aria-labelledby="teams-headline">
-                                            <div className="w-full flex items-center space-x-3 px-3">
-                                                <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-indigo-500"></div>
-                                                <div className="w-11/12 truncate hover:text-gray-600 text-xs">
-                                                    <span>12K people are at risk of dying every day from hunger linked to the virusOver 2B people lack access to safe, nutritious and sufficient food, 7M died of hunger this year World Food Programme says US$6.8B needed in six months to avert famine amid pandemic</span>
-                                                </div>
-                                                <div className="w-1/12 text-xs text-gray-600 flex space-x-2 justify-end">
-                                                    <FontAwesomeIcon className="w-5 cursor-pointer hover:text-blue-600" icon={['fas', 'edit']} />
-                                                    <FontAwesomeIcon className="w-3.5 cursor-pointer hover:text-red-800" icon={['fas', 'trash-alt']} />
-                                                </div>
-                                            </div>
-                                            <div className="w-full flex items-center space-x-3 px-3">
-                                                <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-indigo-500"></div>
-                                                <div className="w-11/12 mt-1 relative rounded-md shadow-sm">
-                                                    <input id="text" className="form-input block w-full text-xs sm:leading-3" placeholder="Enter sentence" />
-                                                </div>
-                                                <div className="w-1/12 text-xs text-gray-600 flex space-x-2 justify-end">
-                                                    <FontAwesomeIcon className="w-5 cursor-pointer hover:text-white rounded-full bg-gray-300 hover:bg-green-500 p-1" icon={['fas', 'check']} />
-                                                    <FontAwesomeIcon className="w-3.5 cursor-pointer hover:text-red-800" icon={['fas', 'trash-alt']} />
-                                                </div>
-                                            </div>
-                                            <div className="flex items-center space-x-3 px-3">
-                                                <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-indigo-500"></div>
-                                                <button className="text-white px-2 py-1 bg-indigo-600 rounded text-xs">+ Add Sentence</button>
-                                            </div>
+                                            
+                                        {!activeLang && (
+                                                <DescriptionInputs   key={`description-0`}
+                                                idx={0}
+                                                descriptionState={descriptionState}
+                                                handleDescriptionsChange={handleDescriptionsChange}
+                                                />
+                                            )}
+                                          {activeLang && (
+                                                 <DescriptionInputs   key={`description-1`}
+                                                 idx={1}
+                                                 descriptionState={descriptionState}
+                                                 handleDescriptionsChange={handleDescriptionsChange}
+                                                 />
+                                            )}
+                                           
+                                            
                                         </div>
                                     </div>
                                 </div>
