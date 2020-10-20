@@ -154,7 +154,7 @@ const Demo = () => {
         //console.log("new item: ",newItem);
         HttpCms.post("/news_items?token=abcdef", newItem)
             .then((response) => {
-                console.log("add item: ",response.data);
+                //console.log("add item: ",response.data);
                 const item = {...newsItems};
                 item.news_items.unshift(response.data.news_item);
                 setIsCreate(false);

@@ -222,7 +222,7 @@ const CreateItem = (props) => {
                 visual_credits: vc
             });
         }
-        console.log("Final Item Data: ", newItem);
+        //console.log("Final Item Data: ", newItem);
         props.create(newItem);
     }
 
@@ -238,7 +238,7 @@ const CreateItem = (props) => {
                 <div className="w-11/12 mx-auto flex-none float-left">
                     <div className="md:flex shadow-lg mx-6 md:mx-auto w-full h-2xl">
 
-                        <div className="relative w-full h-full md:w-4/5 px-4 py-2 bg-white rounded-l-lg border-l-8 border-white">
+                        <div className={`border-${ item?.category != undefined ? categories[item?.category].color : 'gray-200'} relative w-full h-full md:w-4/5 px-4 py-2 bg-white rounded-l-lg border-l-8`}>
                             <div className="py-2">
                                 <div className="w-full flex justify-end space-x-2">
                                     <button onClick={() => saveData()} className="px-2 py-1 bg-green-500 text-white rounded text-xs cursor-pointer">Save Data</button>
@@ -492,7 +492,7 @@ const CreateItem = (props) => {
                             </div>
                         </div>
 
-                        <div className="w-full md:w-1/5 relative z-10 bg-gray-100 border-l border-gray-200 p-2 rounded-lg rounded-l-none">
+                        <div className={`bg-${item?.category != undefined ? categories[item?.category].color : 'gray-200'} w-full md:w-1/5 relative z-10 rounded-lg rounded-l-none`}>
 
                         </div>
 
