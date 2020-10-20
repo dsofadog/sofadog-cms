@@ -116,7 +116,7 @@ const Demo = () => {
          if(urltag ==''){
              url = `${urlcategory}?token=abcdef&limit=${paginationData.limit}`; 
          }else{          
-            url = `${urlcategory}${urltag}?token=abcdef&limit=${paginationData.limit}`;
+            url = `${urlcategory}${urltag}token=abcdef&limit=${paginationData.limit}`;
          }
       
         if (paginationData.last_id != "") {
