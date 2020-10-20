@@ -165,17 +165,21 @@ const CreateItem = (props) => {
     }
 
     function saveData() {
-        console.log("descriptions: ",descriptions);
-        console.log("credits: ",credits);
-        console.log("Save Data: ", item);
-        
+        let newItem = {
+            title: item.title,
+            category: item.category,
+            descriptions: [],
+            news_credits: [],
+            visual_credits: [],
+            tags: selectedTag
+        }
 
-        if(descriptions){   
-            let d = [];         
-            descriptions.map(description =>{
+        if (descriptions) {
+            let d = [];
+            descriptions.map(description => {
                 let lang = description.language;
                 let sent = [];
-                description.sentences.map(sentence=>{
+                description.sentences.map(sentence => {
                     sent.push(sentence.sentence);
                 });
                 d.push({
@@ -187,10 +191,39 @@ const CreateItem = (props) => {
                 ...item,
                 descriptions: d
             });
+            newItem.descriptions = d;
         }
 
-        
-        console.log("Final Item Data: ",item);
+        if (credits) {
+            let nc = [];
+            let vc = [];
+            credits.map((credit, i) => {
+                if (i === 0) {
+                    credit.creditSentences.map(sentence => {
+                        nc.push({
+                            url: sentence.url,
+                            link_text: sentence.link_text
+                        })
+                    });
+                } else if (i === 1) {
+                    credit.creditSentences.map(sentence => {
+                        vc.push({
+                            url: sentence.url,
+                            link_text: sentence.link_text
+                        })
+                    });
+                }
+            });
+            newItem.news_credits = nc;
+            newItem.visual_credits = vc;
+            setItem({
+                ...item,
+                news_credits: nc,
+                visual_credits: vc
+            });
+        }
+        console.log("Final Item Data: ", newItem);
+        props.create(newItem);
     }
 
 

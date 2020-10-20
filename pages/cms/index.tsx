@@ -29,6 +29,7 @@ const Demo = () => {
         }
         HttpCms.get(url)
             .then(response => {
+                console.log("fetch res: ",response.data);
                 setNewsItems(response.data);
                 setPaginationData({
                     ...paginationData,
@@ -147,7 +148,22 @@ const Demo = () => {
 			.catch((e) => {
 				console.log(e);
 			});
-	}
+    }
+    
+    function createNewItem(newItem){
+        //console.log("new item: ",newItem);
+        HttpCms.post("/news_items?token=abcdef", newItem)
+            .then((response) => {
+                console.log("add item: ",response.data);
+                const item = {...newsItems};
+                item.news_items.unshift(response.data.news_item);
+                setIsCreate(false);
+                //fetchItems();
+            })
+            .catch((e) => {
+                console.log(e);
+            });
+    }
 
     return (
         <div className="w-full h-full bg-gray-500">
@@ -229,7 +245,7 @@ const Demo = () => {
                 </div>
                 <>
                     {isCreate && (
-                        <CreateItem close={openCreateBox} />
+                        <CreateItem close={openCreateBox} create={createNewItem}/>
                     )}
                 </>
 

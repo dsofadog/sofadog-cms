@@ -228,7 +228,7 @@ const PreviewItem = (props) => {
             case "pushed_to_feed": {
                 return (
                     <span onClick={(e) => actionPerformed(item, "remove_from_feed", e)} className="px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-red-800 bg-red-100 hover:bg-red-200 text-red-800 cursor-pointer">
-                        Remove Feed
+                        Remove From Feed
                     </span>
                 );
             }
