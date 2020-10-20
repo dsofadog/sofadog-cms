@@ -15,8 +15,8 @@ const Demo = () => {
     );
 
     const [isCreate, setIsCreate] = useState(false);
-
     const [newsItems, setNewsItems] = useState(null);
+    const [search,setSearch] = useState(null);
 
     useEffect(() => {
         fetchItems();
@@ -176,6 +176,14 @@ const Demo = () => {
             });
     }
 
+    function handleChangeSearch(e){
+        setSearch(e.target.value);
+    }
+
+    useEffect(()=>{
+        console.log(search);
+    },[search])
+
     return (
         <div className="w-full h-full bg-gray-500">
             <nav className="bg-gray-800 sticky top-0 z-30">
@@ -241,7 +249,7 @@ const Demo = () => {
                                 <div className="w-full flex items-center px-4 bg-white rounded-lg">
                                     <div className="flex items-center w-full">
                                         <form className="sm:flex w-full" aria-labelledby="newsletter-headline">
-                                            <input aria-label="search box" type="text" required className="appearance-none w-full px-3 py-3 border border-gray-300 text-base leading-6 rounded-md text-gray-900 bg-gray-100 placeholder-gray-500 focus:outline-none focus:shadow-outline focus:border-blue-300 transition duration-150 ease-in-out sm:max-w-xs" placeholder="Search by title" />
+                                            <input value={search} onChange={(e)=> handleChangeSearch(e)} aria-label="search box" type="text" required className="appearance-none w-full px-3 py-3 border border-gray-300 text-base leading-6 rounded-md text-gray-900 bg-gray-100 placeholder-gray-500 focus:outline-none focus:shadow-outline focus:border-blue-300 transition duration-150 ease-in-out sm:max-w-xs" placeholder="Search by title" />
                                             <div className="mt-3 rounded-md shadow sm:mt-0 sm:ml-3 sm:flex-shrink-0">
                                                 <button className="w-full flex items-center justify-center px-12 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:shadow-outline transition duration-150 ease-in-out">
                                                     Search
