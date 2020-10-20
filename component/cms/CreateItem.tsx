@@ -216,7 +216,7 @@ const CreateItem = (props) => {
                 tags: selectedTag
             });
         }
-        //toggleTagDropdown();
+        toggleTagDropdown();
     }
 
     function clearTag(tag) {
@@ -237,7 +237,6 @@ const CreateItem = (props) => {
 
     function saveData() {
         let newItem = {
-            id: '',
             title: item.title,
             category: item.category,
             descriptions: [],
@@ -245,8 +244,6 @@ const CreateItem = (props) => {
             visual_credits: [],
             tags: selectedTag
         }
-
-        
 
         if (descriptions) {
             let d = [];
@@ -300,14 +297,12 @@ const CreateItem = (props) => {
         }
         //console.log("Final Item Data: ", newItem);
         if(props.state === 'edit'){
-            newItem.id = props.data.id;
+            //newItem.id = props.data.id;
             props.update(newItem);
         }else{
             props.create(newItem);
-        }
-        
+        }        
     }
-
 
     return (
         <div className="w-full mx-auto">
@@ -353,26 +348,6 @@ const CreateItem = (props) => {
                                             </nav>
                                         </div>
                                         <div className="mt-4 space-y-1" role="group" aria-labelledby="teams-headline">
-                                            {/* <div className="w-full flex items-center space-x-3 px-3">
-                                                <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-indigo-500"></div>
-                                                <div className="w-11/12 truncate hover:text-gray-600 text-xs">
-                                                    <span>12K people are at risk of dying every day from hunger linked to the virusOver 2B people lack access to safe, nutritious and sufficient food, 7M died of hunger this year World Food Programme says US$6.8B needed in six months to avert famine amid pandemic</span>
-                                                </div>
-                                                <div className="w-1/12 text-xs text-gray-600 flex space-x-2 justify-end">
-                                                    <FontAwesomeIcon className="w-5 cursor-pointer hover:text-blue-600" icon={['fas', 'edit']} />
-                                                    <FontAwesomeIcon className="w-3.5 cursor-pointer hover:text-red-800" icon={['fas', 'trash-alt']} />
-                                                </div>
-                                            </div>
-                                            <div className="w-full flex items-center space-x-3 px-3">
-                                                <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-indigo-500"></div>
-                                                <div className="w-11/12 mt-1 relative rounded-md shadow-sm">
-                                                    <input id="text" className="form-input block w-full text-xs sm:leading-3" placeholder="Enter sentence" />
-                                                </div>
-                                                <div className="w-1/12 text-xs text-gray-600 flex space-x-2 justify-end">
-                                                    <FontAwesomeIcon className="w-5 cursor-pointer hover:text-white rounded-full bg-gray-300 hover:bg-green-500 p-1" icon={['fas', 'check']} />
-                                                    <FontAwesomeIcon className="w-3.5 cursor-pointer hover:text-red-800" icon={['fas', 'trash-alt']} />
-                                                </div>
-                                            </div> */}
                                             {descriptions[activeLang].sentences.map((sentence, i) => (
                                                 <>
                                                     {sentence.editable ?
@@ -425,28 +400,7 @@ const CreateItem = (props) => {
                                                 </a>
                                             </nav>
                                         </div>
-                                        <div className="mt-4 space-y-1 max-h-24 overflow-y-scroll" role="group" aria-labelledby="teams-headline">
-                                            {/* <div className="w-full flex items-center space-x-3 px-3">
-                                                <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-indigo-500"></div>
-                                                <div className="w-11/12 truncate hover:text-gray-600 text-xs">
-                                                    <a href="#" target="_blank">YT: BFI</a>
-                                                </div>
-                                                <div className="w-1/12 text-xs text-gray-600 flex space-x-2 justify-end">
-                                                    <FontAwesomeIcon className="w-5 cursor-pointer hover:text-blue-600" icon={['fas', 'edit']} />
-                                                    <FontAwesomeIcon className="w-3.5 cursor-pointer hover:text-red-800" icon={['fas', 'trash-alt']} />
-                                                </div>
-                                            </div>
-                                            <div className="w-full flex items-center space-x-3 px-3">
-                                                <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-indigo-500"></div>
-                                                <div className="w-11/12 mt-1 relative rounded-md shadow-sm flex space-x-4">
-                                                    <input id="text" className="form-input block w-full text-xs sm:leading-3" placeholder="Enter Title" />
-                                                    <input id="text" className="form-input block w-full text-xs sm:leading-3" placeholder="Enter URL" />
-                                                </div>
-                                                <div className="w-1/12 text-xs text-gray-600 flex space-x-2 justify-end">
-                                                    <FontAwesomeIcon className="w-5 cursor-pointer hover:text-white rounded-full bg-gray-300 hover:bg-green-500 p-1" icon={['fas', 'check']} />
-                                                    <FontAwesomeIcon className="w-3.5 cursor-pointer hover:text-red-800" icon={['fas', 'trash-alt']} />
-                                                </div>
-                                            </div> */}
+                                        <div className="mt-4 space-y-1 max-h-24 overflow-y-scroll" role="group" aria-labelledby="teams-headline">                                            
                                             {credits[activeCredit].creditSentences.map((sentence, i) => (
                                                 <>
                                                     {sentence.editable ?
