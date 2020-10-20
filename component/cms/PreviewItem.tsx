@@ -261,6 +261,8 @@ const PreviewItem = (props) => {
 
     function updateNewsItem(item) {
         console.log("Update Item: ", item)
+        props.updateItem(item);
+        setIsEdit(false);
     }
 
     return (
@@ -334,7 +336,7 @@ const PreviewItem = (props) => {
                                                 </div>
                                             )}
 
-                                            <div className="w-full">
+                                            <div className="w-full mb-16">
                                                 <div className="p-4 shadow rounded border border-gray-300">
                                                     <div className="block">
                                                         <div className="border-b border-gray-200">

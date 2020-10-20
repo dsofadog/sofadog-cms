@@ -165,6 +165,17 @@ const Demo = () => {
             });
     }
 
+    function updateItem(item){
+        HttpCms.patch("/news_items/"+item.id+"?token=abcdef", item)
+            .then((response) => {
+                //console.log("add item: ",response.data);
+                fetchItems();
+            })
+            .catch((e) => {
+                console.log(e);
+            });
+    }
+
     return (
         <div className="w-full h-full bg-gray-500">
             <nav className="bg-gray-800 sticky top-0 z-30">
@@ -259,6 +270,7 @@ const Demo = () => {
                             uplaodVideo={uplaodVideo} 
                             deleteItem={deleteItem} 
                             move={decrement_increment_ordinal}
+                            updateItem={updateItem}
                         />
                     ))}
                 </>

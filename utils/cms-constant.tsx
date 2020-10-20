@@ -3,49 +3,49 @@ export default class CmsConstant {
         {
             id: 1,
             name: "LIFE & POLITICS",
-            value: 0,
+            value: '0',
             color: "purple-700"
         },
         {
             id: 2,
             name: "FASHION & ART",
-            value: 1,
+            value: '1',
             color: "orange-300"
         },
         {
             id: 3,
             name: "CELEBRITIES",
-            value: 2,
+            value: '2',
             color: "sfd-pink"
         },
         {
             id: 4,
             name: "ENTERTAINMENT",
-            value: 3,
+            value: '3',
             color: "red-600"
         },
         {
             id: 5,
             name: "NATURE",
-            value: 4,
+            value: '4',
             color: "sfd-green"
         },
         {
             id: 6,
             name: "SCIENCE",
-            value: 5,
+            value: '5',
             color: "gray-900"
         },
         {
             id: 7,
             name: "BUSINESS & TECH",
-            value: 6,
+            value: '6',
             color: "blue-600"
         },
         {
             id: 8,
             name: "SELF-IMPROVEMENT",
-            value: 7,
+            value: '7',
             color: "yellow-300"
         }
     ]

@@ -57,36 +57,74 @@ const CreateItem = (props) => {
 
     useEffect(() => {
         if (props.state === 'edit') {
+            clearData();
             console.log("In update item: ", props.data);
+            console.log("categories: ", categories);
             let data = props.data;
             setItem({
-                ...item,
                 title: data.title,
                 category: data.category
             });
             setSelectedCategory(data.category);
-            if(data.tags.length > 0){
+            if (data.tags.length > 0) {
                 setSelectedTag(data.tags);
             }
-            if(data.news_credits.length > 0){
-                const c = [...credits];
-                data.news_credits.map((news,i)=>{
-                    console.log("news: ",news);
-                    c[0].creditSentences.push({link_text: news.link_text, url: news.url, editable: false});
+            if (data.news_credits.length > 0) {
+                const c = credits;
+                data.news_credits.map((news, i) => {
+                    //console.log("news: ",news);
+                    c[0].creditSentences.push({ link_text: news.link_text, url: news.url, editable: false });
                     setCredits(c);
                 });
             }
-            if(data.visual_credits.length > 0){
-                const c = [...credits];
-                data.visual_credits.map((visual,i)=>{
-                    console.log("visual: ",visual);
-                    c[1].creditSentences.push({link_text: visual.link_text, url: visual.url, editable: false});
+            if (data.visual_credits.length > 0) {
+                const c = credits;
+                data.visual_credits.map((visual, i) => {
+                    //console.log("visual: ",visual);
+                    c[1].creditSentences.push({ link_text: visual.link_text, url: visual.url, editable: false });
                     setCredits(c);
                 });
             }
-            
+            if (data.descriptions.length > 0) {
+                data.descriptions.map((description, i) => {
+                    //console.log("description: ", description);
+                    if (description.language === 'english') {
+                        const d = descriptions;
+                        if (description.sentences.length > 0) {
+                            description.sentences.map(sentence => {
+                                d[0].sentences.push({
+                                    sentence: sentence,
+                                    editable: false
+                                })
+                            });
+                        }
+                        setDescriptions(d);
+                    }
+                    if (description.language === 'estonian') {
+                        const d = descriptions;
+                        if (description.sentences.length > 0) {
+                            description.sentences.map(sentence => {
+                                d[1].sentences.push({
+                                    sentence: sentence,
+                                    editable: false
+                                })
+                            });
+                        }
+                        setDescriptions(d);
+                    }
+                });
+            }
+
         }
-    }, [props]);
+    }, [props.state]);
+
+    function clearData() {
+        setItem(null);
+        setSelectedTag([]);
+        setSelectedCategory(null);
+        setDescriptions([{ language: "english", sentences: [] }, { language: "estonian", sentences: [] }]);
+        setCredits([{ credit: "News Credits", creditSentences: [] }, { credit: "Visual Credits", creditSentences: [] }]);
+    }
 
     function addBlankSentence(e) {
         e.preventDefault();
@@ -154,11 +192,11 @@ const CreateItem = (props) => {
     }
 
     function handleClickSingleDropdown(cat) {
-        // setItem({
-        //     ...item,
-        //     category: `${cat.value}`
-        // });
-        setSelectedCategory(cat);
+        setItem({
+            ...item,
+            category: `${cat.value}`
+        });
+        setSelectedCategory(cat.value);
         toggleCateDropdown();
     }
 
@@ -198,6 +236,7 @@ const CreateItem = (props) => {
 
     function saveData() {
         let newItem = {
+            id: '',
             title: item.title,
             category: item.category,
             descriptions: [],
@@ -206,18 +245,22 @@ const CreateItem = (props) => {
             tags: selectedTag
         }
 
+        
+
         if (descriptions) {
             let d = [];
             descriptions.map(description => {
-                let lang = description.language;
-                let sent = [];
-                description.sentences.map(sentence => {
-                    sent.push(sentence.sentence);
-                });
-                d.push({
-                    language: lang,
-                    sentences: sent
-                })
+                if (description.sentences.length > 0) {
+                    let lang = description.language;
+                    let sent = [];
+                    description.sentences.map(sentence => {
+                        sent.push(sentence.sentence);
+                    });
+                    d.push({
+                        language: lang,
+                        sentences: sent
+                    })
+                }
             })
             setItem({
                 ...item,
@@ -255,7 +298,13 @@ const CreateItem = (props) => {
             });
         }
         //console.log("Final Item Data: ", newItem);
-        props.create(newItem);
+        if(props.state === 'edit'){
+            newItem.id = props.data.id;
+            props.update(newItem);
+        }else{
+            props.create(newItem);
+        }
+        
     }
 
 
@@ -273,7 +322,7 @@ const CreateItem = (props) => {
                         <div className={`border-${item?.category != undefined ? categories[item?.category].color : 'gray-200'} relative w-full h-full md:w-4/5 px-4 py-2 bg-white rounded-l-lg border-l-8`}>
                             <div className="py-2">
                                 <div className="w-full flex justify-end space-x-2">
-                                    <button onClick={() => saveData()} className="px-2 py-1 bg-green-500 text-white rounded text-xs cursor-pointer">Save Data</button>
+                                    <button onClick={() => saveData()} className="px-2 py-1 bg-green-500 text-white rounded text-xs cursor-pointer">{props.state === 'edit' ? 'Update ' : 'Save '} Data</button>
                                     <button onClick={() => props.close(false)} className="px-2 py-1 bg-blue-500 text-white rounded text-xs cursor-pointer">Cancel</button>
                                 </div>
                             </div>
@@ -462,15 +511,20 @@ const CreateItem = (props) => {
                                             </div>
                                         )}
                                     </div>
-                                    {selectedCategory && (
-                                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium leading-4 bg-blue-100 text-blue-800">
-                                            {categories[selectedCategory].name}
-                                            <button onClick={() => clearCategory()} type="button" className="flex-shrink-0 ml-1.5 inline-flex text-indigo-500 focus:outline-none focus:text-indigo-700" aria-label="Remove small badge">
-                                                <svg className="h-2 w-2" stroke="currentColor" fill="none" viewBox="0 0 8 8">
-                                                    <path strokeLinecap="round" strokeWidth="1.5" d="M1 1l6 6m0-6L1 7" />
-                                                </svg>
-                                            </button>
-                                        </span>
+                                    {categories && (
+                                        <>
+                                            {item?.category && (
+                                                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium leading-4 bg-blue-100 text-blue-800">
+                                                    {categories[item?.category].name}
+                                                    <button onClick={() => clearCategory()} type="button" className="flex-shrink-0 ml-1.5 inline-flex text-indigo-500 focus:outline-none focus:text-indigo-700" aria-label="Remove small badge">
+                                                        <svg className="h-2 w-2" stroke="currentColor" fill="none" viewBox="0 0 8 8">
+                                                            <path strokeLinecap="round" strokeWidth="1.5" d="M1 1l6 6m0-6L1 7" />
+                                                        </svg>
+                                                    </button>
+                                                </span>
+                                            )}
+                                        </>
+
                                     )}
                                 </div>
                                 <div className="w-full space-x-2 flex justify-end">
