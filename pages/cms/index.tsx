@@ -10,6 +10,7 @@ import { config as f_config, library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons';
+import { scroller } from "react-scroll";
 
 f_config.autoAddCss = false;
 library.add(fas, fab);
@@ -47,18 +48,18 @@ const Demo = () => {
     useOutsideAlerter(tagWrapperRef);
 
     useEffect(() => {
-        //fetchItems();
+        fetchItems();
     }, []);
 
     function useOutsideAlerter(ref) {
         useEffect(() => {
             function handleClickOutside(event) {
-                
+
                 if (ref.current && !ref.current.contains(event.target)) {
-                    if(ref.current.dataset.id === "tag"){
+                    if (ref.current.dataset.id === "tag") {
                         setOpenTagDropdown(false);
                     }
-                    if(ref.current.dataset.id === "category"){
+                    if (ref.current.dataset.id === "category") {
                         setOpenCategoryDropdown(false);
                     }
                 }
@@ -198,8 +199,6 @@ const Demo = () => {
             });
 
     }
-
-
 
     function transformNewItems(itemValue, actionType) {
         let arr = { "news_items": [] };
@@ -370,16 +369,24 @@ const Demo = () => {
         return false;
     }
 
-    function handleScroll(e) {
-        const target = e.target;
-        if (target.scrollHeight - target.scrollTop === target.clientHeight) {
-            alert('at bottom!');
-        }
-    }
+    // function handleScroll(e) {
+    //     const target = e.target;
+    //     if (target.scrollHeight - target.scrollTop === target.clientHeight) {
+    //         alert('at bottom!');
+    //     }
+    // }
+
+    const scrollToSection = () => {
+        scroller.scrollTo("sfd-top", {
+            duration: 800,
+            delay: 0,
+            smooth: "easeInOutQuart",
+        });
+    };
 
     return (
-        <div onScroll={handleScroll} className="w-full h-screen overflow-y-scroll bg-gray-500">
-            <nav className="bg-gray-800 sticky top-0 z-30">
+        <div className="w-full h-full min-h-screen bg-gray-500">
+            <nav className="sfd-nav bg-gray-800 sticky top-0 z-30">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-16">
                         <div className="flex">
@@ -501,7 +508,7 @@ const Demo = () => {
 
                             <div className="flex-shrink-0">
                                 <span className="rounded-md shadow-sm">
-                                    <button onClick={() => openCreateBox(true)} type="button" className="relative inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-400 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-600 active:bg-indigo-600 transition duration-150 ease-in-out">
+                                    <button onClick={() => { openCreateBox(true); scrollToSection(); }} type="button" className="relative inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-400 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-600 active:bg-indigo-600 transition duration-150 ease-in-out">
                                         <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                             <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
                                         </svg>
@@ -514,6 +521,9 @@ const Demo = () => {
                 </div>
             </nav>
             <div className="max-w-7xl mx-auto">
+                <>
+                    <div className="sfd-top invisible"></div>
+                </>
                 <>
                     {isCreate && (
                         <CreateItem state="new" close={openCreateBox} create={createNewItem} />
@@ -534,6 +544,9 @@ const Demo = () => {
                         />
                     ))}
                 </>
+            </div>
+            <div className="fixed bottom-0 right-0 mb-4 mr-4 z-50 cursor-pointer">
+                <FontAwesomeIcon onClick={(e) => scrollToSection()} className="w-12 h-12 p-2 rounded-full cursor-pointer text-white bg-blue-500 hover:bg-blue-600" icon={['fas', 'arrow-up']} />
             </div>
         </div>
     )
