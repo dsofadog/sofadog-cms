@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState,useContext } from "react";
 import CmsConstant from '../../utils/cms-constant';
 
 import { config as f_config, library } from '@fortawesome/fontawesome-svg-core';
@@ -7,11 +7,13 @@ import { fas } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import { far } from '@fortawesome/free-regular-svg-icons';
 import DescriptionInputs from './DescriptionInputs';
+import { LayoutContext } from '../../contexts';
 
 f_config.autoAddCss = false;
 library.add(fas, fab, far);
 
 const CreateItem = (props) => {
+    const { setLoading } = useContext(LayoutContext);
 
     const categories = CmsConstant.Category;
     const tags = CmsConstant.Tags;
@@ -466,9 +468,12 @@ const CreateItem = (props) => {
                                             </div>
                                         )}
                                     </div>
+
+                                  
+                                   
                                     {categories && (
                                         <>
-                                            {item?.category && (
+                                            {item?.category != null && (
                                                 <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium leading-4 bg-blue-100 text-blue-800">
                                                     {categories[item?.category].name}
                                                     <button onClick={() => clearCategory()} type="button" className="flex-shrink-0 ml-1.5 inline-flex text-indigo-500 focus:outline-none focus:text-indigo-700" aria-label="Remove small badge">
