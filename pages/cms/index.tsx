@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useContext } from 'react';
 import Link from "next/link";
 import HttpCms from '../../utils/http-cms';
 import CreateItem from '../../component/cms/CreateItem';
 import PreviewItem from '../../component/cms/PreviewItem';
 import CmsConstant from '../../utils/cms-constant';
+import { LayoutContext } from '../../contexts/';
 
 const Demo = () => {
     const categories = CmsConstant.Category;
@@ -13,6 +14,7 @@ const Demo = () => {
     const [selectedCategory, setSelectedCategory] = useState(null);
     const tags = CmsConstant.Tags;
     const [selectedTag, setSelectedTag] = useState([]);
+    const { setLoading } = useContext(LayoutContext);
 
     const [openTagDropdown, setOpenTagDropdown] = useState(false);
     const toggleTagDropdown = () => { setOpenTagDropdown(!openTagDropdown) };
@@ -34,6 +36,7 @@ const Demo = () => {
     }, []);
 
     const fetchItems = () => {
+        setLoading(true);
         let url = `news_items?token=abcdef&limit=${paginationData.limit}`;
         if (paginationData.last_id != "") {
             url += `&last_id=${paginationData.last_id}`;
@@ -46,10 +49,12 @@ const Demo = () => {
                     ...paginationData,
                     total_data: response.data.total_items
                 });
+                setLoading(false);
                 //console.log(response.data, "response.data.data");
             })
             .catch(e => {
                 console.log(e);
+                setLoading(false);
             });
     }
 

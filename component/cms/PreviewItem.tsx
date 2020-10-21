@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState ,useContext} from "react";
 import { useDropzone } from 'react-dropzone';
 import CmsConstant from '../../utils/cms-constant';
 import HttpCms from '../../utils/http-cms';
@@ -9,11 +9,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import CreateItem from "./CreateItem";
+import { LayoutContext } from '../../contexts';
+
 
 f_config.autoAddCss = false;
 library.add(fas, fab);
 
 const PreviewItem = (props) => {
+    const { setLoading } = useContext(LayoutContext);
 
     const [item, setItem] = useState(null);
     const categories = CmsConstant.Category;
@@ -49,13 +52,16 @@ const PreviewItem = (props) => {
 
     function refreshData(e) {
         e.preventDefault();
+        setLoading(true);
         HttpCms.get(`https://cms-int.so.fa.dog/news_items/${item.id}?token=abcdef`)
             .then(response => {
                 setItem(response.data.news_items[0]);
                 console.log(response.data.news_items[0], "response.data.data");
+                setLoading(false);
             })
             .catch(e => {
                 console.log(e);
+                setLoading(false);
             });
     }
 

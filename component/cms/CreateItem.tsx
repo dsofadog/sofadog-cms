@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState,useContext } from "react";
 import CmsConstant from '../../utils/cms-constant';
 
 import { config as f_config, library } from '@fortawesome/fontawesome-svg-core';
@@ -7,11 +7,13 @@ import { fas } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import { far } from '@fortawesome/free-regular-svg-icons';
 import DescriptionInputs from './DescriptionInputs';
+import { LayoutContext } from '../../contexts';
 
 f_config.autoAddCss = false;
 library.add(fas, fab, far);
 
 const CreateItem = (props) => {
+    const { setLoading } = useContext(LayoutContext);
 
     const categories = CmsConstant.Category;
     const tags = CmsConstant.Tags;
