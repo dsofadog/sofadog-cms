@@ -28,7 +28,7 @@ const Demo = () => {
 
     const [paginationData, setPaginationData] = useState(
         {
-            limit: 50,
+            limit: 200,
             last_id: "",
             total_data: 0
         }
@@ -43,9 +43,19 @@ const Demo = () => {
         fetchItems();
     }, []);
 
+    function getCurrentDate(separator = ''){
+        let newDate = new Date()
+        let date = newDate.getDate();
+        let month = newDate.getMonth() + 1;
+        let year = newDate.getFullYear();
+
+        return `${year}${separator}${month < 10 ? `0${month}` : `${month}`}${separator}${date}`
+    }
+
     const fetchItems = () => {
+        console.log("getCurrentDate: ", getCurrentDate("-"));
         setLoading(true);
-        let url = `news_items?token=abcdef&limit=${paginationData.limit}`;
+        let url = `news_items?token=abcdef&limit=${paginationData.limit}&date=${getCurrentDate("-")}`;
         if (paginationData.last_id != "") {
             url += `&last_id=${paginationData.last_id}`;
         }
@@ -330,8 +340,15 @@ const Demo = () => {
         return false;
     }
 
+    function handleScroll(e) {
+        const target = e.target;
+        if (target.scrollHeight - target.scrollTop === target.clientHeight) {
+            alert('at bottom!');
+        }
+    }
+
     return (
-        <div className="w-full h-full bg-gray-500">
+        <div onScroll={handleScroll} className="w-full h-screen overflow-y-scroll bg-gray-500">
             <nav className="bg-gray-800 sticky top-0 z-30">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-16">
@@ -446,16 +463,16 @@ const Demo = () => {
                         </div>
                         <div className="flex items-center space-x-2">
                             <div className="">
-                                <button onClick={() => refreshData()} className="relative inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-400 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-600 active:bg-indigo-600 transition duration-150 ease-in-out">
-                                    Refresh
+                                <button onClick={() => refreshData()} className="relative inline-flex items-center space-x-2 px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-400 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-600 active:bg-indigo-600 transition duration-150 ease-in-out">
+                                    <FontAwesomeIcon className="w-3" icon={['fas', 'sync-alt']} />
+                                    <span>Refresh</span>
                                 </button>
                             </div>
 
                             <div className="flex-shrink-0">
                                 <span className="rounded-md shadow-sm">
                                     <button onClick={() => openCreateBox(true)} type="button" className="relative inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-400 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-600 active:bg-indigo-600 transition duration-150 ease-in-out">
-
-                                        <svg className="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                        <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                             <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
                                         </svg>
                                         <span>New Item</span>
