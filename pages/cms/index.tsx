@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import Link from "next/link";
 import HttpCms from '../../utils/http-cms';
 import CreateItem from '../../component/cms/CreateItem';
@@ -13,6 +13,8 @@ import { fab } from '@fortawesome/free-brands-svg-icons';
 
 f_config.autoAddCss = false;
 library.add(fas, fab);
+
+
 
 const Demo = () => {
     const categories = CmsConstant.Category;
@@ -39,11 +41,39 @@ const Demo = () => {
     const [newsItemsCached, setNewsItemsCached] = useState(null);
     const [search, setSearch] = useState("");
 
+    const catWrapperRef = useRef(null);
+    const tagWrapperRef = useRef(null);
+    useOutsideAlerter(catWrapperRef);
+    useOutsideAlerter(tagWrapperRef);
+
     useEffect(() => {
-        fetchItems();
+        //fetchItems();
     }, []);
 
-    function getCurrentDate(separator = ''){
+    function useOutsideAlerter(ref) {
+        useEffect(() => {
+            function handleClickOutside(event) {
+                
+                if (ref.current && !ref.current.contains(event.target)) {
+                    if(ref.current.dataset.id === "tag"){
+                        setOpenTagDropdown(false);
+                    }
+                    if(ref.current.dataset.id === "category"){
+                        setOpenCategoryDropdown(false);
+                    }
+                }
+            }
+
+            // Bind the event listener
+            document.addEventListener("mousedown", handleClickOutside);
+            return () => {
+                // Unbind the event listener on clean up
+                document.removeEventListener("mousedown", handleClickOutside);
+            };
+        }, [ref]);
+    }
+
+    function getCurrentDate(separator = '') {
         let newDate = new Date()
         let date = newDate.getDate();
         let month = newDate.getMonth() + 1;
@@ -386,7 +416,7 @@ const Demo = () => {
                             </div>
                             <div className="flex">
                                 <div className="w-full ml-4 space-x-2 flex ">
-                                    <div className="relative inline-block text-left">
+                                    <div ref={catWrapperRef} data-id="category" className="relative inline-block text-left">
                                         <div>
                                             {categories && (
                                                 <span onClick={toggleCateDropdown} className="rounded-md shadow-sm">
@@ -418,7 +448,7 @@ const Demo = () => {
                                         )}
                                     </div>
                                     <div className="space-x-2 flex ">
-                                        <div className="relative inline-block text-left">
+                                        <div ref={tagWrapperRef} data-id="tag" className="relative inline-block text-left">
                                             <div>
                                                 <span onClick={toggleTagDropdown} className="rounded-md shadow-sm">
                                                     <button type="button" className="w-32 inline-flex justify-center rounded-md border border-gray-300 px-2 py-2 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150" id="options-menu" aria-haspopup="true" aria-expanded="true">

@@ -1,4 +1,4 @@
-import { useEffect, useState,useContext } from "react";
+import { useEffect, useState,useContext, useRef } from "react";
 import CmsConstant from '../../utils/cms-constant';
 
 import { config as f_config, library } from '@fortawesome/fontawesome-svg-core';
@@ -57,6 +57,11 @@ const CreateItem = (props) => {
             }
         ]
     );
+
+    const catWrapperRef = useRef(null);
+    const tagWrapperRef = useRef(null);
+    useOutsideAlerter(catWrapperRef);
+    useOutsideAlerter(tagWrapperRef);
 
     useEffect(() => {
         if (props.state === 'edit') {
@@ -120,6 +125,29 @@ const CreateItem = (props) => {
 
         }
     }, [props.state]);
+
+    function useOutsideAlerter(ref) {
+        useEffect(() => {
+            function handleClickOutside(event) {
+                
+                if (ref.current && !ref.current.contains(event.target)) {
+                    if(ref.current.dataset.id === "tag"){
+                        setOpenTagDropdown(false);
+                    }
+                    if(ref.current.dataset.id === "category"){
+                        setOpenCategoryDropdown(false);
+                    }
+                }
+            }
+
+            // Bind the event listener
+            document.addEventListener("mousedown", handleClickOutside);
+            return () => {
+                // Unbind the event listener on clean up
+                document.removeEventListener("mousedown", handleClickOutside);
+            };
+        }, [ref]);
+    }
 
     function clearData() {
         setItem(null);
@@ -204,6 +232,10 @@ const CreateItem = (props) => {
     }
 
     function clearCategory() {
+        setItem({
+            ...item,
+            category: null
+        });
         setSelectedCategory(null);
     }
 
@@ -441,7 +473,7 @@ const CreateItem = (props) => {
                             </div>
                             <div className="absolute mb-4 mr-4 bottom-0 inset-x-0 flex">
                                 <div className="w-full ml-4 space-x-2 flex justify-start">
-                                    <div className="relative inline-block text-left">
+                                    <div ref={catWrapperRef} data-id="category" className="relative inline-block text-left">
                                         <div>
                                             {categories && (
                                                 <span onClick={toggleCateDropdown} className="rounded-md shadow-sm">
@@ -488,7 +520,7 @@ const CreateItem = (props) => {
                                     )}
                                 </div>
                                 <div className="w-full space-x-2 flex justify-end">
-                                    <div className="relative inline-block text-left">
+                                    <div ref={tagWrapperRef} data-id="tag" className="relative inline-block text-left">
                                         <div>
                                             <span onClick={toggleTagDropdown} className="rounded-md shadow-sm">
                                                 <button type="button" className="inline-flex justify-center w-full rounded-md border border-gray-300 px-2 py-0.5 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150" id="options-menu" aria-haspopup="true" aria-expanded="true">
