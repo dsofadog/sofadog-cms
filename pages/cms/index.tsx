@@ -16,7 +16,8 @@ const Demo = () => {
 
     const [isCreate, setIsCreate] = useState(false);
     const [newsItems, setNewsItems] = useState(null);
-    const [search,setSearch] = useState(null);
+    const [newsItemsCached, setNewsItemsCached] = useState(null);
+    const [search, setSearch] = useState(null);
 
     useEffect(() => {
         fetchItems();
@@ -29,8 +30,9 @@ const Demo = () => {
         }
         HttpCms.get(url)
             .then(response => {
-                console.log("fetch res: ",response.data);
+                console.log("fetch res: ", response.data);
                 setNewsItems(response.data);
+                setNewsItemsCached(response.data);
                 setPaginationData({
                     ...paginationData,
                     total_data: response.data.total_items
@@ -136,26 +138,26 @@ const Demo = () => {
             });
     }
 
-    function decrement_increment_ordinal(item, apiEndPoint){
-		HttpCms.post("/news_items/" + item.id + "/" + apiEndPoint + "?token=abcdef", {})
-			.then((response:any) => {
-				console.log(response);
-				if(response.data.success==true){
-					console.log(response,"onssdsdas");
-					transformNewItems(item,apiEndPoint);
-				}
-			})
-			.catch((e) => {
-				console.log(e);
-			});
+    function decrement_increment_ordinal(item, apiEndPoint) {
+        HttpCms.post("/news_items/" + item.id + "/" + apiEndPoint + "?token=abcdef", {})
+            .then((response: any) => {
+                console.log(response);
+                if (response.data.success == true) {
+                    console.log(response, "onssdsdas");
+                    transformNewItems(item, apiEndPoint);
+                }
+            })
+            .catch((e) => {
+                console.log(e);
+            });
     }
-    
-    function createNewItem(newItem){
+
+    function createNewItem(newItem) {
         //console.log("new item: ",newItem);
         HttpCms.post("/news_items?token=abcdef", newItem)
             .then((response) => {
                 //console.log("add item: ",response.data);
-                const item = {...newsItems};
+                const item = { ...newsItems };
                 item.news_items.unshift(response.data.news_item);
                 setIsCreate(false);
                 //fetchItems();
@@ -165,8 +167,8 @@ const Demo = () => {
             });
     }
 
-    function updateItem(item){
-        HttpCms.patch("/news_items/"+item.id+"?token=abcdef", item)
+    function updateItem(item) {
+        HttpCms.patch("/news_items/" + item.id + "?token=abcdef", item)
             .then((response) => {
                 //console.log("add item: ",response.data);
                 fetchItems();
@@ -176,13 +178,32 @@ const Demo = () => {
             });
     }
 
-    function handleChangeSearch(e){
+    function handleChangeSearch(e) {
         setSearch(e.target.value);
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         console.log(search);
-    },[search])
+        if (search) {
+            if (search.length <= 0) {
+                setNewsItems(newsItemsCached);
+            } else {
+                let itemsToDisplay = [];
+                itemsToDisplay = newsItemsCached.news_items.filter(
+                    item =>
+                        item.title
+                            .toLowerCase()
+                            .includes(search.toLowerCase())
+                )
+                console.log("itemsToDisplay: ", itemsToDisplay);
+                setNewsItems({
+                    news_items: itemsToDisplay,
+                    total_items: itemsToDisplay.length
+                })
+            }
+        }
+
+    }, [search])
 
     return (
         <div className="w-full h-full bg-gray-500">
@@ -213,6 +234,9 @@ const Demo = () => {
                             </div>
                         </div>
                         <div className="flex items-center space-x-2">
+                            <div>
+                                <input value={search} onChange={(e) => handleChangeSearch(e)} aria-label="search box" type="text" required className="appearance-none w-64 px-3 py-1.5 border border-gray-300 text-sm leading-6 rounded-md text-gray-900 bg-gray-100 placeholder-gray-500 focus:outline-none focus:shadow-outline focus:border-blue-300 transition duration-150 ease-in-out sm:max-w-xs capitalize" placeholder="Search by title" />
+                            </div>
                             <div className="">
                                 <button onClick={() => fetchItems()} className="relative inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-400 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-600 active:bg-indigo-600 transition duration-150 ease-in-out">
                                     Refresh
@@ -237,7 +261,7 @@ const Demo = () => {
                 </div>
             </nav>
             <div className="max-w-7xl mx-auto">
-                <div className="w-full mx-auto">
+                {/* <div className="w-full mx-auto">
                     <div className="flex flex-no-wrap justify-center">
                         <div className="w-1/12 mx-auto flex-none float-left">
                             <div className="bg-purple-700 p-1 h-16 w-1 mx-auto"></div>
@@ -249,7 +273,7 @@ const Demo = () => {
                                 <div className="w-full flex items-center px-4 bg-white rounded-lg">
                                     <div className="flex items-center w-full">
                                         <form className="sm:flex w-full" aria-labelledby="newsletter-headline">
-                                            <input value={search} onChange={(e)=> handleChangeSearch(e)} aria-label="search box" type="text" required className="appearance-none w-full px-3 py-3 border border-gray-300 text-base leading-6 rounded-md text-gray-900 bg-gray-100 placeholder-gray-500 focus:outline-none focus:shadow-outline focus:border-blue-300 transition duration-150 ease-in-out sm:max-w-xs" placeholder="Search by title" />
+                                            <input value={search} onChange={(e) => handleChangeSearch(e)} aria-label="search box" type="text" required className="appearance-none w-full px-3 py-3 border border-gray-300 text-base leading-6 rounded-md text-gray-900 bg-gray-100 placeholder-gray-500 focus:outline-none focus:shadow-outline focus:border-blue-300 transition duration-150 ease-in-out sm:max-w-xs" placeholder="Search by title" />
                                             <div className="mt-3 rounded-md shadow sm:mt-0 sm:ml-3 sm:flex-shrink-0">
                                                 <button className="w-full flex items-center justify-center px-12 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:shadow-outline transition duration-150 ease-in-out">
                                                     Search
@@ -261,22 +285,22 @@ const Demo = () => {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> */}
                 <>
                     {isCreate && (
-                        <CreateItem state="new" close={openCreateBox} create={createNewItem}/>
+                        <CreateItem state="new" close={openCreateBox} create={createNewItem} />
                     )}
                 </>
 
                 <>
                     {newsItems?.news_items.map((item, i) => (
-                        <PreviewItem 
-                            index={i} 
-                            totalData={paginationData?.total_data} 
-                            item={item} 
-                            processedData={processedData} 
-                            uplaodVideo={uplaodVideo} 
-                            deleteItem={deleteItem} 
+                        <PreviewItem
+                            index={i}
+                            totalData={paginationData?.total_data}
+                            item={item}
+                            processedData={processedData}
+                            uplaodVideo={uplaodVideo}
+                            deleteItem={deleteItem}
                             move={decrement_increment_ordinal}
                             updateItem={updateItem}
                         />
