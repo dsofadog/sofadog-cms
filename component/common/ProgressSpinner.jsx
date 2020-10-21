@@ -1,35 +1,34 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
-export class ProgressSpinner extends Component {
+const ProgressSpinner = () => {
+    return (
+        <>
+            <div className="fixed z-50 inset-0 overflow-y-auto">
+                <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
 
-    static defaultProps = {
-        id: null,
-        style: null,
-        className: null,
-        strokeWidth: "2",
-        fill: "none",
-        animationDuration: "2s"
-    };
+                    <div className="fixed inset-0 transition-opacity">
+                        <div className="absolute inset-0 bg-black opacity-75"></div>
+                    </div>
 
-    static propTypes = {
-        id: PropTypes.string,
-        style: PropTypes.object,
-        className: PropTypes.string,
-        strokeWidth: PropTypes.string,
-        fill: PropTypes.string,
-        animationDuration: PropTypes.string
-    };
+                    <span className="hidden sm:inline-block sm:align-middle sm:h-screen"></span>&#8203;
 
-    render() {
-        let spinnerClass = classNames('p-progress-spinner',this.props.className);
+                    <div className="inline-block align-bottom rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden transform transition-all sm:my-8 sm:align-middle sm:max-w-sm sm:w-full sm:p-6" role="dialog" aria-modal="true" aria-labelledby="modal-headline">
+                        <div className="w-full flex items-center justify-center">
+                            <button type="button" class="bg-indigo-600 px-2 py-2 space-x-2 rounded flex text-white" disabled>
+                                <div className="w-6 h-6 border-4 border-white rounded-full loader"></div>
+                                <span>Processing</span>
+                            </button>
+                        </div>
 
-        return <div id={this.props.id} style={this.props.style} className={spinnerClass} role="alert" aria-busy>
-            <svg className="p-progress-spinner-svg" viewBox="25 25 50 50" style={{animationDuration: this.props.animationDuration}}>
-                <circle className="p-progress-spinner-circle" cx="50" cy="50" r="20" fill={this.props.fill}
-                        strokeWidth={this.props.strokeWidth} strokeMiterlimit="10"/>
-            </svg>
-        </div>;
-    }
+                    </div>
+
+                </div>
+            </div>
+
+        </>
+    );
 }
+
+export default ProgressSpinner

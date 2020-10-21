@@ -1,5 +1,5 @@
 import React, { useState, createContext } from 'react';
-import {ProgressSpinner} from '../component/common/ProgressSpinner'
+import ProgressSpinner from '../component/common/ProgressSpinner'
 
 const LayoutContext = createContext(null);
 
@@ -29,7 +29,7 @@ function LayoutProvider({ children }) {
   return (
     <LayoutContext.Provider value={initialState}>
 
-    {loading && (<ProgressSpinner style={{width: '50px', height: '50px'}} strokeWidth="8" fill="#EEEEEE" animationDuration=".5s"/>
+    {loading && (<ProgressSpinner/>
       )}
 
       {children}
