@@ -97,9 +97,9 @@ const Demo = () => {
         return `${year}${separator}${month < 10 ? `0${month}` : `${month}`}${separator}${date}`
     }
 
-    const fetchItems = () => {
+    const fetchItems = (isLoader = true) => {
         //console.log("getCurrentDate: ", getCurrentDate("-"));
-        setLoading(true);
+        setLoading(isLoader);
         setScrollLoading(true);
         let url = `news_items?token=abcdef&limit=${paginationData.limit}&date=${getCurrentDate("-")}`;
     
@@ -141,7 +141,7 @@ const Demo = () => {
     }
 
     function handleLoadMore(){
-        fetchItems();
+        fetchItems(false);
     }
 
     function refreshData() {
