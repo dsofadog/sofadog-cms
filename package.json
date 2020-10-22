@@ -21,6 +21,7 @@
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-dropzone": "^11.2.0",
+    "react-infinite-scroll-hook": "^3.0.0",
     "react-player": "^2.6.2",
     "react-scroll": "^1.8.1",
     "tailwindcss": "^1.7.3"

@@ -11,13 +11,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import { scroller } from "react-scroll";
+import useInfiniteScroll from 'react-infinite-scroll-hook';
 
 f_config.autoAddCss = false;
 library.add(fas, fab);
 
-
-
 const Demo = () => {
+    
     const categories = CmsConstant.Category;
     const [openCategoryDropdown, setOpenCategoryDropdown] = useState(false);
     const toggleCateDropdown = () => { setOpenTagDropdown(false); setOpenCategoryDropdown(!openCategoryDropdown) };
@@ -32,7 +32,6 @@ const Demo = () => {
     const [paginationData, setPaginationData] = useState(
         {
             limit: 200,
-            last_id: "",
             total_data: 0
         }
     );
@@ -47,7 +46,21 @@ const Demo = () => {
     useOutsideAlerter(catWrapperRef);
     useOutsideAlerter(tagWrapperRef);
 
+    const [hasNextPage, setHasNextPage] = useState(true);
+    const [scrollLoading, setScrollLoading] = useState(false);
+    const infiniteRef = useInfiniteScroll({
+        loading: scrollLoading,
+        hasNextPage,
+        onLoadMore: handleLoadMore,
+        scrollContainer: 'window',
+    });
+
+    const [scrollCount,setScrollCount] = useState(0);
+
     useEffect(() => {
+        setNewsItems(null);
+        setNewsItemsCached(null);
+        setScrollCount(0);
         fetchItems();
     }, []);
 
@@ -75,8 +88,9 @@ const Demo = () => {
     }
 
     function getCurrentDate(separator = '') {
+        console.log(scrollCount);
         let newDate = new Date()
-        let date = newDate.getDate();
+        let date = newDate.getDate() - scrollCount;
         let month = newDate.getMonth() + 1;
         let year = newDate.getFullYear();
 
@@ -84,17 +98,35 @@ const Demo = () => {
     }
 
     const fetchItems = () => {
-        console.log("getCurrentDate: ", getCurrentDate("-"));
+        //console.log("getCurrentDate: ", getCurrentDate("-"));
         setLoading(true);
+        setScrollLoading(true);
         let url = `news_items?token=abcdef&limit=${paginationData.limit}&date=${getCurrentDate("-")}`;
-        if (paginationData.last_id != "") {
-            url += `&last_id=${paginationData.last_id}`;
-        }
+    
         HttpCms.get(url)
             .then(response => {
                 console.log("fetch res: ", response.data);
-                setNewsItems(response.data);
-                setNewsItemsCached(response.data);
+                if (response.data.news_items.length > 0) {
+                    if(newsItems){
+                        const item = { ...newsItems };
+                        const itemCached = { ...newsItemsCached };
+                        response.data.news_items.map(data =>{
+                            item.news_items.push(data);
+                            itemCached.news_items.push(data);
+                        });                        
+                        setNewsItems(item);
+                        setNewsItemsCached(itemCached);
+                    }else{
+                        setNewsItems(response.data);
+                        setNewsItemsCached(response.data);
+                    }   
+                    //console.log("fetch newsItems: ",newsItems);                
+                    setHasNextPage(true);
+                    setScrollCount(scrollCount+1);
+                }else{
+                    setHasNextPage(false);
+                }
+                
                 setPaginationData({
                     ...paginationData,
                     total_data: response.data.total_items
@@ -105,7 +137,13 @@ const Demo = () => {
             })
             .finally(() => {
                 setLoading(false);
+                setScrollLoading(false);
+                
             });
+    }
+
+    function handleLoadMore(){
+        fetchItems();
     }
 
     function refreshData() {
@@ -311,6 +349,7 @@ const Demo = () => {
                 //console.log("add item: ",response.data);
                 const item = { ...newsItems };
                 item.news_items.unshift(response.data.news_item);
+                setNewsItems(item);
                 setIsCreate(false);
                 //fetchItems();
             })
@@ -415,7 +454,7 @@ const Demo = () => {
                                 <div className="relative">
                                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                         <svg className="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+                                            <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
                                         </svg>
                                     </div>
                                     <input id="search" value={search} onChange={(e) => handleChangeSearch(e)} className="block w-full pl-10 pr-3 py-2 border border-transparent rounded-md leading-5 bg-gray-700 text-gray-300 placeholder-gray-400 focus:outline-none focus:bg-white focus:text-gray-900 sm:text-sm transition duration-150 ease-in-out" placeholder="Search" type="search" />
@@ -520,7 +559,7 @@ const Demo = () => {
                     </div>
                 </div>
             </nav>
-            <div className="max-w-7xl mx-auto">
+            <div ref={infiniteRef} className="max-w-7xl mx-auto">
                 <>
                     <div className="sfd-top invisible"></div>
                 </>
@@ -532,16 +571,18 @@ const Demo = () => {
 
                 <>
                     {newsItems?.news_items.map((item, i) => (
-                        <PreviewItem
-                            index={i}
-                            totalData={paginationData?.total_data}
-                            item={item}
-                            processedData={processedData}
-                            uplaodVideo={uplaodVideo}
-                            deleteItem={deleteItem}
-                            move={decrement_increment_ordinal}
-                            updateItem={updateItem}
-                        />
+                        <div key={i}>
+                            <PreviewItem
+                                index={i}
+                                totalData={paginationData?.total_data}
+                                item={item}
+                                processedData={processedData}
+                                uplaodVideo={uplaodVideo}
+                                deleteItem={deleteItem}
+                                move={decrement_increment_ordinal}
+                                updateItem={updateItem}
+                            />
+                        </div>
                     ))}
                 </>
             </div>

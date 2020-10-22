@@ -15,12 +15,11 @@ import { LayoutContext } from '../../contexts';
 
 f_config.autoAddCss = false;
 library.add(fas, fab);
-
+const categories = CmsConstant.Category;
 const PreviewItem = (props) => {
     const { setLoading } = useContext(LayoutContext);
 
     const [item, setItem] = useState(null);
-    const categories = CmsConstant.Category;
     const [sentences, setSentences] = useState(null);
     const [creditsData, setCreditsData] = useState(null);
     const [activeLang, setActiveLang] = useState(0);
@@ -41,6 +40,7 @@ const PreviewItem = (props) => {
     };
 
     useEffect(() => {
+        //console.log(props.item);
         setItem(props.item);
     }, [props]);
 
