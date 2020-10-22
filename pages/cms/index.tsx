@@ -62,7 +62,7 @@ const Demo = () => {
         setNewsItemsCached(null);
         setScrollCount(0);
         fetchItems();
-    }, []);
+    },[]);
 
     function useOutsideAlerter(ref) {
         useEffect(() => {
@@ -109,13 +109,11 @@ const Demo = () => {
                 if (response.data.news_items.length > 0) {
                     if(newsItems){
                         const item = { ...newsItems };
-                        const itemCached = { ...newsItemsCached };
-                        response.data.news_items.map(data =>{
+                        response.data.news_items.map((data,i) =>{
                             item.news_items.push(data);
-                            itemCached.news_items.push(data);
                         });                        
                         setNewsItems(item);
-                        setNewsItemsCached(itemCached);
+                        setNewsItemsCached(item);
                     }else{
                         setNewsItems(response.data);
                         setNewsItemsCached(response.data);
@@ -149,6 +147,8 @@ const Demo = () => {
     function refreshData() {
         setSelectedCategory(null);
         setSelectedTag([]);
+        setNewsItems(null);
+        setNewsItemsCached(null);
         fetchItems();
     }
 

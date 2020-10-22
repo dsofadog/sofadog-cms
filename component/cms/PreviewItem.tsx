@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState ,useContext} from "react";
+import { useCallback, useEffect, useState, useContext } from "react";
 import { useDropzone } from 'react-dropzone';
 import CmsConstant from '../../utils/cms-constant';
 import HttpCms from '../../utils/http-cms';
@@ -389,10 +389,16 @@ const PreviewItem = (props) => {
                                                 </div>
                                             </div>
                                             <div className="h-auto w-full flex items-start">
-                                                {item.thumbnails.length > 0 && (
-                                                    <img className="h-auto w-full shadow-2xl"
-                                                        src={item.thumbnails[0].url} alt="" />
-                                                )}
+                                                {item?.state != "awaiting_video_upload" ?
+                                                    <>
+                                                        {item.thumbnails.length > 0 && (
+                                                            <img className="h-auto w-full shadow-2xl"
+                                                                src={item.thumbnails[0].url} alt="" />
+                                                        )}
+                                                    </>
+                                                    : null
+                                                }
+
                                             </div>
                                             <div className="w-full flex justify-center my-8">
                                                 {actionRender(item)}
