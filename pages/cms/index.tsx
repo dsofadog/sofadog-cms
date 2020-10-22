@@ -143,7 +143,7 @@ const Demo = () => {
     }
 
     function handleLoadMore(){
-        //fetchItems();
+        fetchItems();
     }
 
     function refreshData() {
