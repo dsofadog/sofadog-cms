@@ -149,6 +149,7 @@ const Demo = () => {
         setSelectedTag([]);
         setNewsItems(null);
         setNewsItemsCached(null);
+        setScrollCount(0);
         fetchItems();
     }
 
