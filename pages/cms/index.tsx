@@ -143,7 +143,7 @@ const Demo = () => {
     }
 
     function handleLoadMore(){
-        fetchItems();
+        //fetchItems();
     }
 
     function refreshData() {
@@ -559,7 +559,7 @@ const Demo = () => {
                     </div>
                 </div>
             </nav>
-            <div ref={infiniteRef} className="max-w-7xl mx-auto">
+            <div ref={infiniteRef as React.RefObject<HTMLDivElement>} className="max-w-7xl mx-auto">
                 <>
                     <div className="sfd-top invisible"></div>
                 </>
