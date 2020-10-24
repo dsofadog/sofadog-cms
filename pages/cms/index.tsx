@@ -35,6 +35,8 @@ const Demo = () => {
     const toggleTagDropdown = () => { setOpenTagDropdown(!openTagDropdown) };
     const [openStateDropdown, setOpenStateDropdown] = useState(false);
     const toggleStateDropdown = () => { setOpenStateDropdown(!openStateDropdown) };
+    const [openProfileDropdown, setOpenProfileDropdown] = useState(false);
+    const toggleProfileDropdown = () => { setOpenProfileDropdown(!openProfileDropdown) };
 
     const [paginationData, setPaginationData] = useState(
         {
@@ -208,15 +210,15 @@ const Demo = () => {
             });
     }
 
-    function handleClickSingleDropdown(data,type) {
-        if(type === 'cat'){
+    function handleClickSingleDropdown(data, type) {
+        if (type === 'cat') {
             setSelectedCategory(data.value);
             toggleCateDropdown();
-        }else if(type === 'state'){
+        } else if (type === 'state') {
             setSelectedState(data);
-            toggleStateDropdown();            
+            toggleStateDropdown();
         }
-        
+
     }
 
     function handleClickMultiDropdown(tag) {
@@ -496,16 +498,16 @@ const Demo = () => {
     };
 
     let stateDropdownData = null;
-    if(status){
+    if (status) {
         stateDropdownData = Object.keys(status).forEach((key, i) => (
-            <a key={i} href={void (0)} onClick={() => selectedState === key ? clearState() : handleClickSingleDropdown(key,'state')} className={`${selectedState === key ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white'} cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900`} role="menuitem">
+            <a key={i} href={void (0)} onClick={() => selectedState === key ? clearState() : handleClickSingleDropdown(key, 'state')} className={`${selectedState === key ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white'} cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900`} role="menuitem">
                 {status[key]}
             </a>
         ));
-    
+
         console.log(stateDropdownData);
     }
-    
+
 
     return (
         <div className="w-full h-full min-h-screen bg-gray-500">
@@ -599,7 +601,7 @@ const Demo = () => {
                                                 <div className="rounded-md bg-white shadow-xs">
                                                     <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
                                                         {categories?.map((cat, i) => (
-                                                            <a key={i} href={void (0)} onClick={() => selectedCategory === cat.value ? clearCategory() : handleClickSingleDropdown(cat,'cat')} className={`${selectedCategory === cat.value ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white'} cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900`} role="menuitem">
+                                                            <a key={i} href={void (0)} onClick={() => selectedCategory === cat.value ? clearCategory() : handleClickSingleDropdown(cat, 'cat')} className={`${selectedCategory === cat.value ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white'} cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900`} role="menuitem">
                                                                 {cat.name}
                                                             </a>
                                                         ))}
@@ -670,10 +672,22 @@ const Demo = () => {
                                     </button>
                                 </span>
                             </div>
-                            <div>
-                                <span className="inline-flex items-center justify-center h-12 w-12 rounded-full sfd-bg-primary">
+                            <div className="relative inline-block text-center">
+                                <span onClick={() => toggleProfileDropdown()} className="cursor-pointer inline-flex items-center justify-center h-12 w-12 rounded-full sfd-btn-primary">
                                     <span className="text-lg font-medium leading-none text-white">TK</span>
                                 </span>
+                                {openProfileDropdown && (
+                                    <div className="origin-top-right absolute right-0 mt-2 w-24 rounded-md shadow-lg">
+                                        <div className="rounded-md bg-white shadow-xs">
+                                            <div className="py-1 text-left text-base" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                                                 <a  href={void (0)} className="flex space-x-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900" role="menuitem">
+                                                    <FontAwesomeIcon className="w-3" icon={['fas', 'sign-out-alt']} />
+                                                    <span>Logout</span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>
