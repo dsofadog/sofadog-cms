@@ -97,7 +97,6 @@ const Demo = () => {
     }
 
     const returnUrlForNewItems = (dataUrlObj) => {
-
        // let url = `news_items?token=abcdef&limit=${paginationData.limit}&date=${getCurrentDate("-")}`;
         let apiUrl = "news_items?";
         Object.keys(dataUrlObj).forEach(key => {
@@ -110,6 +109,7 @@ const Demo = () => {
 
         return apiUrl;
     }
+    
 
     const fetchItems = (isLoader = true) => {
         //console.log("getCurrentDate: ", getCurrentDate("-"));
@@ -291,6 +291,11 @@ const Demo = () => {
                 old_index = newsItems.news_items.findIndex(item => item.id == itemValue.id);
                 new_index = old_index - 1;
                 arr.news_items = array_move(newsItems.news_items, old_index, new_index);
+                setNewsItems(arr);
+                break;
+            case "filter_by_state":
+                let dataAll = newsItems.news_items.filter(item => item.state == itemValue.state);
+                arr.news_items = dataAll;
                 setNewsItems(arr);
                 break;
 
