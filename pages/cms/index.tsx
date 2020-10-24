@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import Link from "next/link";
+import Router from 'next/router';
 import moment from 'moment';
 import HttpCms from '../../utils/http-cms';
 import CreateItem from '../../component/cms/CreateItem';
@@ -53,9 +54,11 @@ const Demo = () => {
     const catWrapperRef = useRef(null);
     const tagWrapperRef = useRef(null);
     const stateWrapperRef = useRef(null);
+    const profileWrapperRef = useRef(null);
     useOutsideAlerter(catWrapperRef);
     useOutsideAlerter(tagWrapperRef);
     useOutsideAlerter(stateWrapperRef);
+    useOutsideAlerter(profileWrapperRef);
 
     const [hasNextPage, setHasNextPage] = useState(true);
     const [scrollLoading, setScrollLoading] = useState(false);
@@ -88,7 +91,10 @@ const Demo = () => {
                         setOpenCategoryDropdown(false);
                     }
                     if (ref.current.dataset.id === "state") {
-                        setOpenCategoryDropdown(false);
+                        setOpenStateDropdown(false);
+                    }
+                    if (ref.current.dataset.id === "profile") {
+                        setOpenProfileDropdown(false);
                     }
                 }
             }
@@ -508,6 +514,11 @@ const Demo = () => {
         console.log(stateDropdownData);
     }
 
+    const logout = (e) => {
+        e.preventDefault(); 
+        Router.push('/');
+    }
+
 
     return (
         <div className="w-full h-full min-h-screen bg-gray-500">
@@ -672,7 +683,7 @@ const Demo = () => {
                                     </button>
                                 </span>
                             </div>
-                            <div className="relative inline-block text-center">
+                            <div ref={profileWrapperRef} data-id="profile" className="relative inline-block text-center">
                                 <span onClick={() => toggleProfileDropdown()} className="cursor-pointer inline-flex items-center justify-center h-12 w-12 rounded-full sfd-btn-primary">
                                     <span className="text-lg font-medium leading-none text-white">TK</span>
                                 </span>
@@ -680,7 +691,7 @@ const Demo = () => {
                                     <div className="origin-top-right absolute right-0 mt-2 w-24 rounded-md shadow-lg">
                                         <div className="rounded-md bg-white shadow-xs">
                                             <div className="py-1 text-left text-base" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                                                 <a  href={void (0)} className="flex space-x-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900" role="menuitem">
+                                                 <a href={void (0)} onClick={(e) => logout(e)} className="flex space-x-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900" role="menuitem">
                                                     <FontAwesomeIcon className="w-3" icon={['fas', 'sign-out-alt']} />
                                                     <span>Logout</span>
                                                 </a>
