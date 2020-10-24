@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import Link from "next/link";
+import moment from 'moment';
 import HttpCms from '../../utils/http-cms';
 import CreateItem from '../../component/cms/CreateItem';
 import PreviewItem from '../../component/cms/PreviewItem';
@@ -55,7 +56,7 @@ const Demo = () => {
         scrollContainer: 'window',
     });
 
-    const [scrollCount,setScrollCount] = useState(0);
+    const [scrollCount,setScrollCount] = useState(1);
 
     useEffect(() => {
         setNewsItems(null);
@@ -118,7 +119,7 @@ const Demo = () => {
         let dataUrlObj  = {
             "token" :"abcdef",
             "limit" :paginationData.limit,
-            "date"  :getCurrentDate("-"),
+            "date"  :returndateAsRequired(),
             "tags"   :selectedTag.join(),
             "category":selectedCategory
         }
@@ -215,6 +216,17 @@ const Demo = () => {
         setSelectedTag(selectedTag.filter(item => item !== tag));
     }
 
+    function returndateAsRequired(){
+       let  today = moment().format('DD.MM.YYYY');
+       let startdate = today;
+       var new_date = moment(startdate, "DD-MM-YYYY");       
+       new_date.add(-scrollCount, 'days'); 
+      let dateReturn = new_date.format("YYYY-MM-DD");
+      console.log(dateReturn,"dateReturn");
+       return dateReturn
+
+    }
+
     function filteringCategoryTag() {
         setLoading(true);
 
@@ -222,7 +234,7 @@ const Demo = () => {
         let dataUrlObj  = {
             "token" :"abcdef",
             "limit" :paginationData.limit,
-            "date"  :getCurrentDate("-"),
+            "date"  :returndateAsRequired(),
             "tags"   :selectedTag.join(),
             "category":selectedCategory
         }
