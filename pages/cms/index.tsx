@@ -69,7 +69,7 @@ const Demo = () => {
         scrollContainer: 'window',
     });
 
-    const [scrollCount, setScrollCount] = useState(1);
+    const [scrollCount, setScrollCount] = useState(0);
 
     useEffect(() => {
         setNewsItems(null);
@@ -132,7 +132,7 @@ const Demo = () => {
     }
 
 
-    const fetchItems = (isLoader = true) => {
+    const fetchItems = async (isLoader = true) => {
         //console.log("getCurrentDate: ", getCurrentDate("-"));
         setLoading(isLoader);
         setScrollLoading(true);
@@ -146,7 +146,7 @@ const Demo = () => {
         let url = returnUrlForNewItems(dataUrlObj);
         //let url = `news_items?token=abcdef&limit=${paginationData.limit}&date=${getCurrentDate("-")}`;
 
-        HttpCms.get(url)
+        await HttpCms.get(url)
             .then(response => {
                 console.log("fetch res: ", response.data);
                 if (response.data.news_items.length > 0) {
@@ -162,11 +162,12 @@ const Demo = () => {
                         setNewsItemsCached(response.data);
                     }
                     //console.log("fetch newsItems: ",newsItems);                
-                    setHasNextPage(true);
-                    setScrollCount(scrollCount + 1);
+
                 } else {
                     //setHasNextPage(false);
                 }
+                setHasNextPage(true);
+                setScrollCount(scrollCount + 1);
 
                 setPaginationData({
                     ...paginationData,
@@ -511,11 +512,11 @@ const Demo = () => {
             </a>
         ));
 
-        console.log(stateDropdownData);
+        //console.log(stateDropdownData);
     }
 
     const logout = (e) => {
-        e.preventDefault(); 
+        e.preventDefault();
         Router.push('/');
     }
 
@@ -691,7 +692,7 @@ const Demo = () => {
                                     <div className="origin-top-right absolute right-0 mt-2 w-24 rounded-md shadow-lg">
                                         <div className="rounded-md bg-white shadow-xs">
                                             <div className="py-1 text-left text-base" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                                                 <a href={void (0)} onClick={(e) => logout(e)} className="flex space-x-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900" role="menuitem">
+                                                <a href={void (0)} onClick={(e) => logout(e)} className="flex space-x-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900" role="menuitem">
                                                     <FontAwesomeIcon className="w-3" icon={['fas', 'sign-out-alt']} />
                                                     <span>Logout</span>
                                                 </a>
