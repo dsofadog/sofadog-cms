@@ -566,7 +566,7 @@ const Demo = () => {
                                 </div>
                             </div>
                             <div className="flex">
-                                <div className="w-full ml-4 space-x-2 flex ">
+                                <div className="w-full space-x-2 flex ">
                                     <div ref={stateWrapperRef} data-id="state" className="relative inline-block text-left">
                                         <div>
                                             {status && (
