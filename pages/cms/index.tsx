@@ -38,6 +38,8 @@ const Demo = () => {
     const toggleStateDropdown = () => { setOpenStateDropdown(!openStateDropdown) };
     const [openProfileDropdown, setOpenProfileDropdown] = useState(false);
     const toggleProfileDropdown = () => { setOpenProfileDropdown(!openProfileDropdown) };
+    const [openFilterDropdown, setOpenFilterDropdown] = useState(false);
+    const toggleFilterDropdown = () => { setOpenFilterDropdown(!openFilterDropdown) };
 
     const [paginationData, setPaginationData] = useState(
         {
@@ -55,10 +57,12 @@ const Demo = () => {
     const tagWrapperRef = useRef(null);
     const stateWrapperRef = useRef(null);
     const profileWrapperRef = useRef(null);
+    const filterWrapperRef = useRef(null);
     useOutsideAlerter(catWrapperRef);
     useOutsideAlerter(tagWrapperRef);
     useOutsideAlerter(stateWrapperRef);
     useOutsideAlerter(profileWrapperRef);
+    useOutsideAlerter(filterWrapperRef);
 
     const [hasNextPage, setHasNextPage] = useState(true);
     const [scrollLoading, setScrollLoading] = useState(false);
@@ -95,6 +99,9 @@ const Demo = () => {
                     }
                     if (ref.current.dataset.id === "profile") {
                         setOpenProfileDropdown(false);
+                    }
+                    if (ref.current.dataset.id === "filter") {
+                        setOpenFilterDropdown(false);
                     }
                 }
             }
@@ -591,84 +598,97 @@ const Demo = () => {
                                             </div>
                                         )}
                                     </div>
-                                    <div ref={catWrapperRef} data-id="category" className="relative inline-block text-left">
-                                        <div>
-                                            {categories && (
-                                                <span onClick={toggleCateDropdown} className="rounded-md shadow-sm">
-                                                    <button type="button" className="w-32 inline-flex justify-center rounded-md border border-gray-300 px-2 py-2 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150" id="options-menu" aria-haspopup="true" aria-expanded="true">
-                                                        <span className="w-full truncate uppercase">
-                                                            {categories && selectedCategory ?
-                                                                categories[selectedCategory].name : 'Category'
-                                                            }
-                                                        </span>
-                                                        <svg className="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                                            <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                                                        </svg>
-                                                    </button>
-                                                </span>
-                                            )}
-                                        </div>
-                                        {openCategoryDropdown && (
-                                            <div className="origin-top-left absolute left-0 mt-2 w-56 rounded-md shadow-lg z-20">
+                                    <div ref={filterWrapperRef} data-id="filter" className="relative inline-block text-left">
+                                        <button onClick={() => toggleFilterDropdown()} className="text-white space-x-2 relative inline-flex items-center px-2 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-400 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-600 active:bg-indigo-600 transition duration-150 ease-in-out">
+                                            <FontAwesomeIcon className="w-3" icon={['fas', 'filter']} />
+                                            <span>Filter</span>
+                                        </button>
+                                        {openFilterDropdown && (
+                                            <div className="origin-top-right absolute right-0 mt-2 w-72 rounded-md shadow-lg">
                                                 <div className="rounded-md bg-white shadow-xs">
-                                                    <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                                                        {categories?.map((cat, i) => (
-                                                            <a key={i} href={void (0)} onClick={() => selectedCategory === cat.value ? clearCategory() : handleClickSingleDropdown(cat, 'cat')} className={`${selectedCategory === cat.value ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white'} cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900`} role="menuitem">
-                                                                {cat.name}
-                                                            </a>
-                                                        ))}
+                                                    <div className="w-full flex justify-center p-2 space-x-2">
+                                                        <div className="w-1/2">
+                                                            <div ref={catWrapperRef} data-id="category" className="relative inline-block w-full">
+                                                                <div>
+                                                                    {categories && (
+                                                                        <span onClick={toggleCateDropdown} className="rounded-md shadow-sm">
+                                                                            <button type="button" className="w-full inline-flex justify-center rounded-md border border-gray-300 px-2 py-2 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150" id="options-menu" aria-haspopup="true" aria-expanded="true">
+                                                                                <span className="w-full truncate uppercase">
+                                                                                    {categories && selectedCategory ?
+                                                                                        categories[selectedCategory].name : 'Category'
+                                                                                    }
+                                                                                </span>
+                                                                                <svg className="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                                                    <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                                                                                </svg>
+                                                                            </button>
+                                                                        </span>
+                                                                    )}
+                                                                </div>
+                                                                {openCategoryDropdown && (
+                                                                    <div className="origin-top-left absolute left-0 mt-2 w-56 rounded-md shadow-lg z-20">
+                                                                        <div className="rounded-md bg-white shadow-xs">
+                                                                            <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                                                                                {categories?.map((cat, i) => (
+                                                                                    <a key={i} href={void (0)} onClick={() => selectedCategory === cat.value ? clearCategory() : handleClickSingleDropdown(cat, 'cat')} className={`${selectedCategory === cat.value ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white'} cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900`} role="menuitem">
+                                                                                        {cat.name}
+                                                                                    </a>
+                                                                                ))}
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                        <div className="w-1/2">
+                                                            <div ref={tagWrapperRef} data-id="tag" className="relative inline-block w-full">
+                                                                <div>
+                                                                    <span onClick={toggleTagDropdown} className="rounded-md shadow-sm">
+                                                                        <button type="button" className="w-full inline-flex justify-center rounded-md border border-gray-300 px-2 py-2 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150" id="options-menu" aria-haspopup="true" aria-expanded="true">
+                                                                            <span className="w-full truncate uppercase">
+                                                                                {selectedTag.length > 0 ?
+                                                                                    <>
+                                                                                        {selectedTag.join()}
+                                                                                    </>
+                                                                                    :
+                                                                                    'Tags'
+                                                                                }
+                                                                            </span>
+                                                                            <svg className="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                                                <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                                                                            </svg>
+                                                                        </button>
+                                                                    </span>
+                                                                </div>
+                                                                {openTagDropdown && (
+                                                                    <div className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg">
+                                                                        <div className="rounded-md bg-white shadow-xs">
+                                                                            <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                                                                                {tags?.map((tag, i) => (
+                                                                                    <a key={i} href={void (0)} onClick={() => isTagSelected(tag.value) ? clearTag(tag.value) : handleClickMultiDropdown(tag)} className={`${isTagSelected(tag.value) ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white'} cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900`} role="menuitem">
+                                                                                        {tag.name}
+                                                                                    </a>
+                                                                                ))}
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="w-full p-2">
+                                                        <button onClick={(e) => filteringCategoryTag()} className="text-white text-sm bg-indigo-600 hover:bg-indigo-800 rounded w-full p-2">Submit</button>
                                                     </div>
                                                 </div>
                                             </div>
                                         )}
-                                    </div>
-                                    <div className="space-x-2 flex ">
-                                        <div ref={tagWrapperRef} data-id="tag" className="relative inline-block text-left">
-                                            <div>
-                                                <span onClick={toggleTagDropdown} className="rounded-md shadow-sm">
-                                                    <button type="button" className="w-32 inline-flex justify-center rounded-md border border-gray-300 px-2 py-2 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150" id="options-menu" aria-haspopup="true" aria-expanded="true">
-                                                        <span className="w-full truncate uppercase">
-                                                            {selectedTag.length > 0 ?
-                                                                <>
-                                                                    {selectedTag.join()}
-                                                                </>
-                                                                :
-                                                                'Tags'
-                                                            }
-                                                        </span>
-                                                        <svg className="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                                            <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                                                        </svg>
-                                                    </button>
-                                                </span>
-                                            </div>
-                                            {openTagDropdown && (
-                                                <div className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg">
-                                                    <div className="rounded-md bg-white shadow-xs">
-                                                        <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                                                            {tags?.map((tag, i) => (
-                                                                <a key={i} href={void (0)} onClick={() => isTagSelected(tag.value) ? clearTag(tag.value) : handleClickMultiDropdown(tag)} className={`${isTagSelected(tag.value) ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white'} cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900`} role="menuitem">
-                                                                    {tag.name}
-                                                                </a>
-                                                            ))}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                    <div className="">
-                                        <button onClick={() => filteringCategoryTag()} className="text-white space-x-2 relative inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-400 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-600 active:bg-indigo-600 transition duration-150 ease-in-out">
-                                            <FontAwesomeIcon className="w-3" icon={['fas', 'filter']} />
-                                            <span>Filter</span>
-                                        </button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div className="flex items-center space-x-2">
                             <div className="">
-                                <button onClick={() => refreshData()} className="relative inline-flex items-center space-x-2 px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-400 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-600 active:bg-indigo-600 transition duration-150 ease-in-out">
+                                <button onClick={() => refreshData()} className="relative inline-flex items-center space-x-2 px-2 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-400 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-600 active:bg-indigo-600 transition duration-150 ease-in-out">
                                     <FontAwesomeIcon className="w-3" icon={['fas', 'sync-alt']} />
                                     <span>Refresh</span>
                                 </button>
@@ -676,7 +696,7 @@ const Demo = () => {
 
                             <div className="flex-shrink-0">
                                 <span className="rounded-md shadow-sm">
-                                    <button onClick={() => { openCreateBox(true); scrollToSection(); }} type="button" className="relative inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-400 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-600 active:bg-indigo-600 transition duration-150 ease-in-out">
+                                    <button onClick={() => { openCreateBox(true); scrollToSection(); }} type="button" className="relative inline-flex items-center px-2 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-400 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-600 active:bg-indigo-600 transition duration-150 ease-in-out">
                                         <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                             <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
                                         </svg>

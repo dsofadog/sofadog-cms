@@ -15,6 +15,11 @@ module.exports = {
                 xl: "36rem",
                 '2xl': "38rem"
             },
+            spacing: {
+                '72': '18rem',
+                '84': '21rem',
+                '96': '24rem',
+            },
             maxHeight: {
                 24: "6rem",
                 '2xl': "38rem"
