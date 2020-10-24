@@ -1,10 +1,52 @@
 import Router from 'next/router';
+import React,  {  useContext, useEffect, useState, } from 'react';
+import HttpCms from '../../utils/http-cms';
+import { LayoutContext } from '../../contexts/';
 
-const Login = () => {
+const Login = () => {    
+    const { setLoading,setAppUserInfo } = useContext(LayoutContext);
     
+    const [userInfo, setUserInfo] = useState(null);
+
+    useEffect(() => {
+        setUserInfo({
+            email: '',
+            password: '',
+        })
+        
+    }, []);
+
+    function handleChangeInput(e) {
+        let value = e.target.value;
+        let name = e.target.name;
+        setUserInfo({
+            ...userInfo,
+            [name]: value            
+        });
+    }
+
     const doLogin = (e) => {
+        setLoading(false);
         e.preventDefault(); 
-        Router.push('/cms');
+        HttpCms.post("/admin_user/login", userInfo)
+        .then((response) => {        
+            if(response.data.token !=""){               
+                Router.push('/cms');
+                setAppUserInfo(response.data);
+            }else{
+               alert("Something wrong !!");
+            }    
+            
+        })
+        .catch((e) => {
+            console.log(e);
+            setLoading(false);
+        })
+        .finally(() => {
+            setLoading(false);
+
+        });
+        
     }
 
     return (
@@ -21,10 +63,10 @@ const Login = () => {
                         <input type="hidden" name="remember" value="true" />
                         <div className="rounded-md shadow-sm">
                             <div>
-                                <input aria-label="Email address" name="email" type="email" required className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 sm:text-sm sm:leading-5" placeholder="Email address" />
+                                <input aria-label="Email address" name="email" value = {userInfo?.email} type="email" onChange={(e) => handleChangeInput(e)} required className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 sm:text-sm sm:leading-5" placeholder="Email address" />
                             </div>
                             <div className="-mt-px">
-                                <input aria-label="Password" name="password" type="password" required className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 sm:text-sm sm:leading-5" placeholder="Password" />
+                                <input aria-label="Password" name="password" value = {userInfo?.password} type="password" onChange={(e) => handleChangeInput(e)}  required className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 sm:text-sm sm:leading-5" placeholder="Password" />
                             </div>
                         </div>
 
