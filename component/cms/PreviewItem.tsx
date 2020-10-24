@@ -28,16 +28,7 @@ const PreviewItem = (props) => {
     const [clips, setClips] = useState({ video: null, thumbnails: null });
     const [isEdit, setIsEdit] = useState(false);
 
-    const status = {
-        'new': 'New',
-        'awaiting_review_by_lead_journalist': 'Awaiting review by lead journalist',
-        'awaiting_video_upload': 'Awaiting video upload',
-        'awaiting_review_by_lead_video_editor': 'Awaiting review by lead video editor',
-        'ready_for_push': 'Ready For Push',
-        'pushed_to_feed': 'Pushed To Feed',
-        'removed_from_feed': 'Removed From Feed',
-        'transcoding': 'Transcoding'
-    };
+    const status = CmsConstant.Status;
 
     useEffect(() => {
         //console.log(props.item);

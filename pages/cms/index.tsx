@@ -18,17 +18,23 @@ f_config.autoAddCss = false;
 library.add(fas, fab);
 
 const Demo = () => {
-    
+
     const categories = CmsConstant.Category;
-    const [openCategoryDropdown, setOpenCategoryDropdown] = useState(false);
-    const toggleCateDropdown = () => { setOpenTagDropdown(false); setOpenCategoryDropdown(!openCategoryDropdown) };
-    const [selectedCategory, setSelectedCategory] = useState(null);
     const tags = CmsConstant.Tags;
+    const status = CmsConstant.Status;
+
+    const [selectedCategory, setSelectedCategory] = useState(null);
     const [selectedTag, setSelectedTag] = useState([]);
+    const [selectedState, setSelectedState] = useState(null);
+
     const { setLoading } = useContext(LayoutContext);
 
+    const [openCategoryDropdown, setOpenCategoryDropdown] = useState(false);
+    const toggleCateDropdown = () => { setOpenCategoryDropdown(!openCategoryDropdown) };
     const [openTagDropdown, setOpenTagDropdown] = useState(false);
-    const toggleTagDropdown = () => { setOpenCategoryDropdown(false); setOpenTagDropdown(!openTagDropdown) };
+    const toggleTagDropdown = () => { setOpenTagDropdown(!openTagDropdown) };
+    const [openStateDropdown, setOpenStateDropdown] = useState(false);
+    const toggleStateDropdown = () => { setOpenStateDropdown(!openStateDropdown) };
 
     const [paginationData, setPaginationData] = useState(
         {
@@ -44,8 +50,10 @@ const Demo = () => {
 
     const catWrapperRef = useRef(null);
     const tagWrapperRef = useRef(null);
+    const stateWrapperRef = useRef(null);
     useOutsideAlerter(catWrapperRef);
     useOutsideAlerter(tagWrapperRef);
+    useOutsideAlerter(stateWrapperRef);
 
     const [hasNextPage, setHasNextPage] = useState(true);
     const [scrollLoading, setScrollLoading] = useState(false);
@@ -56,14 +64,15 @@ const Demo = () => {
         scrollContainer: 'window',
     });
 
-    const [scrollCount,setScrollCount] = useState(1);
+    const [scrollCount, setScrollCount] = useState(1);
 
     useEffect(() => {
         setNewsItems(null);
         setNewsItemsCached(null);
         setScrollCount(0);
+        console.log("status: ", status);
         fetchItems();
-    },[]);
+    }, []);
 
     function useOutsideAlerter(ref) {
         useEffect(() => {
@@ -74,6 +83,9 @@ const Demo = () => {
                         setOpenTagDropdown(false);
                     }
                     if (ref.current.dataset.id === "category") {
+                        setOpenCategoryDropdown(false);
+                    }
+                    if (ref.current.dataset.id === "state") {
                         setOpenCategoryDropdown(false);
                     }
                 }
@@ -98,56 +110,56 @@ const Demo = () => {
     }
 
     const returnUrlForNewItems = (dataUrlObj) => {
-       // let url = `news_items?token=abcdef&limit=${paginationData.limit}&date=${getCurrentDate("-")}`;
+        // let url = `news_items?token=abcdef&limit=${paginationData.limit}&date=${getCurrentDate("-")}`;
         let apiUrl = "news_items?";
         Object.keys(dataUrlObj).forEach(key => {
-            if(dataUrlObj[key]!="" &&  (dataUrlObj[key]!=null && dataUrlObj[key]!=undefined
-            )){
-                apiUrl +=key+"="+dataUrlObj[key]+"&";
-            }           
-          });
-         apiUrl = apiUrl.slice(0, -1)
+            if (dataUrlObj[key] != "" && (dataUrlObj[key] != null && dataUrlObj[key] != undefined
+            )) {
+                apiUrl += key + "=" + dataUrlObj[key] + "&";
+            }
+        });
+        apiUrl = apiUrl.slice(0, -1)
 
         return apiUrl;
     }
-    
+
 
     const fetchItems = (isLoader = true) => {
         //console.log("getCurrentDate: ", getCurrentDate("-"));
         setLoading(isLoader);
         setScrollLoading(true);
-        let dataUrlObj  = {
-            "token" :"abcdef",
-            "limit" :paginationData.limit,
-            "date"  :returndateAsRequired(),
-            "tags"   :selectedTag.join(),
-            "category":selectedCategory
+        let dataUrlObj = {
+            "token": "abcdef",
+            "limit": paginationData.limit,
+            "date": returndateAsRequired(),
+            "tags": selectedTag.join(),
+            "category": selectedCategory
         }
-        let url  = returnUrlForNewItems(dataUrlObj);
+        let url = returnUrlForNewItems(dataUrlObj);
         //let url = `news_items?token=abcdef&limit=${paginationData.limit}&date=${getCurrentDate("-")}`;
-    
+
         HttpCms.get(url)
             .then(response => {
                 console.log("fetch res: ", response.data);
                 if (response.data.news_items.length > 0) {
-                    if(newsItems){
+                    if (newsItems) {
                         const item = { ...newsItems };
-                        response.data.news_items.map((data,i) =>{
+                        response.data.news_items.map((data, i) => {
                             item.news_items.push(data);
-                        });                        
+                        });
                         setNewsItems(item);
                         setNewsItemsCached(item);
-                    }else{
+                    } else {
                         setNewsItems(response.data);
                         setNewsItemsCached(response.data);
-                    }   
+                    }
                     //console.log("fetch newsItems: ",newsItems);                
                     setHasNextPage(true);
-                    setScrollCount(scrollCount+1);
-                }else{
+                    setScrollCount(scrollCount + 1);
+                } else {
                     //setHasNextPage(false);
                 }
-                
+
                 setPaginationData({
                     ...paginationData,
                     total_data: response.data.total_items
@@ -158,19 +170,20 @@ const Demo = () => {
             })
             .finally(() => {
                 setLoading(false);
-                setScrollLoading(false);                
+                setScrollLoading(false);
             });
     }
 
-    function handleLoadMore(){
-        if(search.length === 0){
+    function handleLoadMore() {
+        if (search.length === 0) {
             fetchItems(false);
-        }        
+        }
     }
 
     function refreshData() {
         setSelectedCategory(null);
         setSelectedTag([]);
+        setSelectedState(null);
         setNewsItems(null);
         setNewsItemsCached(null);
         setScrollCount(0);
@@ -195,9 +208,15 @@ const Demo = () => {
             });
     }
 
-    function handleClickSingleDropdown(cat) {
-        setSelectedCategory(cat.value);
-        toggleCateDropdown();
+    function handleClickSingleDropdown(data,type) {
+        if(type === 'cat'){
+            setSelectedCategory(data.value);
+            toggleCateDropdown();
+        }else if(type === 'state'){
+            setSelectedState(data);
+            toggleStateDropdown();            
+        }
+        
     }
 
     function handleClickMultiDropdown(tag) {
@@ -212,19 +231,22 @@ const Demo = () => {
     function clearCategory() {
         setSelectedCategory(null);
     }
+    function clearState() {
+        setSelectedState(null);
+    }
 
     function clearTag(tag) {
         setSelectedTag(selectedTag.filter(item => item !== tag));
     }
 
-    function returndateAsRequired(){
-       let  today = moment().format('DD.MM.YYYY');
-       let startdate = today;
-       var new_date = moment(startdate, "DD-MM-YYYY");       
-       new_date.add(-scrollCount, 'days'); 
-      let dateReturn = new_date.format("YYYY-MM-DD");
-      console.log(dateReturn,"dateReturn");
-       return dateReturn
+    function returndateAsRequired() {
+        let today = moment().format('DD.MM.YYYY');
+        let startdate = today;
+        var new_date = moment(startdate, "DD-MM-YYYY");
+        new_date.add(-scrollCount, 'days');
+        let dateReturn = new_date.format("YYYY-MM-DD");
+        console.log(dateReturn, "dateReturn");
+        return dateReturn
 
     }
 
@@ -232,14 +254,14 @@ const Demo = () => {
         setLoading(true);
 
         let apiUrl = "news_items?";
-        let dataUrlObj  = {
-            "token" :"abcdef",
-            "limit" :paginationData.limit,
-            "date"  :returndateAsRequired(),
-            "tags"   :selectedTag.join(),
-            "category":selectedCategory
+        let dataUrlObj = {
+            "token": "abcdef",
+            "limit": paginationData.limit,
+            "date": returndateAsRequired(),
+            "tags": selectedTag.join(),
+            "category": selectedCategory
         }
-        let api  = returnUrlForNewItems(dataUrlObj);
+        let api = returnUrlForNewItems(dataUrlObj);
         // let api = 'news_items';
         // let cat = '';
         // let tag = '';
@@ -473,6 +495,18 @@ const Demo = () => {
         });
     };
 
+    let stateDropdownData = null;
+    if(status){
+        stateDropdownData = Object.keys(status).forEach((key, i) => (
+            <a key={i} href={void (0)} onClick={() => selectedState === key ? clearState() : handleClickSingleDropdown(key,'state')} className={`${selectedState === key ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white'} cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900`} role="menuitem">
+                {status[key]}
+            </a>
+        ));
+    
+        console.log(stateDropdownData);
+    }
+    
+
     return (
         <div className="w-full h-full min-h-screen bg-gray-500">
             <nav className="sfd-nav bg-gray-800 sticky top-0 z-30">
@@ -512,6 +546,37 @@ const Demo = () => {
                             </div>
                             <div className="flex">
                                 <div className="w-full ml-4 space-x-2 flex ">
+                                    <div ref={stateWrapperRef} data-id="state" className="relative inline-block text-left">
+                                        <div>
+                                            {status && (
+                                                <span onClick={toggleStateDropdown} className="rounded-md shadow-sm">
+                                                    <button type="button" className="w-32 inline-flex justify-center rounded-md border border-gray-300 px-2 py-2 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150" id="options-menu" aria-haspopup="true" aria-expanded="true">
+                                                        <span className="w-full truncate uppercase">
+                                                            {status && selectedState ?
+                                                                status[selectedState] : 'State'
+                                                            }
+                                                        </span>
+                                                        <svg className="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                            <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                                                        </svg>
+                                                    </button>
+                                                </span>
+                                            )}
+                                        </div>
+                                        {openStateDropdown && (
+                                            <div className="origin-top-left absolute left-0 mt-2 w-56 rounded-md shadow-lg z-20">
+                                                <div className="rounded-md bg-white shadow-xs">
+                                                    <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                                                        <>
+                                                            {
+                                                                stateDropdownData
+                                                            }
+                                                        </>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
                                     <div ref={catWrapperRef} data-id="category" className="relative inline-block text-left">
                                         <div>
                                             {categories && (
@@ -534,7 +599,7 @@ const Demo = () => {
                                                 <div className="rounded-md bg-white shadow-xs">
                                                     <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
                                                         {categories?.map((cat, i) => (
-                                                            <a key={i} href={void (0)} onClick={() => selectedCategory === cat.value ? clearCategory() : handleClickSingleDropdown(cat)} className={`${selectedCategory === cat.value ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white'} cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900`} role="menuitem">
+                                                            <a key={i} href={void (0)} onClick={() => selectedCategory === cat.value ? clearCategory() : handleClickSingleDropdown(cat,'cat')} className={`${selectedCategory === cat.value ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white'} cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900`} role="menuitem">
                                                                 {cat.name}
                                                             </a>
                                                         ))}
@@ -639,7 +704,7 @@ const Demo = () => {
             <div className="fixed bottom-0 right-0 mb-4 mr-4 z-50 cursor-pointer">
                 <FontAwesomeIcon onClick={(e) => scrollToSection()} className="w-12 h-12 p-2 rounded-full cursor-pointer text-white bg-blue-500 hover:bg-blue-600" icon={['fas', 'arrow-up']} />
             </div>
-        </div>
+        </div >
     )
 }
 
