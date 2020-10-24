@@ -670,6 +670,11 @@ const Demo = () => {
                                     </button>
                                 </span>
                             </div>
+                            <div>
+                                <span className="inline-flex items-center justify-center h-12 w-12 rounded-full sfd-bg-primary">
+                                    <span className="text-lg font-medium leading-none text-white">TK</span>
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </div>
