@@ -8,7 +8,18 @@
 html,body{
     background-color: black;
 }
-
+.sfd-bg-primary{
+    background-color: #622a90;
+    background-image: linear-gradient(90deg,#622a90 0,#ba3095 95%),linear-gradient(#000,#000);
+}
+.sfd-btn-primary{
+    background-image: linear-gradient(90deg,#e438be,#b82def);
+    background-color: #b82def;
+}
+.sfd-btn-primary:hover {
+    background-image: linear-gradient(270deg,#e438be,#b82def);
+    background-color: #b82def;
+}
 .bg-sfd-pink{
     background-color: #fc03f8;
 }
