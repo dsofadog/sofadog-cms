@@ -93,15 +93,37 @@ const Demo = () => {
         let date = newDate.getDate() - scrollCount;
         let month = newDate.getMonth() + 1;
         let year = newDate.getFullYear();
-
         return `${year}${separator}${month < 10 ? `0${month}` : `${month}`}${separator}${date}`
     }
+
+    const returnUrlForNewItems = (dataUrlObj) => {
+       // let url = `news_items?token=abcdef&limit=${paginationData.limit}&date=${getCurrentDate("-")}`;
+        let apiUrl = "news_items?";
+        Object.keys(dataUrlObj).forEach(key => {
+            if(dataUrlObj[key]!="" &&  (dataUrlObj[key]!=null && dataUrlObj[key]!=undefined
+            )){
+                apiUrl +=key+"="+dataUrlObj[key]+"&";
+            }           
+          });
+         apiUrl = apiUrl.slice(0, -1)
+
+        return apiUrl;
+    }
+    
 
     const fetchItems = (isLoader = true) => {
         //console.log("getCurrentDate: ", getCurrentDate("-"));
         setLoading(isLoader);
         setScrollLoading(true);
-        let url = `news_items?token=abcdef&limit=${paginationData.limit}&date=${getCurrentDate("-")}`;
+        let dataUrlObj  = {
+            "token" :"abcdef",
+            "limit" :paginationData.limit,
+            "date"  :getCurrentDate("-"),
+            "tags"   :selectedTag.join(),
+            "category":selectedCategory
+        }
+        let url  = returnUrlForNewItems(dataUrlObj);
+        //let url = `news_items?token=abcdef&limit=${paginationData.limit}&date=${getCurrentDate("-")}`;
     
         HttpCms.get(url)
             .then(response => {
@@ -195,28 +217,38 @@ const Demo = () => {
 
     function filteringCategoryTag() {
         setLoading(true);
-        let api = 'news_items';
-        let cat = '';
-        let tag = '';
-        if (selectedCategory) {
-            cat = `category=${selectedCategory}`;
-        }
-        if (Array.isArray(selectedTag) && selectedTag.length > 0) {
-            tag = `tags=${selectedTag.join()}`;
-        }
 
-        if (cat === '' && tag === '') {
-            api += `?token=abcdef&limit=${paginationData.limit}`;
+        let apiUrl = "news_items?";
+        let dataUrlObj  = {
+            "token" :"abcdef",
+            "limit" :paginationData.limit,
+            "date"  :getCurrentDate("-"),
+            "tags"   :selectedTag.join(),
+            "category":selectedCategory
         }
-        if (cat != '' && tag === '') {
-            api += `?${cat}&token=abcdef&limit=${paginationData.limit}`;
-        }
-        if (cat === '' && tag != '') {
-            api += `?${tag}&token=abcdef&limit=${paginationData.limit}`;
-        }
-        if (cat != '' && tag != '') {
-            api += `?${cat}&${tag}&token=abcdef&limit=${paginationData.limit}`;
-        }
+        let api  = returnUrlForNewItems(dataUrlObj);
+        // let api = 'news_items';
+        // let cat = '';
+        // let tag = '';
+        // if (selectedCategory) {
+        //     cat = `category=${selectedCategory}`;
+        // }
+        // if (Array.isArray(selectedTag) && selectedTag.length > 0) {
+        //     tag = `tags=${selectedTag.join()}`;
+        // }
+
+        // if (cat === '' && tag === '') {
+        //     api += `?token=abcdef&limit=${paginationData.limit}`;
+        // }
+        // if (cat != '' && tag === '') {
+        //     api += `?${cat}&token=abcdef&limit=${paginationData.limit}`;
+        // }
+        // if (cat === '' && tag != '') {
+        //     api += `?${tag}&token=abcdef&limit=${paginationData.limit}`;
+        // }
+        // if (cat != '' && tag != '') {
+        //     api += `?${cat}&${tag}&token=abcdef&limit=${paginationData.limit}`;
+        // }
 
         HttpCms.get(api)
             .then(response => {
@@ -249,7 +281,6 @@ const Demo = () => {
                 setNewsItems(arr);
                 break;
             case "decrement_ordinal":
-
                 old_index = newsItems.news_items.findIndex(item => item.id == itemValue.id);
                 new_index = old_index + 1;
                 arr.news_items = array_move(newsItems.news_items, old_index, new_index);
@@ -260,6 +291,11 @@ const Demo = () => {
                 old_index = newsItems.news_items.findIndex(item => item.id == itemValue.id);
                 new_index = old_index - 1;
                 arr.news_items = array_move(newsItems.news_items, old_index, new_index);
+                setNewsItems(arr);
+                break;
+            case "filter_by_state":
+                let dataAll = newsItems.news_items.filter(item => item.state == itemValue.state);
+                arr.news_items = dataAll;
                 setNewsItems(arr);
                 break;
 
