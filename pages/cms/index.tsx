@@ -144,7 +144,7 @@ const Demo = () => {
                     setHasNextPage(true);
                     setScrollCount(scrollCount+1);
                 }else{
-                    setHasNextPage(false);
+                    //setHasNextPage(false);
                 }
                 
                 setPaginationData({
@@ -157,13 +157,14 @@ const Demo = () => {
             })
             .finally(() => {
                 setLoading(false);
-                setScrollLoading(false);
-                
+                setScrollLoading(false);                
             });
     }
 
     function handleLoadMore(){
-        fetchItems(false);
+        if(search.length === 0){
+            fetchItems(false);
+        }        
     }
 
     function refreshData() {
