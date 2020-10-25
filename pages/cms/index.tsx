@@ -154,7 +154,14 @@ const Demo = () => {
 
     const fetchItems = async (isLoader = true) => {
         //console.log("getCurrentDate: ", getCurrentDate("-"));
+        // if(newsItems?.news_items.length>0){
+        //     console.log("asdsadsadsa");
+        //     setLoading(true);
+        // }else{
+            
+        // }
         setLoading(isLoader);
+        
         setScrollLoading(true);
         let dataUrlObj = {
             "token": "abcdef",
@@ -205,7 +212,12 @@ const Demo = () => {
 
     function handleLoadMore() {
         if (search.length === 0) {
-            fetchItems(false);
+            if(newsItems?.news_items.length>0){
+                fetchItems(false);
+            }else{
+                fetchItems(true);
+            }
+            
         }
     }
 
