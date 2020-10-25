@@ -211,8 +211,8 @@ const Demo = () => {
     }
 
     function handleLoadMore() {
-        if (search.length === 0) {
-            if(newsItems?.news_items.length>0){
+        if (search.length === 0 && selectedState == null) {
+            if(newsItems?.news_items.length>0 ){
                 fetchItems(false);
             }else{
                 fetchItems(true);
@@ -373,10 +373,11 @@ const Demo = () => {
                 setNewsItems(arr);
                 break;
             case "filter_by_state":
-                let dataAll = newsItems.news_items.filter(item => item.state == itemValue.name);
+                let dataAll = newsItems?.news_items.filter(item => item.state == itemValue.name);
                 console.log(dataAll, "dataAll");
                 arr.news_items = dataAll;
-                setNewsItems(arr);
+                setNewsItemsCached(arr)
+               
                 break;
 
 
@@ -783,7 +784,22 @@ const Demo = () => {
                 </>
 
                 <>
-                    {newsItems?.news_items.map((item, i) => (
+                    {selectedState == null && newsItems?.news_items.map((item, i) => (
+                        <div key={i}>
+                            <PreviewItem
+                                index={i}
+                                totalData={paginationData?.total_data}
+                                item={item}
+                                processedData={processedData}
+                                uplaodVideo={uplaodVideo}
+                                deleteItem={deleteItem}
+                                move={decrement_increment_ordinal}
+                                updateItem={updateItem}
+                            />
+                        </div>
+                    ))}
+
+                   {selectedState != null && newsItemsCached?.news_items?.map((item, i) => (
                         <div key={i}>
                             <PreviewItem
                                 index={i}
