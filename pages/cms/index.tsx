@@ -245,6 +245,8 @@ const Demo = () => {
         } else if (type === 'state') {
             setSelectedState(data);
             toggleStateDropdown();
+            transformNewItems(data, 'filter_by_state') 
+
         }
 
     }
@@ -359,7 +361,8 @@ const Demo = () => {
                 setNewsItems(arr);
                 break;
             case "filter_by_state":
-                let dataAll = newsItems.news_items.filter(item => item.state == itemValue.state);
+                let dataAll = newsItems.news_items.filter(item => item.state == itemValue.name);
+                console.log(dataAll,"dataAll");
                 arr.news_items = dataAll;
                 setNewsItems(arr);
                 break;
@@ -613,13 +616,19 @@ const Demo = () => {
                                             <div className="origin-top-left absolute left-0 mt-2 w-56 rounded-md shadow-lg z-20">
                                                 <div className="rounded-md bg-white shadow-xs">
                                                     <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                                                        <>
+                                                        {/* <>
                                                         {Object.keys(status).forEach((key, i) =>(            
                                                             <a key={i} href={void (0)} onClick={() => selectedState === key ? clearState() : handleClickSingleDropdown(key, 'state')} className={`${selectedState === key ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white'} cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900`} role="menuitem">
                                                             {status[key]}
                                                         </a>
                                                         ))}
-                                                        </>
+                                                        </> */}
+
+                                                         {status?.map((status, i) => (
+                                                                                    <a key={i} href={void (0)} onClick={() => selectedState === status.value ? clearState() : handleClickSingleDropdown(status, 'state')} className={`${selectedState === status ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white'} cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900`} role="menuitem">
+                                                                                        {status.value}
+                                                                                    </a>
+                                                                                ))}
                                                     </div>
                                                 </div>
                                             </div>

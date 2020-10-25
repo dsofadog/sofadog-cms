@@ -68,7 +68,7 @@ export default class CmsConstant {
         }
     ]
 
-    static Status = {
+    static Status1 = {
         'new': 'New',
         'awaiting_review_by_lead_journalist': 'Awaiting review by lead journalist',
         'awaiting_video_upload': 'Awaiting video upload',
@@ -78,4 +78,50 @@ export default class CmsConstant {
         'removed_from_feed': 'Removed From Feed',
         'transcoding': 'Transcoding'
     };
+
+    static Status =[
+        {
+            id: 1,
+            name: "new",
+            value: "New",
+        },
+        {
+            id: 2,
+            name: "awaiting_review_by_lead_journalist",
+            value: "Awaiting review by lead journalist",
+        },
+        {
+            id: 3,
+            name: "awaiting_video_upload",
+            value: "Awaiting video upload",
+        },
+        {
+            id: 4,
+            name: "awaiting_review_by_lead_video_editor",
+            value: "Awaiting review by lead video editor",
+        },
+
+        {
+            id: 5,
+            name: "ready_for_push",
+            value: "Ready For Push",
+        },
+        {
+            id: 6,
+            name: "pushed_to_feed",
+            value: "Pushed To Feed",
+        },
+        
+        {
+            id: 7,
+            name: "removed_from_feed",
+            value: "Removed From Feed",
+        },
+        {
+            id: 8,
+            name: "transcoding",
+            value: "Transcoding",
+        }
+       
+    ]
 }
