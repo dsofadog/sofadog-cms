@@ -28,7 +28,7 @@ const Demo = () => {
     const [selectedTag, setSelectedTag] = useState([]);
     const [selectedState, setSelectedState] = useState(null);
 
-    const { setLoading } = useContext(LayoutContext);
+    const { setLoading,appUserInfo,setAppUserInfo } = useContext(LayoutContext);
 
     const [openCategoryDropdown, setOpenCategoryDropdown] = useState(false);
     const toggleCateDropdown = () => { setOpenCategoryDropdown(!openCategoryDropdown) };
@@ -75,16 +75,29 @@ const Demo = () => {
 
     const [scrollCount, setScrollCount] = useState(0);
 
-    useEffect(() => {
+    useEffect(() => {       
+        console.log(appUserInfo);
+        logoutUserCheck();
         setNewsItems(null);
         setNewsItemsCached(null);
-        setScrollCount(0);
-        console.log("status: ", status);
+        setScrollCount(0);        
         fetchItems();
     }, []);
 
+    function logoutUserCheck(){
+        console.log(appUserInfo);
+        if(appUserInfo == null ){
+            //|| (appUserInfo?.token !="" && appUserInfo?.token != undefined)
+            setLoading(false);
+            console.log("isnadsadsa");
+            Router.push('/');
+            return false;
+        }
+    }
+
     function useOutsideAlerter(ref) {
         useEffect(() => {
+            logoutUserCheck();
             function handleClickOutside(event) {
 
                 if (ref.current && !ref.current.contains(event.target)) {
@@ -225,6 +238,7 @@ const Demo = () => {
     }
 
     function handleClickSingleDropdown(data, type) {
+        console.log(data, type);
         if (type === 'cat') {
             setSelectedCategory(data.value);
             toggleCateDropdown();
@@ -469,6 +483,7 @@ const Demo = () => {
     }
 
     useEffect(() => {
+        logoutUserCheck();
         console.log(search.length);
         if (search.length === 0) {
             setNewsItems(newsItemsCached);
@@ -511,20 +526,30 @@ const Demo = () => {
         });
     };
 
-    let stateDropdownData = null;
-    if (status) {
-        stateDropdownData = Object.keys(status).forEach((key, i) => (
-            <a key={i} href={void (0)} onClick={() => selectedState === key ? clearState() : handleClickSingleDropdown(key, 'state')} className={`${selectedState === key ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white'} cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900`} role="menuitem">
-                {status[key]}
-            </a>
-        ));
-
-        //console.log(stateDropdownData);
-    }
+    
+    
 
     const logout = (e) => {
         e.preventDefault();
-        Router.push('/');
+        
+        HttpCms.get(`/admin_user/logout?token=${appUserInfo.token}`)
+            .then(response => {
+                //console.log("fetch res: ", response.data);
+                setAppUserInfo(null);
+                setLoading(false);
+                Router.push('/');
+                //console.log(response.data, "response.data.data");
+            })
+            .catch(e => {
+                console.log(e);
+                setLoading(false);
+            })
+            .finally(() => {
+                setAppUserInfo(null);
+                setLoading(false);
+            });
+
+        
     }
 
 
@@ -589,9 +614,11 @@ const Demo = () => {
                                                 <div className="rounded-md bg-white shadow-xs">
                                                     <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
                                                         <>
-                                                            {
-                                                                stateDropdownData
-                                                            }
+                                                        {Object.keys(status).forEach((key, i) =>(            
+                                                            <a key={i} href={void (0)} onClick={() => selectedState === key ? clearState() : handleClickSingleDropdown(key, 'state')} className={`${selectedState === key ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white'} cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900`} role="menuitem">
+                                                            {status[key]}
+                                                        </a>
+                                                        ))}
                                                         </>
                                                     </div>
                                                 </div>
@@ -706,7 +733,7 @@ const Demo = () => {
                             </div>
                             <div ref={profileWrapperRef} data-id="profile" className="relative inline-block text-center">
                                 <span onClick={() => toggleProfileDropdown()} className="cursor-pointer inline-flex items-center justify-center h-12 w-12 rounded-full sfd-btn-primary">
-                                    <span className="text-lg font-medium leading-none text-white">TK</span>
+                                    <span className="text-lg font-medium leading-none text-white">{appUserInfo?.displayName}</span>
                                 </span>
                                 {openProfileDropdown && (
                                     <div className="origin-top-right absolute right-0 mt-2 w-24 rounded-md shadow-lg">

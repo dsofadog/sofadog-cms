@@ -10,8 +10,8 @@ const Login = () => {
 
     useEffect(() => {
         setUserInfo({
-            email: '',
-            password: '',
+            email: 'superuser@so.fa.dog',
+            password: '090CE11ce@',
         })
         
     }, []);
@@ -32,6 +32,9 @@ const Login = () => {
         .then((response) => {        
             if(response.data.token !=""){               
                 Router.push('/cms');
+                let firstName = response.data.user.first_name;
+                let lastName = response.data.user.last_name;
+                response.data.displayName = firstName.charAt(0) +lastName.charAt(0);
                 setAppUserInfo(response.data);
             }else{
                alert("Something wrong !!");

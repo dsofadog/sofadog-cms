@@ -10,6 +10,7 @@ function LayoutProvider({ children }) {
   const [error, setError] = useState(null);
   const [successNotification, setSuccessNotification] = useState(false);
   const [headerComponent, setHeaderComponent] = useState(null);
+  const [appUserInfo, setAppUserInfo] = useState(null);
 
   const initialState = {
     sideBarCollapsed,
@@ -24,6 +25,8 @@ function LayoutProvider({ children }) {
     setSuccessNotification,
     setHeaderComponent,
     headerComponent,
+    setAppUserInfo,
+    appUserInfo
   };
 
   return (
