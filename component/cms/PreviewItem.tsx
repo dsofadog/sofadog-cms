@@ -71,10 +71,12 @@ const PreviewItem = (props) => {
 
     function showStatus(itemkey) {
         let statusReturn = '';
-        Object.keys(status).forEach(key => {
-            if (itemkey == key) {
-                statusReturn = status[key];
-            }
+        status?.map((s,i)=>{            
+            if(s.name === itemkey)
+            {
+                //console.log(s.name,itemkey)
+                statusReturn = s.value;
+            }            
         });
 
         return statusReturn;
