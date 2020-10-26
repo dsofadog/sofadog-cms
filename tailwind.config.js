@@ -23,7 +23,16 @@ module.exports = {
             maxHeight: {
                 24: "6rem",
                 '2xl': "38rem"
-            }
+            },
+            minWidth: {
+                24: "6rem",
+                40: "10rem",
+                '2xl': "38rem"
+            },
+            maxWidth: {
+                48: "12rem",
+                '2xl': "38rem"
+            },
         },
     },
     plugins: [

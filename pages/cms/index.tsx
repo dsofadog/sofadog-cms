@@ -14,6 +14,7 @@ import { fas } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import { scroller } from "react-scroll";
 import useInfiniteScroll from 'react-infinite-scroll-hook';
+import HeaderProfileComponent from '../../component/common/HeaderProfileComponent';
 
 f_config.autoAddCss = false;
 library.add(fas, fab);
@@ -28,7 +29,7 @@ const Demo = () => {
     const [selectedTag, setSelectedTag] = useState([]);
     const [selectedState, setSelectedState] = useState(null);
 
-    const { setLoading, appUserInfo, setAppUserInfo } = useContext(LayoutContext);
+    const { setLoading, appUserInfo } = useContext(LayoutContext);
 
     const [openCategoryDropdown, setOpenCategoryDropdown] = useState(false);
     const toggleCateDropdown = () => { setOpenCategoryDropdown(!openCategoryDropdown) };
@@ -36,8 +37,6 @@ const Demo = () => {
     const toggleTagDropdown = () => { setOpenTagDropdown(!openTagDropdown) };
     const [openStateDropdown, setOpenStateDropdown] = useState(false);
     const toggleStateDropdown = () => { setOpenStateDropdown(!openStateDropdown) };
-    const [openProfileDropdown, setOpenProfileDropdown] = useState(false);
-    const toggleProfileDropdown = () => { setOpenProfileDropdown(!openProfileDropdown) };
     const [openFilterDropdown, setOpenFilterDropdown] = useState(false);
     const toggleFilterDropdown = () => { setOpenFilterDropdown(!openFilterDropdown) };
 
@@ -56,12 +55,10 @@ const Demo = () => {
     const catWrapperRef = useRef(null);
     const tagWrapperRef = useRef(null);
     const stateWrapperRef = useRef(null);
-    const profileWrapperRef = useRef(null);
     const filterWrapperRef = useRef(null);
     useOutsideAlerter(catWrapperRef);
     useOutsideAlerter(tagWrapperRef);
     useOutsideAlerter(stateWrapperRef);
-    useOutsideAlerter(profileWrapperRef);
     useOutsideAlerter(filterWrapperRef);
 
     const [hasNextPage, setHasNextPage] = useState(true);
@@ -97,7 +94,6 @@ const Demo = () => {
 
     function useOutsideAlerter(ref) {
         useEffect(() => {
-            logoutUserCheck();
             function handleClickOutside(event) {
 
                 if (ref.current && !ref.current.contains(event.target)) {
@@ -109,9 +105,6 @@ const Demo = () => {
                     }
                     if (ref.current.dataset.id === "state") {
                         setOpenStateDropdown(false);
-                    }
-                    if (ref.current.dataset.id === "profile") {
-                        setOpenProfileDropdown(false);
                     }
                     if (ref.current.dataset.id === "filter") {
                         setOpenFilterDropdown(false);
@@ -158,10 +151,10 @@ const Demo = () => {
         //     console.log("asdsadsadsa");
         //     setLoading(true);
         // }else{
-            
+
         // }
         setLoading(isLoader);
-        
+
         setScrollLoading(true);
         let dataUrlObj = {
             "token": "abcdef",
@@ -212,12 +205,12 @@ const Demo = () => {
 
     function handleLoadMore() {
         if (search.length === 0 && selectedState == null) {
-            if(newsItems?.news_items.length>0 ){
+            if (newsItems?.news_items.length > 0) {
                 fetchItems(false);
-            }else{
+            } else {
                 fetchItems(true);
             }
-            
+
         }
     }
 
@@ -377,7 +370,7 @@ const Demo = () => {
                 console.log(dataAll, "dataAll");
                 arr.news_items = dataAll;
                 setNewsItemsCached(arr)
-               
+
                 break;
 
 
@@ -499,7 +492,6 @@ const Demo = () => {
     }
 
     useEffect(() => {
-        logoutUserCheck();
         console.log(search.length);
         if (search.length === 0) {
             setNewsItems(newsItemsCached);
@@ -541,30 +533,6 @@ const Demo = () => {
             smooth: "easeInOutQuart",
         });
     };
-
-
-
-
-    const logout = (e) => {
-        e.preventDefault();
-
-        HttpCms.get(`/admin_user/logout?token=${appUserInfo.token}`)
-            .then(response => {
-                //console.log("fetch res: ", response.data);
-                setAppUserInfo(null);
-                setLoading(false);
-                Router.push('/');
-                //console.log(response.data, "response.data.data");
-            })
-            .catch(e => {
-                console.log(e);
-                setLoading(false);
-            })
-            .finally(() => {
-                setAppUserInfo(null);
-                setLoading(false);
-            });
-    }
 
     function showStatus(itemkey) {
         let statusReturn = '';
@@ -752,23 +720,7 @@ const Demo = () => {
                                     </button>
                                 </span>
                             </div>
-                            <div ref={profileWrapperRef} data-id="profile" className="relative inline-block text-center">
-                                <span onClick={() => toggleProfileDropdown()} className="cursor-pointer inline-flex items-center justify-center h-12 w-12 rounded-full sfd-btn-primary">
-                                    <span className="text-lg font-medium leading-none text-white">{appUserInfo?.displayName}</span>
-                                </span>
-                                {openProfileDropdown && (
-                                    <div className="origin-top-right absolute right-0 mt-2 w-24 rounded-md shadow-lg">
-                                        <div className="rounded-md bg-white shadow-xs">
-                                            <div className="py-1 text-left text-base" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                                                <a href={void (0)} onClick={(e) => logout(e)} className="flex space-x-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900" role="menuitem">
-                                                    <FontAwesomeIcon className="w-3" icon={['fas', 'sign-out-alt']} />
-                                                    <span>Logout</span>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
+                            <HeaderProfileComponent></HeaderProfileComponent>
                         </div>
                     </div>
                 </div>
@@ -799,7 +751,7 @@ const Demo = () => {
                         </div>
                     ))}
 
-                   {selectedState != null && newsItemsCached?.news_items?.map((item, i) => (
+                    {selectedState != null && newsItemsCached?.news_items?.map((item, i) => (
                         <div key={i}>
                             <PreviewItem
                                 index={i}
