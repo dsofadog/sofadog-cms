@@ -13,6 +13,7 @@ const Login = () => {
         //     email: 'superuser@so.fa.dog',
         //     password: '090CE11ce@',
         // })
+        setLoading(false);
         setUserInfo({
             email: '',
             password: '',
