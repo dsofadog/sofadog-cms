@@ -6,7 +6,7 @@ const Home = () => (
     <div>
         <Head>
             <title>So.Fa.Dog-CMS</title>
-            <link rel="icon" href="/favicon.ico" />
+            <link rel="icon" href="/color-logo.ico" />
             <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
         </Head>
 
