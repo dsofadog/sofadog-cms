@@ -30,7 +30,7 @@ const Login = () => {
     }
 
     const doLogin = (e) => {
-        setLoading(false);
+        setLoading(true);
         e.preventDefault(); 
         HttpCms.post("/admin_user/login", userInfo)
         .then((response) => {        

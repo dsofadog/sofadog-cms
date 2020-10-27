@@ -1,5 +1,6 @@
 import Link from "next/link"
 import HeaderProfileComponent from "../../../component/common/HeaderProfileComponent"
+import UserComponent from "../../../component/common/UserComponent"
 
 const Setting = () => {
 
@@ -20,10 +21,10 @@ const Setting = () => {
                                 </button>
                             </div>
                             <div className="flex-shrink-0 flex items-center space-x-2">
-                                <Link href="/">
+                                <Link href="/cms">
                                     <img className="h-8 w-auto cursor-pointer" src="/color-logo.png" alt="So.Fa.Dog" />
                                 </Link>
-                                <Link href="/">
+                                <Link href="/cms">
                                     <img className="h-4 w-auto cursor-pointer" src="/logo-title-white.png" alt="So.Fa.Dog" />
                                 </Link>
                             </div>
@@ -109,16 +110,7 @@ const Setting = () => {
                         </button>
                     </div>
                     <main className="flex-1 relative z-0 overflow-y-auto focus:outline-none" tabIndex={0}>
-                        <div className="pt-2 pb-6 md:py-6">
-                            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                                <h1 className="text-2xl font-semibold text-gray-900">Dashboard</h1>
-                            </div>
-                            <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-                                <div className="py-4">
-                                    <div className="border-4 border-dashed border-gray-200 rounded-lg h-96"></div>
-                                </div>
-                            </div>
-                        </div>
+                        <UserComponent></UserComponent>
                     </main>
                 </div>
             </div>
