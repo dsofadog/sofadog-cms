@@ -1,4 +1,3 @@
-import Head from 'next/head';
 import React, { useState, createContext } from 'react';
 import ProgressSpinner from '../component/common/ProgressSpinner'
 
@@ -32,11 +31,6 @@ function LayoutProvider({ children }) {
 
   return (
     <LayoutContext.Provider value={initialState}>
-      <Head>
-        <title>So.Fa.Dog-CMS</title>
-        <link rel="icon" href="/color-logo.ico" />
-        <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
-      </Head>
 
       {loading && (<ProgressSpinner />
       )}

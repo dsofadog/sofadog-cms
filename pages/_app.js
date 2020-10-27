@@ -2,16 +2,14 @@ import '../styles/globals.css'
 import { LayoutProvider } from '../contexts';
 
 function MyApp({ Component, pageProps }) {
-  
-  return ( 
+
+  return (
 
     <LayoutProvider>
-       <Component {...pageProps} />
+      <Component {...pageProps} />
     </LayoutProvider>
 
-   
-
-  ) 
+  )
 }
 
 export default MyApp
