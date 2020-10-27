@@ -70,7 +70,7 @@ const Demo = () => {
         scrollContainer: 'window',
     });
 
-    const [scrollCount, setScrollCount] = useState(0);
+    const [scrollCount, setScrollCount] = useState<number>(0);
 
     useEffect(() => {
         console.log(appUserInfo);
@@ -144,7 +144,8 @@ const Demo = () => {
         return apiUrl;
     }
 
-
+    //const [myFlag,setMyFlag] = useState(true);
+    let myFlag = true;
     const fetchItems = async (isLoader = true) => {
         //console.log("getCurrentDate: ", getCurrentDate("-"));
         // if(newsItems?.news_items.length>0){
@@ -182,12 +183,12 @@ const Demo = () => {
                         setNewsItemsCached(response.data);
                     }
                     //console.log("fetch newsItems: ",newsItems);                
-
+                    //setMyFlag(false);
+                    myFlag = false;
                 } else {
                     //setHasNextPage(false);
                 }
-                setHasNextPage(true);
-                setScrollCount(scrollCount + 1);
+                setHasNextPage(true);                
 
                 setPaginationData({
                     ...paginationData,
@@ -197,9 +198,11 @@ const Demo = () => {
             .catch(e => {
                 console.log(e);
             })
-            .finally(() => {
-                setLoading(false);
-                setScrollLoading(false);
+            .finally(() => {                
+                if(!myFlag){                    
+                    setLoading(false);
+                }   
+                setScrollLoading(false);             
             });
     }
 
@@ -210,18 +213,21 @@ const Demo = () => {
             } else {
                 fetchItems(true);
             }
-
+            setScrollCount(scrollCount + 1);
         }
     }
 
-    function refreshData() {
+    function refreshData(e) {
+        e.preventDefault();
         setSelectedCategory(null);
         setSelectedTag([]);
         setSelectedState(null);
         setNewsItems(null);
         setNewsItemsCached(null);
         setScrollCount(0);
-        fetchItems();
+        if(scrollCount === 0){
+            fetchItems();
+        }       
     }
 
     function deleteItem(item) {
@@ -277,6 +283,7 @@ const Demo = () => {
     }
 
     function returndateAsRequired() {
+        console.log("scrollCount: ",scrollCount);
         let today = moment().format('DD.MM.YYYY');
         let startdate = today;
         var new_date = moment(startdate, "DD-MM-YYYY");
@@ -611,6 +618,13 @@ const Demo = () => {
                                                         {status.value}
                                                     </a>
                                                 ))}
+                                                <>
+                                                    {selectedState && (
+                                                        <div className="w-full px-2 pb-2">
+                                                            <button className="w-full text-white text-sm bg-indigo-600 hover:bg-indigo-700 rounded px-2 py-1">Clear</button>
+                                                        </div>
+                                                    )}
+                                                </>
                                             </div>
                                         </div>
                                     </div>
@@ -696,7 +710,7 @@ const Demo = () => {
                                             </div>
                                             <div className="w-full p-2 space-x-2 flex">
                                                 <button onClick={(e) => filteringCategoryTag()} className="text-white text-sm bg-indigo-600 hover:bg-indigo-800 rounded w-1/2 p-2">Submit</button>
-                                                <button onClick={(e) => { refreshData(); toggleFilterDropdown(); }} className="text-gray-800 text-sm border border-indigo-600 hover:bg-gray-200 rounded w-1/2 p-2">Clear</button>
+                                                <button onClick={(e) => { refreshData(e); toggleFilterDropdown(); }} className="text-gray-800 text-sm border border-indigo-600 hover:bg-gray-200 rounded w-1/2 p-2">Clear</button>
                                             </div>
                                         </div>
                                     </div>
@@ -704,7 +718,7 @@ const Demo = () => {
                             </div>
 
                             <div className="">
-                                <button onClick={() => refreshData()} className="relative inline-flex items-center space-x-2 px-2 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-400 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-600 active:bg-indigo-600 transition duration-150 ease-in-out">
+                                <button onClick={(e) => refreshData(e)} className="relative inline-flex items-center space-x-2 px-2 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-400 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-600 active:bg-indigo-600 transition duration-150 ease-in-out">
                                     <FontAwesomeIcon className="w-3" icon={['fas', 'sync-alt']} />
                                     <span>Refresh</span>
                                 </button>
