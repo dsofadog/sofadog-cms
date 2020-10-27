@@ -34,9 +34,15 @@ const UserComponent = () => {
 							{addNew &&(
 								<UserInfo action="add" callback={toggleAddNew}></UserInfo>
 							)}							
-							<UserInfo action="view"></UserInfo>
-							<UserInfo action="view"></UserInfo>
-							<UserInfo action="view"></UserInfo>
+							<UserInfo></UserInfo>
+							<UserInfo></UserInfo>
+							<UserInfo></UserInfo>
+							<UserInfo></UserInfo>
+							<UserInfo></UserInfo>
+							<UserInfo></UserInfo>
+							<UserInfo></UserInfo>
+							<UserInfo></UserInfo>
+							<UserInfo></UserInfo>
 						</ul>
 					</div>
 				</div>
