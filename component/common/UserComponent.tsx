@@ -36,7 +36,7 @@ const UserComponent = () => {
 							)}							
 							<UserInfo action="view"></UserInfo>
 							<UserInfo action="view"></UserInfo>
-							<UserInfo action="edit"></UserInfo>
+							<UserInfo action="view"></UserInfo>
 						</ul>
 					</div>
 				</div>

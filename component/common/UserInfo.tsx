@@ -33,10 +33,14 @@ const UserInfo = (props) => {
     useOutsideAlerter(roleWrapperRef);
 
     const [userData, setUserData] = useState(null);
+    const [action, setAction] = useState('view');
 
     useEffect(() => {
         if (props.data) {
             setUserData(props.data);
+        }
+        if (props.action) {
+            setAction(props.action);
         }
     }, [props]);
 
@@ -73,14 +77,14 @@ const UserInfo = (props) => {
                         <div className="flex-shrink-0">
                             <span className="cursor-pointer inline-flex items-center justify-center h-12 w-12 rounded-full sfd-btn-primary">
                                 <span className="text-lg font-medium leading-none text-white">
-                                    {props.action === 'view' ?
+                                    {action === 'view' ?
                                         'RC' : ''
                                     }
                                 </span>
                             </span>
                         </div>
                         <div className="min-w-0 flex-1 px-4 md:grid md:grid-cols-2 md:gap-4">
-                            {props.action === 'view' ?
+                            {action === 'view' ?
                                 <div>
                                     <div className="text-sm leading-5 font-medium text-indigo-600 truncate">Ricardo Cooper</div>
                                     <div className="mt-2 flex items-center text-sm leading-5 text-gray-500">
@@ -108,7 +112,7 @@ const UserInfo = (props) => {
                             }
 
                             <div className="h-full flex">
-                                {props.action === 'view' ?
+                                {action === 'view' ?
                                     <div>
                                         <div className="h-full flex items-center text-sm leading-5 text-gray-900">
                                             Super Admin
@@ -154,16 +158,20 @@ const UserInfo = (props) => {
                         </div>
                     </div>
                     <div className="flex items-center space-x-2 ">
-                        {props.action === 'view' ?
-                            <FontAwesomeIcon className="w-5 h-5 cursor-pointer hover:text-blue-600" icon={['fas', 'edit']} />
+                        {action === 'view' ?
+                            <FontAwesomeIcon onClick={() => setAction('edit')} className="w-5 h-5 cursor-pointer hover:text-blue-600" icon={['fas', 'edit']} />
                             :
-                            <FontAwesomeIcon className="w-5 h-5 cursor-pointer hover:text-white rounded-full bg-gray-300 hover:bg-green-500 p-1" icon={['fas', 'check']} />
+                            <FontAwesomeIcon onClick={() => setAction('view')} className="w-5 h-5 cursor-pointer hover:text-white rounded-full bg-gray-300 hover:bg-green-500 p-1" icon={['fas', 'check']} />
                         }
 
-                        {props.action === 'add' ?
-                            <FontAwesomeIcon onClick={props?.callback} className="w-4 h-4 cursor-pointer hover:text-red-800" icon={['fas', 'times']} />
-                            :
-                            <FontAwesomeIcon className="w-4 h-4 cursor-pointer hover:text-red-800" icon={['fas', 'trash-alt']} />
+                        {
+                            action === 'add' ?
+                                <FontAwesomeIcon onClick={props?.callback} className="w-4 h-4 cursor-pointer hover:text-red-800" icon={['fas', 'times']} />
+                                :
+                            action === 'edit' ?
+                                <FontAwesomeIcon onClick={() => setAction('view')} className="w-4 h-4 cursor-pointer hover:text-red-800" icon={['fas', 'times']} />
+                                :
+                                <FontAwesomeIcon className="w-4 h-4 cursor-pointer hover:text-red-800" icon={['fas', 'trash-alt']} />
                         }
                     </div>
                 </div>
