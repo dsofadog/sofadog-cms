@@ -13,6 +13,7 @@ import { fab } from '@fortawesome/free-brands-svg-icons';
 //Mirage Server
 import { createServer } from "miragejs";
 import CmsConstant from '../../utils/cms-constant';
+import Comment from '../../component/cms/Comment';
 createServer({
     routes() {
         this.passthrough('https://v-int.so.fa.dog/**');
@@ -128,6 +129,23 @@ const Item = () => {
     const categories = CmsConstant.Category;
     const status = CmsConstant.Status;
 
+    let comments = [
+        {
+            first_name: 'Tushar',
+            last_name: 'Kharat',
+            job_title: 'Software Developer',
+            text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+            created: 'Oct 26'
+        },
+        {
+            first_name: 'Delaney',
+            last_name: 'Burke',
+            job_title: 'CTO',
+            text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+            created: 'Oct 27'
+        }
+    ]
+
     useEffect(() => {
         logoutUserCheck();
         console.log("item_id: ", item_id);
@@ -206,7 +224,7 @@ const Item = () => {
                                 <div className="w-full mx-auto h-auto max-h-2xl">
                                     <div className="flex flex-no-wrap justify-center">
                                         <div className="w-11/12 mx-auto flex-none float-left">
-                                            <div className="md:flex mx-6 md:mx-auto w-full h-full">
+                                            <div className="md:flex mx-6 md:mx-auto w-full h-full mb-5">
 
                                                 <div className={`border-${categories ? categories[item?.category].color : 'gray-200'} relative w-full h-full md:w-4/5 px-4 py-2 bg-white rounded-lg rounded-r-none border-l-8`}>
                                                     <div className="flex items-center mb-4">
@@ -276,19 +294,21 @@ const Item = () => {
                                                         </div>
                                                     </div>
                                                     <div className="w-full py-5">
-                                                        <div className="w-full py-4 flex items-center text-center space-x-2">
-                                                            <div className="w-1/6 flex items-center space-x-2">
-                                                                <span className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-blue-500">
-                                                                    <span className="text-lg font-medium leading-none text-white">3</span>
+                                                        <div className="w-full py-4 flex items-center">
+                                                            <div className="w-1/5 flex items-center">
+                                                                <span className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-blue-700">
+                                                                    <span className="text-lg font-medium leading-none text-white">{comments?.length}</span>
                                                                 </span>
-                                                                <label className="text-base font-bold text-gray-800 cursor-pointer">Comments</label>
+                                                                <label className="ml-3 text-xl font-bold text-gray-800 cursor-pointer">Comments</label>
                                                             </div>
-                                                            <div className="w-5/6 h-1 border-b-2 border-black"></div>
+                                                            <div className="w-4/5 h-1 border-b-2 border-black"></div>
                                                         </div>
-                                                        <div className="w-full">
-
+                                                        <div className="w-full mb-10 space-y-4">
+                                                            {comments.map((comment, i) => (
+                                                                <Comment comment={comment} />
+                                                            ))}
+                                                            <Comment type='add' />
                                                         </div>
-                                                        <Editor value={body} onChange={setBody} />
                                                     </div>
                                                 </div>
 
