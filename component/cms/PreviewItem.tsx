@@ -11,6 +11,7 @@ import { fab } from '@fortawesome/free-brands-svg-icons';
 
 import CreateItem from "./CreateItem";
 import { LayoutContext } from '../../contexts';
+import Link from "next/link";
 
 
 f_config.autoAddCss = false;
@@ -45,7 +46,7 @@ const PreviewItem = (props) => {
     function refreshData(e) {
         e.preventDefault();
         setLoading(true);
-        HttpCms.get(`https://cms-int.so.fa.dog/news_items/${item.id}?token=abcdef`)
+        HttpCms.get(`/news_items/${item.id}?token=abcdef`)
             .then(response => {
                 setItem(response.data.news_items[0]);
                 console.log(response.data.news_items[0], "response.data.data");
@@ -71,12 +72,11 @@ const PreviewItem = (props) => {
 
     function showStatus(itemkey) {
         let statusReturn = '';
-        status?.map((s,i)=>{            
-            if(s.name === itemkey)
-            {
+        status?.map((s, i) => {
+            if (s.name === itemkey) {
                 //console.log(s.name,itemkey)
                 statusReturn = s.value;
-            }            
+            }
         });
 
         return statusReturn;
@@ -359,6 +359,14 @@ const PreviewItem = (props) => {
                                                                 </div>
                                                             ))}
                                                         </div>
+                                                    </div>
+                                                </div>
+                                                <div className="w-full flex justify-end py-4">
+                                                    <div className="flex text-center space-x-2">
+                                                        <span className="text-white w-6 h-6 rounded-full p-3 bg-blue-600 text-xs flex items-center justify-center">3</span>
+                                                        <Link href={`/cms/[item_id]`} as={`/cms/${item.id}`}>
+                                                            <label className="text-sm font-bold text-gray-800 cursor-pointer hover:underline">Comments</label>
+                                                        </Link>
                                                     </div>
                                                 </div>
                                             </div>
