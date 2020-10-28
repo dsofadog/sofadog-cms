@@ -257,7 +257,6 @@ const Demo = () => {
             setSelectedState(data);
             toggleStateDropdown();
             transformNewItems(data, 'filter_by_state')
-
         }
 
     }
@@ -274,8 +273,10 @@ const Demo = () => {
     function clearCategory() {
         setSelectedCategory(null);
     }
-    function clearState() {
+    function clearState(e) {
+        e.preventDefault();
         setSelectedState(null);
+        toggleStateDropdown();
     }
 
     function clearTag(tag) {
@@ -377,10 +378,7 @@ const Demo = () => {
                 console.log(dataAll, "dataAll");
                 arr.news_items = dataAll;
                 setNewsItemsCached(arr)
-
                 break;
-
-
             default:
             // code block
         }
@@ -621,7 +619,7 @@ const Demo = () => {
                                                 <>
                                                     {selectedState && (
                                                         <div className="w-full px-2 pb-2">
-                                                            <button className="w-full text-white text-sm bg-indigo-600 hover:bg-indigo-700 rounded px-2 py-1">Clear</button>
+                                                            <button onClick={(e)=>clearState(e)} className="w-full text-white text-sm bg-indigo-600 hover:bg-indigo-700 rounded px-2 py-1">Clear</button>
                                                         </div>
                                                     )}
                                                 </>
