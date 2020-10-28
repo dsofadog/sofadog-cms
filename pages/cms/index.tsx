@@ -612,7 +612,7 @@ const Demo = () => {
                                         <div className="rounded-md bg-white shadow-xs">
                                             <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
                                                 {status?.map((status, i) => (
-                                                    <a key={i} href={void (0)} onClick={() => selectedState?.name === status.name ? clearState() : handleClickSingleDropdown(status, 'state')} className={`${selectedState?.name === status.name ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white'} cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900 uppercase`} role="menuitem">
+                                                    <a key={i} href={void (0)} onClick={(e) => selectedState?.name === status.name ? clearState(e) : handleClickSingleDropdown(status, 'state')} className={`${selectedState?.name === status.name ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white'} cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900 uppercase`} role="menuitem">
                                                         {status.value}
                                                     </a>
                                                 ))}
