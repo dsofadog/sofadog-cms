@@ -38,7 +38,7 @@ const Item = () => {
         <div className="w-full h-full min-h-screen bg-gray-500">
             <NavHeader />
             <div className="w-full min-h-96 p-4">
-                <div className="max-w-7xl mx-auto h-full rounded bg-white">
+                <div className="max-w-4xl mx-auto h-full rounded bg-white p-4">
                     <Editor value={body} onChange={setBody} />
                 </div>
             </div>
