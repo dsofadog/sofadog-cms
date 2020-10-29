@@ -188,7 +188,7 @@ const Demo = () => {
                 } else {
                     //setHasNextPage(false);
                 }
-                setHasNextPage(true);                
+                setHasNextPage(true);
 
                 setPaginationData({
                     ...paginationData,
@@ -198,11 +198,11 @@ const Demo = () => {
             .catch(e => {
                 console.log(e);
             })
-            .finally(() => {                
-                if(!myFlag){                    
+            .finally(() => {
+                if (!myFlag) {
                     setLoading(false);
-                }   
-                setScrollLoading(false);             
+                }
+                setScrollLoading(false);
             });
     }
 
@@ -225,9 +225,9 @@ const Demo = () => {
         setNewsItems(null);
         setNewsItemsCached(null);
         setScrollCount(0);
-        if(scrollCount === 0){
+        if (scrollCount === 0) {
             fetchItems();
-        }       
+        }
     }
 
     function deleteItem(item) {
@@ -284,7 +284,7 @@ const Demo = () => {
     }
 
     function returndateAsRequired() {
-        console.log("scrollCount: ",scrollCount);
+        console.log("scrollCount: ", scrollCount);
         let today = moment().format('DD.MM.YYYY');
         let startdate = today;
         var new_date = moment(startdate, "DD-MM-YYYY");
@@ -619,7 +619,7 @@ const Demo = () => {
                                                 <>
                                                     {selectedState && (
                                                         <div className="w-full px-2 pb-2">
-                                                            <button onClick={(e)=>clearState(e)} className="w-full text-white text-sm bg-indigo-600 hover:bg-indigo-700 rounded px-2 py-1">Clear</button>
+                                                            <button onClick={(e) => clearState(e)} className="w-full text-white text-sm bg-indigo-600 hover:bg-indigo-700 rounded px-2 py-1">Clear</button>
                                                         </div>
                                                     )}
                                                 </>
@@ -779,9 +779,12 @@ const Demo = () => {
                     ))}
                 </>
             </div>
-            <div className="fixed bottom-0 right-0 mb-4 mr-4 z-50 cursor-pointer">
-                <FontAwesomeIcon onClick={(e) => scrollToSection()} className="w-12 h-12 p-2 rounded-full cursor-pointer text-white bg-blue-500 hover:bg-blue-600" icon={['fas', 'arrow-up']} />
-            </div>
+            {!scrollLoading && newsItems && (
+                <div className="fixed bottom-0 right-0 mb-4 mr-4 z-50 cursor-pointer">
+                    <FontAwesomeIcon onClick={(e) => scrollToSection()} className="w-12 h-12 p-2 rounded-full cursor-pointer text-white bg-blue-500 hover:bg-blue-600" icon={['fas', 'arrow-up']} />
+                </div>
+            )}
+
         </div >
     )
 }

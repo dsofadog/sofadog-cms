@@ -16,7 +16,7 @@ const UserComponent = () => {
 	const toggleAddNew = () => { setAddNew(!addNew) };
 
 	return (
-		<div className="pt-2 pb-6 md:py-6 min-h-3/4">
+		<div className="min-h-3/4">
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 				<div className="w-full flex">
 					<div className="w-1/2">
@@ -28,7 +28,7 @@ const UserComponent = () => {
 				</div>
 			</div>
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-				<div className="py-4 min-h-96">
+				<div className="min-h-96 pt-2">
 					<div className="bg-white shadow overflow-hidden sm:rounded-md">
 						<ul>
 							{addNew &&(
