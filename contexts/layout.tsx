@@ -1,4 +1,5 @@
 import React, { useState, createContext } from 'react';
+import Notification from '../component/common/Notification';
 import ProgressSpinner from '../component/common/ProgressSpinner'
 
 const LayoutContext = createContext(null);
@@ -11,6 +12,7 @@ function LayoutProvider({ children }) {
   const [successNotification, setSuccessNotification] = useState(false);
   const [headerComponent, setHeaderComponent] = useState(null);
   const [appUserInfo, setAppUserInfo] = useState(null);
+  const [notification, setNotification] = useState({show: false,data: null});
 
   const initialState = {
     sideBarCollapsed,
@@ -31,10 +33,8 @@ function LayoutProvider({ children }) {
 
   return (
     <LayoutContext.Provider value={initialState}>
-
-      {loading && (<ProgressSpinner />
-      )}
-
+      <Notification data={notification}/>
+      <ProgressSpinner show={loading} />
       {children}
     </LayoutContext.Provider>
   );
