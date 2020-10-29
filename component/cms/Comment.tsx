@@ -3,11 +3,20 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import { useCallback, useContext, useEffect, useState } from 'react';
+import dynamic from "next/dynamic";
 import { LayoutContext } from '../../contexts';
-import Editor from './Editor';
+//import Editor from './Editor';
 
 f_config.autoAddCss = false;
 library.add(fas, fab);
+
+const Editor = dynamic(
+  () => {
+    return import("./Editor");
+  },
+  { ssr: false }
+);
+
 const Comment = (props) => {
     const { setLoading, appUserInfo } = useContext(LayoutContext);
     const [comment, setComment] = useState(null);
