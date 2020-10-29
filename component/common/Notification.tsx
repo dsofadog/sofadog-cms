@@ -1,18 +1,10 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 
 const Notification = (props) => {
     const [show, setShow] = useState(true);
-    const [data,setData] = useState(null);
-    useEffect(() => {
-        if (props) {
-            setShow(props.data.show);
-            setData(props.data.data);
-        }
-    }, [props])
-
     return (
         <>
-            {show && data &&(
+            {show && (
                 <div className="z-50 fixed inset-0 flex items-end justify-center px-4 py-6 pointer-events-none sm:p-6 sm:items-start sm:justify-end">
                     <div className="max-w-sm w-full bg-white shadow-lg rounded-lg pointer-events-auto">
                         <div className="rounded-lg shadow-xs overflow-hidden">
@@ -20,7 +12,7 @@ const Notification = (props) => {
                                 <div className="flex items-center">
                                     <div className="w-0 flex-1 flex justify-between">
                                         <p className="w-0 flex-1 text-sm leading-5 font-medium text-gray-900">
-                                            {data?.message}
+                                            Discussion archived
                                         </p>
                                     </div>
                                     <div className="ml-4 flex-shrink-0 flex">

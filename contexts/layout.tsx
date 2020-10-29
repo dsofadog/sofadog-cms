@@ -28,7 +28,8 @@ function LayoutProvider({ children }) {
     setHeaderComponent,
     headerComponent,
     setAppUserInfo,
-    appUserInfo
+    appUserInfo,
+    setNotification
   };
 
   return (

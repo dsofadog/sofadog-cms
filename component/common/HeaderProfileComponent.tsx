@@ -13,7 +13,7 @@ f_config.autoAddCss = false;
 library.add(fas, fab);
 
 const HeaderProfileComponent = () => {
-    const { setLoading, appUserInfo, setAppUserInfo } = useContext(LayoutContext);
+    const { setLoading, appUserInfo, setAppUserInfo, setNotification } = useContext(LayoutContext);
     const profileWrapperRef = useRef(null);
     useOutsideAlerter(profileWrapperRef);
     const [openProfileDropdown, setOpenProfileDropdown] = useState(false);
