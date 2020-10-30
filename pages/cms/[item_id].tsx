@@ -216,12 +216,12 @@ const Item = () => {
     return (
         <>
             {item && (
-                <div className="w-full h-full min-h-screen overflow-y-auto pb-20 bg-gray-500">
+                <div className="w-full h-full min-h-screen  bg-gray-500">
                     <NavHeader />
-                    <div className="w-full min-h-96 p-4">
+                    <div className="w-full min-h-96 py-10 px-4">
                         <div className="max-w-7xl mx-auto">
                             <div className="w-full">
-                                <div className="w-full mx-auto h-auto max-h-2xl">
+                                <div className="w-full mx-auto h-auto">
                                     <div className="flex flex-no-wrap justify-center">
                                         <div className="w-11/12 mx-auto flex-none float-left">
                                             <div className="md:flex mx-6 md:mx-auto w-full h-full mb-5">
