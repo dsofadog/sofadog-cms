@@ -2,21 +2,31 @@ import Router from 'next/router';
 import React,  {  useContext, useEffect, useState, } from 'react';
 import HttpCms from '../../utils/http-cms';
 import { LayoutContext } from '../../contexts/';
+import { resolve6 } from 'dns';
 
 const Login = () => {    
-    const { setLoading,setAppUserInfo } = useContext(LayoutContext);
+    const {
+            setLoading,
+            setAppUserInfo ,
+            currentUserAction, 
+            setCurrentUserAction,
+            appAction, 
+            setAppAction
+    } = useContext(LayoutContext);
+
+    
     
     const [userInfo, setUserInfo] = useState(null);
 
     useEffect(() => {
-        // setUserInfo({
-        //     email: 'superuser@so.fa.dog',
-        //     password: '090CE11ce@',
-        // })
         setUserInfo({
-            email: '',
-            password: '',
+            email: 'superuser@so.fa.dog',
+            password: '090CE11ce@',
         })
+        // setUserInfo({
+        //     email: '',
+        //     password: '',
+        // })
         
     }, []);
 
@@ -27,6 +37,32 @@ const Login = () => {
             ...userInfo,
             [name]: value            
         });
+    }
+    
+
+    const currentUserRoleManagement = (data) => {
+        console.log(data,"data");
+        data?.user?.admin_roles.forEach(function(item){
+            rolesAdded(item.id);
+          })
+        
+
+    }
+
+    const rolesAdded = (role) => {        
+        for (const [key, value] of Object.entries(appAction)) {     
+            console.log(`${key}: ${role}`)       
+            if(key==role){
+                console.log(`${key}: ${value}`);
+                let arrayData = [];               
+                arrayData = currentUserAction;
+                arrayData.push(value);
+                setCurrentUserAction(arrayData);
+                console.log(currentUserAction);
+
+            }
+          } 
+
     }
 
     const doLogin = (e) => {
@@ -40,6 +76,7 @@ const Login = () => {
                 let lastName = response.data.user.last_name;
                 response.data.displayName = firstName.charAt(0) +lastName.charAt(0);
                 setAppUserInfo(response.data);
+                currentUserRoleManagement(response.data);
             }else{
                alert("Something wrong !!");
             }    
