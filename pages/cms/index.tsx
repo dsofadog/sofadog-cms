@@ -29,7 +29,7 @@ const Demo = () => {
     const [selectedTag, setSelectedTag] = useState([]);
     const [selectedState, setSelectedState] = useState(null);
 
-    const { setLoading, appUserInfo } = useContext(LayoutContext);
+    const { setLoading, appUserInfo,currentUserPermission } = useContext(LayoutContext);
 
     const [openCategoryDropdown, setOpenCategoryDropdown] = useState(false);
     const toggleCateDropdown = () => { setOpenCategoryDropdown(!openCategoryDropdown) };
@@ -74,7 +74,8 @@ const Demo = () => {
 
     useEffect(() => {
         console.log(appUserInfo);
-        logoutUserCheck();
+        currentUserPermission('kkkkkkkkrrrr');
+       // logoutUserCheck();
         setNewsItems(null);
         setNewsItemsCached(null);
         setScrollCount(0);
@@ -554,6 +555,7 @@ const Demo = () => {
     return (
         <div className="w-full h-full min-h-screen bg-gray-500">
             <nav className="sfd-nav bg-gray-800 sticky top-0 z-30">
+         <span   className={`${currentUserPermission('kkk','super_admin1') ? 'border-red-500 text-red-600' : 'border-indigo-500 text-indigo-600 '}`}> permission testing  </span>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-16">
                         <div className="flex">
