@@ -29,8 +29,10 @@ const CreateItem = (props) => {
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [activeLang, setActiveLang] = useState(0);
     const [activeCredit, setActiveCredit] = useState(0);
+    const [formSubmitted, setFormSubmitted] = useState(false);
+    const [formproceed, setFormproceed] = useState(false);
 
-    const blankSentence = { sentence: "", editable: true }
+    const blankSentence = { sentence: "", editable: true,error:false }
     const [descriptions, setDescriptions] = useState(
         [
             {
@@ -44,7 +46,7 @@ const CreateItem = (props) => {
         ]
     );
 
-    const blankCreditSentence = { link_text: "", url: "", editable: true }
+    const blankCreditSentence = { link_text: "", url: "", editable: true,error:false }
     const [credits, setCredits] = useState(
         [
             {
@@ -168,6 +170,10 @@ const CreateItem = (props) => {
         e.preventDefault();
         const d = [...descriptions];
         d[activeLang].sentences[i].sentence = e.target.value;
+        if(e.target.value !="" && e.target.value != null){
+            d[activeLang].sentences[i].error = false;
+        }
+        
         setDescriptions(d);
     }
 
@@ -177,7 +183,13 @@ const CreateItem = (props) => {
         if (state === 'edit') {
             d[activeLang].sentences[i].editable = true;
         } else if (state === 'save') {
-            d[activeLang].sentences[i].editable = false;
+            console.log(d[activeLang].sentences[i].sentence,"asdsa");
+            if(d[activeLang].sentences[i].sentence == ""){
+                 alert("you can't save empty value");
+            }else{
+                d[activeLang].sentences[i].editable = false;
+            }
+           
         } else if (state === 'delete') {
             d[activeLang].sentences.splice(i, 1);
         }
@@ -208,7 +220,13 @@ const CreateItem = (props) => {
         if (state === 'edit') {
             c[activeCredit].creditSentences[i].editable = true;
         } else if (state === 'save') {
-            c[activeCredit].creditSentences[i].editable = false;
+           
+            if(c[activeCredit].creditSentences[i].link_text==""){
+                alert("you can't save empty value");
+            }else{
+                c[activeCredit].creditSentences[i].editable = false;
+            }
+           
         } else if (state === 'delete') {
             c[activeCredit].creditSentences.splice(i, 1);
         }
@@ -269,10 +287,100 @@ const CreateItem = (props) => {
         setActiveCredit(i);
     }
 
-    function saveData() {
+    function descriptionValidation(): Boolean{
+        if (descriptions) {
+            let d = [];
+            descriptions.map(description => {
+                if (description.sentences.length > 0) {
+                    let lang = description.language;
+                    let sent = [];
+                    description.sentences.map(sentence => {
+                         if(sentence.sentence==""){
+                            sentence.error = true;
+                            return false;
+                         }                        
+                    });
+                   
+                    
+                }
+            })
+        }
+        return true;
+    }
+
+    function creditVisualValidation(): Boolean{
+        if (credits) {            
+            credits.map((credit, i) => {
+                if (i === 0) {
+                    credit.creditSentences.map(sentence => {
+                        // if(sentence.url==""){
+                        //     sentence.error = true;
+                        //  }
+                         if(sentence.link_text==""){
+                            sentence.error = true;
+                            return false;
+                         }
+
+                         
+                       
+                    });
+                } else if (i === 1) {
+                    credit.creditSentences.map(sentence => {
+                        // if(sentence.url==""){
+                        //     sentence.error = true;
+                        //  }
+                         if(sentence.link_text==""){
+                            sentence.error = true;
+                            return false;
+                         }
+
+                         
+                    });
+                }
+            });
+
+            return true;
+            
+        }
+      
+
+    }
+
+    function categoryValidation(): Boolean{
+        console.log(item?.category);
+        console.log(selectedTag);
+        if(item?.category===undefined){
+             return false;
+        }else{
+            return true;
+        }
+
+    }
+
+    function tagValidation(){
+          if(selectedTag.length == 0){              
+            return false;
+          }
+    }
+
+    function validationData(){
+        setFormSubmitted(true);       
+       let desc =  descriptionValidation();
+       let credit =   creditVisualValidation();
+       let category =  categoryValidation();
+       if(desc  && credit && category && item?.title != undefined){
+            return true;
+       }else{
+            return false
+       }
+       // tagValidation();
+  
+    }
+
+    function apicallForServer(){
         let newItem = {
-            title: item.title,
-            category: item.category,
+            title: item?.title,
+            category: item?.category,
             descriptions: [],
             news_credits: [],
             visual_credits: [],
@@ -329,13 +437,26 @@ const CreateItem = (props) => {
                 visual_credits: vc
             });
         }
+
+       
         //console.log("Final Item Data: ", newItem);
         if(props.state === 'edit'){
             //newItem.id = props.data.id;
             props.update(newItem);
         }else{
             props.create(newItem);
-        }        
+        }
+    }
+
+    function saveData() {
+        console.log(item?.category);
+        console.log(selectedTag);
+       let conditionMatch =    validationData();
+        if(conditionMatch){
+            apicallForServer();
+        }
+
+              
     }
 
     return (
@@ -360,7 +481,7 @@ const CreateItem = (props) => {
                                 <div className="w-full">
                                     <label htmlFor="about" className="block text-sm font-medium leading-5 text-gray-700">Title</label>
                                     <div className="mt-1 rounded-md shadow-sm">
-                                        <textarea id="about" value={item?.title} rows={2} onChange={(e) => handleChangeInput(e)} className="form-textarea block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5" placeholder="Enter Title"></textarea>
+                                        <textarea id="about" value={item?.title} rows={2} onChange={(e) => handleChangeInput(e)} className={`${item?.title == undefined  && formSubmitted ? 'border-red-500 text-red-600' : ''} form-textarea block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5 `} placeholder="Enter Title"></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -382,13 +503,16 @@ const CreateItem = (props) => {
                                             </nav>
                                         </div>
                                         <div className="mt-4 space-y-1" role="group" aria-labelledby="teams-headline">
+                                              
+                                                <span className={`${ (descriptions[0].sentences.length == 0 && descriptions[1].sentences.length == 0 )   &&  formSubmitted ? 'border-red-500 text-red-600' : ' invisible'}`}> * Please add at least one  sentence </span>
                                             {descriptions[activeLang].sentences.map((sentence, i) => (
                                                 <>
                                                     {sentence.editable ?
                                                         <div className="w-full flex items-center space-x-3 px-3">
                                                             <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-indigo-500"></div>
                                                             <div className="w-11/12 mt-1 relative rounded-md shadow-sm">
-                                                                <input value={sentence.sentence} onChange={(e) => handleSentenceChange(e, i)} className="form-input block w-full text-xs sm:leading-3" placeholder="Enter sentence" />
+                                                        
+                                                                <input value={sentence.sentence} onChange={(e) => handleSentenceChange(e, i)} className={`${sentence.error ? 'border-red-500 text-red600' : ' '} form-input block w-full text-xs sm:leading-3 `} placeholder="Enter sentence" />
                                                             </div>
                                                             <div className="w-1/12 text-xs text-gray-600 flex items-center space-x-2 justify-end">
                                                                 <FontAwesomeIcon onClick={(e) => changeSentenceState(e, i, 'save')} className="w-5 h-5 cursor-pointer hover:text-white rounded-full bg-gray-300 hover:bg-green-500 p-1" icon={['fas', 'check']} />
@@ -434,15 +558,16 @@ const CreateItem = (props) => {
                                                 </a>
                                             </nav>
                                         </div>
-                                        <div className="mt-4 space-y-1 max-h-24 overflow-y-scroll" role="group" aria-labelledby="teams-headline">                                            
+                                        <div className="mt-4 space-y-1 max-h-24 overflow-y-scroll" role="group" aria-labelledby="teams-headline">    
+                                        <span className={`${ (credits[0].creditSentences.length == 0 && credits[1].creditSentences.length == 0 )   &&  formSubmitted ? 'border-red-500 text-red-600' : ' invisible'}`}> * Please add at least one  credit </span>                                        
                                             {credits[activeCredit].creditSentences.map((sentence, i) => (
                                                 <>
                                                     {sentence.editable ?
                                                         <div className="w-full flex items-center space-x-3 px-3">
                                                             <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-indigo-500"></div>
                                                             <div className="w-11/12 mt-1 relative rounded-md shadow-sm flex space-x-4">
-                                                                <input value={sentence.link_text} onChange={(e) => handleCreditSentenceChange(e, i, 'text')} className="form-input block w-full text-xs sm:leading-3" placeholder="Enter Title" />
-                                                                <input value={sentence.url} onChange={(e) => handleCreditSentenceChange(e, i, 'url')} className="form-input block w-full text-xs sm:leading-3" placeholder="Enter URL" />
+                                                                <input value={sentence.link_text} onChange={(e) => handleCreditSentenceChange(e, i, 'text')} className={`${sentence.link_text == "" && formSubmitted ? 'border-red-500 text-red600' : ' '} form-input block w-full text-xs sm:leading-3 `} placeholder="Enter Title" />
+                                                                <input value={sentence.url} onChange={(e) => handleCreditSentenceChange(e, i, 'url')} className={`${sentence.url == "" && formSubmitted ? '' : ' '} form-input block w-full text-xs sm:leading-3 `}placeholder="Enter URL" />
                                                             </div>
                                                             <div className="w-1/12 text-xs text-gray-600 flex items-center space-x-2 justify-end">
                                                                 <FontAwesomeIcon onClick={(e) => changeCreditSentenceState(e, i, 'save')} className="w-5 h-5 cursor-pointer hover:text-white rounded-full bg-gray-300 hover:bg-green-500 p-1" icon={['fas', 'check']} />
@@ -477,7 +602,8 @@ const CreateItem = (props) => {
                                         <div>
                                             {categories && (
                                                 <span onClick={toggleCateDropdown} className="rounded-md shadow-sm">
-                                                    <button type="button" className="inline-flex justify-center w-full rounded-md border border-gray-300 px-2 py-0.5 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150" id="options-menu" aria-haspopup="true" aria-expanded="true">
+                                                    <button type="button" className={`${item?.category === undefined  &&  formSubmitted ? 'border-red-500 text-red-600' : 'border-transparent '} inline-flex justify-center w-full rounded-md border border-gray-300 px-2 py-0.5 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150`}
+                                                     id="options-menu" aria-haspopup="true" aria-expanded="true">
                                                         Choose Category
                                                         <svg className="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                                             <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
@@ -523,7 +649,9 @@ const CreateItem = (props) => {
                                     <div ref={tagWrapperRef} data-id="tag" className="relative inline-block text-left">
                                         <div>
                                             <span onClick={toggleTagDropdown} className="rounded-md shadow-sm">
-                                                <button type="button" className="inline-flex justify-center w-full rounded-md border border-gray-300 px-2 py-0.5 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150" id="options-menu" aria-haspopup="true" aria-expanded="true">
+                                                <button type="button" className={`${selectedTag.length == 0 && formSubmitted ? '' : ' '} inline-flex justify-center w-full rounded-md border border-gray-300 px-2 py-0.5 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150`}
+
+                                                        id="options-menu" aria-haspopup="true" aria-expanded="true">
                                                     Tags
                                                         <svg className="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                                         <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
