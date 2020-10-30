@@ -183,7 +183,13 @@ const CreateItem = (props) => {
         if (state === 'edit') {
             d[activeLang].sentences[i].editable = true;
         } else if (state === 'save') {
-            d[activeLang].sentences[i].editable = false;
+            console.log(d[activeLang].sentences[i].sentence,"asdsa");
+            if(d[activeLang].sentences[i].sentence == ""){
+                 alert("you can't save empty value");
+            }else{
+                d[activeLang].sentences[i].editable = false;
+            }
+           
         } else if (state === 'delete') {
             d[activeLang].sentences.splice(i, 1);
         }
@@ -214,7 +220,13 @@ const CreateItem = (props) => {
         if (state === 'edit') {
             c[activeCredit].creditSentences[i].editable = true;
         } else if (state === 'save') {
-            c[activeCredit].creditSentences[i].editable = false;
+           
+            if(c[activeCredit].creditSentences[i].link_text==""){
+                alert("you can't save empty value");
+            }else{
+                c[activeCredit].creditSentences[i].editable = false;
+            }
+           
         } else if (state === 'delete') {
             c[activeCredit].creditSentences.splice(i, 1);
         }
