@@ -1,46 +1,60 @@
 /* purgecss start ignore */
-@tailwind  base;
-@tailwind  components;
+
+@tailwind base;
+@tailwind components;
 /* purgecss end ignore */
 
 @tailwind utilities;
-
-html,body{
+html, body {
     background-color: black;
 }
-.sfd-bg-primary{
+
+.sfd-bg-primary {
     background-color: #622a90;
-    background-image: linear-gradient(90deg,#622a90 0,#ba3095 95%),linear-gradient(#000,#000);
+    background-image: linear-gradient(90deg, #622a90 0, #ba3095 95%), linear-gradient(#000, #000);
 }
-.sfd-btn-primary{
-    background-image: linear-gradient(90deg,#e438be,#b82def);
+
+.sfd-btn-primary {
+    background-image: linear-gradient(90deg, #e438be, #b82def);
     background-color: #b82def;
 }
+
 .sfd-btn-primary:hover {
-    background-image: linear-gradient(270deg,#e438be,#b82def);
+    background-image: linear-gradient(270deg, #e438be, #b82def);
     background-color: #b82def;
 }
-.bg-sfd-pink{
+
+.bg-sfd-pink {
     background-color: #fc03f8;
 }
-.border-sfd-pink{
+
+.border-sfd-pink {
     border-color: #fc03f8;
 }
-.bg-sfd-green{
+
+.bg-sfd-green {
     background-color: #54de04;
 }
-.border-sfd-green{
+
+.border-sfd-green {
     border-color: #54de04;
 }
-.sfd-comment-headline::before{
+
+.sfd-comment-headline::before {
     border-bottom: 3px solid #000;
     content: '';
     position: absolute;
     top: 50%;
     left: 0;
     right: 0;
-    border-bottom: 1px solid rgba(0,0,0,0.1);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     z-index: -1;
+}
+
+trix-editor {
+    height: 10rem !important;
+    max-height: 10rem !important;
+    overflow-y: auto !important;
 }
 
 @keyframes loader-rotate {
@@ -51,6 +65,7 @@ html,body{
         transform: rotate(360deg);
     }
 }
+
 .loader {
     border-right-color: transparent;
     animation: loader-rotate 1s linear infinite;
