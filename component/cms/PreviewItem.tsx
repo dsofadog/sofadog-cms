@@ -259,9 +259,9 @@ const PreviewItem = (props) => {
         setIsEdit(flag);
     }
 
-    function updateNewsItem(item) {
-        console.log("Update Item: ", item)
-        props.updateItem(item);
+    function updateNewsItem(item_data) {
+        console.log("Update Item: ", item_data);
+        props.updateItem(item.id,item_data,props.index);
         setIsEdit(false);
     }
 
@@ -336,7 +336,7 @@ const PreviewItem = (props) => {
                                                 </div>
                                             )}
 
-                                            <div className="w-full mb-16">
+                                            <div className="w-full mb-6">
                                                 <div className="p-4 shadow rounded border border-gray-300">
                                                     <div className="block">
                                                         <div className="border-b border-gray-200">
@@ -361,8 +361,11 @@ const PreviewItem = (props) => {
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div className="w-full flex justify-end py-4">
-                                                    <div className="flex text-center space-x-2">
+                                                <div className="w-full py-4">
+                                                    <div className="w-full truncate">
+                                                        <span className="text-xs truncate">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</span>
+                                                    </div>
+                                                    <div className="w-full flex text-center justify-end space-x-2">
                                                         <span className="text-white w-6 h-6 rounded-full p-3 bg-blue-600 text-xs flex items-center justify-center">3</span>
                                                         <Link href={`/cms/[item_id]`} as={`/cms/${item.id}`}>
                                                             <label className="text-sm font-bold text-gray-800 cursor-pointer hover:underline">Comments</label>
