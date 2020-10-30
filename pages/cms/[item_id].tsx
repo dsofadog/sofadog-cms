@@ -299,7 +299,7 @@ const Item = () => {
                                                                 <span className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-blue-700">
                                                                     <span className="text-lg font-medium leading-none text-white">{comments?.length}</span>
                                                                 </span>
-                                                                <label className="ml-3 text-xl font-bold text-gray-800 cursor-pointer">Comments</label>
+                                                                <label className="ml-3 text-xl font-bold text-gray-800">Comments</label>
                                                             </div>
                                                             <div className="w-4/5 h-1 border-b-2 border-black"></div>
                                                         </div>
