@@ -50,6 +50,10 @@ const Comment = (props) => {
         }
     }, []);
 
+    function submitComment(){
+        console.log("comment body:",body);
+    }
+
     return (
         <div className="w-full flex">
             <div className="w-auto mt-2 flex z-10">
@@ -79,7 +83,7 @@ const Comment = (props) => {
                         {isTrix ?
                             <div className="w-full bg-white p-2 border rounded">
                                 <Editor value={body} onChange={setBody} />
-                                <button className="px-2 py-1 bg-green-500 text-white text-sm mt-2 rounded">Add this comment</button>
+                                <button onClick={submitComment} className="px-2 py-1 bg-green-500 text-white text-sm mt-2 rounded">Add this comment</button>
                             </div>
                             :
                             <input onClick={() => setIsTrix(true)} className="form-input block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5" placeholder="Add a comment or upload a file..." />
