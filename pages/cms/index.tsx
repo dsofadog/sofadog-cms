@@ -460,6 +460,7 @@ const Demo = () => {
     }
 
     function createNewItem(newItem) {
+        console.log("create item: ",newItem);
         setLoading(true);
         HttpCms.post("/news_items?token=abcdef", newItem)
             .then((response) => {
@@ -478,11 +479,16 @@ const Demo = () => {
             });
     }
 
-    function updateItem(item) {
+    function updateItem(id,item,index) {
         setLoading(true);
-        HttpCms.patch("/news_items/" + item.id + "?token=abcdef", item)
+        HttpCms.patch("/news_items/" + id + "?token=abcdef", item)
             .then((response) => {
-                //console.log("add item: ",response.data);
+                console.log("update item: ",response);
+                if(response.status === 200){
+                    const item = { ...newsItems };
+                    item.news_items[index] = response.data.news_item;
+                    setNewsItems(item);
+                }
                 fetchItems();
             })
             .catch((e) => {

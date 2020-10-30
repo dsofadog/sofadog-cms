@@ -347,9 +347,9 @@ const CreateItem = (props) => {
     }
 
     function categoryValidation(): Boolean {
-        console.log(item?.category);
-        console.log(selectedTag);
-        if (item?.category === undefined) {
+        //console.log(item?.category);
+        //console.log(selectedTag);
+        if (selectedCategory === null) {
             return false;
         } else {
             return true;
@@ -380,7 +380,7 @@ const CreateItem = (props) => {
     function apicallForServer() {
         let newItem = {
             title: item?.title,
-            category: item?.category,
+            category: selectedCategory,
             descriptions: [],
             news_credits: [],
             visual_credits: [],
@@ -439,7 +439,7 @@ const CreateItem = (props) => {
         }
 
 
-        //console.log("Final Item Data: ", newItem);
+        console.log("Final Item Data: ", newItem);
         if (props.state === 'edit') {
             //newItem.id = props.data.id;
             props.update(newItem);
@@ -449,8 +449,8 @@ const CreateItem = (props) => {
     }
 
     function saveData() {
-        console.log(item?.category);
-        console.log(selectedTag);
+        //console.log(item?.category);
+        //console.log(selectedTag);
         let conditionMatch = validationData();
         if (conditionMatch) {
             apicallForServer();
@@ -541,8 +541,8 @@ const CreateItem = (props) => {
 
                                             {(descriptions[0].sentences.length == 0 && descriptions[1].sentences.length == 0) && formSubmitted && (
                                                 <div className="flex items-center space-x-3 px-3">
-                                                    <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-red-600"></div>
-                                                    <span className="text-red-600 text-xs capitalize">Please add at least one  sentence</span>
+                                                    <div className="flex-shrink-0 items-center rounded-full text-base text-red-600">*</div>
+                                                    <span className="text-red-600 text-xs capitalize">Please add at least one sentence</span>
                                                 </div>
                                             )}
 
@@ -598,7 +598,7 @@ const CreateItem = (props) => {
                                             </div>
                                             {(credits[0].creditSentences.length == 0 && credits[1].creditSentences.length == 0) && formSubmitted && (
                                                 <div className="flex items-center space-x-3 px-3">
-                                                    <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-red-600"></div>
+                                                    <div className="flex-shrink-0 items-center rounded-full text-base text-red-600">*</div>
                                                     <span className="text-red-600 text-xs capitalize">Please add at least one credit</span>
                                                 </div>
                                             )}
@@ -612,7 +612,7 @@ const CreateItem = (props) => {
                                         <div>
                                             {categories && (
                                                 <span onClick={toggleCateDropdown} className="rounded-md shadow-sm">
-                                                    <button type="button" className={`${ (item?.category === undefined &&  item?.category === null )  &&  formSubmitted ? 'border-red-500 text-red-600' : 'border-transparent '} inline-flex justify-center w-full rounded-md border border-gray-300 px-2 py-0.5 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150`}
+                                                    <button type="button" className={`${ (selectedCategory === null )  && formSubmitted ? 'border-red-500 text-red-600' : 'border-transparent '} inline-flex justify-center w-full rounded-md border border-gray-300 px-2 py-0.5 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150`}
                                                      id="options-menu" aria-haspopup="true" aria-expanded="true">
                                                         Choose Category
                                                         <svg className="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
