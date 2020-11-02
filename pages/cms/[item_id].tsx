@@ -100,7 +100,26 @@ createServer({
                     ],
                     "deleted": null,
                     "ordinal": 453,
-                    "comments": null
+                    "comments": [
+                        {
+                            id: 1,
+                            email: 'tushar@so.fa.dog',
+                            first_name: 'Tushar',
+                            last_name: 'Kharat',
+                            job_title: 'Software Developer',
+                            text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+                            created: 'Oct 26'
+                        },
+                        {
+                            id: 2,
+                            email: 'delaney@so.fa.dog',
+                            first_name: 'Delaney',
+                            last_name: 'Burke',
+                            job_title: 'CTO',
+                            text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+                            created: 'Oct 27'
+                        }
+                    ]
                 }
             ],
         }))
@@ -129,22 +148,7 @@ const Item = () => {
     const categories = CmsConstant.Category;
     const status = CmsConstant.Status;
 
-    let comments = [
-        {
-            first_name: 'Tushar',
-            last_name: 'Kharat',
-            job_title: 'Software Developer',
-            text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-            created: 'Oct 26'
-        },
-        {
-            first_name: 'Delaney',
-            last_name: 'Burke',
-            job_title: 'CTO',
-            text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-            created: 'Oct 27'
-        }
-    ]
+    const [comments, setComments] = useState(null);
 
     useEffect(() => {
         logoutUserCheck();
@@ -188,6 +192,7 @@ const Item = () => {
             .then((res) => res.json())
             .then((json) => {
                 setItem(json.news_items[0]);
+                setComments(json.news_items[0].comments);
                 console.log("items: ", item);
                 setLoading(false);
             })
@@ -211,6 +216,26 @@ const Item = () => {
         });
 
         return statusReturn;
+    }
+
+    function addComment(data) {
+        let id = comments[comments.length - 1].id + 1;
+        data.id = id;
+        let c = [...comments];
+        c.push(data);
+        setComments(c);
+    }
+
+    function updateComment(id, data) {
+        let index = comments.findIndex(x => x.id === id);
+        let c = [...comments];
+        c[index].text = data;
+        setComments(c);
+    }
+
+    function deleteComment(id) {
+        let arr = comments.filter(item => item.id != id);
+        setComments(arr);
     }
 
     return (
@@ -304,10 +329,10 @@ const Item = () => {
                                                             <div className="w-4/5 h-1 border-b-2 border-black"></div>
                                                         </div>
                                                         <div className="w-full mb-10 space-y-4">
-                                                            {comments.map((comment, i) => (
-                                                                <Comment comment={comment} />
+                                                            {comments?.map((comment, i) => (
+                                                                <Comment type='view' action={updateComment} delete={deleteComment} comment={comment} />
                                                             ))}
-                                                            <Comment type='add' />
+                                                            <Comment type='add' action={addComment} />
                                                         </div>
                                                     </div>
                                                 </div>
