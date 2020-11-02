@@ -1,5 +1,6 @@
 import Link from "next/link"
 import HeaderProfileComponent from "./HeaderProfileComponent"
+import NotificationBell from "./NotificationBell"
 
 const NavHeader = () => {
     return (
@@ -27,6 +28,7 @@ const NavHeader = () => {
                         </div>
                     </div>
                     <div className="flex items-center space-x-2">
+                        <NotificationBell/>
                         <HeaderProfileComponent></HeaderProfileComponent>
                     </div>
                 </div>
