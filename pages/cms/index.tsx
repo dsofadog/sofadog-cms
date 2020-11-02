@@ -15,6 +15,7 @@ import { fab } from '@fortawesome/free-brands-svg-icons';
 import { scroller } from "react-scroll";
 import useInfiniteScroll from 'react-infinite-scroll-hook';
 import HeaderProfileComponent from '../../component/common/HeaderProfileComponent';
+import NotificationBell from '../../component/common/NotificationBell';
 
 f_config.autoAddCss = false;
 library.add(fas, fab);
@@ -740,6 +741,7 @@ const Demo = () => {
                                     </button>
                                 </span>
                             </div>
+                            <NotificationBell/>
                             <HeaderProfileComponent></HeaderProfileComponent>
                         </div>
                     </div>
