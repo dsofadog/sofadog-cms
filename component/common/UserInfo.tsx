@@ -112,7 +112,6 @@ const UserInfo = (props) => {
             
             props.updateUser(userData.id,data)
         }
-        
         console.log("hello blank",data);
     }
 
