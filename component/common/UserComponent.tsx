@@ -9,12 +9,51 @@ import UserInfo from './UserInfo';
 
 f_config.autoAddCss = false;
 library.add(fas, fab, far);
-
+let users = [
+    {
+        "id": 1,
+        "email": "superuser1@so.fa.dog",
+        "admin_roles": [
+            {
+                "id": "super_admin",
+                "description": "Super Admin"
+            }
+        ],
+        "first_name": "Super1",
+        "last_name": "User"
+    },
+    {
+        "id": 2,
+        "email": "editor@so.fa.dog",
+        "admin_roles": [
+            {
+                "id": "editor",
+                "description": "Editor"
+            }
+        ],
+        "first_name": "Editor",
+        "last_name": "User",
+    }
+]
 const UserComponent = () => {
 
 	const [addNew,setAddNew] = useState(false);
 	const toggleAddNew = () => { setAddNew(!addNew) };
-
+	const [user, setUser] = useState(null)
+	useEffect(() => {
+		getUserData(users);
+	}),[users];
+	
+	function getUserData(userDeatils:any){
+		setUser(userDeatils);
+		console.log("User Detailsasdasdas:  ",user)
+	}
+	function addUser(user){
+		console.log("user ",user);
+	}
+	function updateUser(id,user){
+		console.log("Update user ",id,user);
+	}
 	return (
 		<div className="min-h-3/4">
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -32,17 +71,13 @@ const UserComponent = () => {
 					<div className="bg-white shadow overflow-hidden sm:rounded-md">
 						<ul>
 							{addNew &&(
-								<UserInfo action="add" callback={toggleAddNew}></UserInfo>
+								<UserInfo action="add" callback={toggleAddNew} addUser={addUser}></UserInfo>
 							)}							
-							<UserInfo></UserInfo>
-							<UserInfo></UserInfo>
-							<UserInfo></UserInfo>
-							<UserInfo></UserInfo>
-							<UserInfo></UserInfo>
-							<UserInfo></UserInfo>
-							<UserInfo></UserInfo>
-							<UserInfo></UserInfo>
-							<UserInfo></UserInfo>
+							{user?.map((data,i) => (
+								<UserInfo data={data} updateUser={updateUser}></UserInfo>
+							))}
+							
+							
 						</ul>
 					</div>
 				</div>
