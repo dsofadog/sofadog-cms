@@ -11,8 +11,7 @@ function LayoutProvider({ children }) {
     'lead_video_editor':['awaiting_video_upload','awaiting_review_by_lead_video_editor'],
     'feed_manager':['pushed_to_feed','decrement_ordinal','increment_ordinal','removed_from_feed'],
     'user_manager':['user_manager'],
-    'super_admin':['super_admin','rolew']
-
+    'super_admin':['super_admin']
   }
 
   const [sideBarCollapsed, setCollapsed] = useState(false);
