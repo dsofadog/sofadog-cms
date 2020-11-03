@@ -15,6 +15,7 @@ import { fab } from '@fortawesome/free-brands-svg-icons';
 import { scroller } from "react-scroll";
 import useInfiniteScroll from 'react-infinite-scroll-hook';
 import HeaderProfileComponent from '../../component/common/HeaderProfileComponent';
+import NotificationBell from '../../component/common/NotificationBell';
 
 f_config.autoAddCss = false;
 library.add(fas, fab);
@@ -460,6 +461,7 @@ const Demo = () => {
     }
 
     function createNewItem(newItem) {
+        console.log("create item: ",newItem);
         setLoading(true);
         HttpCms.post("/news_items?token=abcdef", newItem)
             .then((response) => {
@@ -478,11 +480,16 @@ const Demo = () => {
             });
     }
 
-    function updateItem(item) {
+    function updateItem(id,item,index) {
         setLoading(true);
-        HttpCms.patch("/news_items/" + item.id + "?token=abcdef", item)
+        HttpCms.patch("/news_items/" + id + "?token=abcdef", item)
             .then((response) => {
-                //console.log("add item: ",response.data);
+                console.log("update item: ",response);
+                if(response.status === 200){
+                    const item = { ...newsItems };
+                    item.news_items[index] = response.data.news_item;
+                    setNewsItems(item);
+                }
                 fetchItems();
             })
             .catch((e) => {
@@ -734,6 +741,7 @@ const Demo = () => {
                                     </button>
                                 </span>
                             </div>
+                            <NotificationBell/>
                             <HeaderProfileComponent></HeaderProfileComponent>
                         </div>
                     </div>
