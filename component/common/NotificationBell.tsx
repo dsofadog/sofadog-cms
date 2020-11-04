@@ -98,7 +98,7 @@ const NotificationBell = () => {
     }
     return (
         <>
-            <div ref={bellWrapperRef} data-id="bell" className="relative inline-block text-center">
+            <div ref={bellWrapperRef} data-id="bell" className="hidden relative inline-block text-center">
                 <span onClick={() => toggleBellDropdown()} className="inline-block relative">
                     <div className="flex items-center justify-center cursor-pointer h-10 w-10 rounded-full p-1 bg-gray-500 hover:bg-gray-400">
                         <svg className="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
