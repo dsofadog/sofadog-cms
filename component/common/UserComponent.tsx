@@ -71,10 +71,47 @@ const UserComponent = () => {
 		setUser(userDeatils);
 		console.log("User Detailsasdasdas:  ",user)
 	}
-	function addUser(user){
-		console.log("user ",user);
+	function addUser(userData){
+		console.log("user ",userData);
+		userData.job_title="test";
+		setLoading(true);
+        HttpCms.post("admin_user?token="+appUserInfo?.token, userData)
+            .then((response) => {
+				setAddNew(false);				
+				setUser([...user, response.data.user]);
+				
+			
+              
+            })
+            .catch((e) => {
+                console.log(e);
+            })
+            .finally(() => {
+                setLoading(false);
+            });
 	}
-	function updateUser(id,user){
+	function updateUser(id,userData){
+		console.log("Update user ",id,userData);
+		https://v-int.so.fa.dog/admin_user/<user-id>?token=abcdef
+		HttpCms.patch("admin_user/"+id+"?token="+appUserInfo?.token, userData)
+		.then((response) => {
+			setAddNew(false);
+			console.log(user,"usekkkkkkkkkkkkkkkkkkkkkkkkkk");
+			console.log(response,"response");
+			//setUser([...user, response.data.user]);
+			
+		
+		  
+		})
+		.catch((e) => {
+			console.log(e);
+		})
+		.finally(() => {
+			setLoading(false);
+		});
+	}
+
+	function enableDisableUser(id,user,type){
 		console.log("Update user ",id,user);
 	}
 	return (

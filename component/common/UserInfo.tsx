@@ -46,7 +46,7 @@ const UserInfo = (props) => {
             console.log("prop.action",props.action);
             setAction(props.action);
         }
-    }, [props,userData]);
+    }, []);
 
     function useOutsideAlerter(ref) {
         useEffect(() => {
@@ -109,8 +109,8 @@ const UserInfo = (props) => {
         if(action === 'add'){
             props.addUser(data)
         }else{         
-            
-            props.updateUser(userData.id,data)
+            console.log(data);
+            props.updateUser(data.email,data)
         }
         console.log("hello blank",data);
     }
