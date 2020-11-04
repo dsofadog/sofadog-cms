@@ -562,7 +562,7 @@ const Demo = () => {
     return (
         <div className="w-full h-full min-h-screen bg-gray-500">
             <nav className="sfd-nav bg-gray-800 sticky top-0 z-30">
-         <span   className={`${currentUserPermission('kkk','super_admin1') ? 'border-red-500 text-red-600' : 'border-indigo-500 text-indigo-600 '}`}> permission testing  </span>
+         <span   className={`hidden ${currentUserPermission('kkk','super_admin1') ? 'border-red-500 text-red-600' : 'border-indigo-500 text-indigo-600 '}`}> permission testing  </span>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-16">
                         <div className="flex">

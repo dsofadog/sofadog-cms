@@ -361,7 +361,7 @@ const PreviewItem = (props) => {
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div className="w-full py-4">
+                                                <div className="hidden w-full py-4">
                                                     <div className="w-full truncate">
                                                         <span className="text-xs truncate">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</span>
                                                     </div>

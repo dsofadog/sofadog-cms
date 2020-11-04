@@ -1,7 +1,7 @@
 import { useState } from "react"
 
 const Notification = (props) => {
-    const [show, setShow] = useState(true);
+    const [show, setShow] = useState(false);
     return (
         <>
             {show && (
