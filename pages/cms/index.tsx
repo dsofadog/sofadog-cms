@@ -76,7 +76,7 @@ const Demo = () => {
     useEffect(() => {
         console.log(appUserInfo);
         currentUserPermission('kkkkkkkkrrrr');
-       // logoutUserCheck();
+         logoutUserCheck();
         setNewsItems(null);
         setNewsItemsCached(null);
         setScrollCount(0);

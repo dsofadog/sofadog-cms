@@ -4,45 +4,68 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import { far } from '@fortawesome/free-regular-svg-icons';
-import { useEffect, useRef, useState } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import UserInfo from './UserInfo';
+import { LayoutContext } from '../../contexts';
+
+import HttpCms from '../../utils/http-cms';
 
 f_config.autoAddCss = false;
 library.add(fas, fab, far);
-let users = [
-    {
-        "id": 1,
-        "email": "superuser1@so.fa.dog",
-        "admin_roles": [
-            {
-                "id": "super_admin",
-                "description": "Super Admin"
-            }
-        ],
-        "first_name": "Super1",
-        "last_name": "User"
-    },
-    {
-        "id": 2,
-        "email": "editor@so.fa.dog",
-        "admin_roles": [
-            {
-                "id": "editor",
-                "description": "Editor"
-            }
-        ],
-        "first_name": "Editor",
-        "last_name": "User",
-    }
-]
+// let users = [
+//     {
+//         "id": 1,
+//         "email": "superuser1@so.fa.dog",
+//         "admin_roles": [
+//             {
+//                 "id": "super_admin",
+//                 "description": "Super Admin"
+//             }
+//         ],
+//         "first_name": "Super1",
+//         "last_name": "User"
+//     },
+//     {
+//         "id": 2,
+//         "email": "editor@so.fa.dog",
+//         "admin_roles": [
+//             {
+//                 "id": "editor",
+//                 "description": "Editor"
+//             }
+//         ],
+//         "first_name": "Editor",
+//         "last_name": "User",
+//     }
+// ]
 const UserComponent = () => {
 
 	const [addNew,setAddNew] = useState(false);
 	const toggleAddNew = () => { setAddNew(!addNew) };
-	const [user, setUser] = useState(null)
+	const [user, setUser] = useState(null);
+	const { setLoading, appUserInfo,currentUserPermission } = useContext(LayoutContext);
 	useEffect(() => {
-		getUserData(users);
-	}),[users];
+		//getUserData(users);
+		callAllUserInfo();	
+	}),[];
+
+	function callAllUserInfo(){
+		let api = "admin_users?token="+appUserInfo?.token;
+		HttpCms.get(api)
+		.then(response => {
+			//console.log("fetch res: ", response.data);
+			getUserData(response.data.users);
+			setLoading(false);
+			//console.log(response.data, "response.data.data");
+		})
+		.catch(e => {
+			console.log(e);
+			setLoading(false);
+		})
+		.finally(() => {
+			setLoading(false);
+		});
+	}
 	
 	function getUserData(userDeatils:any){
 		setUser(userDeatils);
