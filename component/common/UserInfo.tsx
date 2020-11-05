@@ -33,6 +33,7 @@ const UserInfo = (props) => {
     useOutsideAlerter(roleWrapperRef);
 
     const [userData, setUserData] = useState(null);
+    const [userPass, setUserPass] = useState(null);
     //const [user,setUser] = useState(null);
     const [action, setAction] = useState('view');
 
@@ -79,6 +80,12 @@ const UserInfo = (props) => {
             ...userData,
             [e.target.name]: e.target.value
         })
+    }
+
+    function handPassChange(e){
+        console.log(e.target);
+        e.preventDefault();
+        setUserPass(e.target.value)
     }
     function handleMultiSelectChange(e,data){
         e.preventDefault();
@@ -130,6 +137,41 @@ const UserInfo = (props) => {
         props.enableDisableUser(status,data);
     }
 
+    function setPassword(e){
+        e.preventDefault(); 
+        setUserData({
+            ...userData,
+            admin_roles:selectedRole
+        })
+        let data = {
+            first_name: userData.first_name,
+            last_name: userData.last_name,
+            email:userData.email,
+            admin_roles:selectedRole
+        }
+ 
+        props.setUserPassword("set_password",data,userPass);
+
+    }
+
+    function removeRole(e){
+        e.preventDefault(); 
+        setUserData({
+            ...userData,
+            admin_roles:selectedRole
+        })
+        let data = {
+            first_name: userData.first_name,
+            last_name: userData.last_name,
+            email:userData.email,
+            admin_roles:selectedRole
+        }
+        // role remove or add we have to decide here then pass in first argument
+ 
+        props.removeRoleUser("remove_role",data,'removeroleNameHere',);
+
+    }
+
     return (
         <li>
             <div className="block hover:bg-gray-50 focus:outline-none focus:bg-gray-50 transition duration-150 ease-in-out">
@@ -175,6 +217,12 @@ const UserInfo = (props) => {
                                             <input type="text" name="job_title" value={userData?.job_title} onChange={(e)=>handleInputChange(e)} className="form-input block w-full text-sm sm:leading-3" placeholder="Job Title" />
                                         </div>
                                     </div>
+                                    <div className="mt-2 flex items-center text-sm leading-5 text-gray-500">
+                                        <div className="w-full relative rounded-md shadow-sm flex space-x-2">
+                                            <input type="text" name="password" value={userPass} onChange={(e)=>handPassChange(e)} className="form-input block w-full text-sm sm:leading-3" placeholder="Password" />
+                                        </div>
+                                    </div>
+                                    <FontAwesomeIcon onClick={(e) => setPassword(e)} className="w-4 h-4 cursor-pointer hover:text-red-800" icon={['fas', 'times']} />
                                 </div>
                             }
 
@@ -182,7 +230,7 @@ const UserInfo = (props) => {
                                 {action === 'view' ?
                                     <div>
                                         <div className="h-full flex items-center text-sm leading-5 text-gray-900">
-                                            {userData?.admin_roles[0].description}
+                                            {userData?.admin_roles[0]?.description}
                                         </div>
                                     </div>
                                     :

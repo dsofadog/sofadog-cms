@@ -114,13 +114,13 @@ const UserComponent = () => {
 	function enableDisableUser(status,data){
 		console.log("Update user ",status,data);
 		let request = {"email":data.email};
+		let users  =user;
+		let index = users.findIndex(user => user.email == data.email);
 		HttpCms.post("admin_user/"+data.email+"/"+status+"?token="+appUserInfo?.token, request)
 		.then((response) => {
 			setAddNew(false);
-			 let users  =user;
-		     let index = users.findIndex(user => user.email == data.email);
-                  users[index]=response.data.user;
-			      setUser(users);		
+            users[index]=response.data.user;
+			setUser(users);		
 		
 		  
 		})
@@ -130,6 +130,46 @@ const UserComponent = () => {
 		.finally(() => {
 			setLoading(false);
 		});
+	}
+
+	function setUserPassword(status,data,userPass){
+		console.log("Update user ",status,data);
+		let request = {
+			"email":data.email,
+			"password":userPass
+	     };
+		
+		HttpCms.post("admin_user/"+data.email+"/"+status+"?token="+appUserInfo?.token, request)
+		.then((response) => {
+			setAddNew(false);
+		})
+		.catch((e) => {
+			console.log(e);
+		})
+		.finally(() => {
+			setLoading(false);
+		});
+
+	}
+
+	function removeRoleUser(status,data,role){
+		console.log("Update user ",status,data);
+		let request = {
+			"email":data.email,
+			"role":role
+	     };
+		
+		HttpCms.post("admin_user/"+data.email+"/"+status+"?token="+appUserInfo?.token, request)
+		.then((response) => {
+			setAddNew(false);
+		})
+		.catch((e) => {
+			console.log(e);
+		})
+		.finally(() => {
+			setLoading(false);
+		});
+
 	}
 	return (
 		<div className="min-h-3/4">
@@ -151,7 +191,7 @@ const UserComponent = () => {
 								<UserInfo action="add" callback={toggleAddNew} addUser={addUser}></UserInfo>
 							)}							
 							{user?.map((data,i) => (
-								<UserInfo data={data} updateUser={updateUser} enableDisableUser={enableDisableUser}></UserInfo>
+								<UserInfo data={data} setUserPassword  ={setUserPassword} updateUser={updateUser} enableDisableUser={enableDisableUser}></UserInfo>
 							))}
 							
 							
