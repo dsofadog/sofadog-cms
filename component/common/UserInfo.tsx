@@ -115,6 +115,21 @@ const UserInfo = (props) => {
         console.log("hello blank",data);
     }
 
+    function userEnableDisabled(e,status){
+        e.preventDefault(); 
+        setUserData({
+            ...userData,
+            admin_roles:selectedRole
+        })
+        let data = {
+            first_name: userData.first_name,
+            last_name: userData.last_name,
+            email:userData.email,
+            admin_roles:selectedRole
+        }
+        props.enableDisableUser(status,data);
+    }
+
     return (
         <li>
             <div className="block hover:bg-gray-50 focus:outline-none focus:bg-gray-50 transition duration-150 ease-in-out">
@@ -133,6 +148,7 @@ const UserInfo = (props) => {
                             {action === 'view' ?
                                 <div>
                                     <div className="text-sm leading-5 font-medium text-indigo-600 truncate">{userData?.first_name + userData?.last_name}</div>
+                                    <div className="text-sm leading-5 font-medium text-indigo-600 truncate">{userData?.job_title}</div>
                                     <div className="mt-2 flex items-center text-sm leading-5 text-gray-500">
                                         <svg className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                             <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
@@ -152,6 +168,11 @@ const UserInfo = (props) => {
                                     <div className="mt-2 flex items-center text-sm leading-5 text-gray-500">
                                         <div className="w-full relative rounded-md shadow-sm flex space-x-2">
                                             <input type="email" name="email" value={userData?.email} onChange={(e)=>handleInputChange(e)} className="form-input block w-full text-sm sm:leading-3" placeholder="Email" />
+                                        </div>
+                                    </div>
+                                    <div className="mt-2 flex items-center text-sm leading-5 text-gray-500">
+                                        <div className="w-full relative rounded-md shadow-sm flex space-x-2">
+                                            <input type="text" name="job_title" value={userData?.job_title} onChange={(e)=>handleInputChange(e)} className="form-input block w-full text-sm sm:leading-3" placeholder="Job Title" />
                                         </div>
                                     </div>
                                 </div>
@@ -218,6 +239,8 @@ const UserInfo = (props) => {
                                 :
                                 <FontAwesomeIcon className="w-4 h-4 cursor-pointer hover:text-red-800" icon={['fas', 'trash-alt']} />
                         }
+                        <FontAwesomeIcon onClick={(e) => userEnableDisabled(e,'enable')} className="w-4 h-4 cursor-pointer hover:text-red-800" icon={['fas', 'times']} />
+                        <FontAwesomeIcon onClick={(e) => userEnableDisabled(e,'disable')} className="w-4 h-4 cursor-pointer hover:text-red-800" icon={['fas', 'times']} />
                     </div>
                 </div>
             </div>

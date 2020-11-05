@@ -47,7 +47,7 @@ const UserComponent = () => {
 	useEffect(() => {
 		//getUserData(users);
 		callAllUserInfo();	
-	}),[];
+	},[]);
 
 	function callAllUserInfo(){
 		let api = "admin_users?token="+appUserInfo?.token;
@@ -73,7 +73,7 @@ const UserComponent = () => {
 	}
 	function addUser(userData){
 		console.log("user ",userData);
-		userData.job_title="test";
+		//userData.job_title="test";
 		setLoading(true);
         HttpCms.post("admin_user?token="+appUserInfo?.token, userData)
             .then((response) => {
@@ -93,13 +93,13 @@ const UserComponent = () => {
 	function updateUser(id,userData){
 		console.log("Update user ",id,userData);
 		https://v-int.so.fa.dog/admin_user/<user-id>?token=abcdef
-		HttpCms.patch("admin_user/"+id+"?token="+appUserInfo?.token, userData)
+		HttpCms.patch("admin_user/"+userData.email+"?token="+appUserInfo?.token, userData)
 		.then((response) => {
 			setAddNew(false);
-			console.log(user,"usekkkkkkkkkkkkkkkkkkkkkkkkkk");
-			console.log(response,"response");
-			//setUser([...user, response.data.user]);
-			
+			 let users  =user;
+		     let index = users.findIndex(user => user.email == userData.email);
+                  users[index]=userData;
+			      setUser(users);		
 		
 		  
 		})
@@ -111,8 +111,25 @@ const UserComponent = () => {
 		});
 	}
 
-	function enableDisableUser(id,user,type){
-		console.log("Update user ",id,user);
+	function enableDisableUser(status,data){
+		console.log("Update user ",status,data);
+		let request = {"email":data.email};
+		HttpCms.post("admin_user/"+data.email+"/"+status+"?token="+appUserInfo?.token, request)
+		.then((response) => {
+			setAddNew(false);
+			 let users  =user;
+		     let index = users.findIndex(user => user.email == data.email);
+                  users[index]=response.data.user;
+			      setUser(users);		
+		
+		  
+		})
+		.catch((e) => {
+			console.log(e);
+		})
+		.finally(() => {
+			setLoading(false);
+		});
 	}
 	return (
 		<div className="min-h-3/4">
@@ -134,7 +151,7 @@ const UserComponent = () => {
 								<UserInfo action="add" callback={toggleAddNew} addUser={addUser}></UserInfo>
 							)}							
 							{user?.map((data,i) => (
-								<UserInfo data={data} updateUser={updateUser}></UserInfo>
+								<UserInfo data={data} updateUser={updateUser} enableDisableUser={enableDisableUser}></UserInfo>
 							))}
 							
 							
