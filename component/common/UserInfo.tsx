@@ -405,8 +405,11 @@ const UserInfo = (props) => {
                             <>
                             <FontAwesomeIcon onClick={() => setAction('edit')} className="w-5 h-5 cursor-pointer hover:text-blue-600" icon={['fas', 'edit']} />
                             <FontAwesomeIcon className="w-4 h-4 cursor-pointer hover:text-red-800" icon={['fas', 'trash-alt']} />
-                            <FontAwesomeIcon onClick={(e) => userEnableDisabled(e, 'enable')} className="w-4 h-4 cursor-pointer hover:text-red-800" icon={['fas', 'times']} />
-                            <FontAwesomeIcon onClick={(e) => userEnableDisabled(e, 'disable')} className="w-4 h-4 cursor-pointer hover:text-red-800" icon={['fas', 'times']} />
+                            {userData?.disabled ?
+                                <FontAwesomeIcon onClick={(e) => userEnableDisabled(e, 'enable')} className="w-4 h-4 cursor-pointer hover:text-green-700" icon={['fas', 'user']} />
+                                :
+                                <FontAwesomeIcon onClick={(e) => userEnableDisabled(e, 'disable')} className="w-4 h-4 cursor-pointer hover:text-red-800" icon={['fas', 'user-slash']} />
+                            }
                             </>
                         )}
 
