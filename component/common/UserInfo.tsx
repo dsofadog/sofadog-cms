@@ -4,25 +4,13 @@ import { fas } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import { far } from '@fortawesome/free-regular-svg-icons';
 import { useEffect, useRef, useState } from 'react';
+import CmsConstant from '../../utils/cms-constant';
 
 f_config.autoAddCss = false;
 library.add(fas, fab, far);
 
 const UserInfo = (props) => {
-    const roles = [
-        {
-            id: "super_admin",
-            description: "Super Admin"
-        },
-        {
-            id: "journalist",
-            description: "Journalist"
-        },
-        {
-            id: "Video_editor",
-            description: "Video Editor"
-        }
-    ]
+    const roles = CmsConstant.roles;
 
     const [selectedRole, setSelectedRole] = useState([])
 
@@ -93,7 +81,7 @@ const UserInfo = (props) => {
         setSelectedRole([
             ...selectedRole, data.id
         ]);
-        toggleRoleDropdown();
+        //toggleRoleDropdown();
     }
     function isRoleSelected(role) {
         if (selectedRole.length > 0) {
@@ -155,22 +143,35 @@ const UserInfo = (props) => {
 
     }
 
-    function removeRole(e) {
+    function removeRole(e,role) {
         e.preventDefault();
+        console.log(action);
+        var index = selectedRole.indexOf(role);
+        if (index !== -1) {
+            const r = [...selectedRole]
+            r.splice(index, 1);
+            setSelectedRole(r);
+        }
         setUserData({
             ...userData,
             admin_roles: selectedRole
         })
-        let data = {
-            first_name: userData.first_name,
-            last_name: userData.last_name,
-            email: userData.email,
-            admin_roles: selectedRole
-        }
-        // role remove or add we have to decide here then pass in first argument
+        if(action === 'edit'){
+            console.log("in edit remove role")
+            let data = {
+                email: userData.email,
+                admin_roles: role
+            }
+            // role remove or add we have to decide here then pass in first argument
+    
+            props.removeRoleUser("remove_role", data, 'removeroleNameHere',);
+        }        
 
-        props.removeRoleUser("remove_role", data, 'removeroleNameHere',);
+    }
 
+    function getRoleName(role){
+        let index = roles.findIndex(x => x.id === role);
+        return roles[index].description;
     }
 
     return (
@@ -241,7 +242,7 @@ const UserInfo = (props) => {
                                                     Role
                                                 </a>
                                                 <a href={void (0)} onClick={() => setTabIndex(3)} className={`${tabIndex === 3 ? ' border-indigo-500 text-indigo-600 focus:text-indigo-800 focus:border-indigo-700' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:text-gray-700 focus:border-gray-300'} cursor-pointer whitespace-no-wrap ml-8 py-4 px-1 border-b-2 font-medium text-sm leading-5 focus:outline-none`} aria-current="page">
-                                                    Change Password
+                                                    Manage Password
                                                 </a>
                                             </nav>
                                         </div>
@@ -296,11 +297,8 @@ const UserInfo = (props) => {
 
                                         {tabIndex === 2 && (
                                             <>
-                                            <div className="sm:col-span-2">
-                                                <label htmlFor="email" className="block text-sm font-medium leading-5 text-gray-700">
-                                                    Assign Roles
-                                                </label>
-                                                <div className="mt-1 rounded-md">
+                                            <div className="sm:col-span-1">
+                                                <div className="rounded-md">
                                                     <div className="h-full flex items-start text-sm leading-5 text-gray-900">
                                                         <div ref={roleWrapperRef} data-id="role" className="relative inline-block text-left">
                                                             <div>
@@ -334,9 +332,22 @@ const UserInfo = (props) => {
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div className="sm:col-span-2 flex space-x-2">
-                                                <button className="text-white text-sm px-2 py-1 bg-green-600 hover:bg-green-500 rounded">Submit</button>
-                                                <button className="text-white text-sm px-2 py-1 bg-blue-600 hover:bg-blue-500 rounded">Cancel</button>
+                                            <div className="sm:col-span-3 flex flex-wrap items-center">
+                                            {selectedRole?.length > 0 && (
+                                                    <>
+                                                        {selectedRole.map((role, i) => (
+                                                            <span key={i} className="inline-flex items-center mr-2 mb-2 h-8 px-2 py-0.5 rounded text-xs font-medium leading-4 bg-blue-100 text-blue-800">
+                                                                {getRoleName(role)}
+                                                                <button onClick={(e)=>removeRole(e,role)} type="button" className="flex-shrink-0 ml-1.5 inline-flex text-indigo-500 focus:outline-none focus:text-indigo-700" aria-label="Remove small badge">
+                                                                    <svg className="h-2 w-2" stroke="currentColor" fill="none" viewBox="0 0 8 8">
+                                                                        <path strokeLinecap="round" strokeWidth="1.5" d="M1 1l6 6m0-6L1 7" />
+                                                                    </svg>
+                                                                </button>
+                                                            </span>
+                                                        ))}
+                                                    </>
+
+                                                )}
                                             </div>
                                             <div className="sm:col-span-4 flex space-x-4">
                                                 {action === 'add' ? 
