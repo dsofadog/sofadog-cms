@@ -284,8 +284,12 @@ const UserInfo = (props) => {
                                                     </div>
                                                 </div>
                                                 <div className="sm:col-span-4 flex space-x-4">
-                                                    <button className="text-white text-sm px-2 py-1 bg-green-600 hover:bg-green-500 rounded">Submit</button>
-                                                    <button className="text-white text-sm px-2 py-1 bg-blue-600 hover:bg-blue-500 rounded">Cancel</button>
+                                                    <button onClick={(e) => saveData(e)} className="text-white text-sm px-2 py-1 bg-green-600 hover:bg-green-500 rounded">Submit</button>
+                                                    {action === 'add' ? 
+                                                        <button onClick={props?.callback} className="text-white text-sm px-2 py-1 bg-blue-600 hover:bg-blue-500 rounded">Cancel</button>
+                                                    :
+                                                        <button onClick={(e) => setAction('view')} className="text-white text-sm px-2 py-1 bg-blue-600 hover:bg-blue-500 rounded">Cancel</button>
+                                                    }
                                                 </div>
                                             </>
                                         )}
@@ -294,7 +298,7 @@ const UserInfo = (props) => {
                                             <>
                                             <div className="sm:col-span-2">
                                                 <label htmlFor="email" className="block text-sm font-medium leading-5 text-gray-700">
-                                                    Role
+                                                    Assign Roles
                                                 </label>
                                                 <div className="mt-1 rounded-md">
                                                     <div className="h-full flex items-start text-sm leading-5 text-gray-900">
@@ -334,6 +338,13 @@ const UserInfo = (props) => {
                                                 <button className="text-white text-sm px-2 py-1 bg-green-600 hover:bg-green-500 rounded">Submit</button>
                                                 <button className="text-white text-sm px-2 py-1 bg-blue-600 hover:bg-blue-500 rounded">Cancel</button>
                                             </div>
+                                            <div className="sm:col-span-4 flex space-x-4">
+                                                {action === 'add' ? 
+                                                    <button onClick={props?.callback} className="text-white text-sm px-2 py-1 bg-blue-600 hover:bg-blue-500 rounded">Cancel</button>
+                                                :
+                                                    <button onClick={(e) => setAction('view')} className="text-white text-sm px-2 py-1 bg-blue-600 hover:bg-blue-500 rounded">Cancel</button>
+                                                }
+                                            </div>
                                             </>
                                         )}
 
@@ -357,7 +368,12 @@ const UserInfo = (props) => {
                                                 </div>
                                                 <div className="sm:col-span-4 flex space-x-4">
                                                     <button className="text-white text-sm px-2 py-1 bg-green-600 hover:bg-green-500 rounded">Submit</button>
-                                                    <button className="text-white text-sm px-2 py-1 bg-blue-600 hover:bg-blue-500 rounded">Cancel</button>
+                                                    {action === 'add' ? 
+                                                        <button onClick={props?.callback} className="text-white text-sm px-2 py-1 bg-blue-600 hover:bg-blue-500 rounded">Cancel</button>
+                                                    :
+                                                        <button onClick={(e) => setAction('view')} className="text-white text-sm px-2 py-1 bg-blue-600 hover:bg-blue-500 rounded">Cancel</button>
+                                                    }
+                                                    
                                                 </div>
                                             </>
                                         )}
@@ -368,23 +384,15 @@ const UserInfo = (props) => {
                         )}
                     </div>
                     <div className="flex items-center space-x-2 ">
-                        {action === 'view' ?
+                        {action === 'view'&& (
+                            <>
                             <FontAwesomeIcon onClick={() => setAction('edit')} className="w-5 h-5 cursor-pointer hover:text-blue-600" icon={['fas', 'edit']} />
-                            :
-                            <FontAwesomeIcon onClick={(e) => saveData(e)} className="w-5 h-5 cursor-pointer hover:text-white rounded-full bg-gray-300 hover:bg-green-500 p-1" icon={['fas', 'check']} />
-                        }
+                            <FontAwesomeIcon className="w-4 h-4 cursor-pointer hover:text-red-800" icon={['fas', 'trash-alt']} />
+                            <FontAwesomeIcon onClick={(e) => userEnableDisabled(e, 'enable')} className="w-4 h-4 cursor-pointer hover:text-red-800" icon={['fas', 'times']} />
+                            <FontAwesomeIcon onClick={(e) => userEnableDisabled(e, 'disable')} className="w-4 h-4 cursor-pointer hover:text-red-800" icon={['fas', 'times']} />
+                            </>
+                        )}
 
-                        {
-                            action === 'add' ?
-                                <FontAwesomeIcon onClick={props?.callback} className="w-4 h-4 cursor-pointer hover:text-red-800" icon={['fas', 'times']} />
-                                :
-                                action === 'edit' ?
-                                    <FontAwesomeIcon onClick={() => setAction('view')} className="w-4 h-4 cursor-pointer hover:text-red-800" icon={['fas', 'times']} />
-                                    :
-                                    <FontAwesomeIcon className="w-4 h-4 cursor-pointer hover:text-red-800" icon={['fas', 'trash-alt']} />
-                        }
-                        <FontAwesomeIcon onClick={(e) => userEnableDisabled(e, 'enable')} className="w-4 h-4 cursor-pointer hover:text-red-800" icon={['fas', 'times']} />
-                        <FontAwesomeIcon onClick={(e) => userEnableDisabled(e, 'disable')} className="w-4 h-4 cursor-pointer hover:text-red-800" icon={['fas', 'times']} />
                     </div>
                 </div>
             </div>
