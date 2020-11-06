@@ -28,8 +28,13 @@ const UserInfo = (props) => {
 
     useEffect(() => {
         if (props.data) {
-            //console.log("prop ",props.data);
+            console.log("prop ",props.data);
             setUserData(props.data);
+            let r = [];
+            props.data.admin_roles.map(role =>{
+                r.push(role.id);
+            });
+            setSelectedRole(r);
             //console.log("Email ",userData);
         }
         if (props.action) {
@@ -244,6 +249,15 @@ const UserInfo = (props) => {
                                                 <a href={void (0)} onClick={() => setTabIndex(3)} className={`${tabIndex === 3 ? ' border-indigo-500 text-indigo-600 focus:text-indigo-800 focus:border-indigo-700' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:text-gray-700 focus:border-gray-300'} cursor-pointer whitespace-no-wrap ml-8 py-4 px-1 border-b-2 font-medium text-sm leading-5 focus:outline-none`} aria-current="page">
                                                     Manage Password
                                                 </a>
+                                                {action === 'add' &&(
+                                                    <>
+                                                    <button onClick={(e) => saveData(e)} className="h-8 mx-4 mt-3 text-white text-sm px-2 py-1 bg-green-600 hover:bg-green-500 rounded">Submit</button>
+                                                    <button onClick={props?.callback} className="h-8 mt-3 text-white text-sm px-2 py-1 bg-blue-600 hover:bg-blue-500 rounded">Cancel</button>
+                                                    </>
+                                                )}
+                                                {action === 'edit' &&(
+                                                    <button onClick={(e) => setAction('view')} className="h-8 mx-4 mt-3 text-white text-sm px-2 py-1 bg-blue-600 hover:bg-blue-500 rounded">Cancel</button>
+                                                )}
                                             </nav>
                                         </div>
                                     </div>
@@ -255,7 +269,7 @@ const UserInfo = (props) => {
                                                         First name
                                                     </label>
                                                     <div className="mt-1 rounded-md shadow-sm">
-                                                        <input id="first_name" className="form-input block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
+                                                        <input name="first_name" value={userData?.first_name} onChange={(e)=>handleInputChange(e)} className="form-input block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
                                                     </div>
                                                 </div>
 
@@ -264,7 +278,7 @@ const UserInfo = (props) => {
                                                         Last name
                                                     </label>
                                                     <div className="mt-1 rounded-md shadow-sm">
-                                                        <input id="last_name" className="form-input block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
+                                                        <input name="last_name" value={userData?.last_name} onChange={(e)=>handleInputChange(e)} className="form-input block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
                                                     </div>
                                                 </div>
 
@@ -273,7 +287,7 @@ const UserInfo = (props) => {
                                                         Email address
                                                     </label>
                                                     <div className="mt-1 rounded-md shadow-sm">
-                                                        <input id="email" type="email" className="form-input block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
+                                                        <input type="email" name="email" value={userData?.email} onChange={(e)=>handleInputChange(e)} className="form-input block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
                                                     </div>
                                                 </div>
                                                 <div className="sm:col-span-2">
@@ -281,16 +295,17 @@ const UserInfo = (props) => {
                                                         Job Title
                                                     </label>
                                                     <div className="mt-1 rounded-md shadow-sm">
-                                                        <input type="text" className="form-input block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
+                                                        <input type="text" name="job_title" value={userData?.job_title} onChange={(e)=>handleInputChange(e)} className="form-input block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
                                                     </div>
                                                 </div>
                                                 <div className="sm:col-span-4 flex space-x-4">
-                                                    <button onClick={(e) => saveData(e)} className="text-white text-sm px-2 py-1 bg-green-600 hover:bg-green-500 rounded">Submit</button>
-                                                    {action === 'add' ? 
-                                                        <button onClick={props?.callback} className="text-white text-sm px-2 py-1 bg-blue-600 hover:bg-blue-500 rounded">Cancel</button>
-                                                    :
-                                                        <button onClick={(e) => setAction('view')} className="text-white text-sm px-2 py-1 bg-blue-600 hover:bg-blue-500 rounded">Cancel</button>
-                                                    }
+                                                    {action === 'edit' &&(
+                                                        <>
+                                                        <button onClick={(e) => saveData(e)} className="text-white text-sm px-2 py-1 bg-green-600 hover:bg-green-500 rounded">Submit</button>
+                                                        </>
+                                                    )}
+                                                    
+                                                    
                                                 </div>
                                             </>
                                         )}
@@ -349,13 +364,6 @@ const UserInfo = (props) => {
 
                                                 )}
                                             </div>
-                                            <div className="sm:col-span-4 flex space-x-4">
-                                                {action === 'add' ? 
-                                                    <button onClick={props?.callback} className="text-white text-sm px-2 py-1 bg-blue-600 hover:bg-blue-500 rounded">Cancel</button>
-                                                :
-                                                    <button onClick={(e) => setAction('view')} className="text-white text-sm px-2 py-1 bg-blue-600 hover:bg-blue-500 rounded">Cancel</button>
-                                                }
-                                            </div>
                                             </>
                                         )}
 
@@ -366,10 +374,10 @@ const UserInfo = (props) => {
                                                         New Passowrd
                                                     </label>
                                                     <div className="mt-1 rounded-md shadow-sm">
-                                                        <input type="password" className="form-input block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
+                                                        <input type="password" name="password" value={userPass} onChange={(e)=>handPassChange(e)} className="form-input block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
                                                     </div>
                                                 </div>
-                                                <div className="sm:col-span-2">
+                                                <div className="hidden sm:col-span-2">
                                                     <label htmlFor="email" className="block text-sm font-medium leading-5 text-gray-700">
                                                         Confirm Passowrd
                                                     </label>
@@ -378,13 +386,11 @@ const UserInfo = (props) => {
                                                     </div>
                                                 </div>
                                                 <div className="sm:col-span-4 flex space-x-4">
-                                                    <button className="text-white text-sm px-2 py-1 bg-green-600 hover:bg-green-500 rounded">Submit</button>
-                                                    {action === 'add' ? 
-                                                        <button onClick={props?.callback} className="text-white text-sm px-2 py-1 bg-blue-600 hover:bg-blue-500 rounded">Cancel</button>
-                                                    :
-                                                        <button onClick={(e) => setAction('view')} className="text-white text-sm px-2 py-1 bg-blue-600 hover:bg-blue-500 rounded">Cancel</button>
-                                                    }
-                                                    
+                                                    {action === 'edit' &&(
+                                                        <>
+                                                        <button onClick={(e) => setPassword(e)} className="text-white text-sm px-2 py-1 bg-green-600 hover:bg-green-500 rounded">Submit</button>
+                                                        </>
+                                                    )}                                                    
                                                 </div>
                                             </>
                                         )}
