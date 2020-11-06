@@ -5,6 +5,7 @@ import { fab } from '@fortawesome/free-brands-svg-icons';
 import { far } from '@fortawesome/free-regular-svg-icons';
 import { useEffect, useRef, useState } from 'react';
 import CmsConstant from '../../utils/cms-constant';
+import { userInfo } from 'os';
 
 f_config.autoAddCss = false;
 library.add(fas, fab, far);
