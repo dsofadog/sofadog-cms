@@ -124,4 +124,35 @@ export default class CmsConstant {
         }
        
     ]
+
+    static roles = [
+        {
+            id: "super_user",
+            description: "Super User"
+        },
+        {
+            id: "journalist",
+            description: "Journalist"
+        },
+        {
+            id: "lead_journalist",
+            description: "Lead Journalist"
+        },
+        {
+            id: "video_editor",
+            description: "Video Editor"
+        },
+        {
+            id: "lead_video_editor",
+            description: "Lead Video Editor"
+        },
+        {
+            id: "feed_manager",
+            description: "Feed Manager"
+        },
+        {
+            id: "user_manager",
+            description: "User Manager"
+        }
+    ]
 }

@@ -30,7 +30,7 @@ const Demo = () => {
     const [selectedTag, setSelectedTag] = useState([]);
     const [selectedState, setSelectedState] = useState(null);
 
-    const { setLoading, appUserInfo,currentUserPermission } = useContext(LayoutContext);
+    const { setLoading, appUserInfo,currentUserPermission,userIsSuperAdmin} = useContext(LayoutContext);
 
     const [openCategoryDropdown, setOpenCategoryDropdown] = useState(false);
     const toggleCateDropdown = () => { setOpenCategoryDropdown(!openCategoryDropdown) };
@@ -75,8 +75,8 @@ const Demo = () => {
 
     useEffect(() => {
         console.log(appUserInfo);
-        currentUserPermission('kkkkkkkkrrrr');
-         logoutUserCheck();
+       // currentUserPermission('kkkkkkkkrrrr');
+        logoutUserCheck();
         setNewsItems(null);
         setNewsItemsCached(null);
         setScrollCount(0);
@@ -562,7 +562,9 @@ const Demo = () => {
     return (
         <div className="w-full h-full min-h-screen bg-gray-500">
             <nav className="sfd-nav bg-gray-800 sticky top-0 z-30">
-         <span   className={`${currentUserPermission('kkk','super_admin') ? 'border-red-500 text-red-600' : 'border-indigo-500 text-indigo-600 '}`}> permission testing  </span>
+         <span   className={currentUserPermission('user_manager1',userIsSuperAdmin)}> permission testing {userIsSuperAdmin}  </span>
+         <span   className="`${currentUserPermission('video_editor1','0')}` text-white"> permission oooo {userIsSuperAdmin}  </span>
+         {/* <span   className={`${currentUserPermission('video_editor1',"kkkk") ? 'border-red-500 text-red-600' : 'border-indigo-500 text-indigo-600 '}`}> permission kkkk testing  </span> */}
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-16">
                         <div className="flex">

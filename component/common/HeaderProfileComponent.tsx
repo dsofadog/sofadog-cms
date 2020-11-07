@@ -13,7 +13,7 @@ f_config.autoAddCss = false;
 library.add(fas, fab);
 
 const HeaderProfileComponent = () => {
-    const { setLoading, appUserInfo, setAppUserInfo, setNotification } = useContext(LayoutContext);
+    const { setLoading, appUserInfo, setAppUserInfo, setNotification,clearAPPData } = useContext(LayoutContext);
     const profileWrapperRef = useRef(null);
     useOutsideAlerter(profileWrapperRef);
     const [openProfileDropdown, setOpenProfileDropdown] = useState(false);
@@ -57,8 +57,9 @@ const HeaderProfileComponent = () => {
         httpCms.get(`/admin_user/logout?token=${appUserInfo.token}`)
             .then(response => {
                 //console.log("fetch res: ", response.data);
-                setAppUserInfo(null);
+                
                 setLoading(false);
+                clearAPPData();
                 Router.push('/');
                 //console.log(response.data, "response.data.data");
             })
@@ -67,7 +68,8 @@ const HeaderProfileComponent = () => {
                 setLoading(false);
             })
             .finally(() => {
-                setAppUserInfo(null);
+                clearAPPData();
+               // setAppUserInfo(null);
                 setLoading(false);
             });
     }
