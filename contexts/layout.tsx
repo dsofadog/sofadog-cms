@@ -4,6 +4,22 @@ import ProgressSpinner from '../component/common/ProgressSpinner'
 const LayoutContext = createContext(null);
 
 function LayoutProvider({ children }) {
+
+
+
+
+  const stateByRoleOnLoad = {
+    "journalist" :"",
+    "lead_journalist" :"awaiting_approval_by_lead_journalist",
+    "video_editor" :"awaiting_video_upload",
+    "lead_video_editor" :"awaiting_approval_by_lead_video_editor",
+    "feed_manager" :"awaiting_push",
+    'super_admin':"all",
+  }
+
+
+
+
   const actionbyRoles =  {
     'journalist' :['new'],
     'lead_journalis':['new','awaiting_review_by_lead_journalist'],
@@ -23,18 +39,59 @@ function LayoutProvider({ children }) {
   const [appUserInfo, setAppUserInfo] = useState(null);
   const [notification, setNotification] = useState({show: false,data: null});
   const [appAction, setAppAction] = useState(actionbyRoles);
+  const [appState, setAppState] = useState(stateByRoleOnLoad);
   const [currentUserAction, setCurrentUserAction] = useState([]);
+  const [currentUserState, setCurrentUserState] = useState([]);
+  const [userIsSuperAdmin, setUserIsSuperAdmin] = useState(0);
   
   const currentUserPermission = (permission,user_type) => {
-       if(user_type=="super_admin"){
-            return true;
+    console.log("asdsadsads",user_type);
+    let classValue='';
+       if(user_type=="1"){
+        classValue="hidden";
+         console.log("asdsadsadsa88888888888888888");
+            return classValue;
        }else{
-        let info  = currentUserAction.includes(permission);
+        //let info  = currentUserAction.includes(permission);
+        let info  = checkPermission(permission);
         if(info){
-           return true ;
+          classValue="hidden";
+          console.log(info,"info true ke liye ")
+           return classValue ;
+        }else{
+          console.log(info,"info")
+          return false;
         }
        }  
 
+}
+
+const checkPermission = (permission) => {
+  let status =false;
+  currentUserAction.forEach(function(value) {
+      console.log(value,"value");
+      
+      value.forEach(function(data) {      
+         if(data==permission){
+          console.log(data,permission,"testing1",data===permission);
+          status =  true;
+         }
+    });
+  });
+
+  return status;
+ 
+}
+
+
+
+
+const clearAPPData =() =>{
+  setLoading(false);
+  setAppUserInfo(null);
+  setUserIsSuperAdmin(0);  
+  setCurrentUserAction([]);
+  setCurrentUserState([]);
 }
 
   const initialState = {
@@ -57,7 +114,15 @@ function LayoutProvider({ children }) {
     setCurrentUserAction,
     appAction, 
     setAppAction,
-    currentUserPermission
+    currentUserPermission,
+    appState,
+    setAppState,
+    currentUserState,
+    setCurrentUserState,
+    clearAPPData,
+    userIsSuperAdmin, 
+    setUserIsSuperAdmin
+
   };
 
 
