@@ -20,11 +20,10 @@ const HeaderProfileComponent = () => {
     const toggleProfileDropdown = () => { setOpenProfileDropdown(!openProfileDropdown) };
 
     function logoutUserCheck() {
-        console.log(appUserInfo);
+      
         if (appUserInfo == null) {
             //|| (appUserInfo?.token !="" && appUserInfo?.token != undefined)
-            setLoading(false);
-            console.log("isnadsadsa");
+            setLoading(false);         
             Router.push('/');
             return false;
         }
@@ -56,12 +55,10 @@ const HeaderProfileComponent = () => {
 
         httpCms.get(`/admin_user/logout?token=${appUserInfo.token}`)
             .then(response => {
-                //console.log("fetch res: ", response.data);
-                
                 setLoading(false);
                 clearAPPData();
                 Router.push('/');
-                //console.log(response.data, "response.data.data");
+               
             })
             .catch(e => {
                 console.log(e);

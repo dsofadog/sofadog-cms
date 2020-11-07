@@ -18,7 +18,7 @@ f_config.autoAddCss = false;
 library.add(fas, fab);
 const categories = CmsConstant.Category;
 const PreviewItem = (props) => {
-    const { setLoading } = useContext(LayoutContext);
+    const { setLoading,userIsSuperAdmin} = useContext(LayoutContext);
 
     const [item, setItem] = useState(null);
     const [sentences, setSentences] = useState(null);

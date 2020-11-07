@@ -4,10 +4,6 @@ import ProgressSpinner from '../component/common/ProgressSpinner'
 const LayoutContext = createContext(null);
 
 function LayoutProvider({ children }) {
-
-
-
-
   const stateByRoleOnLoad = {
     "journalist" :"",
     "lead_journalist" :"awaiting_approval_by_lead_journalist",
@@ -16,10 +12,6 @@ function LayoutProvider({ children }) {
     "feed_manager" :"awaiting_push",
     'super_admin':"all",
   }
-
-
-
-
   const actionbyRoles =  {
     'journalist' :['new'],
     'lead_journalis':['new','awaiting_review_by_lead_journalist'],
@@ -45,21 +37,17 @@ function LayoutProvider({ children }) {
   const [userIsSuperAdmin, setUserIsSuperAdmin] = useState(0);
   
   const currentUserPermission = (permission,user_type) => {
-    console.log("asdsadsads",user_type);
+    
     let classValue='';
        if(user_type=="1"){
-        classValue="hidden";
-         console.log("asdsadsadsa88888888888888888");
+        classValue="hidden";      
             return classValue;
        }else{
         //let info  = currentUserAction.includes(permission);
         let info  = checkPermission(permission);
-        if(info){
-          classValue="hidden";
-          console.log(info,"info true ke liye ")
+        if(info){      
            return classValue ;
-        }else{
-          console.log(info,"info")
+        }else{         
           return false;
         }
        }  
@@ -68,12 +56,10 @@ function LayoutProvider({ children }) {
 
 const checkPermission = (permission) => {
   let status =false;
-  currentUserAction.forEach(function(value) {
-      console.log(value,"value");
-      
-      value.forEach(function(data) {      
-         if(data==permission){
-          console.log(data,permission,"testing1",data===permission);
+  currentUserAction.forEach(function(value) {     
+      value.forEach(function(data) {    
+        console.log(data,"data");  
+         if(data==permission){         
           status =  true;
          }
     });

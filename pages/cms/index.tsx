@@ -74,7 +74,7 @@ const Demo = () => {
     const [scrollCount, setScrollCount] = useState<number>(0);
 
     useEffect(() => {
-        console.log(appUserInfo);
+      
        // currentUserPermission('kkkkkkkkrrrr');
         logoutUserCheck();
         setNewsItems(null);
@@ -84,11 +84,11 @@ const Demo = () => {
     }, []);
 
     function logoutUserCheck() {
-        console.log(appUserInfo);
+       
         if (appUserInfo == null) {
             //|| (appUserInfo?.token !="" && appUserInfo?.token != undefined)
             setLoading(false);
-            console.log("isnadsadsa");
+         
             Router.push('/');
             return false;
         }
@@ -124,7 +124,7 @@ const Demo = () => {
     }
 
     function getCurrentDate(separator = '') {
-        console.log(scrollCount);
+     
         let newDate = new Date()
         let date = newDate.getDate() - scrollCount;
         let month = newDate.getMonth() + 1;
@@ -149,13 +149,7 @@ const Demo = () => {
     //const [myFlag,setMyFlag] = useState(true);
     let myFlag = true;
     const fetchItems = async (isLoader = true) => {
-        //console.log("getCurrentDate: ", getCurrentDate("-"));
-        // if(newsItems?.news_items.length>0){
-        //     console.log("asdsadsadsa");
-        //     setLoading(true);
-        // }else{
-
-        // }
+        
         setLoading(isLoader);
 
         setScrollLoading(true);
@@ -171,7 +165,7 @@ const Demo = () => {
 
         await HttpCms.get(url)
             .then(response => {
-                console.log("fetch res: ", response.data);
+                
                 if (response.data.news_items.length > 0) {
                     if (newsItems) {
                         const item = { ...newsItems };
@@ -184,8 +178,7 @@ const Demo = () => {
                         setNewsItems(response.data);
                         setNewsItemsCached(response.data);
                     }
-                    //console.log("fetch newsItems: ",newsItems);                
-                    //setMyFlag(false);
+                   
                     myFlag = false;
                 } else {
                     //setHasNextPage(false);
@@ -236,7 +229,7 @@ const Demo = () => {
         setLoading(true);
         HttpCms.delete("/news_items/" + item.id + "?token=abcdef")
             .then((response: any) => {
-                console.log(response);
+               
                 if (response.data.success == true) {
                     //console.log(response, "onssdsdas");
                     transformNewItems(item, "delete");
@@ -251,7 +244,7 @@ const Demo = () => {
     }
 
     function handleClickSingleDropdown(data, type) {
-        console.log(data, type);
+       
         if (type === 'cat') {
             setSelectedCategory(data.value);
             toggleCateDropdown();
@@ -286,13 +279,12 @@ const Demo = () => {
     }
 
     function returndateAsRequired() {
-        console.log("scrollCount: ", scrollCount);
+       
         let today = moment().format('DD.MM.YYYY');
         let startdate = today;
         var new_date = moment(startdate, "DD-MM-YYYY");
         new_date.add(-scrollCount, 'days');
-        let dateReturn = new_date.format("YYYY-MM-DD");
-        console.log(dateReturn, "dateReturn");
+        let dateReturn = new_date.format("YYYY-MM-DD");       
         return dateReturn
 
     }
@@ -334,14 +326,14 @@ const Demo = () => {
 
         HttpCms.get(api)
             .then(response => {
-                //console.log("fetch res: ", response.data);
+               
                 setNewsItems(response.data);
                 setPaginationData({
                     ...paginationData,
                     total_data: response.data.total_items
                 });
                 setLoading(false);
-                //console.log(response.data, "response.data.data");
+           
             })
             .catch(e => {
                 console.log(e);
@@ -377,7 +369,7 @@ const Demo = () => {
                 break;
             case "filter_by_state":
                 let dataAll = newsItems?.news_items.filter(item => item.state == itemValue.name);
-                console.log(dataAll, "dataAll");
+               
                 arr.news_items = dataAll;
                 setNewsItemsCached(arr)
                 break;
@@ -388,7 +380,7 @@ const Demo = () => {
     }
 
     function array_move(arr, old_index, new_index) {
-        console.log(arr, old_index, new_index);
+       
         if (new_index >= arr.length) {
             var k = new_index - arr.length + 1;
             while (k--) {
@@ -396,7 +388,7 @@ const Demo = () => {
             }
         }
         arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
-        console.log(arr);
+       
         return arr; // for testing
     };
 
@@ -446,9 +438,9 @@ const Demo = () => {
         setLoading(true);
         HttpCms.post("/news_items/" + item.id + "/" + apiEndPoint + "?token=abcdef", {})
             .then((response: any) => {
-                console.log(response);
+              
                 if (response.data.success == true) {
-                    console.log(response, "onssdsdas");
+                   
                     transformNewItems(item, apiEndPoint);
                 }
             })
@@ -461,7 +453,7 @@ const Demo = () => {
     }
 
     function createNewItem(newItem) {
-        console.log("create item: ",newItem);
+       
         setLoading(true);
         HttpCms.post("/news_items?token=abcdef", newItem)
             .then((response) => {
@@ -484,7 +476,7 @@ const Demo = () => {
         setLoading(true);
         HttpCms.patch("/news_items/" + id + "?token=abcdef", item)
             .then((response) => {
-                console.log("update item: ",response);
+              
                 if(response.status === 200){
                     const item = { ...newsItems };
                     item.news_items[index] = response.data.news_item;
@@ -505,7 +497,7 @@ const Demo = () => {
     }
 
     useEffect(() => {
-        console.log(search.length);
+       
         if (search.length === 0) {
             setNewsItems(newsItemsCached);
         } else {
@@ -516,7 +508,7 @@ const Demo = () => {
                         .toLowerCase()
                         .includes(search.toLowerCase())
             )
-            //console.log("itemsToDisplay: ", itemsToDisplay);
+            
             setNewsItems({
                 news_items: itemsToDisplay,
                 total_items: itemsToDisplay.length
@@ -550,8 +542,7 @@ const Demo = () => {
     function showStatus(itemkey) {
         let statusReturn = '';
         status?.map((s, i) => {
-            if (s.name === itemkey.name) {
-                //console.log(s.name,itemkey)
+            if (s.name === itemkey.name) {                
                 statusReturn = s.value;
             }
         });
@@ -562,8 +553,8 @@ const Demo = () => {
     return (
         <div className="w-full h-full min-h-screen bg-gray-500">
             <nav className="sfd-nav bg-gray-800 sticky top-0 z-30">
-         <span   className={currentUserPermission('user_manager1',userIsSuperAdmin)}> permission testing {userIsSuperAdmin}  </span>
-         <span   className="`${currentUserPermission('video_editor1','0')}` text-white"> permission oooo {userIsSuperAdmin}  </span>
+         <span   className={currentUserPermission('user_manager',userIsSuperAdmin)}> permission testing {userIsSuperAdmin}  </span>
+         <span   className="`${currentUserPermission('video_editor','0')}` text-white"> permission oooo {userIsSuperAdmin}  </span>
          {/* <span   className={`${currentUserPermission('video_editor1',"kkkk") ? 'border-red-500 text-red-600' : 'border-indigo-500 text-indigo-600 '}`}> permission kkkk testing  </span> */}
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-16">
