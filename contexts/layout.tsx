@@ -3,6 +3,7 @@ import Notification from '../component/common/Notification';
 import ProgressSpinner from '../component/common/ProgressSpinner'
 const LayoutContext = createContext(null);
 
+
 function LayoutProvider({ children }) {
   const stateByRoleOnLoad = {
     "journalist" :"",
@@ -37,16 +38,17 @@ function LayoutProvider({ children }) {
   const [userIsSuperAdmin, setUserIsSuperAdmin] = useState(0);
   
   const currentUserPermission = (permission,user_type) => {
-    
+    console.log(currentUserAction);
+    let superAdmin   = currentUserAction.includes('super_admin');
     let classValue='';
-       if(user_type=="1"){
+       if(superAdmin){
         classValue="hidden";      
-            return classValue;
+            return true;
        }else{
-        //let info  = currentUserAction.includes(permission);
-        let info  = checkPermission(permission);
+        let info  = currentUserAction.includes(permission);
+        //let info  = checkPermission(permission);
         if(info){      
-           return classValue ;
+           return true ;
         }else{         
           return false;
         }
@@ -55,8 +57,10 @@ function LayoutProvider({ children }) {
 }
 
 const checkPermission = (permission) => {
+  console.log(currentUserAction,"currentUserAction");
   let status =false;
-  currentUserAction.forEach(function(value) {     
+  currentUserAction.forEach(function(value) {   
+    console.log(value,permission,"value");  
       value.forEach(function(data) {    
         console.log(data,"data");  
          if(data==permission){         

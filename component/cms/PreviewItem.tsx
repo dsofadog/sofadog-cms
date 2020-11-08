@@ -18,8 +18,7 @@ f_config.autoAddCss = false;
 library.add(fas, fab);
 const categories = CmsConstant.Category;
 const PreviewItem = (props) => {
-    const { setLoading,userIsSuperAdmin} = useContext(LayoutContext);
-
+    const { setLoading,userIsSuperAdmin,currentUserPermission} = useContext(LayoutContext);
     const [item, setItem] = useState(null);
     const [sentences, setSentences] = useState(null);
     const [creditsData, setCreditsData] = useState(null);
@@ -128,18 +127,19 @@ const PreviewItem = (props) => {
     const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
 
     function actionRender(item) {
+        // className="px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer"
         switch (item.state) {
             case "new": {
                 return (
-                    <button onClick={(e) => actionPerformed(item, "submit", e)} className="px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer">
+                    <button onClick={(e) => actionPerformed(item, "submit", e)} className={`${!currentUserPermission('new',"kkkk") ? 'hidden' : 'px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer'}`} >
                         Submit
                     </button>
                 );
             }
             case "awaiting_review_by_lead_journalist": {
                 // return  'Approve | Reject'
-                return (
-                    <div className="flex space-x-2 items-center justify-center">
+                return (                    
+                    <div className={`${!currentUserPermission('awaiting_review_by_lead_journalist',"kkkk") ? 'hidden' : 'flex space-x-2 items-center justify-center'}`}>
                         <svg onClick={(e) => actionPerformed(item, "lead_journalist_approve", e)} className="h-8 w-8 text-green-400 hover:text-green-600 cursor-pointer" x-description="Heroicon name: check-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path>
                         </svg>
@@ -150,8 +150,8 @@ const PreviewItem = (props) => {
                 );
             }
             case "awaiting_video_upload": {
-                return (
-                    <div className="block text-center justify-center items-center">
+                return (                    
+                         <div className={`${!currentUserPermission('awaiting_video_upload',"kkkk") ? 'hidden' : 'block text-center justify-center items-center'}`}>
                         {video != null ? (
                             <>
                                 <div className="flex justify-center items-center">
@@ -169,7 +169,8 @@ const PreviewItem = (props) => {
                             </>
                         ) : (
                                 <>
-                                    <div className="w-full p-2">
+                                  
+                                    <div className={`${!currentUserPermission('awaiting_video_upload',"kkkk") ? 'hidden' : 'w-full p-2'}`}>
                                         <div {...getRootProps()} className="w-full flex justify-center px-6 pt-5 pb-6 border-2 border-gray-100 border-dashed rounded-md">
                                             <input {...getInputProps()} />
                                             <div className="cursor-pointer text-center">
@@ -207,7 +208,8 @@ const PreviewItem = (props) => {
             }
             case "awaiting_review_by_lead_video_editor": {
                 return (
-                    <div className="flex space-x-2 items-center justify-center">
+                    <div className={`${!currentUserPermission('awaiting_review_by_lead_video_editor',"kkkk") ? 'hidden' : 'flex space-x-2 items-center justify-center'}`}>
+                    
                         <span onClick={(e) => actionPerformed(item, "Preview Clips", e)} className="px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-blue-800 bg-blue-100 hover:bg-blue-200 text-blue-800 cursor-pointer">
                             Preview Clips
 						</span>
@@ -222,21 +224,23 @@ const PreviewItem = (props) => {
             }
             case "ready_for_push": {
                 return (
-                    <span onClick={(e) => actionPerformed(item, "push_to_feed", e)} className="px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-green-800 bg-green-100 hover:bg-green-200 text-green-800 cursor-pointer">
+                   
+                    <span onClick={(e) => actionPerformed(item, "push_to_feed", e)} className={`${!currentUserPermission('ready_for_push',"kkkk") ? 'hidden' : 'px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-green-800 bg-green-100 hover:bg-green-200 text-green-800 cursor-pointer'}`}>
                         Push To Feed
                     </span>
                 );
             }
             case "pushed_to_feed": {
                 return (
-                    <span onClick={(e) => actionPerformed(item, "remove_from_feed", e)} className="px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-red-800 bg-red-100 hover:bg-red-200 text-red-800 cursor-pointer">
+                   
+                    <span onClick={(e) => actionPerformed(item, "remove_from_feed", e)} className= {`${!currentUserPermission('pushed_to_feed',"kkkk") ? 'hidden' : 'px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-red-800 bg-red-100 hover:bg-red-200 text-red-800 cursor-pointer'}`}>
                         Remove From Feed
                     </span>
                 );
             }
             case "removed_from_feed": {
-                return (
-                    <span onClick={(e) => actionPerformed(item, "push_to_feed", e)} className="px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-green-800 bg-green-100 hover:bg-green-200 text-green-800 cursor-pointer">
+                return (                    
+                    <span onClick={(e) => actionPerformed(item, "push_to_feed", e)} className= {`${!currentUserPermission('removed_from_feed',"kkkk") ? 'hidden' : 'px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-green-800 bg-green-100 hover:bg-green-200 text-green-800 cursor-pointer'}`}>
                         Push To Feed
                     </span>
                 );

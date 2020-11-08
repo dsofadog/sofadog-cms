@@ -553,9 +553,7 @@ const Demo = () => {
     return (
         <div className="w-full h-full min-h-screen bg-gray-500">
             <nav className="sfd-nav bg-gray-800 sticky top-0 z-30">
-         <span   className={currentUserPermission('user_manager',userIsSuperAdmin)}> permission testing {userIsSuperAdmin}  </span>
-         <span   className="`${currentUserPermission('video_editor','0')}` text-white"> permission oooo {userIsSuperAdmin}  </span>
-         {/* <span   className={`${currentUserPermission('video_editor1',"kkkk") ? 'border-red-500 text-red-600' : 'border-indigo-500 text-indigo-600 '}`}> permission kkkk testing  </span> */}
+      
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-16">
                         <div className="flex">
