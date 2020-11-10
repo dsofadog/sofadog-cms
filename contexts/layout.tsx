@@ -3,11 +3,8 @@ import Notification from '../component/common/Notification';
 import ProgressSpinner from '../component/common/ProgressSpinner'
 const LayoutContext = createContext(null);
 
+
 function LayoutProvider({ children }) {
-
-
-
-
   const stateByRoleOnLoad = {
     "journalist" :"",
     "lead_journalist" :"awaiting_approval_by_lead_journalist",
@@ -16,10 +13,6 @@ function LayoutProvider({ children }) {
     "feed_manager" :"awaiting_push",
     'super_admin':"all",
   }
-
-
-
-
   const actionbyRoles =  {
     'journalist' :['new'],
     'lead_journalis':['new','awaiting_review_by_lead_journalist'],
@@ -45,21 +38,18 @@ function LayoutProvider({ children }) {
   const [userIsSuperAdmin, setUserIsSuperAdmin] = useState(0);
   
   const currentUserPermission = (permission,user_type) => {
-    console.log("asdsadsads",user_type);
+    console.log(currentUserAction);
+    let superAdmin   = currentUserAction.includes('super_admin');
     let classValue='';
-       if(user_type=="1"){
-        classValue="hidden";
-         console.log("asdsadsadsa88888888888888888");
-            return classValue;
+       if(superAdmin){
+        classValue="hidden";      
+            return true;
        }else{
-        //let info  = currentUserAction.includes(permission);
-        let info  = checkPermission(permission);
-        if(info){
-          classValue="hidden";
-          console.log(info,"info true ke liye ")
-           return classValue ;
-        }else{
-          console.log(info,"info")
+        let info  = currentUserAction.includes(permission);
+        //let info  = checkPermission(permission);
+        if(info){      
+           return true ;
+        }else{         
           return false;
         }
        }  
@@ -67,13 +57,13 @@ function LayoutProvider({ children }) {
 }
 
 const checkPermission = (permission) => {
+  console.log(currentUserAction,"currentUserAction");
   let status =false;
-  currentUserAction.forEach(function(value) {
-      console.log(value,"value");
-      
-      value.forEach(function(data) {      
-         if(data==permission){
-          console.log(data,permission,"testing1",data===permission);
+  currentUserAction.forEach(function(value) {   
+    console.log(value,permission,"value");  
+      value.forEach(function(data) {    
+        console.log(data,"data");  
+         if(data==permission){         
           status =  true;
          }
     });

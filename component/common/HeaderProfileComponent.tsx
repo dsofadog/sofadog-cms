@@ -13,18 +13,17 @@ f_config.autoAddCss = false;
 library.add(fas, fab);
 
 const HeaderProfileComponent = () => {
-    const { setLoading, appUserInfo, setAppUserInfo, setNotification,clearAPPData } = useContext(LayoutContext);
+    const { setLoading, appUserInfo, setAppUserInfo, setNotification,clearAPPData,currentUserPermission } = useContext(LayoutContext);
     const profileWrapperRef = useRef(null);
     useOutsideAlerter(profileWrapperRef);
     const [openProfileDropdown, setOpenProfileDropdown] = useState(false);
     const toggleProfileDropdown = () => { setOpenProfileDropdown(!openProfileDropdown) };
 
     function logoutUserCheck() {
-        console.log(appUserInfo);
+      
         if (appUserInfo == null) {
             //|| (appUserInfo?.token !="" && appUserInfo?.token != undefined)
-            setLoading(false);
-            console.log("isnadsadsa");
+            setLoading(false);         
             Router.push('/');
             return false;
         }
@@ -56,12 +55,10 @@ const HeaderProfileComponent = () => {
 
         httpCms.get(`/admin_user/logout?token=${appUserInfo.token}`)
             .then(response => {
-                //console.log("fetch res: ", response.data);
-                
                 setLoading(false);
                 clearAPPData();
                 Router.push('/');
-                //console.log(response.data, "response.data.data");
+               
             })
             .catch(e => {
                 console.log(e);
@@ -92,7 +89,8 @@ const HeaderProfileComponent = () => {
                             </div>
                             <div>
                                 <Link href={'/cms/setting'}>
-                                    <a href={void (0)} className="flex space-x-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900" role="menuitem">
+                                
+                                    <a href={void (0)} className={`${currentUserPermission('user_manager',"kkkk") ? 'flex space-x-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900' : 'hidden'}`}role="menuitem">
                                         <FontAwesomeIcon className="w-3" icon={['fas', 'cog']} />
                                         <span>Settings</span>
                                     </a>

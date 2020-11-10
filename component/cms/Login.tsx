@@ -20,6 +20,7 @@ const Login = () => {
   } = useContext(LayoutContext);
 
   const [userInfo, setUserInfo] = useState(null);
+  const tempData=[];
 
   useEffect(() => {
     setUserInfo({
@@ -42,50 +43,44 @@ const Login = () => {
   }
 
   const currentUserRoleManagement = (data) => {
-    // console.log(data,"data");
-    data?.user?.admin_roles.forEach(function (item) {
+    
+    data?.user?.admin_roles.forEach(function (item) { 
       rolesAdded(item.id);
       stateAdded(item.id);
+     
     });
+
   };
+
+  const calltest = () => {
+     console.log('kkkk',tempData);
+  }
 
   const stateAdded = (role) => {
     let arrayData = [];
     arrayData = currentUserState;
     if (appState[role] !== undefined && appState[role] !== null) {
-
       arrayData.push(appState[role]);
       setCurrentUserState(arrayData);
     }
   };
 
   const rolesAdded = (role) => {
-      if(role=="super_admin"){
-          console.log(role,"rolerolerole");
+      if(role=="super_admin"){         
         setUserIsSuperAdmin(1);
       }
-    for (const [key, value] of Object.entries(appAction)) {
-        console.log(`${key}: ${role}`)
-        if(key==role){
-            //console.log(`${key}: ${value}`);
-            let arrayData = [];
-            arrayData = currentUserAction;
-            arrayData.push(value);
-            setCurrentUserAction(arrayData);
-            console.log(currentUserAction);
+    for (const [key, value] of Object.entries(appAction)) {   
+        console.log(key, value,role);    
+        if(key==role){   
+            appAction[key].forEach(function(value) {
+              setCurrentUserAction(currentUserAction => [...currentUserAction, value]);            
+              
+          });
 
         }
       }
 
-    // if (appAction[role] !== undefined && appAction[role] != null) {
-    //   //console.log(`${key}: ${value}`);
-    //   let arrayData = [];
-    //   arrayData = currentUserAction;
-    //   let  arrayData2 =  arrayData.concat(appAction[role]);
-    //   console.log(arrayData2);
-    //   setCurrentUserAction(arrayData2);
-    //   console.log(currentUserAction);
-    // }
+    
   };
 
   const doLogin = (e) => {
@@ -100,29 +95,31 @@ const Login = () => {
           response.data.displayName = firstName.charAt(0) + lastName.charAt(0);
           setAppUserInfo(response.data);
           
-          let dummyData = {
-            user: {
-              email: "superuser@so.fa.dog",
-              admin_roles: [
-                  { id: "super_admin", description: "Super Admin" },
-                  { id: "video_editor", description: "lead_journalis" },
-                //   { id: "user_manager", description: "user_manager" }
-                ],
-              first_name: "Super",
-              last_name: "User",
-              job_title: "Super Admin",
-              on_shift: null,
-              disabled: null,
-            },
-            token: "a249b9a0-20a7-11eb-a957-19c7c71ee4c2",
-          };
-          currentUserRoleManagement(dummyData);
+          // let dummyData = {
+          //   user: {
+          //     email: "superuser@so.fa.dog",
+          //     admin_roles: [
+          //        // { id: "super_admin", description: "Super Admin" },
+          //         { id: "lead_journalis", description: "lead_journalis" },
+          //         { id: "video_editor", description: "video_editor" },
+          //         { id: "user_manager", description: "user_manager" }
+          //       ],
+          //     first_name: "Super",
+          //     last_name: "User",
+          //     job_title: "Super Admin",
+          //     on_shift: null,
+          //     disabled: null,
+          //   },
+          //   token: "a249b9a0-20a7-11eb-a957-19c7c71ee4c2",
+          // };
+          // currentUserRoleManagement(dummyData);
+          currentUserRoleManagement(response.data);
         } else {
           alert("Something wrong !!");
         }
       })
       .catch((e) => {
-        console.log(e);
+        
         setLoading(false);
       })
       .finally(() => {
