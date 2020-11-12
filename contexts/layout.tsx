@@ -1,28 +1,13 @@
 import React, { useState, createContext } from 'react';
 import Notification from '../component/common/Notification';
-import ProgressSpinner from '../component/common/ProgressSpinner'
+import ProgressSpinner from '../component/common/ProgressSpinner';
+import CmsConstant from '../utils/cms-constant';
 const LayoutContext = createContext(null);
 
 
 function LayoutProvider({ children }) {
-  const stateByRoleOnLoad = {
-    "journalist" :"",
-    "lead_journalist" :"awaiting_approval_by_lead_journalist",
-    "video_editor" :"awaiting_video_upload",
-    "lead_video_editor" :"awaiting_approval_by_lead_video_editor",
-    "feed_manager" :"awaiting_push",
-    'super_admin':"all",
-  }
-  const actionbyRoles =  {
-    'journalist' :['new'],
-    'lead_journalis':['new','awaiting_review_by_lead_journalist'],
-    'video_editor':['awaiting_video_upload'],
-    'lead_video_editor':['awaiting_video_upload','awaiting_review_by_lead_video_editor'],
-    'feed_manager':['pushed_to_feed','decrement_ordinal','increment_ordinal','removed_from_feed'],
-    'user_manager':['user_manager'],
-    'super_admin':['super_admin']
-  }
-
+  const actionbyRoles = CmsConstant.actionbyRoles;
+  const stateByRoleOnLoad = CmsConstant.stateByRoleOnLoad;
   const [sideBarCollapsed, setCollapsed] = useState(false);
   const [theme, setTheme] = useState('dark');
   const [loading, setLoading] = useState(false);
@@ -38,7 +23,7 @@ function LayoutProvider({ children }) {
   const [userIsSuperAdmin, setUserIsSuperAdmin] = useState(0);
   
   const currentUserPermission = (permission,user_type) => {
-    console.log(currentUserAction);
+   // console.log(currentUserAction);
     let superAdmin   = currentUserAction.includes('super_admin');
     let classValue='';
        if(superAdmin){
@@ -57,12 +42,12 @@ function LayoutProvider({ children }) {
 }
 
 const checkPermission = (permission) => {
-  console.log(currentUserAction,"currentUserAction");
+//  console.log(currentUserAction,"currentUserAction");
   let status =false;
   currentUserAction.forEach(function(value) {   
-    console.log(value,permission,"value");  
+    //console.log(value,permission,"value");  
       value.forEach(function(data) {    
-        console.log(data,"data");  
+      //  console.log(data,"data");  
          if(data==permission){         
           status =  true;
          }

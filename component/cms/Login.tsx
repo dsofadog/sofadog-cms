@@ -42,26 +42,41 @@ const Login = () => {
     });
   }
 
-  const currentUserRoleManagement = (data) => {
+  const  currentUserRoleManagement = async (data) => {
+     await  manageuser(data);
+     console.log(currentUserState,"currentUserState");
+      console.log(currentUserAction,"currentUserAction 1 ");  
+     Router.push("/cms");
+ 
     
-    data?.user?.admin_roles.forEach(function (item) { 
-      rolesAdded(item.id);
-      stateAdded(item.id);
-     
-    });
-
   };
 
-  const calltest = () => {
-     console.log('kkkk',tempData);
+  function manageuser(data){
+    data?.user?.admin_roles.forEach(function (item) { 
+      rolesAdded(item.id);
+      stateAdded(item.id);     
+    });
   }
 
+
+
   const stateAdded = (role) => {
-    let arrayData = [];
-    arrayData = currentUserState;
+  console.log(appState,role,"role",appState[role]);
     if (appState[role] !== undefined && appState[role] !== null) {
-      arrayData.push(appState[role]);
-      setCurrentUserState(arrayData);
+      console.log(currentUserState,"currentUserState");     
+      let data = appState[role]; 
+      if(Array.isArray(currentUserState) && currentUserState.length){
+        console.log(currentUserState,"before");
+        setCurrentUserState(currentUserState => [...currentUserState, data]);
+        console.log(currentUserState,"after");
+    }else{
+       let data = [];
+       data.push(appState[role]);
+       setCurrentUserState(data);
+       console.log(currentUserState,"after 777");
+    }
+      
+      console.log(currentUserState,"currentUserState 999999");  
     }
   };
 
@@ -70,10 +85,12 @@ const Login = () => {
         setUserIsSuperAdmin(1);
       }
     for (const [key, value] of Object.entries(appAction)) {   
-        console.log(key, value,role);    
+       // console.log(key, value,role);    
         if(key==role){   
             appAction[key].forEach(function(value) {
-              setCurrentUserAction(currentUserAction => [...currentUserAction, value]);            
+              setCurrentUserAction(currentUserAction => [...currentUserAction, value]);  
+              console.log(currentUserAction,"currentUserAction 1 ");  
+                         
               
           });
 
@@ -88,21 +105,21 @@ const Login = () => {
     e.preventDefault();
     HttpCms.post("/admin_user/login", userInfo)
       .then((response) => {
-        if (response.data.token != "") {
-          Router.push("/cms");
+        if (response.data.token != "") {         
           let firstName = response.data.user.first_name;
           let lastName = response.data.user.last_name;
           response.data.displayName = firstName.charAt(0) + lastName.charAt(0);
           setAppUserInfo(response.data);
+          currentUserRoleManagement(response.data);
           
           // let dummyData = {
           //   user: {
           //     email: "superuser@so.fa.dog",
           //     admin_roles: [
           //        // { id: "super_admin", description: "Super Admin" },
-          //         { id: "lead_journalis", description: "lead_journalis" },
+          //         { id: "lead_journalist", description: "lead_journalist" },
           //         { id: "video_editor", description: "video_editor" },
-          //         { id: "user_manager", description: "user_manager" }
+          //         { id: "lead_video_editor", description: "lead_video_editor" }
           //       ],
           //     first_name: "Super",
           //     last_name: "User",
@@ -113,7 +130,8 @@ const Login = () => {
           //   token: "a249b9a0-20a7-11eb-a957-19c7c71ee4c2",
           // };
           // currentUserRoleManagement(dummyData);
-          currentUserRoleManagement(response.data);
+          
+          
         } else {
           alert("Something wrong !!");
         }

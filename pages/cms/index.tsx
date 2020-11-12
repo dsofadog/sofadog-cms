@@ -30,7 +30,12 @@ const Demo = () => {
     const [selectedTag, setSelectedTag] = useState([]);
     const [selectedState, setSelectedState] = useState(null);
 
-    const { setLoading, appUserInfo,currentUserPermission,userIsSuperAdmin} = useContext(LayoutContext);
+    const { setLoading, appUserInfo,currentUserPermission,
+        userIsSuperAdmin,
+        currentUserState,
+        setCurrentUserState,
+        currentUserAction
+    } = useContext(LayoutContext);
 
     const [openCategoryDropdown, setOpenCategoryDropdown] = useState(false);
     const toggleCateDropdown = () => { setOpenCategoryDropdown(!openCategoryDropdown) };
@@ -74,8 +79,9 @@ const Demo = () => {
     const [scrollCount, setScrollCount] = useState<number>(0);
 
     useEffect(() => {
+       
       
-       // currentUserPermission('kkkkkkkkrrrr');
+       console.log(currentUserState,currentUserAction);
         logoutUserCheck();
         setNewsItems(null);
         setNewsItemsCached(null);
@@ -168,6 +174,11 @@ const Demo = () => {
                 
                 if (response.data.news_items.length > 0) {
                     if (newsItems) {
+                        console.log(currentUserState,"currentUserState");
+                        if(Array.isArray(currentUserState) && currentUserState.length){
+                            console.log(currentUserState[0]);
+                            setSelectedState(currentUserState[0]);
+                        }
                         const item = { ...newsItems };
                         response.data.news_items.map((data, i) => {
                             item.news_items.push(data);
