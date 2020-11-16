@@ -14,11 +14,12 @@ import { LayoutContext } from '../../contexts';
 import Link from "next/link";
 
 
+
 f_config.autoAddCss = false;
 library.add(fas, fab);
 const categories = CmsConstant.Category;
 const PreviewItem = (props) => {
-    const { setLoading,userIsSuperAdmin,currentUserPermission} = useContext(LayoutContext);
+    const { setLoading,appUserInfo,userIsSuperAdmin,currentUserPermission} = useContext(LayoutContext);
     const [item, setItem] = useState(null);
     const [sentences, setSentences] = useState(null);
     const [creditsData, setCreditsData] = useState(null);
@@ -27,12 +28,17 @@ const PreviewItem = (props) => {
     const [isClips, setIsClips] = useState(false);
     const [clips, setClips] = useState({ video: null, thumbnails: null });
     const [isEdit, setIsEdit] = useState(false);
+    const [comments, setComments] = useState(null);
 
     const status = CmsConstant.Status;
 
     useEffect(() => {
         //console.log(props.item);
-        setItem(props.item);
+        
+        if(props.item){
+            setItem(props.item);
+            fetchComment(props.item.id);
+        }
     }, [props]);
 
     useEffect(() => {
@@ -41,6 +47,25 @@ const PreviewItem = (props) => {
             showCredits('news_credits', item.news_credits);
         }
     }, [item]);
+   
+    function fetchComment(id) {
+        console.log("calling fetch api");
+        
+        //HttpCms.get(`/news_items/${id}/comments?token=${appUserInfo.token}`)
+        HttpCms.get(`https://run.mocky.io/v3/cdb6424e-ef10-4683-955a-b346919782f6`)
+            .then(response => {
+                
+                console.log(response.data, "response.data");
+                let c = response.data.comments[response.data.comments.length-1];
+                console.log("c ",c);
+                setComments(c);
+                console.log("comments ",comments);
+
+            })
+            .catch(e => {
+                console.log(e);
+            });
+    }
 
     function refreshData(e) {
         e.preventDefault();
@@ -367,7 +392,7 @@ const PreviewItem = (props) => {
                                                 </div>
                                                 <div className="w-full py-4">
                                                     <div className="w-full truncate">
-                                                        <span className="text-xs truncate">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</span>
+                                                            <span className="text-xs truncate">{comments?.text}</span>
                                                     </div>
                                                     <div className="w-full flex text-center justify-end space-x-2">
                                                         <span className="text-white w-6 h-6 rounded-full p-3 bg-blue-600 text-xs flex items-center justify-center">3</span>

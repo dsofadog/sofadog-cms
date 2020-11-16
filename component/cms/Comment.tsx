@@ -132,15 +132,15 @@ const Comment = (props) => {
         <div className="w-full flex">
             <div className="w-auto mt-2 flex z-10">
                 <span className="inline-flex items-center justify-center h-14 w-14 border-4 border-white rounded-full sfd-btn-primary">
-                    <span className="text-lg font-medium leading-none text-white">{type === 'view' ? comment?.first_name.charAt(0) + comment?.last_name.charAt(0) : appUserInfo?.displayName}</span>
+                    <span className="text-lg font-medium leading-none text-white">{type === 'view' ? comment?.user.first_name.charAt(0) + comment?.user.last_name.charAt(0) : appUserInfo?.displayName}</span>
                 </span>
             </div>
             <div className="w-full -ml-2 bg-gray-100 px-2 py-0.5 rounded-2xl">
                 {isPreview ?
                     <>
                         <div ref={actionWrapperRef} data-id="action" className="relative w-full text-sm text-gray-600 flex justify-end space-x-2">
-                            <span>{comment?.created}</span>
-                            {appUserInfo?.user.email === comment?.email && (
+                            <span>{comment?.created_at}</span>
+                            {appUserInfo?.user.email === comment?.user.email && (
                                 <>
                                     <FontAwesomeIcon onClick={() => toggleActionDropdown()} className="w-5 text-gray-600 cursor-pointer" icon={['fas', 'ellipsis-h']} />
                                     {openActionDropdown && (
@@ -164,8 +164,8 @@ const Comment = (props) => {
                         </div>
                         <div className="w-full space-y-1 px-2 pb-4">
                             <div>
-                                <span className="text-base font-bold text-gray-800">{comment?.first_name} {comment?.last_name}, </span>
-                                <span className="text-base text-gray-600">{comment?.job_title}</span>
+                                <span className="text-base font-bold text-gray-800">{comment?.user.first_name} {comment?.user.last_name}, </span>
+                                <span className="text-base text-gray-600">{comment?.user.job_title}</span>
                             </div>
                             <div>
                                 <span className="text-base text-gray-600" dangerouslySetInnerHTML={{ __html: comment?.text }} ></span>

@@ -47,7 +47,7 @@ const UserComponent = () => {
 	useEffect(() => {
 		//getUserData(users);
 		callAllUserInfo();	
-	}),[];
+	},[]);
 
 	function callAllUserInfo(){
 		let api = "admin_users?token="+appUserInfo?.token;
