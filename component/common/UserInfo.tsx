@@ -26,6 +26,7 @@ const UserInfo = (props) => {
     //const [user,setUser] = useState(null);
     const [action, setAction] = useState('view');
     const [tabIndex, setTabIndex] = useState(1);
+    let previousAllRole = [];
 
     useEffect(() => {
         if (props.data) {
@@ -42,7 +43,7 @@ const UserInfo = (props) => {
             console.log("prop.action", props.action);
             setAction(props.action);
         }
-    }, []);
+    }, [props]);
 
     function useOutsideAlerter(ref) {
         useEffect(() => {
@@ -84,9 +85,11 @@ const UserInfo = (props) => {
     }
     function handleMultiSelectChange(e, data) {
         e.preventDefault();
+        previousAllRole =selectedRole;
         setSelectedRole([
             ...selectedRole, data.id
         ]);
+        
         //toggleRoleDropdown();
     }
     function isRoleSelected(role) {
@@ -149,29 +152,33 @@ const UserInfo = (props) => {
 
     }
 
-    function removeRole(e,role) {
-        e.preventDefault();
-        console.log(action);
-        var index = selectedRole.indexOf(role);
-        if (index !== -1) {
-            const r = [...selectedRole]
-            r.splice(index, 1);
-            setSelectedRole(r);
-        }
-        setUserData({
-            ...userData,
-            admin_roles: selectedRole
-        })
-        if(action === 'edit'){
-            console.log("in edit remove role")
-            let data = {
-                email: userData.email,
-                admin_roles: role
-            }
-            // role remove or add we have to decide here then pass in first argument
+    function removeAddRole(e,role,type) {
+        e.preventDefault()
+  
+       let data = {
+        "email": userData.email,
+        "role": role
+       }
+
+       console.log(data,"datadata");
+     if(type=='remove_role'){
+        let info  = previousAllRole.includes(role);
+        if(info){
+            props.removeRoleUser(data, type);
+        } 
+        
+     }else{
+        let difference = selectedRole.filter(x => !previousAllRole.includes(x));
+        let  role1 = difference.join();
+        let data = {
+            "email": userData.email,
+            "role": role1
+           }
+        props.removeRoleUser(data, type);
+     }
     
-            props.removeRoleUser("remove_role", data, 'removeroleNameHere',);
-        }        
+     
+               
 
     }
 
@@ -356,7 +363,7 @@ const UserInfo = (props) => {
                                                         {selectedRole.map((role, i) => (
                                                             <span key={i} className="inline-flex items-center mr-2 mb-2 h-8 px-2 py-0.5 rounded text-xs font-medium leading-4 bg-blue-100 text-blue-800">
                                                                 {getRoleName(role)}
-                                                                <button onClick={(e)=>removeRole(e,role)} type="button" className="flex-shrink-0 ml-1.5 inline-flex text-indigo-500 focus:outline-none focus:text-indigo-700" aria-label="Remove small badge">
+                                                                <button onClick={(e)=>removeAddRole(e,role,'remove_role')} type="button" className="flex-shrink-0 ml-1.5 inline-flex text-indigo-500 focus:outline-none focus:text-indigo-700" aria-label="Remove small badge">
                                                                     <svg className="h-2 w-2" stroke="currentColor" fill="none" viewBox="0 0 8 8">
                                                                         <path strokeLinecap="round" strokeWidth="1.5" d="M1 1l6 6m0-6L1 7" />
                                                                     </svg>
@@ -409,7 +416,7 @@ const UserInfo = (props) => {
                             <FontAwesomeIcon onClick={() => setAction('edit')} className="w-5 h-5 cursor-pointer hover:text-blue-600" icon={['fas', 'edit']} />
                             <FontAwesomeIcon className="w-4 h-4 cursor-pointer hover:text-red-800" icon={['fas', 'trash-alt']} />
                             {userData?.disabled ?
-                                <FontAwesomeIcon onClick={(e) => userEnableDisabled(e, 'enable')} className="w-4 h-4 cursor-pointer hover:text-green-700" icon={['fas', 'user']} />
+                                <FontAwesomeIcon onClick={(e) => userEnableDisabled(e, 'enable')}  className="w-4 h-4 cursor-pointer hover:text-green-700" icon={['fas', 'user']} />
                                 :
                                 <FontAwesomeIcon onClick={(e) => userEnableDisabled(e, 'disable')} className="w-4 h-4 cursor-pointer hover:text-red-800" icon={['fas', 'user-slash']} />
                             }

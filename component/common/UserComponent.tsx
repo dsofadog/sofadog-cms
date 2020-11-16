@@ -152,14 +152,9 @@ const UserComponent = () => {
 
 	}
 
-	function removeRoleUser(status,data,role){
-		console.log("Update user ",status,data);
-		let request = {
-			"email":data.email,
-			"role":role
-	     };
+	function removeRoleUser(data,type){	
 		
-		HttpCms.post("admin_user/"+data.email+"/"+status+"?token="+appUserInfo?.token, request)
+		HttpCms.patch("admin_user/"+data.email+"/"+type+"?token="+appUserInfo?.token, data)
 		.then((response) => {
 			setAddNew(false);
 		})
@@ -191,7 +186,7 @@ const UserComponent = () => {
 								<UserInfo action="add" callback={toggleAddNew} addUser={addUser}></UserInfo>
 							)}							
 							{user?.map((data,i) => (
-								<UserInfo data={data} setUserPassword  ={setUserPassword} updateUser={updateUser} enableDisableUser={enableDisableUser}></UserInfo>
+								<UserInfo data={data} setUserPassword  ={setUserPassword} updateUser={updateUser} enableDisableUser={enableDisableUser} removeRoleUser={removeRoleUser}></UserInfo>
 							))}
 							
 							
