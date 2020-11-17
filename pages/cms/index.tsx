@@ -160,7 +160,7 @@ const Demo = () => {
 
         setScrollLoading(true);
         let dataUrlObj = {
-            "token": "abcdef",
+            "token": appUserInfo?.token,
             "limit": paginationData.limit,
             "date": returndateAsRequired(),
             "tags": selectedTag.join(),
@@ -238,7 +238,7 @@ const Demo = () => {
 
     function deleteItem(item) {
         setLoading(true);
-        HttpCms.delete("/news_items/" + item.id + "?token=abcdef")
+        HttpCms.delete("/news_items/" + item.id + "?token="+appUserInfo?.token)
             .then((response: any) => {
                
                 if (response.data.success == true) {
@@ -305,7 +305,7 @@ const Demo = () => {
 
         let apiUrl = "news_items?";
         let dataUrlObj = {
-            "token": "abcdef",
+            "token": appUserInfo?.token,
             "limit": paginationData.limit,
             "date": returndateAsRequired(),
             "tags": selectedTag.join(),
@@ -409,7 +409,7 @@ const Demo = () => {
 
     function processedData(data, apiCallEndPoint) {
         setLoading(true);
-        HttpCms.post("/news_items/" + data.id + "/" + apiCallEndPoint + "?token=abcdef", {})
+        HttpCms.post("/news_items/" + data.id + "/" + apiCallEndPoint + "?token="+appUserInfo?.token, {})
             .then((response) => {
                 fetchItems();
             })
@@ -433,7 +433,7 @@ const Demo = () => {
             }
         };
 
-        HttpCms.post("/news_items/" + item.id + "/" + apiEndPoint + "?token=abcdef", formData, config)
+        HttpCms.post("/news_items/" + item.id + "/" + apiEndPoint + "?token="+appUserInfo?.token, formData, config)
             .then((response) => {
                 fetchItems();
             })
@@ -447,7 +447,7 @@ const Demo = () => {
 
     function decrement_increment_ordinal(item, apiEndPoint) {
         setLoading(true);
-        HttpCms.post("/news_items/" + item.id + "/" + apiEndPoint + "?token=abcdef", {})
+        HttpCms.post("/news_items/" + item.id + "/" + apiEndPoint + "?token="+appUserInfo?.token, {})
             .then((response: any) => {
               
                 if (response.data.success == true) {
@@ -466,7 +466,7 @@ const Demo = () => {
     function createNewItem(newItem) {
        
         setLoading(true);
-        HttpCms.post("/news_items?token=abcdef", newItem)
+        HttpCms.post("/news_items?token="+appUserInfo?.token, newItem)
             .then((response) => {
                 //console.log("add item: ",response.data);
                 const item = { ...newsItems };
@@ -485,7 +485,7 @@ const Demo = () => {
 
     function updateItem(id,item,index) {
         setLoading(true);
-        HttpCms.patch("/news_items/" + id + "?token=abcdef", item)
+        HttpCms.patch("/news_items/" + id + "?token="+appUserInfo?.token, item)
             .then((response) => {
               
                 if(response.status === 200){
