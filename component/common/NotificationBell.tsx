@@ -1,14 +1,19 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
+import { LayoutContext } from "../../contexts";
+import httpCms from "../../utils/http-cms";
 
 const NotificationBell = () => {
 
     const bellWrapperRef = useRef(null);
     useOutsideAlerter(bellWrapperRef);
     const [openBellDropdown, setOpenBellDropdown] = useState(false);
+    const { setLoading, appUserInfo,currentUserPermission } = useContext(LayoutContext);
     const toggleBellDropdown = () => { setOpenBellDropdown(!openBellDropdown) };
+    const [notifications,setNotificatons] = useState(null);
 
     function useOutsideAlerter(ref) {
         useEffect(() => {
+            getNotifications();
             function handleClickOutside(event) {
 
                 if (ref.current && !ref.current.contains(event.target)) {
@@ -26,7 +31,25 @@ const NotificationBell = () => {
             };
         }, [ref]);
     }
-
+    function getNotifications(){
+        setLoading(true);
+        console.log("Start Notification---------- ")
+        httpCms.get(`/notifications?token=${appUserInfo?.token}`)
+          .then((response) => {
+            if (response.data != null) {         
+               console.log("notification: ",response.data);
+               setNotificatons(response.data.notifications);
+            } else {
+              alert("Something wrong !!");
+            }
+          })
+          .catch((e) => {
+            setLoading(false);
+          })
+          .finally(() => {
+            setLoading(false);
+          });
+      }
     return (
         <>
             <div ref={bellWrapperRef} data-id="bell" className="relative inline-block text-center">
@@ -42,15 +65,22 @@ const NotificationBell = () => {
                     <div className="origin-top-right absolute right-0 mt-2 w-84 rounded-md shadow-lg">
                         <div className="h-full rounded-md bg-white shadow-xs">
                             <div className="h-96 overflow-y-auto py-1 text-left" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                                <div className="w-full flex px-4 py-1 text-xs leading-5 text-gray-700 hover:bg-gray-200 hover:text-gray-900 cursor-pointer">
-                                    <div className="w-11/12 flex justify-start">
-                                        The purpose of the function is to display the specified HTML code inside the specified HTML element.
-                                    </div>
-                                    <div className="w-1/12 flex items-center justify-end">
-                                        <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full sfd-btn-primary"></div>
-                                    </div>
-                                </div>
-                                <div className="w-full flex px-4 py-1 text-xs leading-5 text-gray-700 hover:bg-gray-200 hover:text-gray-900 cursor-pointer">
+                                {
+                                    notifications?.map((notification) =>(
+                                        <div className="w-full flex px-4 py-1 text-xs leading-5 text-gray-700 hover:bg-gray-200 hover:text-gray-900 cursor-pointer">
+                                            <div className="w-11/12 flex justify-start">
+                                                {
+                                                    notification.action
+                                                }
+                                            </div>
+                                            <div className="w-1/12 flex items-center justify-end">
+                                                <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full sfd-btn-primary"></div>
+                                            </div>
+                                        </div>
+
+                                    ))
+                                }
+                                {/* <div className="w-full flex px-4 py-1 text-xs leading-5 text-gray-700 hover:bg-gray-200 hover:text-gray-900 cursor-pointer">
                                     <div className="w-11/12 flex justify-start">
                                         The purpose of the function is to display the specified HTML code inside the specified HTML element.
                                     </div>
@@ -105,7 +135,7 @@ const NotificationBell = () => {
                                     <div className="w-1/12 flex items-center justify-end">
                                         <div className="hidden flex-shrink-0 w-2.5 h-2.5 rounded-full sfd-btn-primary"></div>
                                     </div>
-                                </div>
+                                </div> */}
                             </div>
                         </div>
                     </div>

@@ -28,7 +28,7 @@ const PreviewItem = (props) => {
     const [isClips, setIsClips] = useState(false);
     const [clips, setClips] = useState({ video: null, thumbnails: null });
     const [isEdit, setIsEdit] = useState(false);
-    const [comments, setComments] = useState(null);
+    const [comment, setComment] = useState(null);
 
     const status = CmsConstant.Status;
 
@@ -56,10 +56,17 @@ const PreviewItem = (props) => {
             .then(response => {
                 
                 console.log(response.data, "response.data");
-                let c = response.data.comments[response.data.comments.length-1];
-                console.log("c ",c);
-                setComments(c);
-                console.log("comments ",comments);
+                if(response.data.comments.length > 0){
+                    let c = response.data.comments[response.data.comments.length-1];
+                    console.log("c ",c);
+    
+                    setComment({
+                        text:c,
+                        count:response.data.comments.length
+                    });
+                    console.log("comments ",comment);
+                }
+               
 
             })
             .catch(e => {
@@ -392,10 +399,10 @@ const PreviewItem = (props) => {
                                                 </div>
                                                 <div className="w-full py-4">
                                                     <div className="w-full truncate">
-                                                            <span className="text-xs truncate" dangerouslySetInnerHTML={{ __html: comments?.text }}></span>
+                                                            <span className="text-xs truncate" dangerouslySetInnerHTML={{ __html: comment?.text.text }}></span>
                                                     </div>
                                                     <div className="w-full flex text-center justify-end space-x-2">
-                                                        <span className="text-white w-6 h-6 rounded-full p-3 bg-blue-600 text-xs flex items-center justify-center">3</span>
+                                                            <span className="text-white w-6 h-6 rounded-full p-3 bg-blue-600 text-xs flex items-center justify-center">{comment?.count}</span>
                                                         <Link href={`/cms/[item_id]`} as={`/cms/${item.id}`}>
                                                             <label className="text-sm font-bold text-gray-800 cursor-pointer hover:underline">Comments</label>
                                                         </Link>
