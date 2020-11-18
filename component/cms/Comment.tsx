@@ -5,6 +5,8 @@ import { fab } from '@fortawesome/free-brands-svg-icons';
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import dynamic from "next/dynamic";
 import { LayoutContext } from '../../contexts';
+import { useRouter } from 'next/router';
+import Router from 'next/router';
 //import Editor from './Editor';
 
 f_config.autoAddCss = false;
@@ -26,6 +28,8 @@ const Comment = (props) => {
     const [openActionDropdown, setOpenActionDropdown] = useState(false);
     const toggleActionDropdown = () => { setOpenActionDropdown(!openActionDropdown) };
     const actionWrapperRef = useRef(null);
+    const router = useRouter()
+    const { item_id } = router.query;
     useOutsideAlerter(actionWrapperRef);
 
     const [isPreview, setIsPreview] = useState(true);

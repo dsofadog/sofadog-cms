@@ -222,50 +222,34 @@ const Item = () => {
     }
     function fetchComment(id) {
         
-        //HttpCms.get(`/news_items/${id}/comments?token=${appUserInfo.token}`)
-        HttpCms.get(`https://run.mocky.io/v3/cdb6424e-ef10-4683-955a-b346919782f6`)
-            .then(response => {
-                
-                console.log(response.data, "response.data");
-
-
-                // let c ={
-                //     first_name:response.data.user
-                // }
-
-
+        HttpCms.get(`/news_items/${id}/comments?token=${appUserInfo.token}`)
+       // HttpCms.get(`https://run.mocky.io/v3/cdb6424e-ef10-4683-955a-b346919782f6`)
+            .then(response => {                
+                //console.log(response.data, "response.data");
                 setComments(response.data.comments);
-                
             })
             .catch(e => {
                 console.log(e);
             });
     }
-    function addComment(data,itemId) {
-        // let id = comments[comments.length - 1].id + 1;
-        // data.id = id;
-
+    function addComment(data) {
+        let id = comments[comments.length - 1].id + 1;
+        data.id = id
         console.log("data ", data);
         let commentData = {
             text:data.text
         }
-        
-      
-
-        // HttpCms.post(`/news_items/${itemId}/comments?token=${appUserInfo.token}`, commentData)
-        //     .then((response) => {
-        //         console.log("Comments Response:-- "+response.data);
-        //         //setComments(response.data.comments);
-               
-
-        //     })
-        //     .catch((e) => {
-
-        //         setLoading(false);
-        //     })
-        //     .finally(() => {
-        //         setLoading(false);
-        // });
+        HttpCms.post(`/news_items/${item_id}/comments?token=${appUserInfo.token}`, commentData)
+            .then((response) => {
+                console.log("Comments Response:-- "+response.data);
+                setComments(response.data.comments); 
+            })
+            .catch((e) => {
+                setLoading(false);
+            })
+            .finally(() => {
+                setLoading(false);
+        });
 
         // let c = [...comments];
         //     c.push(data);

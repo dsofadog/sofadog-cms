@@ -6,6 +6,7 @@ import { far } from '@fortawesome/free-regular-svg-icons';
 import { useEffect, useRef, useState } from 'react';
 import CmsConstant from '../../utils/cms-constant';
 import { userInfo } from 'os';
+import { parseTwoDigitYear } from 'moment';
 
 f_config.autoAddCss = false;
 library.add(fas, fab, far);
@@ -17,6 +18,7 @@ const UserInfo = (props) => {
 
     const [openRoleDropdown, setOpenRoleDropdown] = useState(false);
     const toggleRoleDropdown = () => { setOpenRoleDropdown(!openRoleDropdown) };
+    const [profileName, setProfileName] = useState(null);
 
     const roleWrapperRef = useRef(null);
     useOutsideAlerter(roleWrapperRef);
@@ -32,6 +34,11 @@ const UserInfo = (props) => {
         if (props.data) {
             console.log("prop ",props.data);
             setUserData(props.data);
+
+            console.log("first name ",props.data.first_name)
+            let name = props.data?.first_name.charAt(0) + props.data?.last_name.charAt(0);
+           
+            setProfileName(name);
             let r = [];
             props.data.admin_roles.map(role =>{
                 r.push(role.id);
@@ -76,6 +83,7 @@ const UserInfo = (props) => {
             ...userData,
             [e.target.name]: e.target.value
         })
+        
     }
 
     function handPassChange(e) {
@@ -86,9 +94,20 @@ const UserInfo = (props) => {
     function handleMultiSelectChange(e, data) {
         e.preventDefault();
         previousAllRole =selectedRole;
-        setSelectedRole([
-            ...selectedRole, data.id
-        ]);
+        console.log("Roledata",data);
+        console.log("pevious role",previousAllRole);
+        if(!previousAllRole.includes(data.id)){
+            let roleData = {
+                "email": userData.email,
+                "role": data.id
+               }
+            setSelectedRole([
+                ...selectedRole, data.id
+            ]);
+            props.removeRoleUser(roleData, 'add_role');
+        }
+        
+       
         
         //toggleRoleDropdown();
     }
@@ -154,32 +173,27 @@ const UserInfo = (props) => {
 
     function removeAddRole(e,role,type) {
         e.preventDefault()
-  
-       let data = {
+        console.log("role type ",role,type)
+        let data = {
         "email": userData.email,
         "role": role
        }
-
        console.log(data,"datadata");
-     if(type=='remove_role'){
-        let info  = previousAllRole.includes(role);
-        if(info){
+       console.log(selectedRole,"previousAllRole");
+       if(selectedRole.includes(role)){
             props.removeRoleUser(data, type);
-        } 
-        
-     }else{
-        let difference = selectedRole.filter(x => !previousAllRole.includes(x));
-        let  role1 = difference.join();
-        let data = {
-            "email": userData.email,
-            "role": role1
-           }
-        props.removeRoleUser(data, type);
-     }
-    
-     
-               
-
+            let index = selectedRole.findIndex(x=> x == role);
+            console.log("index",index);
+            if(index != -1){
+                selectedRole.splice(index);
+                console.log("roles",selectedRole);
+              //  setSelectedRole(selectedRole);
+                setSelectedRole([
+                    ...selectedRole
+                ]);
+            }
+            
+       }
     }
 
     function getRoleName(role){
@@ -198,7 +212,7 @@ const UserInfo = (props) => {
                             <span className="cursor-pointer inline-flex items-center justify-center h-12 w-12 rounded-full sfd-btn-primary">
                                 <span className="text-lg font-medium leading-none text-white">
                                     {action === 'view' ?
-                                        'RC' : ''
+                                        profileName : ''
                                     }
                                 </span>
                             </span>

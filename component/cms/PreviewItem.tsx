@@ -51,8 +51,8 @@ const PreviewItem = (props) => {
     function fetchComment(id) {
         console.log("calling fetch api");
         
-        //HttpCms.get(`/news_items/${id}/comments?token=${appUserInfo.token}`)
-        HttpCms.get(`https://run.mocky.io/v3/cdb6424e-ef10-4683-955a-b346919782f6`)
+        HttpCms.get(`/news_items/${id}/comments?token=${appUserInfo.token}`)
+       // HttpCms.get(`https://run.mocky.io/v3/cdb6424e-ef10-4683-955a-b346919782f6`)
             .then(response => {
                 
                 console.log(response.data, "response.data");
@@ -70,7 +70,7 @@ const PreviewItem = (props) => {
     function refreshData(e) {
         e.preventDefault();
         setLoading(true);
-        HttpCms.get(`/news_items/${item.id}?token=abcdef`)
+        HttpCms.get(`/news_items/${item.id}?token=${appUserInfo.token}`)
             .then(response => {
                 setItem(response.data.news_items[0]);
                 console.log(response.data.news_items[0], "response.data.data");

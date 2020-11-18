@@ -110,8 +110,11 @@ const Login = () => {
           let lastName = response.data.user.last_name;
           response.data.displayName = firstName.charAt(0) + lastName.charAt(0);
           setAppUserInfo(response.data);
+          console.log("login response ",response.data);
           currentUserRoleManagement(response.data);
-          
+          if(response.data.user.on_shift == null){
+            checkShiftSatus(response.data);
+          }
           // let dummyData = {
           //   user: {
           //     email: "superuser@so.fa.dog",
@@ -144,6 +147,24 @@ const Login = () => {
         setLoading(false);
       });
   };
+  function checkShiftSatus(appUserInfo){
+    HttpCms.patch(`/admin_user/${appUserInfo.user.email}/toggle_shift?token=${appUserInfo.token}`)
+      .then((response) => {
+        if (response.data.user.on_shift != null) {         
+          //alert("shift api call when first time login");
+        } else {
+          alert("Something wrong !!");
+        }
+      })
+      .catch((e) => {
+        
+        setLoading(false);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }
+
 
   return (
     <>

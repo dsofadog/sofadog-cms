@@ -156,6 +156,7 @@ const UserComponent = () => {
 		
 		HttpCms.patch("admin_user/"+data.email+"/"+type+"?token="+appUserInfo?.token, data)
 		.then((response) => {
+		//	console.log("response: ",response);
 			setAddNew(false);
 		})
 		.catch((e) => {
