@@ -185,12 +185,11 @@ const UserInfo = (props) => {
             let index = selectedRole.findIndex(x=> x == role);
             console.log("index",index);
             if(index != -1){
-                selectedRole.splice(index);
+                let r = [...selectedRole];
+                r.splice(index,1);
                 console.log("roles",selectedRole);
-              //  setSelectedRole(selectedRole);
-                setSelectedRole([
-                    ...selectedRole
-                ]);
+                setSelectedRole(r);
+                
             }
             
        }

@@ -53,7 +53,7 @@ const UserComponent = () => {
 		let api = "admin_users?token="+appUserInfo?.token;
 		HttpCms.get(api)
 		.then(response => {
-			//console.log("fetch res: ", response.data);
+			console.log("fetch res: ", response.data);
 			getUserData(response.data.users);
 			setLoading(false);
 			//console.log(response.data, "response.data.data");
