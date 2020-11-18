@@ -51,7 +51,7 @@ const PreviewItem = (props) => {
     function fetchComment(id) {
         console.log("calling fetch api");
         
-        HttpCms.get(`/news_items/${id}/comments?token=${appUserInfo.token}`)
+        HttpCms.get(`/news_items/${id}/comments?token=${appUserInfo?.token}`)
        // HttpCms.get(`https://run.mocky.io/v3/cdb6424e-ef10-4683-955a-b346919782f6`)
             .then(response => {
                 
@@ -70,7 +70,7 @@ const PreviewItem = (props) => {
     function refreshData(e) {
         e.preventDefault();
         setLoading(true);
-        HttpCms.get(`/news_items/${item.id}?token=${appUserInfo.token}`)
+        HttpCms.get(`/news_items/${item.id}?token=${appUserInfo?.token}`)
             .then(response => {
                 setItem(response.data.news_items[0]);
                 console.log(response.data.news_items[0], "response.data.data");
@@ -392,7 +392,7 @@ const PreviewItem = (props) => {
                                                 </div>
                                                 <div className="w-full py-4">
                                                     <div className="w-full truncate">
-                                                            <span className="text-xs truncate">{comments?.text}</span>
+                                                            <span className="text-xs truncate" dangerouslySetInnerHTML={{ __html: comments?.text }}></span>
                                                     </div>
                                                     <div className="w-full flex text-center justify-end space-x-2">
                                                         <span className="text-white w-6 h-6 rounded-full p-3 bg-blue-600 text-xs flex items-center justify-center">3</span>
