@@ -30,7 +30,7 @@ const HeaderProfileComponent = () => {
         }
     }
     useEffect(() =>{
-        setOnOffShift(appUserInfo.user?.on_shift)
+        setOnOffShift(appUserInfo?.user?.on_shift)
     },[])
     function useOutsideAlerter(ref) {
         useEffect(() => {
@@ -57,7 +57,7 @@ const HeaderProfileComponent = () => {
     const logout = (e) => {
         e.preventDefault();
 
-        httpCms.get(`/admin_user/logout?token=${appUserInfo.token}`)
+        httpCms.get(`/admin_user/logout?token=${appUserInfo?.token}`)
             .then(response => {
                 setLoading(false);
                 clearAPPData();
@@ -77,7 +77,7 @@ const HeaderProfileComponent = () => {
     function checkShiftSatus(appUserInfo){
 
         console.log("App User info ",appUserInfo)
-        httpCms.patch(`/admin_user/${appUserInfo.user.email}/toggle_shift?token=${appUserInfo.token}`)
+        httpCms.patch(`/admin_user/${appUserInfo.user.email}/toggle_shift?token=${appUserInfo?.token}`)
           .then((response) => {
             if (response.data.user.on_shift != null) {         
                 setOnOffShift(response.data.user.on_shift);
