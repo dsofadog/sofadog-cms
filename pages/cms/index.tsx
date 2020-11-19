@@ -411,7 +411,9 @@ const Demo = () => {
         setLoading(true);
         HttpCms.post("/news_items/" + data.id + "/" + apiCallEndPoint + "?token="+appUserInfo?.token, {})
             .then((response) => {
-                fetchItems();
+                //fetchItems();
+                const event = new Event('build');
+                refreshData(event);
             })
             .catch((e) => {
                 console.log(e);
