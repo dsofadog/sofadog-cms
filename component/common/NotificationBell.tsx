@@ -1,7 +1,8 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { LayoutContext } from "../../contexts";
 import httpCms from "../../utils/http-cms";
-
+import Link from "next/link"
+import { useRouter } from 'next/router'
 const NotificationBell = () => {
 
     const bellWrapperRef = useRef(null);
@@ -10,19 +11,18 @@ const NotificationBell = () => {
     const { setLoading, appUserInfo,currentUserPermission } = useContext(LayoutContext);
     const toggleBellDropdown = () => { setOpenBellDropdown(!openBellDropdown) };
     const [notifications,setNotificatons] = useState(null);
+    const router = useRouter();
 
     function useOutsideAlerter(ref) {
         useEffect(() => {
             getNotifications();
             function handleClickOutside(event) {
-
                 if (ref.current && !ref.current.contains(event.target)) {
                     if (ref.current.dataset.id === "bell") {
                         setOpenBellDropdown(false);
                     }
                 }
             }
-
             // Bind the event listener
             document.addEventListener("mousedown", handleClickOutside);
             return () => {
@@ -39,6 +39,7 @@ const NotificationBell = () => {
             if (response.data != null) {         
                console.log("notification: ",response.data);
                setNotificatons(response.data.notifications);
+
             } else {
               alert("Something wrong !!");
             }
@@ -50,6 +51,36 @@ const NotificationBell = () => {
             setLoading(false);
           });
       }
+    function readNotification(notification){
+        setLoading(true);
+        console.log("Start Notification---------- ")
+        if(notification.read === 'false'){
+            httpCms.post(`/notifications/${notification?.id}/read?token=${appUserInfo?.token}`)
+            .then((response) => {
+                if (response.data != null) {         
+                console.log("notification: ",response.data);
+                setNotificatons(response.data.notifications);
+                } else {
+                    alert("Something wrong !!");
+                }
+            })
+            .catch((e) => {
+                setLoading(false);
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+        }
+        
+    }
+    function notificationAction(notification){
+        //readNotification(notification.itemId)
+        if(notification.object_type === 'news_item'){
+            router.push(
+                '/cms/[item_id]',
+                '/cms/'+notification.object_id)
+        }
+    }
     return (
         <>
             <div ref={bellWrapperRef} data-id="bell" className="relative inline-block text-center">
@@ -69,73 +100,17 @@ const NotificationBell = () => {
                                     notifications?.map((notification) =>(
                                         <div className="w-full flex px-4 py-1 text-xs leading-5 text-gray-700 hover:bg-gray-200 hover:text-gray-900 cursor-pointer">
                                             <div className="w-11/12 flex justify-start">
-                                                {
-                                                    notification.action
-                                                }
+                                                <label onClick={(e)=> notificationAction(notification)} className="text-sm font-bold text-gray-800 cursor-pointer hover:underline">{notification.action}</label>
                                             </div>
+                                            
                                             <div className="w-1/12 flex items-center justify-end">
+                                            <a href="#" onClick={()=>readNotification(notification.id)}>read</a>
                                                 <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full sfd-btn-primary"></div>
                                             </div>
                                         </div>
 
                                     ))
                                 }
-                                {/* <div className="w-full flex px-4 py-1 text-xs leading-5 text-gray-700 hover:bg-gray-200 hover:text-gray-900 cursor-pointer">
-                                    <div className="w-11/12 flex justify-start">
-                                        The purpose of the function is to display the specified HTML code inside the specified HTML element.
-                                    </div>
-                                    <div className="w-1/12 flex items-center justify-end">
-                                        <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full sfd-btn-primary"></div>
-                                    </div>
-                                </div>
-                                <div className="w-full flex px-4 py-1 text-xs leading-5 text-gray-700 hover:bg-gray-200 hover:text-gray-900 cursor-pointer">
-                                    <div className="w-11/12 flex justify-start">
-                                        The purpose of the function is to display the specified HTML code inside the specified HTML element.
-                                    </div>
-                                    <div className="w-1/12 flex items-center justify-end">
-                                        <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full sfd-btn-primary"></div>
-                                    </div>
-                                </div>
-                                <div className="w-full flex px-4 py-1 text-xs leading-5 text-gray-700 hover:bg-gray-200 hover:text-gray-900 cursor-pointer">
-                                    <div className="w-11/12 flex justify-start">
-                                        The purpose of the function is to display the specified HTML code inside the specified HTML element.
-                                    </div>
-                                    <div className="w-1/12 flex items-center justify-end">
-                                        <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full sfd-btn-primary"></div>
-                                    </div>
-                                </div>
-                                <div className="w-full flex px-4 py-1 text-xs leading-5 text-gray-700 hover:bg-gray-200 hover:text-gray-900 cursor-pointer">
-                                    <div className="w-11/12 flex justify-start">
-                                        The purpose of the function is to display the specified HTML code inside the specified HTML element.
-                                    </div>
-                                    <div className="w-1/12 flex items-center justify-end">
-                                        <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full sfd-btn-primary"></div>
-                                    </div>
-                                </div>
-                                <div className="w-full flex px-4 py-1 text-xs leading-5 text-gray-700 hover:bg-gray-200 hover:text-gray-900 cursor-pointer">
-                                    <div className="w-11/12 flex justify-start">
-                                        The purpose of the function is to display the specified HTML code inside the specified HTML element.
-                                    </div>
-                                    <div className="w-1/12 flex items-center justify-end">
-                                        <div className="hidden flex-shrink-0 w-2.5 h-2.5 rounded-full sfd-btn-primary"></div>
-                                    </div>
-                                </div>
-                                <div className="w-full flex px-4 py-1 text-xs leading-5 text-gray-700 hover:bg-gray-200 hover:text-gray-900 cursor-pointer">
-                                    <div className="w-11/12 flex justify-start">
-                                        The purpose of the function is to display the specified HTML code inside the specified HTML element.
-                                    </div>
-                                    <div className="w-1/12 flex items-center justify-end">
-                                        <div className="hidden flex-shrink-0 w-2.5 h-2.5 rounded-full sfd-btn-primary"></div>
-                                    </div>
-                                </div>
-                                <div className="w-full flex px-4 py-1 text-xs leading-5 text-gray-700 hover:bg-gray-200 hover:text-gray-900 cursor-pointer">
-                                    <div className="w-11/12 flex justify-start">
-                                        The purpose of the function is to display the specified HTML code inside the specified HTML element.
-                                    </div>
-                                    <div className="w-1/12 flex items-center justify-end">
-                                        <div className="hidden flex-shrink-0 w-2.5 h-2.5 rounded-full sfd-btn-primary"></div>
-                                    </div>
-                                </div> */}
                             </div>
                         </div>
                     </div>

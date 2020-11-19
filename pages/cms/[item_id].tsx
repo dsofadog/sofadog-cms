@@ -233,8 +233,8 @@ const Item = () => {
             });
     }
     function addComment(data) {
-        let id = comments[comments.length - 1].id + 1;
-        data.id = id
+        //let id = comments[comments.length - 1].id + 1;
+       // data.id = id
         console.log("data ", data);
         let commentData = {
             text:data.text
