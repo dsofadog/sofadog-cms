@@ -8,6 +8,7 @@ import { LayoutContext } from '../../contexts';
 import { useRouter } from 'next/router';
 import Router from 'next/router';
 //import Editor from './Editor';
+import TimeAgo from 'react-timeago'
 
 f_config.autoAddCss = false;
 library.add(fas, fab);
@@ -143,10 +144,11 @@ const Comment = (props) => {
                 {isPreview ?
                     <>
                         <div ref={actionWrapperRef} data-id="action" className="relative w-full text-sm text-gray-600 flex justify-end space-x-2">
-                            <span>{comment?.created_at}</span>
+                            <span><TimeAgo date={comment?.created_at}  /></span>
+                            
                             {appUserInfo?.user.email === comment?.user.email && (
                                 <>
-                                    <FontAwesomeIcon onClick={() => toggleActionDropdown()} className="w-5 text-gray-600 cursor-pointer" icon={['fas', 'ellipsis-h']} />
+                                    {/* <FontAwesomeIcon onClick={() => toggleActionDropdown()} className="w-5 text-gray-600 cursor-pointer" icon={['fas', 'ellipsis-h']} />
                                     {openActionDropdown && (
                                         <div className="origin-top-left absolute right-0 mt-5 w-40 rounded-md shadow-lg z-20">
                                             <div className="rounded-md bg-blue-600 shadow-xs">
@@ -162,7 +164,7 @@ const Comment = (props) => {
                                                 </div>
                                             </div>
                                         </div>
-                                    )}
+                                    )} */}
                                 </>
                             )}
                         </div>
