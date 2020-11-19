@@ -33,8 +33,6 @@ const PreviewItem = (props) => {
     const status = CmsConstant.Status;
 
     useEffect(() => {
-        //console.log(props.item);
-        
         if(props.item){
             setItem(props.item);
             

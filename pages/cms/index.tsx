@@ -231,6 +231,7 @@ const Demo = () => {
         setNewsItems(null);
         setNewsItemsCached(null);
         setScrollCount(0);
+        console.log(newsItems);
         if (scrollCount === 0) {
             fetchItems();
         }
@@ -411,7 +412,11 @@ const Demo = () => {
         setLoading(true);
         HttpCms.post("/news_items/" + data.id + "/" + apiCallEndPoint + "?token="+appUserInfo?.token, {})
             .then((response) => {
-                fetchItems();
+                //fetchItems();
+                const event = new Event('build');
+                setNewsItems(null);
+                setNewsItemsCached(null);
+                refreshData(event);
             })
             .catch((e) => {
                 console.log(e);
