@@ -231,6 +231,7 @@ const Demo = () => {
         setNewsItems(null);
         setNewsItemsCached(null);
         setScrollCount(0);
+        console.log(newsItems);
         if (scrollCount === 0) {
             fetchItems();
         }
@@ -413,6 +414,8 @@ const Demo = () => {
             .then((response) => {
                 //fetchItems();
                 const event = new Event('build');
+                setNewsItems(null);
+                setNewsItemsCached(null);
                 refreshData(event);
             })
             .catch((e) => {
