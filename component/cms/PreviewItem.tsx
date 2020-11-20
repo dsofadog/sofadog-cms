@@ -170,9 +170,25 @@ const PreviewItem = (props) => {
         switch (item.state) {
             case "new": {
                 return (
-                    <button onClick={(e) => actionPerformed(item, "submit", e)} className={`${!currentUserPermission('new',"kkkk") ? 'hidden' : 'px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer'}`} >
+                    <>
+                    { item?.owners?.new != undefined &&  item?.owners?.new !=appUserInfo?.user?.email && (
+                        <p >Claimed by {item?.owners?.new}</p>
+                    )
+                    }  
+
+                     <button onClick={(e) => actionPerformed(item, "claim", e)} className={`${currentUserPermission('new',"kkkk") && item?.owners?.new == undefined  ? 'px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
+                        Claim
+                    </button>        
+                    {/* {
+                       JSON.stringify(item?.owners?.new) 
+                       
+                    }  sadasdsada    {appUserInfo.user?.email}      */}
+                                                        
+                    <button onClick={(e) => actionPerformed(item, "submit", e)} className={`${currentUserPermission('new',"kkkk") && ( item?.owners?.new !== undefined && item?.owners?.new ==appUserInfo.user?.email )? 'px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
                         Submit
                     </button>
+                    </>
+        
                 );
             }
             case "awaiting_review_by_lead_journalist": {

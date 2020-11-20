@@ -7,7 +7,7 @@ import CreateItem from '../../component/cms/CreateItem';
 import PreviewItem from '../../component/cms/PreviewItem';
 import CmsConstant from '../../utils/cms-constant';
 import { LayoutContext } from '../../contexts/';
-
+import service  from '../../utils/api/service';
 import { config as f_config, library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { fas } from '@fortawesome/free-solid-svg-icons';
@@ -78,8 +78,7 @@ const Demo = () => {
 
     const [scrollCount, setScrollCount] = useState<number>(0);
 
-    useEffect(() => {
-       
+    useEffect(() => {      
       
        console.log(currentUserState,currentUserAction);
         logoutUserCheck();
@@ -168,7 +167,9 @@ const Demo = () => {
         }
         let url = returnUrlForNewItems(dataUrlObj);
         //let url = `news_items?token=abcdef&limit=${paginationData.limit}&date=${getCurrentDate("-")}`;
-
+        await  service.getString(url,'').then(response=>{
+              console.log(response,"response");
+        })
         await HttpCms.get(url)
             .then(response => {                
                 if (response.data.news_items.length > 0) {
