@@ -34,44 +34,52 @@ const PreviewItem = (props) => {
 
     useEffect(() => {
         if(props.item){
-            setItem(props.item);           
+            setItem(props.item);
+            
         }
     }, [props]);
 
     useEffect(() => {
+        //fetchComment(props.item.id);
         if (item) {
             showSentences(0);
             showCredits('news_credits', item.news_credits);
         }
     }, [item]);
+
+
+    useEffect(() => {
+        //fetchComment(props.item.id);
+       
+    }, []);
    
-    // function fetchComment(id) {
-    //     console.log("calling fetch api");
-    //     setLoading(true);
-    //     HttpCms.get(`/news_items/${id}/comments?token=${appUserInfo?.token}`)
-    //    // HttpCms.get(`https://run.mocky.io/v3/cdb6424e-ef10-4683-955a-b346919782f6`)
-    //         .then(response => {
+    function fetchComment(id) {
+        console.log("calling fetch api");
+       // setLoading(true);
+        HttpCms.get(`/news_items/${id}/comments?token=${appUserInfo?.token}`)
+      
+            .then(response => {
                 
-    //             console.log(response.data, "response.data");
-    //             if(response.data.comments.length > 0){
-    //                 let c = response.data.comments[response.data.comments.length-1];
-    //                 console.log("c ",c);
+                console.log(response.data, "response.data");
+                if(response.data.comments.length > 0){
+                    let c = response.data.comments[response.data.comments.length-1];
+                    console.log("c ",c);
     
-    //                 setComment({
-    //                     text:c,
-    //                     count:response.data.comments.length
-    //                 });
-    //                 console.log("comments ",comment);
-    //                 setLoading(false);
-    //             }
+                    setComment({
+                        text:c,
+                        count:response.data.comments.length
+                    });
+                    console.log("comments ",comment);
+                   // setLoading(false);
+                }
                
 
-    //         })
-    //         .catch(e => {
-    //             console.log(e);
-    //             setLoading(false);
-    //         });
-    // }
+            })
+            .catch(e => {
+                console.log(e);
+                setLoading(false);
+            });
+    }
 
     function refreshData(e) {
         e.preventDefault();
