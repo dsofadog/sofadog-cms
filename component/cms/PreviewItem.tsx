@@ -209,7 +209,7 @@ const PreviewItem = (props) => {
                         ) : (
                                 <>
                                   
-                                    <div className={`${!currentUserPermission('awaiting_video_upload',"kkkk") ? 'hidden' : 'w-full p-2'}`}>
+                                    <div className={`${!currentUserPermission('awaiting_video_upload') ? 'hidden' : 'w-full p-2'}`}>
                                         <div {...getRootProps()} className="w-full flex justify-center px-6 pt-5 pb-6 border-2 border-gray-100 border-dashed rounded-md">
                                             <input {...getInputProps()} />
                                             <div className="cursor-pointer text-center">
@@ -247,7 +247,7 @@ const PreviewItem = (props) => {
             }
             case "awaiting_review_by_lead_video_editor": {
                 return (
-                    <div className={`${!currentUserPermission('awaiting_review_by_lead_video_editor',"kkkk") ? 'hidden' : 'flex space-x-2 items-center justify-center'}`}>
+                    <div className={`${!currentUserPermission('awaiting_review_by_lead_video_editor') ? 'hidden' : 'flex space-x-2 items-center justify-center'}`}>
                     
                         <span onClick={(e) => actionPerformed(item, "Preview Clips", e)} className="px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-blue-800 bg-blue-100 hover:bg-blue-200 text-blue-800 cursor-pointer">
                             Preview Clips
@@ -264,7 +264,7 @@ const PreviewItem = (props) => {
             case "ready_for_push": {
                 return (
                    
-                    <span onClick={(e) => actionPerformed(item, "push_to_feed", e)} className={`${!currentUserPermission('ready_for_push',"kkkk") ? 'hidden' : 'px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-green-800 bg-green-100 hover:bg-green-200 text-green-800 cursor-pointer'}`}>
+                    <span onClick={(e) => actionPerformed(item, "push_to_feed", e)} className={`${!currentUserPermission('ready_for_push') ? 'hidden' : 'px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-green-800 bg-green-100 hover:bg-green-200 text-green-800 cursor-pointer'}`}>
                         Push To Feed
                     </span>
                 );
@@ -272,7 +272,7 @@ const PreviewItem = (props) => {
             case "pushed_to_feed": {
                 return (
                    
-                    <span onClick={(e) => actionPerformed(item, "remove_from_feed", e)} className= {`${!currentUserPermission('pushed_to_feed',"kkkk") ? 'hidden' : 'px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-red-800 bg-red-100 hover:bg-red-200 text-red-800 cursor-pointer'}`}>
+                    <span onClick={(e) => actionPerformed(item, "remove_from_feed", e)} className= {`${!currentUserPermission('pushed_to_feed') ? 'hidden' : 'px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-red-800 bg-red-100 hover:bg-red-200 text-red-800 cursor-pointer'}`}>
                         Remove From Feed
                     </span>
                 );
