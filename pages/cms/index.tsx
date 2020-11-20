@@ -170,15 +170,14 @@ const Demo = () => {
         //let url = `news_items?token=abcdef&limit=${paginationData.limit}&date=${getCurrentDate("-")}`;
 
         await HttpCms.get(url)
-            .then(response => {
-                
+            .then(response => {                
                 if (response.data.news_items.length > 0) {
                     if (newsItems) {
                         console.log(currentUserState,"currentUserState");
-                        if(Array.isArray(currentUserState) && currentUserState.length){
-                            console.log(currentUserState[0]);
-                            setSelectedState(currentUserState[0]);
-                        }
+                        // if(Array.isArray(currentUserState) && currentUserState.length){
+                        //     console.log(currentUserState[0]);
+                        //     setSelectedState(currentUserState[0]);
+                        // }
                         const item = { ...newsItems };
                         response.data.news_items.map((data, i) => {
                             item.news_items.push(data);
@@ -213,13 +212,14 @@ const Demo = () => {
     }
 
     function handleLoadMore() {
+        setScrollCount(scrollCount + 1);
         if (search.length === 0 && selectedState == null) {
             if (newsItems?.news_items.length > 0) {
                 fetchItems(false);
             } else {
                 fetchItems(true);
             }
-            setScrollCount(scrollCount + 1);
+            
         }
     }
 
@@ -230,8 +230,7 @@ const Demo = () => {
         setSelectedState(null);
         setNewsItems(null);
         setNewsItemsCached(null);
-        setScrollCount(0);
-        console.log(newsItems);
+        setScrollCount(0);       
         if (scrollCount === 0) {
             fetchItems();
         }
@@ -290,18 +289,17 @@ const Demo = () => {
         setSelectedTag(selectedTag.filter(item => item !== tag));
     }
 
-    function returndateAsRequired() {
-       
+    const returndateAsRequired =  () => {
         let today = moment().format('DD.MM.YYYY');
         let startdate = today;
         var new_date = moment(startdate, "DD-MM-YYYY");
         new_date.add(-scrollCount, 'days');
         let dateReturn = new_date.format("YYYY-MM-DD");       
-        return dateReturn
+        return dateReturn;
 
     }
 
-    function filteringCategoryTag() {
+    const filteringCategoryTag =  () => {
         setLoading(true);
 
         let apiUrl = "news_items?";
@@ -313,28 +311,7 @@ const Demo = () => {
             "category": selectedCategory
         }
         let api = returnUrlForNewItems(dataUrlObj);
-        // let api = 'news_items';
-        // let cat = '';
-        // let tag = '';
-        // if (selectedCategory) {
-        //     cat = `category=${selectedCategory}`;
-        // }
-        // if (Array.isArray(selectedTag) && selectedTag.length > 0) {
-        //     tag = `tags=${selectedTag.join()}`;
-        // }
-
-        // if (cat === '' && tag === '') {
-        //     api += `?token=abcdef&limit=${paginationData.limit}`;
-        // }
-        // if (cat != '' && tag === '') {
-        //     api += `?${cat}&token=abcdef&limit=${paginationData.limit}`;
-        // }
-        // if (cat === '' && tag != '') {
-        //     api += `?${tag}&token=abcdef&limit=${paginationData.limit}`;
-        // }
-        // if (cat != '' && tag != '') {
-        //     api += `?${cat}&${tag}&token=abcdef&limit=${paginationData.limit}`;
-        // }
+        
 
         HttpCms.get(api)
             .then(response => {
