@@ -55,13 +55,14 @@ const NotificationBell = () => {
       }
     function readNotification(notification){
         setLoading(true);
-        console.log("Start Notification---------- ")
-        if(notification.read === 'false'){
+        console.log("Start Notification---------- ",notification.read)
+        if(notification.read === false){
             httpCms.post(`/notifications/${notification?.id}/read?token=${appUserInfo?.token}`)
             .then((response) => {
                 if (response.data != null) {         
                 console.log("notification: ",response.data);
                 setNotificatons(response.data.notifications);
+                setLoading(false);
                 
                 } else {
                     alert("Something wrong !!");
@@ -107,11 +108,11 @@ const NotificationBell = () => {
                                 
                                         <div className="w-full flex px-4 py-1 text-xs leading-5 text-gray-700 hover:bg-gray-200 hover:text-gray-900 cursor-pointer">
                                             <div className="w-11/12 flex justify-start">
-                                                <label onClick={(e)=> notificationAction(notification)} className="text-sm font-bold text-gray-800 cursor-pointer hover:underline">{notification.object_id}</label>
+                                                <label onClick={(e)=> notificationAction(notification)} className="text-sm font-bold text-gray-800 cursor-pointer hover:underline">{notification.title}</label>
                                             </div>
                                             
                                             <div className="w-1/12 flex items-center justify-end">
-                                            <a href="#" onClick={()=>readNotification(notification.id)}>read</a>
+                                            <a href="#" onClick={()=>readNotification(notification)}>read</a>
                                                 <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full sfd-btn-primary"></div>
                                             </div>
                                         </div>

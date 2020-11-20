@@ -769,6 +769,7 @@ const Demo = () => {
                         <div key={i}>
                             <PreviewItem
                                 index={i}
+                                showComment={true}
                                 totalData={paginationData?.total_data}
                                 item={item}
                                 processedData={processedData}
@@ -784,6 +785,7 @@ const Demo = () => {
                         <div key={i}>
                             <PreviewItem
                                 index={i}
+                                showComment={true}
                                 totalData={paginationData?.total_data}
                                 item={item}
                                 processedData={processedData}

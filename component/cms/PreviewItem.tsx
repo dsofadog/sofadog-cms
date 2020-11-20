@@ -35,7 +35,7 @@ const PreviewItem = (props) => {
     useEffect(() => {
         if(props.item){
             setItem(props.item);
-            
+            setComment(item?.comments[item?.comments.length-1]);
         }
     }, [props]);
 
@@ -404,17 +404,24 @@ const PreviewItem = (props) => {
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div className="w-full py-4">
+                                                {
+                                                    props.showComment &&(
+                                                        <div className="w-full py-4">
                                                     <div className="w-full truncate">
-                                                            <span className="text-xs truncate" dangerouslySetInnerHTML={{ __html: comment?.text.text }}></span>
+                                                            <span className="text-xs truncate" dangerouslySetInnerHTML={{ __html: (comment?.text) }}></span>
                                                     </div>
                                                     <div className="w-full flex text-center justify-end space-x-2">
-                                                            <span className="text-white w-6 h-6 rounded-full p-3 bg-blue-600 text-xs flex items-center justify-center">{comment?.count}</span>
+                                                            <span className="text-white w-6 h-6 rounded-full p-3 bg-blue-600 text-xs flex items-center justify-center">{item?.comments.length}</span>
                                                         <Link href={`/cms/[item_id]`} as={`/cms/${item.id}`}>
                                                             <label className="text-sm font-bold text-gray-800 cursor-pointer hover:underline">Comments</label>
                                                         </Link>
                                                     </div>
                                                 </div>
+                                                    )
+
+                            
+                                                }
+                                                
                                             </div>
                                             <div className="absolute mb-4 mr-4 bottom-0 inset-x-0">
                                                 <div className="w-full space-x-2 flex justify-end">
