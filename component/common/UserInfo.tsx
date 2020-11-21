@@ -32,10 +32,10 @@ const UserInfo = (props) => {
 
     useEffect(() => {
         if (props.data) {
-            console.log("prop ",props.data);
+           // console.log("prop ",props.data);
             setUserData(props.data);
 
-            console.log("first name ",props.data.first_name)
+          //  console.log("first name ",props.data.first_name)
             let name = props.data?.first_name.charAt(0) + props.data?.last_name.charAt(0);
            
             setProfileName(name);
@@ -47,7 +47,7 @@ const UserInfo = (props) => {
             //console.log("Email ",userData);
         }
         if (props.action) {
-            console.log("prop.action", props.action);
+          //  console.log("prop.action", props.action);
             setAction(props.action);
         }
     }, [props]);
@@ -94,8 +94,8 @@ const UserInfo = (props) => {
     function handleMultiSelectChange(e, data) {
         e.preventDefault();
         previousAllRole =selectedRole;
-        console.log("Roledata",data);
-        console.log("pevious role",previousAllRole);
+        //console.log("Roledata",data);
+      //  console.log("pevious role",previousAllRole);
         if(!previousAllRole.includes(data.id)){
             let roleData = {
                 "email": userData.email,
@@ -106,10 +106,6 @@ const UserInfo = (props) => {
             ]);
             props.removeRoleUser(roleData, 'add_role');
         }
-        
-       
-        
-        //toggleRoleDropdown();
     }
     function isRoleSelected(role) {
         if (selectedRole.length > 0) {
@@ -173,7 +169,7 @@ const UserInfo = (props) => {
 
     function removeAddRole(e,role,type) {
         e.preventDefault()
-        console.log("role type ",role,type)
+     //   console.log("role type ",role,type)
         let data = {
         "email": userData.email,
         "role": role
@@ -187,7 +183,7 @@ const UserInfo = (props) => {
             if(index != -1){
                 let r = [...selectedRole];
                 r.splice(index,1);
-                console.log("roles",selectedRole);
+                console.log("roles",r);
                 setSelectedRole(r);
                 
             }
