@@ -221,7 +221,7 @@ const Demo = () => {
         e.preventDefault();
         setSelectedCategory(null);
         setSelectedTag([]);
-        setSelectedState(null);
+        setSelectedState([]);
         setNewsItems(null);
         setNewsItemsCached(null);
         setScrollCount(0);       
