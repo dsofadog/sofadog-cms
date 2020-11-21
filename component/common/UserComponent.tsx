@@ -55,8 +55,6 @@ const UserComponent = () => {
             .then((response) => {
 				setAddNew(false);				
 				setUser([...user, response.data.user]);
-				
-			
               
             })
             .catch((e) => {
