@@ -188,7 +188,7 @@ const PreviewItem = (props) => {
                         Submit
                     </button>
                     </>
-                    
+
                 );
             }
             case "awaiting_review_by_lead_journalist": {
