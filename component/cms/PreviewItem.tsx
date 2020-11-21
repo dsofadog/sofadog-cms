@@ -35,7 +35,7 @@ const PreviewItem = (props) => {
     useEffect(() => {
         if(props.item){
             setItem(props.item);
-            
+            setComment(item?.comments[item?.comments.length-1]);
         }
     }, [props]);
 
@@ -170,7 +170,7 @@ const PreviewItem = (props) => {
         switch (item.state) {
             case "new": {
                 return (
-                    <>
+                           <>
                     { item?.owners?.new != undefined &&  item?.owners?.new !=appUserInfo?.user?.email && (
                         <p >Claimed by {item?.owners?.new}</p>
                     )
@@ -188,7 +188,7 @@ const PreviewItem = (props) => {
                         Submit
                     </button>
                     </>
-        
+                    
                 );
             }
             case "awaiting_review_by_lead_journalist": {
@@ -245,7 +245,7 @@ const PreviewItem = (props) => {
                         ) : (
                                 <>
                                   
-                                    <div className={`${!currentUserPermission('awaiting_video_upload',"kkkk") ? 'hidden' : 'w-full p-2'}`}>
+                                    <div className={`${!currentUserPermission('awaiting_video_upload') ? 'hidden' : 'w-full p-2'}`}>
                                         <div {...getRootProps()} className="w-full flex justify-center px-6 pt-5 pb-6 border-2 border-gray-100 border-dashed rounded-md">
                                             <input {...getInputProps()} />
                                             <div className="cursor-pointer text-center">
@@ -483,17 +483,24 @@ const PreviewItem = (props) => {
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div className="w-full py-4">
+                                                {
+                                                    props.showComment &&(
+                                                        <div className="w-full py-4">
                                                     <div className="w-full truncate">
-                                                            <span className="text-xs truncate" dangerouslySetInnerHTML={{ __html: comment?.text.text }}></span>
+                                                            <span className="text-xs truncate" dangerouslySetInnerHTML={{ __html: (comment?.text) }}></span>
                                                     </div>
                                                     <div className="w-full flex text-center justify-end space-x-2">
-                                                            <span className="text-white w-6 h-6 rounded-full p-3 bg-blue-600 text-xs flex items-center justify-center">{comment?.count}</span>
+                                                            <span className="text-white w-6 h-6 rounded-full p-3 bg-blue-600 text-xs flex items-center justify-center">{item?.comments.length}</span>
                                                         <Link href={`/cms/[item_id]`} as={`/cms/${item.id}`}>
                                                             <label className="text-sm font-bold text-gray-800 cursor-pointer hover:underline">Comments</label>
                                                         </Link>
                                                     </div>
                                                 </div>
+                                                    )
+
+                            
+                                                }
+                                                
                                             </div>
                                             <div className="absolute mb-4 mr-4 bottom-0 inset-x-0">
                                                 <div className="w-full space-x-2 flex justify-end">

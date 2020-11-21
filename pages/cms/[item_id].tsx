@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 import Router from 'next/router';
-import { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Editor from '../../component/cms/Editor';
 import NavHeader from "../../component/common/NavHeader";
 import { LayoutContext } from '../../contexts';
@@ -14,6 +14,8 @@ import { fab } from '@fortawesome/free-brands-svg-icons';
 import { createServer } from "miragejs";
 import CmsConstant from '../../utils/cms-constant';
 import Comment from '../../component/cms/Comment';
+import PreviewItem from '../../component/cms/PreviewItem';
+
 createServer({
     routes() {
         this.passthrough('https://v-int.so.fa.dog/**');
@@ -181,24 +183,24 @@ const Item = () => {
 
     function fetchItem() {
         setLoading(true);
-        // HttpCms.get(`/news_items/${item_id}?token=abcdef`)
-        //     .then(response => {
-        //         setItem(response.data.news_items[0]);
-        //         console.log(response.data.news_items[0], "response.data.data");
-        //         setLoading(false);
-        //     })
-        //     .catch(e => {
-        //         console.log(e);
-        //         setLoading(false);
-        //     });
-        fetch("/api/news_items")
-            .then((res) => res.json())
-            .then((json) => {
-                setItem(json.news_items[0]);
-               // setComments(json.news_items[0].comments);
-                console.log("items: ", item);
+        HttpCms.get(`/news_items/${item_id}?token=${appUserInfo?.token}`)
+            .then(response => {
+                setItem(response.data.news_items[0]);
+                console.log(response.data.news_items[0], "response.data.data");
                 setLoading(false);
             })
+            .catch(e => {
+                console.log(e);
+                setLoading(false);
+            });
+        // fetch("/api/news_items")
+        //     .then((res) => res.json())
+        //     .then((json) => {
+        //         setItem(json.news_items[0]);
+        //        // setComments(json.news_items[0].comments);
+        //         console.log("items: ", item);
+        //         setLoading(false);
+        //     })
     }
 
     function showSentences(i) {
@@ -267,25 +269,123 @@ function deleteComment(id) {
     let arr = comments.filter(item => item.id != id);
     setComments(arr);
 }
+function updateItem(id,item,index) {
+    setLoading(true);
+    HttpCms.patch("/news_items/" + id + "?token="+appUserInfo?.token, item)
+        .then((response) => {
+          
+            if(response.status === 200){
+                //const item = { ...newsItems };
+                //item.news_items[index] = response.data.news_item;
+                //setNewsItems(item);
+                setItem(response.data.news_item);
+            }
+            fetchItem();
+        })
+        .catch((e) => {
+            console.log(e);
+        })
+        .finally(() => {
+            setLoading(false);
+        });
+}
+function uplaodVideo(item, apiEndPoint, video) {
+    setLoading(true);
+    const formData = new FormData();
+    formData.append("source_file", video.video_file);
+    const config = {
+        headers: {
+            'content-type': 'multipart/form-data',
+            'Accept': 'multipart/form-data',
+        }
+    };
 
+    HttpCms.post("/news_items/" + item.id + "/" + apiEndPoint + "?token="+appUserInfo?.token, formData, config)
+        .then((response) => {
+            console.log("video upload Response ",response.data)
+            fetchItem();
+            setLoading(false);
+        })
+        .catch((e) => {
+            console.log(e);
+        })
+        .finally(() => {
+            setLoading(false);
+        });
+}
+function deleteItem(item) {
+    setLoading(true);
+    HttpCms.delete("/news_items/" + item.id + "?token="+appUserInfo?.token)
+        .then((response: any) => {
+           
+            if (response.data.success == true) {
+                //console.log(response, "onssdsdas");
+                //transformNewItems(item, "delete");
+                router.push(
+                    '/cms')
+            }
+        })
+        .catch((e) => {
+            console.log(e);
+        })
+        .finally(() => {
+            setLoading(false);
+        });
+}
+function processedData(data, apiCallEndPoint) {
+    setLoading(true);
+    HttpCms.post("/news_items/" + data.id + "/" + apiCallEndPoint + "?token="+appUserInfo?.token, {})
+        .then((response) => {
+            fetchItem();
+            const event = new Event('build');
+            // setNewsItems(null);
+            // setNewsItemsCached(null);
+            // refreshData(event);
+        })
+        .catch((e) => {
+            console.log(e);
+        })
+        .finally(() => {
+            setLoading(false);
+        });
+
+}
 return (
     <>
         {item && (
+        
+            
+       
             <div className="w-full h-full min-h-screen  bg-gray-500">
+
                 <NavHeader />
+
+               
                 <div className="w-full min-h-96 py-10 px-4">
                     <div className="max-w-7xl mx-auto">
                         <div className="w-full">
                             <div className="w-full mx-auto h-auto">
+                            <PreviewItem
+                                                // index={i}
+                                                // totalData={paginationData?.total_data}
+                                                showComment={false}
+                                                item={item}
+                                                 processedData={processedData}
+                                                 uplaodVideo={uplaodVideo}
+                                                 deleteItem={deleteItem}
+                                                // move={decrement_increment_ordinal}
+                                                 updateItem={updateItem}
+                                            />
                                 <div className="flex flex-no-wrap justify-center">
                                     <div className="w-11/12 mx-auto flex-none float-left">
                                         <div className="md:flex mx-6 md:mx-auto w-full h-full mb-5">
 
                                             <div className={`border-${categories ? categories[item?.category].color : 'gray-200'} relative w-full h-full md:w-4/5 px-4 py-2 bg-white rounded-lg rounded-r-none border-l-8`}>
-                                                <div className="flex items-center mb-4">
+                                            
+                                                {/* <div className="flex items-center mb-4">
                                                     <h2 className="text-base text-gray-800 font-medium mr-auto">{item?.title}</h2>
-                                                </div>
-                                                {item?.descriptions.length > 0 && (
+                                                </div> */}
+                                                {/* {item?.descriptions.length > 0 && (
                                                     <div className="w-full mb-4">
                                                         <div className="p-4 shadow rounded border border-gray-300">
                                                             <div className="block">
@@ -311,9 +411,9 @@ return (
                                                             </div>
                                                         </div>
                                                     </div>
-                                                )}
+                                                )} */}
 
-                                                <div className="w-full mb-16">
+                                                {/* <div className="w-full mb-16">
                                                     <div className="p-4 shadow rounded border border-gray-300">
                                                         <div className="block">
                                                             <div className="border-b border-gray-200">
@@ -338,8 +438,8 @@ return (
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div className="absolute mb-4 mr-4">
+                                                </div> */}
+                                                {/* <div className="absolute mb-4 mr-4">
                                                     <div className="w-full space-x-2 flex justify-end">
                                                         {item?.tags.map(tag => (
                                                             <span key={tag} className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium leading-4 bg-blue-100 text-blue-800">
@@ -347,7 +447,7 @@ return (
                                                             </span>
                                                         ))}
                                                     </div>
-                                                </div>
+                                                </div> */}
                                                 <div className="w-full py-5">
                                                     <div className="w-full py-4 flex items-center">
                                                         <div className="w-1/5 flex items-center">
@@ -367,7 +467,7 @@ return (
                                                 </div>
                                             </div>
 
-                                            <div className={`bg-${categories[item?.category].color} w-full md:w-1/5 relative z-10 rounded-lg rounded-l-none`}>
+                                            {/* <div className={`bg-${categories[item?.category].color} w-full md:w-1/5 relative z-10 rounded-lg rounded-l-none`}>
                                                 <div className="inset-x-0 top-0 transform">
                                                     <div className="flex justify-center transform">
                                                         <span className={`bg-${categories[item?.category].color} shadow inline-flex w-full h-10 flex items-center justify-center text-center px-4 py-1 text-sm leading-5 font-semibold tracking-wider uppercase text-white`}>
@@ -386,7 +486,7 @@ return (
                                                         : null
                                                     }
                                                 </div>
-                                            </div>
+                                            </div> */}
                                         </div>
                                     </div>
                                 </div>
