@@ -184,7 +184,7 @@ const PreviewItem = (props) => {
                        
                     }  sadasdsada    {appUserInfo.user?.email}      */}
                                                         
-                    <button onClick={(e) => actionPerformed(item, "submit", e)} className={`${currentUserPermission('new',"kkkk") && ( item?.owners?.new !== undefined && item?.owners?.new ==appUserInfo.user?.email )? 'px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
+                    <button onClick={(e) => actionPerformed(item, "submit", e)} className={`${currentUserPermission('new',"kkkk") && ( item?.owners?.new !== undefined && item?.owners?.new ==appUserInfo?.user?.email )? 'px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
                         Submit
                     </button>
                     </>
@@ -204,7 +204,7 @@ const PreviewItem = (props) => {
                      <button onClick={(e) => actionPerformed(item, "claim", e)} className={`${currentUserPermission('awaiting_review_by_lead_journalist',"") && item?.owners?.awaiting_review_by_lead_journalist == undefined  ? 'px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
                         Claim
                     </button>              
-                    <div className={`${currentUserPermission('awaiting_review_by_lead_journalist',"")  && ( item?.owners?.awaiting_review_by_lead_journalist !== undefined && item?.owners?.awaiting_review_by_lead_journalist ==appUserInfo.user?.email ) ? 'flex space-x-2 items-center justify-center' : 'hidden'}`}>
+                    <div className={`${currentUserPermission('awaiting_review_by_lead_journalist',"")  && ( item?.owners?.awaiting_review_by_lead_journalist !== undefined && item?.owners?.awaiting_review_by_lead_journalist ==appUserInfo?.user?.email ) ? 'flex space-x-2 items-center justify-center' : 'hidden'}`}>
                         <svg onClick={(e) => actionPerformed(item, "lead_journalist_approve", e)} className="h-8 w-8 text-green-400 hover:text-green-600 cursor-pointer" x-description="Heroicon name: check-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path>
                         </svg>
@@ -226,7 +226,7 @@ const PreviewItem = (props) => {
                      <button onClick={(e) => actionPerformed(item, "claim", e)} className={`${currentUserPermission('awaiting_video_upload',"") && item?.owners?.awaiting_video_upload == undefined  ? 'px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
                         Claim
                     </button>                  
-                         <div className={`${currentUserPermission('awaiting_video_upload',"kkkk") && ( item?.owners?.awaiting_video_upload !== undefined && item?.owners?.awaiting_video_upload ==appUserInfo.user?.email )? 'block text-center justify-center items-center' : 'hidden'}`}>
+                         <div className={`${currentUserPermission('awaiting_video_upload',"kkkk") && ( item?.owners?.awaiting_video_upload !== undefined && item?.owners?.awaiting_video_upload ==appUserInfo?.user?.email )? 'block text-center justify-center items-center' : 'hidden'}`}>
                         {video != null ? (
                             <>
                                 <div className="flex justify-center items-center">
