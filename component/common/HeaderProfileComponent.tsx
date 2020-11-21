@@ -112,7 +112,7 @@ const HeaderProfileComponent = () => {
                             <div>
                             <div className={`${currentUserPermission('onshift',"") ? '' : 'hidden'}`}>
                             <div className="flex space-x-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900">
-                            <span>Shift On / OFF</span>
+                            <span>Shift On / Off</span>
                             <span
                                 role="checkbox"
                                 aria-checked={onOffShift}                                
