@@ -110,7 +110,22 @@ const HeaderProfileComponent = () => {
                                 </a>
                             </div>
                             <div>
-                                <input type="checkbox" checked={onOffShift} onChange={()=>checkShiftSatus(appUserInfo)}/>
+                            <div className="flex space-x-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900">
+                            <span>Shift On / OFF</span>
+                            <span
+                                role="checkbox"
+                                aria-checked={onOffShift}                                
+                                onClick={()=>checkShiftSatus(appUserInfo)}
+                                className={`${onOffShift ? 'bg-indigo-600' : 'bg-gray-200'}  relative inline-block flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:shadow-outline`}
+                                >
+                                    
+                                <span
+                                    aria-hidden="true"
+                                    className={`${onOffShift ? 'translate-x-5' : 'translate-x-0'} inline-block h-5 w-5 rounded-full bg-white shadow transform transition ease-in-out duration-200`}
+                                ></span>
+                                </span>
+                            </div>
+                           
                                 <Link href={'/cms/setting'}>
 
                                     <a href={void (0)} className={`${currentUserPermission('user_manager',"") ? 'flex space-x-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900' : 'hidden'}`}role="menuitem">
