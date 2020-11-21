@@ -79,7 +79,7 @@ const Demo = () => {
 
     useEffect(() => {      
       
-       console.log(currentUserState,currentUserAction);
+       console.log("current user action: -- ",currentUserAction);
         logoutUserCheck();
         setNewsItems(null);
         setNewsItemsCached(null);
