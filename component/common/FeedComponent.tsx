@@ -6,15 +6,18 @@ import HttpCms from '../../utils/http-cms';
 const dummyData = [
     {
         id: '1be48eb0-1321-11eb-a65a-4785025e4324',
-        title: 'Feed1'
+        name: 'Feed1',
+        description: 'description1'
     },
     {
         id: '2be48eb0-1321-11eb-a65a-4785025e4324',
-        title: 'Feed2'
+        name: 'Feed2',
+        description: 'description2'
     },
     {
         id: '3be48eb0-1321-11eb-a65a-4785025e4324',
-        title: 'Feed3'
+        name: 'Feed3',
+        description: 'description3'
     }
 ]
 
@@ -49,7 +52,7 @@ const FeedComponent = () => {
     function addFeed(feedData) {
         console.log(feedData);
         toggleAddNew();
-        setLoading(true);
+        // setLoading(true);
         // HttpCms.post("feeds?token=" + appUserInfo?.token, feedData)
         //     .then((response) => {
         //         const f = [...feeds];
