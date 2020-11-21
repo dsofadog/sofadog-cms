@@ -27,7 +27,7 @@ const Demo = () => {
 
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [selectedTag, setSelectedTag] = useState([]);
-    const [selectedState, setSelectedState] = useState(null);
+    const [selectedState, setSelectedState] = useState([]);
 
     const { setLoading, appUserInfo,currentUserPermission,
         userIsSuperAdmin,
@@ -127,14 +127,7 @@ const Demo = () => {
         }, [ref]);
     }
 
-    function getCurrentDate(separator = '') {
-     
-        let newDate = new Date()
-        let date = newDate.getDate() - scrollCount;
-        let month = newDate.getMonth() + 1;
-        let year = newDate.getFullYear();
-        return `${year}${separator}${month < 10 ? `0${month}` : `${month}`}${separator}${date}`
-    }
+    
 
     const returnUrlForNewItems = (dataUrlObj) => {
         // let url = `news_items?token=abcdef&limit=${paginationData.limit}&date=${getCurrentDate("-")}`;
@@ -162,9 +155,11 @@ const Demo = () => {
             "limit": paginationData.limit,
             "date": returndateAsRequired(),
             "tags": selectedTag.join(),
-            "category": selectedCategory
+            "category": selectedCategory,
+            "state": selectedState.join(),
         }
         let url = returnUrlForNewItems(dataUrlObj);
+        console.log(url,"url made");
         //let url = `news_items?token=abcdef&limit=${paginationData.limit}&date=${getCurrentDate("-")}`;
         
         await HttpCms.get(url)
@@ -211,21 +206,22 @@ const Demo = () => {
 
     function handleLoadMore() {
         setScrollCount(scrollCount + 1);
-        if (search.length === 0 && selectedState == null) {
-            if (newsItems?.news_items.length > 0) {
-                fetchItems(false);
-            } else {
-                fetchItems(true);
-            }
+        fetchItems(false);
+        // if (search.length === 0 && selectedState == null) {
+        //     if (newsItems?.news_items.length > 0) {
+        //         fetchItems(false);
+        //     } else {
+        //         fetchItems(true);
+        //     }
             
-        }
+        // }
     }
 
     function refreshData(e) {
         e.preventDefault();
         setSelectedCategory(null);
         setSelectedTag([]);
-        setSelectedState(null);
+        setSelectedState([]);
         setNewsItems(null);
         setNewsItemsCached(null);
         setScrollCount(0);       
@@ -264,6 +260,14 @@ const Demo = () => {
         }
 
     }
+    function handleClickMultiDropdown2(state) {
+        if (selectedState.includes(state.name)) {
+            return;
+        } else {
+            setSelectedState([...selectedState, state.name])
+        }
+        toggleStateDropdown();
+    }
 
     function handleClickMultiDropdown(tag) {
         if (selectedTag.includes(tag.value)) {
@@ -287,7 +291,12 @@ const Demo = () => {
         setSelectedTag(selectedTag.filter(item => item !== tag));
     }
 
+    function clearStatus(value) {
+        setSelectedState(selectedState.filter(item => item !== value));
+    }
+
     const returndateAsRequired =  () => {
+        console.log(scrollCount,"scrollCount");
         let today = moment().format('DD.MM.YYYY');
         let startdate = today;
         var new_date = moment(startdate, "DD-MM-YYYY");
@@ -297,8 +306,9 @@ const Demo = () => {
 
     }
 
-    const filteringCategoryTag =  () => {
+    const filteringCategoryTag =  () => {        
         setLoading(true);
+        console.log(selectedState.join(),"selectedState");
 
         let apiUrl = "news_items?";
         let dataUrlObj = {
@@ -306,7 +316,8 @@ const Demo = () => {
             "limit": paginationData.limit,
             "date": returndateAsRequired(),
             "tags": selectedTag.join(),
-            "category": selectedCategory
+            "category": selectedCategory,
+            "state":selectedState.join(),
         }
         let api = returnUrlForNewItems(dataUrlObj);
         
@@ -514,6 +525,14 @@ const Demo = () => {
         }
         return false;
     }
+    function isStateSelected(value) {
+        if (selectedState.length > 0) {
+            return selectedState.includes(value);
+        }
+        return false;
+    }
+
+    
 
     // function handleScroll(e) {
     //     const target = e.target;
@@ -581,44 +600,7 @@ const Demo = () => {
                             </div>
                         </div>
                         <div className="flex items-center space-x-2">
-                            <div ref={stateWrapperRef} data-id="state" className="relative inline-block text-left">
-                                <div>
-                                    {status && (
-                                        <span onClick={toggleStateDropdown} className="rounded-md shadow-sm">
-                                            <button type="button" className="w-32 inline-flex justify-center rounded-md border border-gray-300 px-2 py-2 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150" id="options-menu" aria-haspopup="true" aria-expanded="true">
-                                                <span className="w-full truncate uppercase">
-                                                    {status && selectedState ?
-                                                        showStatus(selectedState) : 'State'
-                                                    }
-                                                </span>
-                                                <svg className="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                                    <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                                                </svg>
-                                            </button>
-                                        </span>
-                                    )}
-                                </div>
-                                {openStateDropdown && (
-                                    <div className="origin-top-left absolute left-0 mt-2 w-56 rounded-md shadow-lg z-20">
-                                        <div className="rounded-md bg-white shadow-xs">
-                                            <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                                                {status?.map((status, i) => (
-                                                    <a key={i} href={void (0)} onClick={(e) => selectedState?.name === status.name ? clearState(e) : handleClickSingleDropdown(status, 'state')} className={`${selectedState?.name === status.name ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white'} cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900 uppercase`} role="menuitem">
-                                                        {status.value}
-                                                    </a>
-                                                ))}
-                                                <>
-                                                    {selectedState && (
-                                                        <div className="w-full px-2 pb-2">
-                                                            <button onClick={(e) => clearState(e)} className="w-full text-white text-sm bg-indigo-600 hover:bg-indigo-700 rounded px-2 py-1">Clear</button>
-                                                        </div>
-                                                    )}
-                                                </>
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
+                            
                             <div ref={filterWrapperRef} data-id="filter" className="relative inline-block text-left">
                                 <button onClick={() => toggleFilterDropdown()} className="text-white space-x-2 relative inline-flex items-center px-2 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-400 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-600 active:bg-indigo-600 transition duration-150 ease-in-out">
                                     <FontAwesomeIcon className="w-3" icon={['fas', 'filter']} />
@@ -628,7 +610,7 @@ const Demo = () => {
                                     <div className="origin-top-right absolute right-0 mt-2 w-72 rounded-md shadow-lg">
                                         <div className="rounded-md bg-white shadow-xs">
                                             <div className="w-full flex justify-center p-2 space-x-2">
-                                                <div className="w-1/2">
+                                                <div className="w-1/3">
                                                     <div ref={catWrapperRef} data-id="category" className="relative inline-block w-full">
                                                         <div>
                                                             {categories && (
@@ -661,7 +643,7 @@ const Demo = () => {
                                                         )}
                                                     </div>
                                                 </div>
-                                                <div className="w-1/2">
+                                                <div className="w-1/3">
                                                     <div ref={tagWrapperRef} data-id="tag" className="relative inline-block w-full">
                                                         <div>
                                                             <span onClick={toggleTagDropdown} className="rounded-md shadow-sm">
@@ -695,6 +677,55 @@ const Demo = () => {
                                                             </div>
                                                         )}
                                                     </div>
+                                                </div>
+                                                <div  className="w-1/3">
+                                                <div ref={stateWrapperRef} data-id="state" className="relative inline-block text-left">
+                                <div>
+                                    {status && (
+                                        <span onClick={toggleStateDropdown} className="rounded-md shadow-sm">
+                                            <button type="button" className="w-32 inline-flex justify-center rounded-md border border-gray-300 px-2 py-2 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150" id="options-menu" aria-haspopup="true" aria-expanded="true">
+                                               
+                                                <span className="w-full truncate uppercase">
+                                                                        {
+                                                                        selectedState.length > 0 ?
+                                                                            <>
+                                                                                {selectedState.join()}
+                                                                            </>
+                                                                            :
+                                                                            'State'
+                                                                        }
+                                                                    </span>
+                                                <svg className="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                    <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                                                </svg>
+                                            </button>
+                                        </span>
+                                    )}
+                                </div>
+                                {openStateDropdown && (
+                                    <div className="origin-top-left absolute left-0 mt-2 w-56 rounded-md shadow-lg z-20">
+                                        <div className="rounded-md bg-white shadow-xs">
+                                            <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                                                {status?.map((status, i) => (
+                                                    // <a key={i} href={void (0)} onClick={(e) => selectedState?.name === status.name ? clearState(e) : handleClickMultiDropdown2(status)} className={`${selectedState?.name === status.name ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white'} cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900 uppercase`} role="menuitem">
+                                                    //     {status.value}
+                                                    // </a>
+                                                     <a key={i} href={void (0)} onClick={() => isStateSelected(status.name) ? clearStatus(status.name) : handleClickMultiDropdown2(status)} className={`${isStateSelected(status.name) ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white'} cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900`} role="menuitem">
+                                                     {status.value}
+                                                    </a>
+                                                ))}
+                                                <>
+                                                    {selectedState && (
+                                                        <div className="w-full px-2 pb-2">
+                                                            <button onClick={(e) => clearState(e)} className="w-full text-white text-sm bg-indigo-600 hover:bg-indigo-700 rounded px-2 py-1">Clear</button>
+                                                        </div>
+                                                    )}
+                                                </>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
                                                 </div>
                                             </div>
                                             <div className="w-full p-2 space-x-2 flex">
@@ -740,7 +771,7 @@ const Demo = () => {
                 </>
 
                 <>
-                    {selectedState == null && newsItems?.news_items.map((item, i) => (
+                    {newsItems?.news_items.map((item, i) => (
                         <div key={i}>
                             <PreviewItem
                                 index={i}
@@ -756,21 +787,7 @@ const Demo = () => {
                         </div>
                     ))}
 
-                    {selectedState != null && newsItemsCached?.news_items?.map((item, i) => (
-                        <div key={i}>
-                            <PreviewItem
-                                index={i}
-                                showComment={true}
-                                totalData={paginationData?.total_data}
-                                item={item}
-                                processedData={processedData}
-                                uplaodVideo={uplaodVideo}
-                                deleteItem={deleteItem}
-                                move={decrement_increment_ordinal}
-                                updateItem={updateItem}
-                            />
-                        </div>
-                    ))}
+                   
                 </>
             </div>
             {!scrollLoading && newsItems && (

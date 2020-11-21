@@ -55,8 +55,6 @@ const UserComponent = () => {
             .then((response) => {
 				setAddNew(false);				
 				setUser([...user, response.data.user]);
-				
-			
               
             })
             .catch((e) => {
@@ -129,10 +127,11 @@ const UserComponent = () => {
 	}
 
 	function removeRoleUser(data,type){	
-		setLoading(true);
+		//setLoading(true);
 		HttpCms.patch("admin_user/"+data.email+"/"+type+"?token="+appUserInfo?.token, data)
 		.then((response) => {
 		//	console.log("response: ",response);
+		//setLoading(false);
 			setAddNew(false);
 		})
 		.catch((e) => {
