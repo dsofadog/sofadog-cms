@@ -56,7 +56,7 @@ const HeaderProfileComponent = () => {
 
     const logout = (e) => {
         e.preventDefault();
-        setLoading(true);
+
         httpCms.get(`/admin_user/logout?token=${appUserInfo?.token}`)
             .then(response => {
                 setLoading(false);
@@ -75,7 +75,8 @@ const HeaderProfileComponent = () => {
             });
     }
     function checkShiftSatus(appUserInfo){
-        setLoading(true);
+
+        console.log("App User info ",appUserInfo)
         httpCms.patch(`/admin_user/${appUserInfo.user.email}/toggle_shift?token=${appUserInfo?.token}`)
           .then((response) => {
             if (response.data.user.on_shift != null) {         
@@ -108,8 +109,8 @@ const HeaderProfileComponent = () => {
                                     <span className="w-full truncate font-bold">{appUserInfo?.user.job_title}</span><br />
                                 </a>
                             </div>
-                          <div className={`${currentUserPermission('onshift',"") ? '' : 'hidden'}`}>
-                            
+                            <div>
+                            <div className={`${currentUserPermission('onshift',"") ? '' : 'hidden'}`}>
                             <div className="flex space-x-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900">
                             <span>Shift On / OFF</span>
                             <span
@@ -129,7 +130,7 @@ const HeaderProfileComponent = () => {
                            
                                 <Link href={'/cms/setting'}>
 
-                                    <a href={void (0)} className={`${currentUserPermission('user_manager',"") ? 'flex space-x-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900' : 'hidden'}`} role="menuitem">
+                                    <a href={void (0)} className={`${currentUserPermission('user_manager',"") ? 'flex space-x-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900' : 'hidden'}`}role="menuitem">
                                         <FontAwesomeIcon className="w-3" icon={['fas', 'cog']} />
                                         <span>Settings</span>
                                     </a>
