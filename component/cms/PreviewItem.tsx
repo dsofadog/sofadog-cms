@@ -170,7 +170,7 @@ const PreviewItem = (props) => {
         switch (item.state) {
             case "new": {
                 return (
-                    <>
+                           <>
                     { item?.owners?.new != undefined &&  item?.owners?.new !=appUserInfo?.user?.email && (
                         <p >Claimed by {item?.owners?.new}</p>
                     )
@@ -188,7 +188,7 @@ const PreviewItem = (props) => {
                         Submit
                     </button>
                     </>
-        
+                    
                 );
             }
             case "awaiting_review_by_lead_journalist": {
