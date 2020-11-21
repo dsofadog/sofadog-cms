@@ -12,32 +12,7 @@ import HttpCms from '../../utils/http-cms';
 
 f_config.autoAddCss = false;
 library.add(fas, fab, far);
-// let users = [
-//     {
-//         "id": 1,
-//         "email": "superuser1@so.fa.dog",
-//         "admin_roles": [
-//             {
-//                 "id": "super_admin",
-//                 "description": "Super Admin"
-//             }
-//         ],
-//         "first_name": "Super1",
-//         "last_name": "User"
-//     },
-//     {
-//         "id": 2,
-//         "email": "editor@so.fa.dog",
-//         "admin_roles": [
-//             {
-//                 "id": "editor",
-//                 "description": "Editor"
-//             }
-//         ],
-//         "first_name": "Editor",
-//         "last_name": "User",
-//     }
-// ]
+
 const UserComponent = () => {
 
 	const [addNew,setAddNew] = useState(false);
@@ -50,6 +25,7 @@ const UserComponent = () => {
 	},[]);
 
 	function callAllUserInfo(){
+		setLoading(true);
 		let api = "admin_users?token="+appUserInfo?.token;
 		HttpCms.get(api)
 		.then(response => {
@@ -91,13 +67,13 @@ const UserComponent = () => {
             });
 	}
 	function updateUser(id,userData){
-		console.log("Update user ",id,userData);
-		https://v-int.so.fa.dog/admin_user/<user-id>?token=abcdef
+		setLoading(true);
 		HttpCms.patch("admin_user/"+id+"?token="+appUserInfo?.token, userData)
 		.then((response) => {
 			setAddNew(false);
 			console.log(user,"usekkkkkkkkkkkkkkkkkkkkkkkkkk");
 			console.log(response,"response");
+			setLoading(false);
 			//setUser([...user, response.data.user]);
 			
 		
@@ -112,7 +88,7 @@ const UserComponent = () => {
 	}
 
 	function enableDisableUser(status,data){
-		console.log("Update user ",status,data);
+		setLoading(true);
 		let request = {"email":data.email};
 		let users  =user;
 		let index = users.findIndex(user => user.email == data.email);
@@ -138,7 +114,7 @@ const UserComponent = () => {
 			"email":data.email,
 			"password":userPass
 	     };
-		
+		 setLoading(true);
 		HttpCms.post("admin_user/"+data.email+"/"+status+"?token="+appUserInfo?.token, request)
 		.then((response) => {
 			setAddNew(false);
@@ -153,7 +129,7 @@ const UserComponent = () => {
 	}
 
 	function removeRoleUser(data,type){	
-		
+		setLoading(true);
 		HttpCms.patch("admin_user/"+data.email+"/"+type+"?token="+appUserInfo?.token, data)
 		.then((response) => {
 		//	console.log("response: ",response);
