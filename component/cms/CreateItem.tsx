@@ -741,15 +741,9 @@ const CreateItem = (props) => {
 
                                     {feeds && (
                                         <>
-                                            {item?.feed_id != null && (
+                                            {selectedFeed != null && (
                                                 <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium leading-4 bg-blue-100 text-blue-800">
-                                                    {/* {item?.feed_id} */}
-
-                                                    {feeds?.map((feed, i) => (
-                                                            feed.id === item?.feed_id && (
-                                                                feed.name
-                                                            )
-                                                        ))}
+                                                    {getFeedName()}
                                                     <button onClick={() => clearFeeds()} type="button" className="flex-shrink-0 ml-1.5 inline-flex text-indigo-500 focus:outline-none focus:text-indigo-700" aria-label="Remove small badge">
                                                         <svg className="h-2 w-2" stroke="currentColor" fill="none" viewBox="0 0 8 8">
                                                             <path strokeLinecap="round" strokeWidth="1.5" d="M1 1l6 6m0-6L1 7" />
