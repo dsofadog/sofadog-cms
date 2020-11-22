@@ -8,13 +8,13 @@ import { fab } from '@fortawesome/free-brands-svg-icons';
 import { far } from '@fortawesome/free-regular-svg-icons';
 import DescriptionInputs from './DescriptionInputs';
 import { LayoutContext } from '../../contexts';
+import HttpCms from '../../utils/http-cms';
 
 f_config.autoAddCss = false;
 library.add(fas, fab, far);
 
 const CreateItem = (props) => {
-    const { setLoading } = useContext(LayoutContext);
-
+   
     const categories = CmsConstant.Category;
     const tags = CmsConstant.Tags;
 
@@ -26,7 +26,7 @@ const CreateItem = (props) => {
 
     const [openCategoryDropdown, setOpenCategoryDropdown] = useState(false);
     const toggleCateDropdown = () => { setOpenCategoryDropdown(!openCategoryDropdown) };
-
+    const { setLoading, appUserInfo,currentUserPermission } = useContext(LayoutContext);
     const [item, setItem] = useState(null);
     const [selectedTag, setSelectedTag] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState(null);
@@ -35,26 +35,7 @@ const CreateItem = (props) => {
     const [formSubmitted, setFormSubmitted] = useState(false);
     const [formproceed, setFormproceed] = useState(false);
     const [selectedFeed,setSelectedFeed] = useState(null);
-    const [feeds,setFeeds] = useState(
-        [
-            {
-                id: 1,
-                name: "feed1"
-            },
-            {
-                id: 2,
-                name: "feed2"
-            },
-            {
-                id: 3,
-                name: "feed3"
-            },
-            {
-                id: 4,
-                name: "feed4"
-            }
-        ]
-    );
+    const [feeds,setFeeds] = useState(null);
     const blankSentence = { sentence: "", editable: true, error: false }
     const [descriptions, setDescriptions] = useState(
         [
@@ -91,6 +72,7 @@ const CreateItem = (props) => {
     useOutsideAlerter(feedWrapperRef);
 
     useEffect(() => {
+        getFeeds();
         if (props.state === 'edit') {
             clearData();
             console.log("In update item: ", props.data);
@@ -180,6 +162,7 @@ const CreateItem = (props) => {
         setItem(null);
         setSelectedTag([]);
         setSelectedCategory(null);
+        setSelectedFeed(null);
         setDescriptions([{ language: "english", sentences: [] }, { language: "estonian", sentences: [] }]);
         setCredits([{ credit: "News Credits", creditSentences: [] }, { credit: "Visual Credits", creditSentences: [] }]);
     }
@@ -306,20 +289,21 @@ const CreateItem = (props) => {
 
 
     function handleClickSingleDropdownFeed(feed) {
-        console.log("selected feed",feed.name)
-        // setItem({
-        //     ...item,
-        //     feed: `${feed.name}`
-        // });
-         setSelectedFeed(feed.name);
+        console.log("selected feed",feed.id)
+        setItem({
+            ...item,
+            feed_id: feed.id
+        });
+        console.log("items",item)
+        setSelectedFeed(feed.id);
         toggleFeedDropdown();
     }
 
     function clearFeeds() {
-        // setItem({
-        //     ...item,
-        //      feed: null
-        // });
+        setItem({
+            ...item,
+             feed_id: null
+        });
         setSelectedFeed(null);
     }
 
@@ -391,6 +375,7 @@ const CreateItem = (props) => {
     }
 
     function categoryValidation(): Boolean {
+      
         //console.log(item?.category);
         //console.log(selectedTag);
         if (selectedCategory === null) {
@@ -428,7 +413,8 @@ const CreateItem = (props) => {
             descriptions: [],
             news_credits: [],
             visual_credits: [],
-            tags: selectedTag
+            tags: selectedTag,
+            feed_id:item?.feed_id
         }
 
         if (descriptions) {
@@ -492,8 +478,26 @@ const CreateItem = (props) => {
         }
     }
 
+
+    function getFeeds(){
+       
+            //setLoading(true);
+            HttpCms.get("/feeds?token="+appUserInfo?.token)
+            .then((response) => {
+                console.log("response: ",response.data);
+                setFeeds(response.data.feeds)
+            })
+            .catch((e) => {
+                console.log(e);
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+ 
+    }
+
     function saveData() {
-        //console.log(item?.category);
+        console.log("items on submit :- ",item);
         //console.log(selectedTag);
         let conditionMatch = validationData();
         if (conditionMatch) {
@@ -728,9 +732,15 @@ const CreateItem = (props) => {
 
                                     {feeds && (
                                         <>
-                                            {selectedFeed != null && (
+                                            {item?.feed_id != null && (
                                                 <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium leading-4 bg-blue-100 text-blue-800">
-                                                    {selectedFeed}
+                                                    {/* {item?.feed_id} */}
+
+                                                    {feeds?.map((feed, i) => (
+                                                            feed.id === item?.feed_id && (
+                                                                feed.name
+                                                            )
+                                                        ))}
                                                     <button onClick={() => clearFeeds()} type="button" className="flex-shrink-0 ml-1.5 inline-flex text-indigo-500 focus:outline-none focus:text-indigo-700" aria-label="Remove small badge">
                                                         <svg className="h-2 w-2" stroke="currentColor" fill="none" viewBox="0 0 8 8">
                                                             <path strokeLinecap="round" strokeWidth="1.5" d="M1 1l6 6m0-6L1 7" />
