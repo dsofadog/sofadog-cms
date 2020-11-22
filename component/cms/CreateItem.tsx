@@ -757,7 +757,7 @@ const CreateItem = (props) => {
                                 </div>
 
 
-                                <div className="w-full space-x-2 flex justify-end">
+                                <div className="w-full space-x-2 flex justify-end z-50">
                                     <div ref={tagWrapperRef} data-id="tag" className="relative inline-block text-left">
                                         <div>
                                             <span onClick={toggleTagDropdown} className="rounded-md shadow-sm">
