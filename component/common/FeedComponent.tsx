@@ -31,43 +31,43 @@ const FeedComponent = () => {
     }, []);
 
     function fetchFeeds() {
-        // setLoading(true);
-        // let api = "feeds?token="+appUserInfo?.token;
-        // HttpCms.get(api)
-        // .then(response => {
-        // 	console.log("fetch res: ", response.data);
-        // 	setFeeds(response.data.feeds);
-        // 	setLoading(false);
-        // })
-        // .catch(e => {
-        // 	console.log(e);
-        // 	setLoading(false);
-        // })
-        // .finally(() => {
-        // 	setLoading(false);
-        // });
-        setFeeds(dummyData);
+        setLoading(true);
+        let api = "feeds?token="+appUserInfo?.token;
+        HttpCms.get(api)
+        .then(response => {
+        	console.log("fetch res: ", response.data);
+        	setFeeds(response.data.feeds);
+        	setLoading(false);
+        })
+        .catch(e => {
+        	console.log(e);
+        	setLoading(false);
+        })
+        .finally(() => {
+        	setLoading(false);
+        });
+        //setFeeds(dummyData);
     }
 
     function addFeed(feedData) {
         console.log(feedData);
         toggleAddNew();
-        // setLoading(true);
-        // HttpCms.post("feeds?token=" + appUserInfo?.token, feedData)
-        //     .then((response) => {
-        //         const f = [...feeds];
-        //         f.push(response.data.user);
-        //         setFeeds(f);
-        //     })
-        //     .catch((e) => {
-        //         console.log(e);
-        //     })
-        //     .finally(() => {
-        //         setLoading(false);
-        //     });
-        const f = [...feeds];
-        f.push(feedData);
-        setFeeds(f);
+        setLoading(true);
+        HttpCms.post("feeds?token=" + appUserInfo?.token, feedData)
+            .then((response) => {
+                const f = [...feeds];
+                f.push(response.data.feed);
+                setFeeds(f);
+            })
+            .catch((e) => {
+                console.log(e);
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+        // const f = [...feeds];
+        // f.push(feedData);
+        // setFeeds(f);
     }
     return (
         <div className="min-h-3/4">
