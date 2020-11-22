@@ -413,7 +413,7 @@ const PreviewItem = (props) => {
                                                     {
                                                         props.index != 0 && (
                                                             <button className="px-2 py-0.5 text-gray-600 text-xs rounded">
-                                                                <FontAwesomeIcon onClick={(e) => moveItem(item, "increment_ordinal", e)} className="w-5 hover:text-gray-900" icon={['fas', 'chevron-up']} />
+                                                                <FontAwesomeIcon onClick={(e) => moveItem(item, "increment_ordinal", e)} className="w-5 hover:text-gray-900" icon={['fas', 'arrow-up']} />
                                                             </button>
                                                         )
                                                     }
@@ -421,7 +421,7 @@ const PreviewItem = (props) => {
                                                     {
                                                         props.index != props.totalData && (
                                                             <button className="px-2 py-0.5 text-gray-600 text-xs rounded">
-                                                                <FontAwesomeIcon onClick={(e) => moveItem(item, "decrement_ordinal", e)} className="w-5 hover:text-gray-900" icon={['fas', 'chevron-down']} />
+                                                                <FontAwesomeIcon onClick={(e) => moveItem(item, "decrement_ordinal", e)} className="w-5 hover:text-gray-900" icon={['fas', 'arrow-down']} />
                                                             </button>
                                                         )
                                                     }
