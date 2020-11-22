@@ -538,7 +538,7 @@ const PreviewItem = (props) => {
                                                 {item?.state != "awaiting_video_upload" ?
                                                     <>
                                                         {item.thumbnails.length > 0 && (
-                                                            <img className="h-auto w-full shadow-2xl"
+                                                            <img className={`${isExpand ? 'w-1/2' : 'w-full'} h-auto mx-auto shadow-2xl`}
                                                                 src={item.thumbnails[0].url} alt="" />
                                                         )}
                                                     </>
