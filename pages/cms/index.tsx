@@ -366,10 +366,17 @@ const Demo = () => {
                 setNewsItems(arr);
                 break;
             case "filter_by_state":
-                let dataAll = newsItems?.news_items.filter(item => item.state == itemValue.name);
-               
+                let dataAll = newsItems?.news_items.filter(item => item.state == itemValue.name);               
                 arr.news_items = dataAll;
                 setNewsItemsCached(arr)
+                break;
+            case "overide_index":
+                console.log(newsItems.news_items);
+                console.log(itemValue);
+                old_index = newsItems.news_items.findIndex(item => item.id == itemValue.id);              
+                newsItems.news_items[old_index] = itemValue;
+                setNewsItems(newsItems);
+                //setNewsItemsCached(arr)
                 break;
             default:
             // code block
@@ -399,10 +406,12 @@ const Demo = () => {
         HttpCms.post("/news_items/" + data.id + "/" + apiCallEndPoint + "?token="+appUserInfo?.token, {})
             .then((response) => {
                 //fetchItems();
-                const event = new Event('build');
-                setNewsItems(null);
-                setNewsItemsCached(null);
-                refreshData(event);
+                 //  const event = new Event('build');
+                // setNewsItems(null);
+                // setNewsItemsCached(null);
+               // refreshData(event);
+               transformNewItems(response.data.news_item, "overide_index")
+               
             })
             .catch((e) => {
                 console.log(e);
