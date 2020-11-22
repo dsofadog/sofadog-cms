@@ -444,7 +444,12 @@ const Demo = () => {
 
         HttpCms.post("/news_items/" + item.id + "/" + apiEndPoint + "?token=" + appUserInfo?.token, formData, config)
             .then((response) => {
-                fetchItems();
+                
+                let index = newsItems.news_items.findIndex(x=> x.id===item.id);
+                const n = {...newsItems}
+                n.news_items[index] = response.data.news_item;
+                setNewsItems(n);
+               // fetchItems();
             })
             .catch((e) => {
                 console.log(e);
