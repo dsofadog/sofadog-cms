@@ -34,8 +34,8 @@ const CreateItem = (props) => {
     const [activeCredit, setActiveCredit] = useState(0);
     const [formSubmitted, setFormSubmitted] = useState(false);
     const [formproceed, setFormproceed] = useState(false);
-    const [selectedFeed,setSelectedFeed] = useState(null);
-    const [feeds,setFeeds] = useState(
+    const [selectedFeed, setSelectedFeed] = useState(null);
+    const [feeds, setFeeds] = useState(
         [
             {
                 id: 1,
@@ -52,6 +52,10 @@ const CreateItem = (props) => {
             {
                 id: 4,
                 name: "feed4"
+            },
+            {
+                id: "india",
+                name: "India"
             }
         ]
     );
@@ -101,6 +105,7 @@ const CreateItem = (props) => {
                 category: data.category
             });
             setSelectedCategory(data.category);
+            setSelectedFeed(data.feed_id);
             if (data.tags.length > 0) {
                 setSelectedTag(data.tags);
             }
@@ -306,12 +311,12 @@ const CreateItem = (props) => {
 
 
     function handleClickSingleDropdownFeed(feed) {
-        console.log("selected feed",feed.name)
+        console.log("selected feed", feed.id)
         // setItem({
         //     ...item,
         //     feed: `${feed.name}`
         // });
-         setSelectedFeed(feed.name);
+        setSelectedFeed(feed.id);
         toggleFeedDropdown();
     }
 
@@ -501,6 +506,14 @@ const CreateItem = (props) => {
         }
     }
 
+    function getFeedName() {
+        console.log("getFeedName: ",selectedFeed);
+        let i = feeds.findIndex(x => x.id === selectedFeed);
+        if (i >= 0) {
+            return feeds[i].name;
+        }
+    }
+
     return (
         <div className="w-full mx-auto">
             <div className="flex flex-no-wrap justify-center">
@@ -654,8 +667,8 @@ const CreateItem = (props) => {
                                         <div>
                                             {categories && (
                                                 <span onClick={toggleCateDropdown} className="rounded-md shadow-sm">
-                                                    <button type="button" className={`${ (selectedCategory === null )  && formSubmitted ? 'border-red-500 text-red-600' : 'border-transparent '} inline-flex justify-center w-full rounded-md border border-gray-300 px-2 py-0.5 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150`}
-                                                     id="options-menu" aria-haspopup="true" aria-expanded="true">
+                                                    <button type="button" className={`${(selectedCategory === null) && formSubmitted ? 'border-red-500 text-red-600' : 'border-transparent '} inline-flex justify-center w-full rounded-md border border-gray-300 px-2 py-0.5 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150`}
+                                                        id="options-menu" aria-haspopup="true" aria-expanded="true">
                                                         Choose Category
                                                         <svg className="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                                             <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
@@ -701,8 +714,8 @@ const CreateItem = (props) => {
                                         <div>
                                             {feeds && (
                                                 <span onClick={toggleFeedDropdown} className="rounded-md shadow-sm">
-                                                    <button type="button" className={`${ (selectedFeed === null )  && formSubmitted ? 'border-red-500 text-red-600' : 'border-transparent '} inline-flex justify-center w-full rounded-md border border-gray-300 px-2 py-0.5 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150`}
-                                                     id="options-menu" aria-haspopup="true" aria-expanded="true">
+                                                    <button type="button" className={`${(selectedFeed === null) && formSubmitted ? 'border-red-500 text-red-600' : 'border-transparent '} inline-flex justify-center w-full rounded-md border border-gray-300 px-2 py-0.5 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150`}
+                                                        id="options-menu" aria-haspopup="true" aria-expanded="true">
                                                         Choose Feed
                                                         <svg className="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                                             <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
@@ -730,14 +743,14 @@ const CreateItem = (props) => {
                                         <>
                                             {selectedFeed != null && (
                                                 <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium leading-4 bg-blue-100 text-blue-800">
-                                                    {selectedFeed}
+                                                    {getFeedName()}
                                                     <button onClick={() => clearFeeds()} type="button" className="flex-shrink-0 ml-1.5 inline-flex text-indigo-500 focus:outline-none focus:text-indigo-700" aria-label="Remove small badge">
                                                         <svg className="h-2 w-2" stroke="currentColor" fill="none" viewBox="0 0 8 8">
                                                             <path strokeLinecap="round" strokeWidth="1.5" d="M1 1l6 6m0-6L1 7" />
                                                         </svg>
                                                     </button>
                                                 </span>
-                                             )}
+                                            )}
                                         </>
 
                                     )}
