@@ -3,16 +3,27 @@ import { LayoutContext } from "../../contexts";
 import httpCms from "../../utils/http-cms";
 import Link from "next/link"
 import { useRouter } from 'next/router'
+
+import { config as f_config, library } from '@fortawesome/fontawesome-svg-core';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { fas } from '@fortawesome/free-solid-svg-icons';
+import { fab } from '@fortawesome/free-brands-svg-icons';
+import { far } from '@fortawesome/free-regular-svg-icons';
+
+
+f_config.autoAddCss = false;
+library.add(fas, fab, far);
+
 const NotificationBell = () => {
 
     const bellWrapperRef = useRef(null);
     useOutsideAlerter(bellWrapperRef);
     const [openBellDropdown, setOpenBellDropdown] = useState(false);
-    const { setLoading, appUserInfo,currentUserPermission } = useContext(LayoutContext);
+    const { setLoading, appUserInfo, currentUserPermission } = useContext(LayoutContext);
     const toggleBellDropdown = () => { setOpenBellDropdown(!openBellDropdown) };
-    const [notifications,setNotificatons] = useState(null);
+    const [notifications, setNotificatons] = useState(null);
     const router = useRouter();
-   
+
 
     function useOutsideAlerter(ref) {
         useEffect(() => {
@@ -32,38 +43,16 @@ const NotificationBell = () => {
             };
         }, [ref]);
     }
-    function getNotifications(){
+    function getNotifications() {
         setLoading(true);
         console.log("Start Notification---------- ")
         httpCms.get(`/notifications?token=${appUserInfo?.token}`)
-          .then((response) => {
-            if (response.data != null) {         
-               console.log("notification: ",response.data);
-               setNotificatons(response.data.notifications);
-               let count = response.data.notifications.filter(notification => notification.read.includes(false));
-               console.log("count",count);
-            } else {
-              alert("Something wrong !!");
-            }
-          })
-          .catch((e) => {
-            setLoading(false);
-          })
-          .finally(() => {
-            setLoading(false);
-          });
-      }
-    function readNotification(notification){
-        setLoading(true);
-        console.log("Start Notification---------- ",notification.read)
-        if(notification.read === false){
-            httpCms.post(`/notifications/${notification?.id}/read?token=${appUserInfo?.token}`)
             .then((response) => {
-                if (response.data != null) {         
-                console.log("notification: ",response.data);
-                setNotificatons(response.data.notifications);
-                setLoading(false);
-                
+                if (response.data != null) {
+                    console.log("notification: ", response.data);
+                    setNotificatons(response.data.notifications);
+                    let count = response.data.notifications.filter(notification => notification.read.includes(false));
+                    console.log("count", count);
                 } else {
                     alert("Something wrong !!");
                 }
@@ -74,15 +63,37 @@ const NotificationBell = () => {
             .finally(() => {
                 setLoading(false);
             });
-        }
-        
     }
-    function notificationAction(notification){
+    function readNotification(notification) {
+        setLoading(true);
+        console.log("Start Notification---------- ", notification.read)
+        if (notification.read === false) {
+            httpCms.post(`/notifications/${notification?.id}/read?token=${appUserInfo?.token}`)
+                .then((response) => {
+                    if (response.data != null) {
+                        console.log("notification: ", response.data);
+                        setNotificatons(response.data.notifications);
+                        setLoading(false);
+
+                    } else {
+                        alert("Something wrong !!");
+                    }
+                })
+                .catch((e) => {
+                    setLoading(false);
+                })
+                .finally(() => {
+                    setLoading(false);
+                });
+        }
+
+    }
+    function notificationAction(notification) {
         //readNotification(notification.itemId)
-        if(notification.object_type === 'news_item'){
+        if (notification.object_type === 'news_item') {
             router.push(
                 '/cms/[item_id]',
-                '/cms/'+notification.object_id)
+                '/cms/' + notification.object_id)
         }
     }
     return (
@@ -95,29 +106,40 @@ const NotificationBell = () => {
                         </svg>
                     </div>
                     {notifications?.filter(x => x.read === false).length > 0 && (
-                         <span className="absolute flex items-center justify-center top-0 right-0 -mt-2 -mr-2 h-6 w-6 rounded-full text-white text-xs bg-red-500 border-red-500 border">{notifications?.filter(x => x.read === false).length}</span>
+                        <span className="absolute flex items-center justify-center top-0 right-0 -mt-2 -mr-2 h-6 w-6 rounded-full text-white text-xs bg-red-500 border-red-500 border">{notifications?.filter(x => x.read === false).length}</span>
                     )}
-   
+
                 </span>
                 {openBellDropdown && (
                     <div className="origin-top-right absolute right-0 mt-2 w-84 rounded-md shadow-lg">
                         <div className="h-full rounded-md bg-white shadow-xs">
-                            <div className="h-96 overflow-y-auto py-1 text-left" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                            <div className="h-96 divide-y overflow-y-auto py-1 text-left" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
                                 {
-                                    notifications?.map((notification) =>(
-                                
-                                        <div className="w-full flex px-4 py-1 text-xs leading-5 text-gray-700 hover:bg-gray-200 hover:text-gray-900 cursor-pointer">
-                                            <div className="w-11/12 flex justify-start">
-                                                <label onClick={(e)=> notificationAction(notification)} className="text-sm font-bold text-gray-800 cursor-pointer hover:underline">{notification.title}</label>
-                                            </div>
-                                            
-                                            <div className="w-1/12 flex items-center justify-end">
-                                            <a href="#" onClick={()=>readNotification(notification)}>read</a>
-                                                <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full sfd-btn-primary"></div>
-                                            </div>
-                                        </div>
+                                    notifications?.length > 0 ?
+                                        <>
+                                            {
+                                                notifications?.map((notification) => (
 
-                                    ))
+                                                    <div className="w-full flex px-4 py-1 text-xs leading-5 text-gray-700 hover:bg-gray-200 hover:text-gray-900 cursor-pointer">
+                                                        <div onClick={(e) => notificationAction(notification)} className="w-11/12 flex justify-start">
+                                                            <label className="text-sm text-gray-800 cursor-pointer">{notification.title}</label>
+                                                        </div>
+                                                        <div className="w-1/12 flex items-center justify-end">
+                                                            <FontAwesomeIcon onClick={() => readNotification(notification)} className="w-5 h-5 cursor-pointer hover:text-white rounded-full bg-gray-300 hover:bg-green-500 p-1" icon={['fas', 'check']} />
+                                                        </div>
+                                                    </div>
+
+                                                ))
+                                            }
+                                        </>
+                                        :
+                                        <>
+                                            <div className="w-full flex px-4 py-1 text-xs leading-5 text-gray-700 cursor-pointer">
+                                                <div className="w-full flex justify-center">
+                                                    <label className="text-sm text-gray-800 cursor-pointer">No Notification!</label>
+                                                </div>
+                                            </div>
+                                        </>
                                 }
                             </div>
                         </div>
