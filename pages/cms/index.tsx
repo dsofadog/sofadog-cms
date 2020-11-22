@@ -812,7 +812,7 @@ const Demo = () => {
                                                                 <div className="rounded-md bg-white shadow-xs">
                                                                     <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
                                                                         {feeds?.map((feed, i) => (
-                                                                            <a key={i} href={void (0)} onClick={() => handleClickSingleDropdownFeed(feed)} className="cursor-pointer block px-4 py-1 text-xs leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900" role="menuitem">
+                                                                            <a key={i} href={void (0)} onClick={() => handleClickSingleDropdownFeed(feed)} className={`${feed.id === selectedFeed ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white'} cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900`} role="menuitem">
                                                                                 {feed.name}
                                                                             </a>
                                                                         ))}
