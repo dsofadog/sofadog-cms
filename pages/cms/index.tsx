@@ -298,7 +298,7 @@ const Demo = () => {
     }
     function clearState(e) {
         e.preventDefault();
-        setSelectedState(null);
+        setSelectedState([]);
         toggleStateDropdown();
     }
 
