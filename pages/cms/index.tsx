@@ -28,8 +28,9 @@ const Demo = () => {
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [selectedTag, setSelectedTag] = useState([]);
     const [selectedState, setSelectedState] = useState([]);
+    const [selectedFeed, setSelectedFeed] = useState(null);
 
-    const { setLoading, appUserInfo,currentUserPermission,
+    const { setLoading, appUserInfo, currentUserPermission,
         userIsSuperAdmin,
         currentUserState,
         setCurrentUserState,
@@ -44,6 +45,8 @@ const Demo = () => {
     const toggleStateDropdown = () => { setOpenStateDropdown(!openStateDropdown) };
     const [openFilterDropdown, setOpenFilterDropdown] = useState(false);
     const toggleFilterDropdown = () => { setOpenFilterDropdown(!openFilterDropdown) };
+    const [openFeedDropdown, setOpenFeedDropdown] = useState(false);
+    const toggleFeedDropdown = () => { setOpenFeedDropdown(!openFeedDropdown) };
 
     const [paginationData, setPaginationData] = useState(
         {
@@ -61,10 +64,12 @@ const Demo = () => {
     const tagWrapperRef = useRef(null);
     const stateWrapperRef = useRef(null);
     const filterWrapperRef = useRef(null);
+    const feedWrapperRef = useRef(null);
     useOutsideAlerter(catWrapperRef);
     useOutsideAlerter(tagWrapperRef);
     useOutsideAlerter(stateWrapperRef);
     useOutsideAlerter(filterWrapperRef);
+    useOutsideAlerter(feedWrapperRef);
 
     const [hasNextPage, setHasNextPage] = useState(true);
     const [scrollLoading, setScrollLoading] = useState(false);
@@ -77,9 +82,9 @@ const Demo = () => {
 
     const [scrollCount, setScrollCount] = useState<number>(0);
 
-    useEffect(() => {      
-      
-       console.log(currentUserState,currentUserAction);
+    useEffect(() => {
+
+        console.log(currentUserState, currentUserAction);
         logoutUserCheck();
         setNewsItems(null);
         setNewsItemsCached(null);
@@ -88,11 +93,11 @@ const Demo = () => {
     }, []);
 
     function logoutUserCheck() {
-       
+
         if (appUserInfo == null) {
             //|| (appUserInfo?.token !="" && appUserInfo?.token != undefined)
             setLoading(false);
-         
+
             Router.push('/');
             return false;
         }
@@ -115,6 +120,9 @@ const Demo = () => {
                     if (ref.current.dataset.id === "filter") {
                         setOpenFilterDropdown(false);
                     }
+                    if (ref.current.dataset.id === "feed") {
+                        setOpenFeedDropdown(false);
+                    }
                 }
             }
 
@@ -127,7 +135,7 @@ const Demo = () => {
         }, [ref]);
     }
 
-    
+
 
     const returnUrlForNewItems = (dataUrlObj) => {
         // let url = `news_items?token=abcdef&limit=${paginationData.limit}&date=${getCurrentDate("-")}`;
@@ -146,7 +154,7 @@ const Demo = () => {
     //const [myFlag,setMyFlag] = useState(true);
     let myFlag = true;
     const fetchItems = async (isLoader = true) => {
-        
+
         setLoading(isLoader);
 
         setScrollLoading(true);
@@ -159,14 +167,14 @@ const Demo = () => {
             "state": selectedState.join(),
         }
         let url = returnUrlForNewItems(dataUrlObj);
-        console.log(url,"url made");
+        console.log(url, "url made");
         //let url = `news_items?token=abcdef&limit=${paginationData.limit}&date=${getCurrentDate("-")}`;
-        
+
         await HttpCms.get(url)
-            .then(response => {                
+            .then(response => {
                 if (response.data.news_items.length > 0) {
                     if (newsItems) {
-                        console.log(currentUserState,"currentUserState");
+                        console.log(currentUserState, "currentUserState");
                         // if(Array.isArray(currentUserState) && currentUserState.length){
                         //     console.log(currentUserState[0]);
                         //     setSelectedState(currentUserState[0]);
@@ -181,7 +189,7 @@ const Demo = () => {
                         setNewsItems(response.data);
                         setNewsItemsCached(response.data);
                     }
-                   
+
                     myFlag = false;
                 } else {
                     //setHasNextPage(false);
@@ -213,7 +221,7 @@ const Demo = () => {
         //     } else {
         //         fetchItems(true);
         //     }
-            
+
         // }
     }
 
@@ -224,7 +232,7 @@ const Demo = () => {
         setSelectedState([]);
         setNewsItems(null);
         setNewsItemsCached(null);
-        setScrollCount(0);       
+        setScrollCount(0);
         if (scrollCount === 0) {
             fetchItems();
         }
@@ -232,9 +240,9 @@ const Demo = () => {
 
     function deleteItem(item) {
         setLoading(true);
-        HttpCms.delete("/news_items/" + item.id + "?token="+appUserInfo?.token)
+        HttpCms.delete("/news_items/" + item.id + "?token=" + appUserInfo?.token)
             .then((response: any) => {
-               
+
                 if (response.data.success == true) {
                     //console.log(response, "onssdsdas");
                     transformNewItems(item, "delete");
@@ -249,7 +257,7 @@ const Demo = () => {
     }
 
     function handleClickSingleDropdown(data, type) {
-       
+
         if (type === 'cat') {
             setSelectedCategory(data.value);
             toggleCateDropdown();
@@ -295,20 +303,20 @@ const Demo = () => {
         setSelectedState(selectedState.filter(item => item !== value));
     }
 
-    const returndateAsRequired =  () => {
-        console.log(scrollCount,"scrollCount");
+    const returndateAsRequired = () => {
+        console.log(scrollCount, "scrollCount");
         let today = moment().format('DD.MM.YYYY');
         let startdate = today;
         var new_date = moment(startdate, "DD-MM-YYYY");
         new_date.add(-scrollCount, 'days');
-        let dateReturn = new_date.format("YYYY-MM-DD");       
+        let dateReturn = new_date.format("YYYY-MM-DD");
         return dateReturn;
 
     }
 
-    const filteringCategoryTag =  () => {        
+    const filteringCategoryTag = () => {
         setLoading(true);
-        console.log(selectedState.join(),"selectedState");
+        console.log(selectedState.join(), "selectedState");
 
         let apiUrl = "news_items?";
         let dataUrlObj = {
@@ -317,21 +325,22 @@ const Demo = () => {
             "date": returndateAsRequired(),
             "tags": selectedTag.join(),
             "category": selectedCategory,
-            "state":selectedState.join(),
+            "state": selectedState.join(),
+            "feed_id": selectedFeed,
         }
         let api = returnUrlForNewItems(dataUrlObj);
-        
+
 
         HttpCms.get(api)
             .then(response => {
-               
+
                 setNewsItems(response.data);
                 setPaginationData({
                     ...paginationData,
                     total_data: response.data.total_items
                 });
                 setLoading(false);
-           
+
             })
             .catch(e => {
                 console.log(e);
@@ -366,14 +375,14 @@ const Demo = () => {
                 setNewsItems(arr);
                 break;
             case "filter_by_state":
-                let dataAll = newsItems?.news_items.filter(item => item.state == itemValue.name);               
+                let dataAll = newsItems?.news_items.filter(item => item.state == itemValue.name);
                 arr.news_items = dataAll;
                 setNewsItemsCached(arr)
                 break;
             case "overide_index":
                 console.log(newsItems.news_items);
                 console.log(itemValue);
-                old_index = newsItems.news_items.findIndex(item => item.id == itemValue.id);              
+                old_index = newsItems.news_items.findIndex(item => item.id == itemValue.id);
                 newsItems.news_items[old_index] = itemValue;
                 setNewsItems(newsItems);
                 //setNewsItemsCached(arr)
@@ -385,7 +394,7 @@ const Demo = () => {
     }
 
     function array_move(arr, old_index, new_index) {
-       
+
         if (new_index >= arr.length) {
             var k = new_index - arr.length + 1;
             while (k--) {
@@ -393,7 +402,7 @@ const Demo = () => {
             }
         }
         arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
-       
+
         return arr; // for testing
     };
 
@@ -403,15 +412,15 @@ const Demo = () => {
 
     function processedData(data, apiCallEndPoint) {
         setLoading(true);
-        HttpCms.post("/news_items/" + data.id + "/" + apiCallEndPoint + "?token="+appUserInfo?.token, {})
+        HttpCms.post("/news_items/" + data.id + "/" + apiCallEndPoint + "?token=" + appUserInfo?.token, {})
             .then((response) => {
                 //fetchItems();
-                 //  const event = new Event('build');
+                //  const event = new Event('build');
                 // setNewsItems(null);
                 // setNewsItemsCached(null);
-               // refreshData(event);
-               transformNewItems(response.data.news_item, "overide_index")
-               
+                // refreshData(event);
+                transformNewItems(response.data.news_item, "overide_index")
+
             })
             .catch((e) => {
                 console.log(e);
@@ -433,7 +442,7 @@ const Demo = () => {
             }
         };
 
-        HttpCms.post("/news_items/" + item.id + "/" + apiEndPoint + "?token="+appUserInfo?.token, formData, config)
+        HttpCms.post("/news_items/" + item.id + "/" + apiEndPoint + "?token=" + appUserInfo?.token, formData, config)
             .then((response) => {
                 fetchItems();
             })
@@ -447,11 +456,11 @@ const Demo = () => {
 
     function decrement_increment_ordinal(item, apiEndPoint) {
         setLoading(true);
-        HttpCms.post("/news_items/" + item.id + "/" + apiEndPoint + "?token="+appUserInfo?.token, {})
+        HttpCms.post("/news_items/" + item.id + "/" + apiEndPoint + "?token=" + appUserInfo?.token, {})
             .then((response: any) => {
-              
+
                 if (response.data.success == true) {
-                   
+
                     transformNewItems(item, apiEndPoint);
                 }
             })
@@ -464,9 +473,9 @@ const Demo = () => {
     }
 
     function createNewItem(newItem) {
-       
+
         setLoading(true);
-        HttpCms.post("/news_items?token="+appUserInfo?.token, newItem)
+        HttpCms.post("/news_items?token=" + appUserInfo?.token, newItem)
             .then((response) => {
                 //console.log("add item: ",response.data);
                 const item = { ...newsItems };
@@ -483,12 +492,12 @@ const Demo = () => {
             });
     }
 
-    function updateItem(id,item,index) {
+    function updateItem(id, item, index) {
         setLoading(true);
-        HttpCms.patch("/news_items/" + id + "?token="+appUserInfo?.token, item)
+        HttpCms.patch("/news_items/" + id + "?token=" + appUserInfo?.token, item)
             .then((response) => {
-              
-                if(response.status === 200){
+
+                if (response.status === 200) {
                     const item = { ...newsItems };
                     item.news_items[index] = response.data.news_item;
                     setNewsItems(item);
@@ -508,7 +517,7 @@ const Demo = () => {
     }
 
     useEffect(() => {
-       
+
         if (search.length === 0) {
             setNewsItems(newsItemsCached);
         } else {
@@ -519,7 +528,7 @@ const Demo = () => {
                         .toLowerCase()
                         .includes(search.toLowerCase())
             )
-            
+
             setNewsItems({
                 news_items: itemsToDisplay,
                 total_items: itemsToDisplay.length
@@ -541,7 +550,7 @@ const Demo = () => {
         return false;
     }
 
-    
+
 
     // function handleScroll(e) {
     //     const target = e.target;
@@ -561,7 +570,7 @@ const Demo = () => {
     function showStatus(itemkey) {
         let statusReturn = '';
         status?.map((s, i) => {
-            if (s.name === itemkey.name) {                
+            if (s.name === itemkey.name) {
                 statusReturn = s.value;
             }
         });
@@ -572,7 +581,7 @@ const Demo = () => {
     return (
         <div className="w-full h-full min-h-screen bg-gray-500">
             <nav className="sfd-nav bg-gray-800 sticky top-0 z-30">
-      
+
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-16">
                         <div className="flex">
@@ -609,17 +618,17 @@ const Demo = () => {
                             </div>
                         </div>
                         <div className="flex items-center space-x-2">
-                            
+
                             <div ref={filterWrapperRef} data-id="filter" className="relative inline-block text-left">
                                 <button onClick={() => toggleFilterDropdown()} className="text-white space-x-2 relative inline-flex items-center px-2 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-400 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-600 active:bg-indigo-600 transition duration-150 ease-in-out">
                                     <FontAwesomeIcon className="w-3" icon={['fas', 'filter']} />
                                     <span>Filter</span>
                                 </button>
                                 {openFilterDropdown && (
-                                    <div className="origin-top-right absolute right-0 mt-2 w-72 rounded-md shadow-lg">
-                                        <div className="rounded-md bg-white shadow-xs">
-                                            <div className="w-full flex justify-center p-2 space-x-2">
-                                                <div className="w-1/3">
+                                    <div className="origin-top-right absolute right-0 mt-2 w-108 rounded-md shadow-lg">
+                                        <div className="w-full rounded-md bg-white shadow-xs">
+                                            <div className="w-full grid grid-cols-4 gap-2 px-2 pt-2">
+                                                <div className="">
                                                     <div ref={catWrapperRef} data-id="category" className="relative inline-block w-full">
                                                         <div>
                                                             {categories && (
@@ -652,7 +661,7 @@ const Demo = () => {
                                                         )}
                                                     </div>
                                                 </div>
-                                                <div className="w-1/3">
+                                                <div className="">
                                                     <div ref={tagWrapperRef} data-id="tag" className="relative inline-block w-full">
                                                         <div>
                                                             <span onClick={toggleTagDropdown} className="rounded-md shadow-sm">
@@ -687,54 +696,100 @@ const Demo = () => {
                                                         )}
                                                     </div>
                                                 </div>
-                                                <div  className="w-1/3">
-                                                <div ref={stateWrapperRef} data-id="state" className="relative inline-block text-left">
-                                <div>
-                                    {status && (
-                                        <span onClick={toggleStateDropdown} className="rounded-md shadow-sm">
-                                            <button type="button" className="w-32 inline-flex justify-center rounded-md border border-gray-300 px-2 py-2 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150" id="options-menu" aria-haspopup="true" aria-expanded="true">
-                                               
-                                                <span className="w-full truncate uppercase">
-                                                                        {
-                                                                        selectedState.length > 0 ?
-                                                                            <>
-                                                                                {selectedState.join()}
-                                                                            </>
-                                                                            :
-                                                                            'State'
-                                                                        }
-                                                                    </span>
-                                                <svg className="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                                    <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                                                </svg>
-                                            </button>
-                                        </span>
-                                    )}
-                                </div>
-                                {openStateDropdown && (
-                                    <div className="origin-top-left absolute left-0 mt-2 w-56 rounded-md shadow-lg z-20">
-                                        <div className="rounded-md bg-white shadow-xs">
-                                            <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                                                {status?.map((status, i) => (
-                                                    // <a key={i} href={void (0)} onClick={(e) => selectedState?.name === status.name ? clearState(e) : handleClickMultiDropdown2(status)} className={`${selectedState?.name === status.name ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white'} cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900 uppercase`} role="menuitem">
-                                                    //     {status.value}
-                                                    // </a>
-                                                     <a key={i} href={void (0)} onClick={() => isStateSelected(status.name) ? clearStatus(status.name) : handleClickMultiDropdown2(status)} className={`${isStateSelected(status.name) ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white'} cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900`} role="menuitem">
-                                                     {status.value}
-                                                    </a>
-                                                ))}
-                                                <>
-                                                    {selectedState && (
-                                                        <div className="w-full px-2 pb-2">
-                                                            <button onClick={(e) => clearState(e)} className="w-full text-white text-sm bg-indigo-600 hover:bg-indigo-700 rounded px-2 py-1">Clear</button>
+                                                <div className="">
+                                                    <div ref={stateWrapperRef} data-id="state" className="w-full relative inline-block text-left">
+                                                        <div>
+                                                            {status && (
+                                                                <span onClick={toggleStateDropdown} className="rounded-md shadow-sm">
+                                                                    <button type="button" className="w-full inline-flex justify-center rounded-md border border-gray-300 px-2 py-2 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150" id="options-menu" aria-haspopup="true" aria-expanded="true">
+
+                                                                        <span className="w-full truncate uppercase">
+                                                                            {
+                                                                                selectedState.length > 0 ?
+                                                                                    <>
+                                                                                        {selectedState.join()}
+                                                                                    </>
+                                                                                    :
+                                                                                    'State'
+                                                                            }
+                                                                        </span>
+                                                                        <svg className="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                                            <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                                                                        </svg>
+                                                                    </button>
+                                                                </span>
+                                                            )}
                                                         </div>
-                                                    )}
-                                                </>
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
+                                                        {openStateDropdown && (
+                                                            <div className="origin-top-left absolute left-0 mt-2 w-56 rounded-md shadow-lg z-20">
+                                                                <div className="rounded-md bg-white shadow-xs">
+                                                                    <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                                                                        {status?.map((status, i) => (
+                                                                            // <a key={i} href={void (0)} onClick={(e) => selectedState?.name === status.name ? clearState(e) : handleClickMultiDropdown2(status)} className={`${selectedState?.name === status.name ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white'} cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900 uppercase`} role="menuitem">
+                                                                            //     {status.value}
+                                                                            // </a>
+                                                                            <a key={i} href={void (0)} onClick={() => isStateSelected(status.name) ? clearStatus(status.name) : handleClickMultiDropdown2(status)} className={`${isStateSelected(status.name) ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white'} cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900`} role="menuitem">
+                                                                                {status.value}
+                                                                            </a>
+                                                                        ))}
+                                                                        <>
+                                                                            {selectedState && (
+                                                                                <div className="w-full px-2 pb-2">
+                                                                                    <button onClick={(e) => clearState(e)} className="w-full text-white text-sm bg-indigo-600 hover:bg-indigo-700 rounded px-2 py-1">Clear</button>
+                                                                                </div>
+                                                                            )}
+                                                                        </>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                                <div className="">
+                                                    <div ref={feedWrapperRef} data-id="feed" className="w-full relative inline-block text-left">
+                                                        <div>
+                                                            {status && (
+                                                                <span onClick={toggleFeedDropdown} className="rounded-md shadow-sm">
+                                                                    <button type="button" className="w-full inline-flex justify-center rounded-md border border-gray-300 px-2 py-2 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150" id="options-menu" aria-haspopup="true" aria-expanded="true">
+
+                                                                        <span className="w-full truncate uppercase">
+                                                                            {
+                                                                                selectedFeed ?
+                                                                                    <>
+                                                                                        {selectedFeed}
+                                                                                    </>
+                                                                                    :
+                                                                                    'Feed'
+                                                                            }
+                                                                        </span>
+                                                                        <svg className="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                                            <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                                                                        </svg>
+                                                                    </button>
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                        {openFeedDropdown && (
+                                                            <div className="origin-top-left absolute left-0 mt-2 w-56 rounded-md shadow-lg z-20">
+                                                                <div className="rounded-md bg-white shadow-xs">
+                                                                    <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                                                                        {/* {status?.map((status, i) => (
+                                                                            <a key={i} href={void (0)} onClick={() => isStateSelected(status.name) ? clearStatus(status.name) : handleClickMultiDropdown2(status)} className={`${isStateSelected(status.name) ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white'} cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900`} role="menuitem">
+                                                                                {status.value}
+                                                                            </a>
+                                                                        ))} */}
+                                                                        <>
+                                                                            {selectedFeed && (
+                                                                                <div className="w-full px-2 pb-2">
+                                                                                    <button onClick={(e) => clearState(e)} className="w-full text-white text-sm bg-indigo-600 hover:bg-indigo-700 rounded px-2 py-1">Clear</button>
+                                                                                </div>
+                                                                            )}
+                                                                        </>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        )}
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div className="w-full p-2 space-x-2 flex">
@@ -763,7 +818,7 @@ const Demo = () => {
                                     </button>
                                 </span>
                             </div>
-                            <NotificationBell/>
+                            <NotificationBell />
                             <HeaderProfileComponent></HeaderProfileComponent>
                         </div>
                     </div>
@@ -796,7 +851,7 @@ const Demo = () => {
                         </div>
                     ))}
 
-                   
+
                 </>
             </div>
             {!scrollLoading && newsItems && (
