@@ -29,6 +29,7 @@ const PreviewItem = (props) => {
     const [clips, setClips] = useState({ video: null, thumbnails: null });
     const [isEdit, setIsEdit] = useState(false);
     const [comment, setComment] = useState(null);
+    const [isExpand,setIsExpand] = useState(true);
 
     const status = CmsConstant.Status;
 
@@ -403,8 +404,16 @@ const PreviewItem = (props) => {
                                     <div className="md:flex shadow-lg mx-6 md:mx-auto w-full h-full">
 
                                         <div className={`border-${categories[item?.category].color} relative w-full h-full md:w-4/5 px-4 py-2 bg-white rounded-l-lg border-l-8`}>
-                                            <div className="mb-4">
-                                                <div className="w-full flex justify-end space-x-2">
+                                            <div className="mb-4 grid grid-cols-2">
+                                                <div className="left-0 flex justify-start">
+                                                    {isExpand ? 
+                                                        <FontAwesomeIcon  onClick={()=>setIsExpand(false)} className="w-5 hover:text-gray-900 cursor-pointer" icon={['fas', 'chevron-down']} />
+                                                        :
+                                                        <FontAwesomeIcon onClick={()=>setIsExpand(true)} className="w-5 hover:text-gray-900 cursor-pointer" icon={['fas', 'chevron-up']} />
+                                                    }
+                                                    
+                                                </div>
+                                                <div className="right-0 flex justify-end space-x-2">
                                                     <button onClick={() => openCreateBox(true)} className="px-2 py-1 bg-blue-500 hover:bg-blue-700 text-white rounded text-xs cursor-pointer flex items-center">
                                                         <FontAwesomeIcon className="w-4 mr-1 cursor-pointer" icon={['fas', 'edit']} />
                                                         Edit
@@ -458,51 +467,53 @@ const PreviewItem = (props) => {
                                                 </div>
                                             )}
 
-                                            <div className="w-full mb-6">
-                                                <div className="p-4 shadow rounded border border-gray-300">
-                                                    <div className="block">
-                                                        <div className="border-b border-gray-200">
-                                                            <nav className="flex -mb-px">
-                                                                <a href={void (0)} onClick={() => showCredits('news_credits', item?.news_credits)} className={`${creditsData?.title === 'news_credits' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} cursor-pointer ml-8 group inline-flex items-center py-2 px-1 border-b-2 font-medium text-sm leading-5  focus:outline-none focus:text-indigo-800 focus:border-indigo-700`} aria-current="page">
-                                                                    <span>News Credits</span>
-                                                                </a>
-                                                                <a href={void (0)} onClick={() => showCredits('visual_credits', item?.visual_credits)} className={`${creditsData?.title === 'visual_credits' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} cursor-pointer ml-8 group inline-flex items-center py-2 px-1 border-b-2 font-medium text-sm leading-5 focus:outline-none focus:text-gray-700 focus:border-gray-300`}>
-                                                                    <span>Visual Credits</span>
-                                                                </a>
-                                                            </nav>
-                                                        </div>
-                                                        <div className="mt-4 max-h-24 overflow-y-scroll" role="group" aria-labelledby="teams-headline">
-                                                            {creditsData?.data.map((credit, i) => (
-                                                                <div key={i} className="flex items-center space-x-3 pl-3">
-                                                                    <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-indigo-500"></div>
-                                                                    <div className="truncate hover:text-gray-600 text-xs">
-                                                                        <a href={credit.url} target="_blank">{credit.link_text}</a>
-                                                                    </div>
+                                            {!isExpand && (
+                                                <>
+                                                    <div className="w-full mb-6">
+                                                        <div className="p-4 shadow rounded border border-gray-300">
+                                                            <div className="block">
+                                                                <div className="border-b border-gray-200">
+                                                                    <nav className="flex -mb-px">
+                                                                        <a href={void (0)} onClick={() => showCredits('news_credits', item?.news_credits)} className={`${creditsData?.title === 'news_credits' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} cursor-pointer ml-8 group inline-flex items-center py-2 px-1 border-b-2 font-medium text-sm leading-5  focus:outline-none focus:text-indigo-800 focus:border-indigo-700`} aria-current="page">
+                                                                            <span>News Credits</span>
+                                                                        </a>
+                                                                        <a href={void (0)} onClick={() => showCredits('visual_credits', item?.visual_credits)} className={`${creditsData?.title === 'visual_credits' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} cursor-pointer ml-8 group inline-flex items-center py-2 px-1 border-b-2 font-medium text-sm leading-5 focus:outline-none focus:text-gray-700 focus:border-gray-300`}>
+                                                                            <span>Visual Credits</span>
+                                                                        </a>
+                                                                    </nav>
                                                                 </div>
-                                                            ))}
+                                                                <div className="mt-4 max-h-24 overflow-y-scroll" role="group" aria-labelledby="teams-headline">
+                                                                    {creditsData?.data.map((credit, i) => (
+                                                                        <div key={i} className="flex items-center space-x-3 pl-3">
+                                                                            <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-indigo-500"></div>
+                                                                            <div className="truncate hover:text-gray-600 text-xs">
+                                                                                <a href={credit.url} target="_blank">{credit.link_text}</a>
+                                                                            </div>
+                                                                        </div>
+                                                                    ))}
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                </div>
-                                                {
-                                                    props.showComment &&(
-                                                        <div className="w-full py-4">
-                                                    <div className="w-full truncate">
-                                                            <span className="text-xs truncate" dangerouslySetInnerHTML={{ __html: (comment?.text) }}></span>
-                                                    </div>
-                                                    <div className="w-full flex text-center justify-end space-x-2">
-                                                            <span className="text-white w-6 h-6 rounded-full p-3 bg-blue-600 text-xs flex items-center justify-center">{item?.comments.length}</span>
-                                                        <Link href={`/cms/[item_id]`} as={`/cms/${item.id}`}>
-                                                            <label className="text-sm font-bold text-gray-800 cursor-pointer hover:underline">Comments</label>
-                                                        </Link>
-                                                    </div>
-                                                </div>
-                                                    )
+                                                        {
+                                                            props.showComment &&(
+                                                                <div className="w-full py-4">
+                                                            <div className="w-full truncate">
+                                                                    <span className="text-xs truncate" dangerouslySetInnerHTML={{ __html: (comment?.text) }}></span>
+                                                            </div>
+                                                            <div className="w-full flex text-center justify-end space-x-2">
+                                                                    <span className="text-white w-6 h-6 rounded-full p-3 bg-blue-600 text-xs flex items-center justify-center">{item?.comments.length}</span>
+                                                                <Link href={`/cms/[item_id]`} as={`/cms/${item.id}`}>
+                                                                    <label className="text-sm font-bold text-gray-800 cursor-pointer hover:underline">Comments</label>
+                                                                </Link>
+                                                            </div>
+                                                        </div>
+                                                            )
 
-                            
-                                                }
-                                                
-                                            </div>
-                                            <div className="absolute mb-4 mr-4 bottom-0 inset-x-0">
+                                    
+                                                        }
+                                                        
+                                                    </div>
+                                                    <div className="absolute mb-4 mr-4 bottom-0 inset-x-0">
                                                 <div className="w-full space-x-2 flex justify-end">
                                                     {item?.tags.map(tag => (
                                                         <span key={tag} className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium leading-4 bg-blue-100 text-blue-800">
@@ -511,6 +522,8 @@ const PreviewItem = (props) => {
                                                     ))}
                                                 </div>
                                             </div>
+                                                </>
+                                            )}
                                         </div>
 
                                         <div className={`bg-${categories[item?.category].color} w-full md:w-1/5 relative z-10 rounded-lg rounded-l-none`}>
