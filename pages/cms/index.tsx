@@ -59,6 +59,7 @@ const Demo = () => {
     const [newsItems, setNewsItems] = useState(null);
     const [newsItemsCached, setNewsItemsCached] = useState(null);
     const [search, setSearch] = useState("");
+    const [feeds,setFeeds] = useState(null);
 
     const catWrapperRef = useRef(null);
     const tagWrapperRef = useRef(null);
@@ -81,6 +82,7 @@ const Demo = () => {
     });
 
     const [scrollCount, setScrollCount] = useState<number>(0);
+    
 
     useEffect(() => {
 
@@ -90,6 +92,7 @@ const Demo = () => {
         setNewsItemsCached(null);
         setScrollCount(0);
         fetchItems();
+        getFeeds();
     }, []);
 
     function logoutUserCheck() {
@@ -213,8 +216,11 @@ const Demo = () => {
     }
 
     function handleLoadMore() {
-        setScrollCount(scrollCount + 1);
-        fetchItems(false);
+        if(selectedFeed === null){
+            setScrollCount(scrollCount + 1);
+            fetchItems(false);
+        }
+        
         // if (search.length === 0 && selectedState == null) {
         //     if (newsItems?.news_items.length > 0) {
         //         fetchItems(false);
@@ -233,6 +239,7 @@ const Demo = () => {
         setNewsItems(null);
         setNewsItemsCached(null);
         setScrollCount(0);
+        setSelectedFeed(null);
         if (scrollCount === 0) {
             fetchItems();
         }
@@ -322,12 +329,13 @@ const Demo = () => {
         let dataUrlObj = {
             "token": appUserInfo?.token,
             "limit": paginationData.limit,
-            "date": returndateAsRequired(),
+            "date": selectedFeed == null ? returndateAsRequired() : '',
             "tags": selectedTag.join(),
             "category": selectedCategory,
             "state": selectedState.join(),
             "feed_id": selectedFeed,
         }
+        
         let api = returnUrlForNewItems(dataUrlObj);
 
 
@@ -582,7 +590,32 @@ const Demo = () => {
 
         return statusReturn;
     }
+    function getFeeds(){
+       
+        //setLoading(true);
+        HttpCms.get("/feeds?token="+appUserInfo?.token)
+        .then((response) => {
+            console.log("response: ",response.data);
+            setFeeds(response.data.feeds)
+        })
+        .catch((e) => {
+            console.log(e);
+        })
+        .finally(() => {
+            setLoading(false);
+        });
 
+    }
+    function handleClickSingleDropdownFeed(feed) {
+        console.log("selected feed",feed.id)
+        setSelectedFeed(feed.id);
+        toggleFeedDropdown();
+    }
+
+    function clearFeeds(e) {     
+        e.preventDefault();   
+        setSelectedFeed(null);
+    }
     return (
         <div className="w-full h-full min-h-screen bg-gray-500">
             <nav className="sfd-nav bg-gray-800 sticky top-0 z-30">
@@ -778,15 +811,15 @@ const Demo = () => {
                                                             <div className="origin-top-left absolute left-0 mt-2 w-56 rounded-md shadow-lg z-20">
                                                                 <div className="rounded-md bg-white shadow-xs">
                                                                     <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                                                                        {/* {status?.map((status, i) => (
-                                                                            <a key={i} href={void (0)} onClick={() => isStateSelected(status.name) ? clearStatus(status.name) : handleClickMultiDropdown2(status)} className={`${isStateSelected(status.name) ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white'} cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900`} role="menuitem">
-                                                                                {status.value}
+                                                                        {feeds?.map((feed, i) => (
+                                                                            <a key={i} href={void (0)} onClick={() => handleClickSingleDropdownFeed(feed)} className="cursor-pointer block px-4 py-1 text-xs leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900" role="menuitem">
+                                                                                {feed.name}
                                                                             </a>
-                                                                        ))} */}
+                                                                        ))}
                                                                         <>
                                                                             {selectedFeed && (
                                                                                 <div className="w-full px-2 pb-2">
-                                                                                    <button onClick={(e) => clearState(e)} className="w-full text-white text-sm bg-indigo-600 hover:bg-indigo-700 rounded px-2 py-1">Clear</button>
+                                                                                    <button onClick={(e) => clearFeeds(e)} className="w-full text-white text-sm bg-indigo-600 hover:bg-indigo-700 rounded px-2 py-1">Clear</button>
                                                                                 </div>
                                                                             )}
                                                                         </>
