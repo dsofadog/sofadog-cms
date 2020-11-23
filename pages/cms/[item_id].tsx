@@ -18,6 +18,7 @@ import PreviewItem from '../../component/cms/PreviewItem';
 
 createServer({
     routes() {
+        this.passthrough('https://v.so.fa.dog/**');
         this.passthrough('https://v-int.so.fa.dog/**');
         this.passthrough('https://run.mocky.io/v3/**');
         
