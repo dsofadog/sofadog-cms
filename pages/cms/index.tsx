@@ -616,6 +616,24 @@ const Demo = () => {
         e.preventDefault();   
         setSelectedFeed(null);
     }
+    function singleItem(item_id){
+        setLoading(true);
+        HttpCms.get(`/news_items/${item_id}?token=${appUserInfo?.token}`)
+            .then(response => {
+                console.log("response.data.news_item: ",response.data.news_items)
+                let index = newsItems.news_items.findIndex(x=> x.id===item_id);
+                const n = {...newsItems}
+                n.news_items[index] = response.data.news_items[0];
+                setNewsItems(n);
+                // setItem(response.data.news_items[0]);
+                // console.log(response.data.news_items[0], "response.data.data");
+                setLoading(false);
+            })
+            .catch(e => {
+                console.log(e);
+                setLoading(false);
+            });
+    }
     return (
         <div className="w-full h-full min-h-screen bg-gray-500">
             <nav className="sfd-nav bg-gray-800 sticky top-0 z-30">
@@ -885,6 +903,7 @@ const Demo = () => {
                                 deleteItem={deleteItem}
                                 move={decrement_increment_ordinal}
                                 updateItem={updateItem}
+                                getSigleItem={singleItem}
                             />
                         </div>
                     ))}
