@@ -149,6 +149,7 @@ const PreviewItem = (props) => {
     function uplaodVideo(item, apiEndPoint, e) {
         e.preventDefault();
         props.uplaodVideo(item, apiEndPoint, video);
+        setVideo(null);
     }
 
     function deleteItem(item, e) {
