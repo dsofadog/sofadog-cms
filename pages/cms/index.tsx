@@ -59,7 +59,7 @@ const Demo = () => {
     const [newsItems, setNewsItems] = useState(null);
     const [newsItemsCached, setNewsItemsCached] = useState(null);
     const [search, setSearch] = useState("");
-    const [feeds,setFeeds] = useState(null);
+    const [feeds, setFeeds] = useState(null);
 
     const catWrapperRef = useRef(null);
     const tagWrapperRef = useRef(null);
@@ -82,7 +82,7 @@ const Demo = () => {
     });
 
     const [scrollCount, setScrollCount] = useState<number>(0);
-    
+
 
     useEffect(() => {
 
@@ -216,11 +216,11 @@ const Demo = () => {
     }
 
     function handleLoadMore() {
-        if(selectedFeed === null){
+        if (selectedFeed === null) {
             setScrollCount(scrollCount + 1);
             fetchItems(false);
         }
-        
+
         // if (search.length === 0 && selectedState == null) {
         //     if (newsItems?.news_items.length > 0) {
         //         fetchItems(false);
@@ -335,7 +335,7 @@ const Demo = () => {
             "state": selectedState.join(),
             "feed_id": selectedFeed,
         }
-        
+
         let api = returnUrlForNewItems(dataUrlObj);
 
 
@@ -452,12 +452,12 @@ const Demo = () => {
 
         HttpCms.post("/news_items/" + item.id + "/" + apiEndPoint + "?token=" + appUserInfo?.token, formData, config)
             .then((response) => {
-                
-                let index = newsItems.news_items.findIndex(x=> x.id===item.id);
-                const n = {...newsItems}
+
+                let index = newsItems.news_items.findIndex(x => x.id === item.id);
+                const n = { ...newsItems }
                 n.news_items[index] = response.data.news_item;
                 setNewsItems(n);
-               // fetchItems();
+                // fetchItems();
             })
             .catch((e) => {
                 console.log(e);
@@ -590,39 +590,39 @@ const Demo = () => {
 
         return statusReturn;
     }
-    function getFeeds(){
-       
+    function getFeeds() {
+
         //setLoading(true);
-        HttpCms.get("/feeds?token="+appUserInfo?.token)
-        .then((response) => {
-            console.log("response: ",response.data);
-            setFeeds(response.data.feeds)
-        })
-        .catch((e) => {
-            console.log(e);
-        })
-        .finally(() => {
-            setLoading(false);
-        });
+        HttpCms.get("/feeds?token=" + appUserInfo?.token)
+            .then((response) => {
+                console.log("response: ", response.data);
+                setFeeds(response.data.feeds)
+            })
+            .catch((e) => {
+                console.log(e);
+            })
+            .finally(() => {
+                setLoading(false);
+            });
 
     }
     function handleClickSingleDropdownFeed(feed) {
-        console.log("selected feed",feed.id)
+        console.log("selected feed", feed.id)
         setSelectedFeed(feed.id);
         toggleFeedDropdown();
     }
 
-    function clearFeeds(e) {     
-        e.preventDefault();   
+    function clearFeeds(e) {
+        e.preventDefault();
         setSelectedFeed(null);
     }
-    function singleItem(item_id){
+    function singleItem(item_id) {
         setLoading(true);
         HttpCms.get(`/news_items/${item_id}?token=${appUserInfo?.token}`)
             .then(response => {
-                console.log("response.data.news_item: ",response.data.news_items)
-                let index = newsItems.news_items.findIndex(x=> x.id===item_id);
-                const n = {...newsItems}
+                console.log("response.data.news_item: ", response.data.news_items)
+                let index = newsItems.news_items.findIndex(x => x.id === item_id);
+                const n = { ...newsItems }
                 n.news_items[index] = response.data.news_items[0];
                 setNewsItems(n);
                 // setItem(response.data.news_items[0]);
@@ -634,6 +634,15 @@ const Demo = () => {
                 setLoading(false);
             });
     }
+
+    function getFeedName() {
+        //console.log("getFeedName: ",selectedFeed);
+        let i = feeds.findIndex(x => x.id === selectedFeed);
+        if (i >= 0) {
+            return feeds[i].name ? feeds[i].name : feeds[i].id;
+        }
+    }
+
     return (
         <div className="w-full h-full min-h-screen bg-gray-500">
             <nav className="sfd-nav bg-gray-800 sticky top-0 z-30">
@@ -710,6 +719,13 @@ const Demo = () => {
                                                                                 {cat.name}
                                                                             </a>
                                                                         ))}
+                                                                        <>
+                                                                            {selectedCategory && (
+                                                                                <div className="w-full mt-2 flex justify-center">
+                                                                                    <button onClick={(e) => { clearCategory(); filteringCategoryTag(); }} className="w-auto text-white text-sm bg-blue-600 hover:bg-blue-700 rounded px-4 py-1">Clear</button>
+                                                                                </div>
+                                                                            )}
+                                                                        </>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -720,7 +736,7 @@ const Demo = () => {
                                                     <div ref={tagWrapperRef} data-id="tag" className="relative inline-block w-full">
                                                         <div>
                                                             <span onClick={toggleTagDropdown} className="rounded-md shadow-sm">
-                                                                <button type="button" className={`${selectedTag.length > 0  ? 'border-indigo-600' : 'border-gray-300'} w-full inline-flex justify-center rounded-md border  px-2 py-2 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150`} id="options-menu" aria-haspopup="true" aria-expanded="true">
+                                                                <button type="button" className={`${selectedTag.length > 0 ? 'border-indigo-600' : 'border-gray-300'} w-full inline-flex justify-center rounded-md border  px-2 py-2 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150`} id="options-menu" aria-haspopup="true" aria-expanded="true">
                                                                     <span className="w-full truncate uppercase">
                                                                         {selectedTag.length > 0 ?
                                                                             <>
@@ -745,6 +761,13 @@ const Demo = () => {
                                                                                 {tag.name}
                                                                             </a>
                                                                         ))}
+                                                                        <>
+                                                                            {selectedTag.length > 0 && (
+                                                                                <div className="w-full mt-2 flex justify-center">
+                                                                                    <button onClick={(e) => { clearTag(e); filteringCategoryTag(); }} className="w-auto text-white text-sm bg-blue-600 hover:bg-blue-700 rounded px-4 py-1">Clear</button>
+                                                                                </div>
+                                                                            )}
+                                                                        </>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -756,7 +779,7 @@ const Demo = () => {
                                                         <div>
                                                             {status && (
                                                                 <span onClick={toggleStateDropdown} className="rounded-md shadow-sm">
-                                                                    <button type="button" className={`${selectedState.length > 0  ? 'border-indigo-600' : 'border-gray-300'} w-full inline-flex justify-center rounded-md border  px-2 py-2 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150`} id="options-menu" aria-haspopup="true" aria-expanded="true">
+                                                                    <button type="button" className={`${selectedState.length > 0 ? 'border-indigo-600' : 'border-gray-300'} w-full inline-flex justify-center rounded-md border  px-2 py-2 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150`} id="options-menu" aria-haspopup="true" aria-expanded="true">
 
                                                                         <span className="w-full truncate uppercase">
                                                                             {
@@ -789,8 +812,8 @@ const Demo = () => {
                                                                         ))}
                                                                         <>
                                                                             {selectedState && (
-                                                                                <div className="w-full px-2 pb-2">
-                                                                                    <button onClick={(e) => clearState(e)} className="w-full text-white text-sm bg-indigo-600 hover:bg-indigo-700 rounded px-2 py-1">Clear</button>
+                                                                                <div className="w-full mt-2 flex justify-center">
+                                                                                    <button onClick={(e) => { clearState(e); filteringCategoryTag(); }} className="w-auto text-white text-sm bg-blue-600 hover:bg-blue-700 rounded px-4 py-1">Clear</button>
                                                                                 </div>
                                                                             )}
                                                                         </>
@@ -811,7 +834,7 @@ const Demo = () => {
                                                                             {
                                                                                 selectedFeed ?
                                                                                     <>
-                                                                                        {selectedFeed}
+                                                                                        {getFeedName()}
                                                                                     </>
                                                                                     :
                                                                                     'Feed'
@@ -830,13 +853,13 @@ const Demo = () => {
                                                                     <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
                                                                         {feeds?.map((feed, i) => (
                                                                             <a key={i} href={void (0)} onClick={() => handleClickSingleDropdownFeed(feed)} className={`${feed.id === selectedFeed ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white'} cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900`} role="menuitem">
-                                                                                {feed.name}
+                                                                                {feed.name ? feed.name : feed.id}
                                                                             </a>
                                                                         ))}
                                                                         <>
                                                                             {selectedFeed && (
-                                                                                <div className="w-full px-2 pb-2">
-                                                                                    <button onClick={(e) => clearFeeds(e)} className="w-full text-white text-sm bg-indigo-600 hover:bg-indigo-700 rounded px-2 py-1">Clear</button>
+                                                                                <div className="w-full mt-2 flex justify-center">
+                                                                                    <button onClick={(e) => { clearFeeds(e); filteringCategoryTag(); }} className="w-auto text-white text-sm bg-blue-600 hover:bg-blue-700 rounded px-4 py-1">Clear</button>
                                                                                 </div>
                                                                             )}
                                                                         </>
@@ -849,7 +872,7 @@ const Demo = () => {
                                             </div>
                                             <div className="w-full p-2 space-x-2 flex">
                                                 <button onClick={(e) => filteringCategoryTag()} className="text-white text-sm bg-indigo-600 hover:bg-indigo-800 rounded w-1/2 p-2">Submit</button>
-                                                <button onClick={(e) => { refreshData(e); toggleFilterDropdown(); }} className="text-gray-800 text-sm border border-indigo-600 hover:bg-gray-200 rounded w-1/2 p-2">Clear</button>
+                                                <button onClick={(e) => { refreshData(e); toggleFilterDropdown(); }} className="text-gray-800 text-sm border border-indigo-600 hover:bg-gray-200 rounded w-1/2 p-2">Clear All</button>
                                             </div>
                                         </div>
                                     </div>

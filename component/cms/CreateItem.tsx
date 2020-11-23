@@ -510,7 +510,7 @@ const CreateItem = (props) => {
         console.log("getFeedName: ",selectedFeed);
         let i = feeds.findIndex(x => x.id === selectedFeed);
         if (i >= 0) {
-            return feeds[i].name;
+            return feeds[i].name ? feeds[i].name : feeds[i].id;
         }
     }
 
