@@ -12,6 +12,7 @@ import { fab } from '@fortawesome/free-brands-svg-icons';
 import CreateItem from "./CreateItem";
 import { LayoutContext } from '../../contexts';
 import Link from "next/link";
+import DonwloadClip from "./DownloadClip";
 
 
 
@@ -287,7 +288,7 @@ const PreviewItem = (props) => {
             }
             case "awaiting_review_by_lead_video_editor": {
                 return (
-                    <>
+                    <div className="grid">
                         { item?.owners?.awaiting_review_by_lead_video_editor != undefined && item?.owners?.awaiting_review_by_lead_video_editor != appUserInfo?.user?.email && (
                             <p >Claimed by {item?.owners?.awaiting_review_by_lead_video_editor}</p>
                         )
@@ -295,12 +296,13 @@ const PreviewItem = (props) => {
 
                         <button onClick={(e) => actionPerformed(item, "claim", e)} className={`${currentUserPermission('awaiting_review_by_lead_video_editor', "") && item?.owners?.awaiting_review_by_lead_video_editor == undefined ? 'px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
                             Claim
-                    </button>
+                        </button>
+                        <DonwloadClip/>
                         <div className={`${currentUserPermission('awaiting_review_by_lead_video_editor', "") && (item?.owners?.awaiting_review_by_lead_video_editor !== undefined && item?.owners?.awaiting_review_by_lead_video_editor == appUserInfo?.user?.email) ? 'flex space-x-2 items-center justify-center' : 'hidden'}`}>
 
                             <span onClick={(e) => actionPerformed(item, "Preview Clips", e)} className="px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-blue-800 bg-blue-100 hover:bg-blue-200 text-blue-800 cursor-pointer">
                                 Preview Clips
-						</span>
+						    </span>
                             <svg onClick={(e) => actionPerformed(item, "lead_video_editor_approve", e)} className="h-8 w-8 text-green-400 hover:text-green-600 cursor-pointer" x-description="Heroicon name: check-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path>
                             </svg>
@@ -308,12 +310,12 @@ const PreviewItem = (props) => {
                                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd"></path>
                             </svg>
                         </div>
-                    </>
+                    </div>
                 );
             }
             case "ready_for_push": {
                 return (
-                    <>
+                    <div className="grid">
                         { item?.owners?.ready_for_push != undefined && item?.owners?.ready_for_push != appUserInfo?.user?.email && (
                             <p >Claimed by {item?.owners?.ready_for_push}</p>
                         )
@@ -321,17 +323,19 @@ const PreviewItem = (props) => {
 
                         <button onClick={(e) => actionPerformed(item, "claim", e)} className={`${currentUserPermission('ready_for_push', "") && item?.owners?.ready_for_push == undefined ? 'px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
                             Claim
-                    </button>
+                        </button>
+
+                        <DonwloadClip/>
 
                         <span onClick={(e) => actionPerformed(item, "push_to_feed", e)} className={`${currentUserPermission('ready_for_push', "") && (item?.owners?.ready_for_push !== undefined && item?.owners?.ready_for_push == appUserInfo?.user?.email) ? 'px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-green-800 bg-green-100 hover:bg-green-200 text-green-800 cursor-pointer' : 'hidden'}`}>
                             Push To Feed
                     </span>
-                    </>
+                    </div>
                 );
             }
             case "pushed_to_feed": {
                 return (
-                    <>
+                    <div className="grid">
                         { item?.owners?.pushed_to_feed != undefined && item?.owners?.pushed_to_feed != appUserInfo?.user?.email && (
                             <p >Claimed by {item?.owners?.pushed_to_feed}</p>
                         )
@@ -339,18 +343,20 @@ const PreviewItem = (props) => {
 
                         <button onClick={(e) => actionPerformed(item, "claim", e)} className={`${currentUserPermission('pushed_to_feed', "") && item?.owners?.ready_for_push == undefined ? 'px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
                             Claim
-                    </button>
+                        </button>
+
+                        <DonwloadClip/>
 
                         <span onClick={(e) => actionPerformed(item, "remove_from_feed", e)} className={`${currentUserPermission('pushed_to_feed', "") && (item?.owners?.pushed_to_feed !== undefined && item?.owners?.pushed_to_feed == appUserInfo?.user?.email) ? 'hiddpx-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-red-800 bg-red-100 hover:bg-red-200 text-red-800 cursor-pointeren' : 'hidden'}`}>
                             Remove From Feed
                     </span>
-                    </>
+                    </div>
                 );
             }
             case "removed_from_feed": {
 
                 return (
-                    <>
+                    <div className="grid">
                         { item?.owners?.removed_from_feed != undefined && item?.owners?.removed_from_feed != appUserInfo?.user?.email && (
                             <p >Claimed by {item?.owners?.removed_from_feed}</p>
                         )
@@ -358,12 +364,14 @@ const PreviewItem = (props) => {
 
                         <button onClick={(e) => actionPerformed(item, "claim", e)} className={`${currentUserPermission('removed_from_feed', "") && item?.owners?.removed_from_feed == undefined ? 'px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
                             Claim
-                    </button>
+                        </button>
+
+                        <DonwloadClip/>
 
                         <span onClick={(e) => actionPerformed(item, "push_to_feed", e)} className={`${currentUserPermission('removed_from_feed', "") && (item?.owners?.removed_from_feed !== undefined && item?.owners?.removed_from_feed == appUserInfo?.user?.email) ? 'px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-green-800 bg-green-100 hover:bg-green-200 text-green-800 cursor-pointer' : 'hidden'}`}>
                             Push To Feed
                     </span>
-                    </>
+                    </div>
                 );
             }
             case "transcoding": {
@@ -498,7 +506,7 @@ const PreviewItem = (props) => {
                                                         </div>
                                                     </>
                                                 )}
-                                                
+
                                                 {
                                                     props.showComment && (
                                                         <div className="w-full py-4">
@@ -564,7 +572,7 @@ const PreviewItem = (props) => {
                                     <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
                                 </div>
                                 <span className="hidden sm:inline-block sm:align-middle sm:h-screen"></span>&#8203;
-						<div className="w-full h-screen overflow-y-auto inline-block align-bottom bg-white rounded-lg px-4 pb-4 text-left overflow-hidden shadow-xl transform transition-all md:align-middle md:max-w-6xl" role="dialog" aria-modal="true" aria-labelledby="modal-headline">
+						        <div className="w-full h-screen overflow-y-auto inline-block align-bottom bg-white rounded-lg px-4 pb-4 text-left overflow-hidden shadow-xl transform transition-all md:align-middle md:max-w-6xl" role="dialog" aria-modal="true" aria-labelledby="modal-headline">
                                     <div>
                                         <div className="flex py-4 top-0 sticky bg-white z-10">
                                             <div className="w-1/2 px-4 sm:px-6 flex justify-start">
