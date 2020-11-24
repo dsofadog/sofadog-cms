@@ -469,9 +469,9 @@ const PreviewItem = (props) => {
                                                 </div>
                                             )}
 
-                                            {!isExpand && (
-                                                <>
-                                                    <div className="w-full mb-6">
+                                            <div className="w-full mb-6">
+                                                {!isExpand && (
+                                                    <>
                                                         <div className="p-4 shadow rounded border border-gray-300">
                                                             <div className="block">
                                                                 <div className="border-b border-gray-200">
@@ -496,36 +496,35 @@ const PreviewItem = (props) => {
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        {
-                                                            props.showComment && (
-                                                                <div className="w-full py-4">
-                                                                    <div className="w-full truncate">
-                                                                        <span className="text-xs truncate" dangerouslySetInnerHTML={{ __html: (comment?.text) }}></span>
-                                                                    </div>
-                                                                    <div className="w-full flex text-center justify-end space-x-2">
-                                                                        <span className="text-white w-6 h-6 rounded-full p-3 bg-blue-600 text-xs flex items-center justify-center">{item?.comments.length}</span>
-                                                                        <Link href={`/cms/[item_id]`} as={`/cms/${item.id}`}>
-                                                                            <label className="text-sm font-bold text-gray-800 cursor-pointer hover:underline">Comments</label>
-                                                                        </Link>
-                                                                    </div>
-                                                                </div>
-                                                            )
-
-
-                                                        }
-
-                                                    </div>
-                                                    <div className="absolute mb-4 mr-4 bottom-0 inset-x-0">
-                                                        <div className="w-full space-x-2 flex justify-end">
-                                                            {item?.tags.map(tag => (
-                                                                <span key={tag} className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium leading-4 bg-blue-100 text-blue-800">
-                                                                    {tag}
-                                                                </span>
-                                                            ))}
+                                                    </>
+                                                )}
+                                                
+                                                {
+                                                    props.showComment && (
+                                                        <div className="w-full py-4">
+                                                            <div className="w-full truncate">
+                                                                <span className="text-xs truncate" dangerouslySetInnerHTML={{ __html: (comment?.text) }}></span>
+                                                            </div>
+                                                            <div className="w-full flex text-center justify-end space-x-2">
+                                                                <span className="text-white w-6 h-6 rounded-full p-3 bg-blue-600 text-xs flex items-center justify-center">{item?.comments.length}</span>
+                                                                <Link href={`/cms/[item_id]`} as={`/cms/${item.id}`}>
+                                                                    <label className="text-sm font-bold text-gray-800 cursor-pointer hover:underline">Comments</label>
+                                                                </Link>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                </>
-                                            )}
+                                                    )
+                                                }
+
+                                            </div>
+                                            <div className="absolute mb-4 mr-4 bottom-0 inset-x-0">
+                                                <div className="w-full space-x-2 flex justify-end">
+                                                    {item?.tags.map(tag => (
+                                                        <span key={tag} className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium leading-4 bg-blue-100 text-blue-800">
+                                                            {tag}
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                            </div>
                                         </div>
 
                                         <div className={`bg-${categories[item?.category].color} w-full md:w-1/5 relative z-10 rounded-lg rounded-l-none`}>
