@@ -520,6 +520,7 @@ const PreviewItem = (props) => {
                                                         </div>
                                                     </>
                                                 )}
+                                                
                                                 {
                                                     props.showComment && (
                                                         <div className="w-full py-4">
@@ -534,8 +535,6 @@ const PreviewItem = (props) => {
                                                             </div>
                                                         </div>
                                                     )
-
-
                                                 }
 
                                             </div>
