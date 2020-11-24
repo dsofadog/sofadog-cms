@@ -557,7 +557,7 @@ const CreateItem = (props) => {
 
                                             </nav>
                                         </div>
-                                        <div className="mt-4 space-y-1" role="group" aria-labelledby="teams-headline">
+                                        <div className="mt-4 space-y-1 max-h-24 overflow-y-scroll" role="group" aria-labelledby="teams-headline">
                                             {descriptions[activeLang].sentences.map((sentence, i) => (
                                                 <>
                                                     {sentence.editable ?
@@ -587,7 +587,7 @@ const CreateItem = (props) => {
                                                 </>
                                             ))}
 
-                                            {descriptions[activeLang].sentences.length < 3 && (
+                                            {descriptions[activeLang].sentences.length < 8 && (
                                                 <div className="flex items-center space-x-3 px-3">
                                                     <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-indigo-500"></div>
                                                     <button onClick={(e) => addBlankSentence(e)} className="text-white px-2 py-1 bg-indigo-600 rounded text-xs">+ Add Sentence</button>

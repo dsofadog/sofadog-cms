@@ -130,9 +130,9 @@ const UserComponent = () => {
 		//setLoading(true);
 		HttpCms.patch("admin_user/"+data.email+"/"+type+"?token="+appUserInfo?.token, data)
 		.then((response) => {
-		//	console.log("response: ",response);
+			console.log("response: ",response);
 		//setLoading(false);
-			setAddNew(false);
+			//setAddNew(false);
 		})
 		.catch((e) => {
 			console.log(e);

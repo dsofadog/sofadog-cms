@@ -32,9 +32,9 @@ const UserInfo = (props) => {
 
     useEffect(() => {
         if (props.data) {
-           // console.log("prop ",props.data);
+            console.log("prop ",props.data);
             setUserData(props.data);
-
+            
           //  console.log("first name ",props.data.first_name)
             let name = props.data?.first_name.charAt(0) + props.data?.last_name.charAt(0);
            
@@ -98,14 +98,19 @@ const UserInfo = (props) => {
       //  console.log("pevious role",previousAllRole);
         if(!previousAllRole.includes(data.id)){
             let roleData = {
-                "email": userData.email,
+                "email": userData?.email,
                 "role": data.id
                }
             setSelectedRole([
                 ...selectedRole, data.id
             ]);
-            props.removeRoleUser(roleData, 'add_role');
+            if(action == 'edit'){
+                props.removeRoleUser(roleData, 'add_role');
+            }
+            
+            
         }
+        
     }
     function isRoleSelected(role) {
         if (selectedRole.length > 0) {
@@ -127,7 +132,9 @@ const UserInfo = (props) => {
             admin_roles: selectedRole
         }
         if (action === 'add') {
+           
             props.addUser(data)
+            
         } else {
             console.log(data);
             props.updateUser(data.email, data)
@@ -169,15 +176,15 @@ const UserInfo = (props) => {
 
     function removeAddRole(e,role,type) {
         e.preventDefault()
-     //   console.log("role type ",role,type)
+        console.log("role type ",role,type)
         let data = {
-        "email": userData.email,
+        "email": userData?.email,
         "role": role
        }
        console.log(data,"datadata");
        console.log(selectedRole,"previousAllRole");
        if(selectedRole.includes(role)){
-            props.removeRoleUser(data, type);
+            
             let index = selectedRole.findIndex(x=> x == role);
             console.log("index",index);
             if(index != -1){
@@ -186,6 +193,9 @@ const UserInfo = (props) => {
                 console.log("roles",r);
                 setSelectedRole(r);
                 
+            }
+            if(action === "edit"){
+                props.removeRoleUser(data, type);
             }
             
        }
