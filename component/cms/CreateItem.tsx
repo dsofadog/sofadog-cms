@@ -136,6 +136,15 @@ const CreateItem = (props) => {
         }
     }, [props.state]);
 
+    useEffect(()=>{
+        if(props.state === 'edit'){
+            let i = feeds?.findIndex(x => x.id === props?.data.feed_id);
+            if(i >= 0){
+                handleClickSingleDropdownFeed(feeds[i]);
+            }
+             
+        }
+    },[feeds])
     function useOutsideAlerter(ref) {
         useEffect(() => {
             function handleClickOutside(event) {
@@ -291,6 +300,7 @@ const CreateItem = (props) => {
 
     function handleClickSingleDropdownFeed(feed) {
         console.log("selected feed",feed.id)
+        
         setItem({
             ...item,
             feed_id: feed.id
@@ -299,7 +309,7 @@ const CreateItem = (props) => {
         setSelectedFeed(feed.id);
         console.log("cate ",feed.categories);
         setCotegories(feed.categories);
-        toggleFeedDropdown();
+        setOpenFeedDropdown(false);
     }
 
     function clearFeeds() {
@@ -556,7 +566,7 @@ const CreateItem = (props) => {
                 <div className="w-11/12 mx-auto flex-none float-left">
                     <div className="md:flex shadow-lg mx-6 md:mx-auto w-full h-2xl">
                     {/* ${item?.category != undefined ? categories[item?.category].color : 'gray-200'} */}
-                        <div style={{border: getColorCode()}}className={`border- relative w-full h-full md:w-4/5 px-4 py-2 bg-white rounded-l-lg border-l-8`}>
+                        <div style={{borderColor: getColorCode()}}className={`border relative w-full h-full md:w-4/5 px-4 py-2 bg-white rounded-l-lg border-l-8`}>
                             <div className="py-2">
                                 <div className="w-full flex justify-end space-x-2">
                                     <button onClick={() => saveData()} className="px-2 py-1 bg-green-500 text-white rounded text-xs cursor-pointer">{props.state === 'edit' ? 'Update ' : 'Save '} Data</button>
