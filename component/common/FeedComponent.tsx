@@ -143,7 +143,7 @@ const FeedComponent = () => {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
                 <div className="min-h-96 pt-2">
                     <div className="bg-white shadow overflow-hidden sm:rounded-md">
-                        <ul className="divide-y divide-gray-200">
+                        <ul className="divide-y divide-gray-200 mb-56">
                             {addNew && (
                                 <Feed action="add" callback={toggleAddNew} addFeed={addFeed}></Feed>
                             )}

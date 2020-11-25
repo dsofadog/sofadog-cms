@@ -123,8 +123,9 @@ const Feed = (props) => {
                 props.updateCategory(category, feed.id);
                 setCategoryAction('add');
             }
-
         }
+        setCategory(null);
+        setColour(null);
         setIsAddCategory(false);
     }
 
