@@ -8,6 +8,9 @@ const Feed = (props) => {
     const pickerWrapperRef = useRef(null);
     useOutsideAlerter(pickerWrapperRef);
     const [openPicker, setOpenPicker] = useState(false);
+    const [colour, setColour] = useState('#fff');
+    const [category, setCategory] = useState(null);
+    const [isAddCategory, setIsAddCategory] = useState(false);
 
     useEffect(() => {
         if (props.data) {
@@ -69,7 +72,12 @@ const Feed = (props) => {
     }
 
     const handleChangeComplete = (color) => {
-        console.log("hex",color.hex);
+        console.log("hex", color.hex);
+        setColour(color.hex);
+        setCategory({
+            ...category,
+            hex: color.hex
+        })
     };
 
     return (
@@ -123,33 +131,40 @@ const Feed = (props) => {
                                         ))}
                                     </div>
                                     <div className="grid grid-cols-4 gap-4">
-                                        <div>
-                                            <label className="text-sm font-medium">Number</label>
-                                            <input name="id" className="form-input block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
-                                        </div>
-                                        <div>
-                                            <label className="text-sm font-medium">Title</label>
-                                            <input name="id" className="form-input block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
-                                        </div>
-                                        <div>
-                                            <label className="text-sm font-medium">Colour</label>
-                                            <input name="id" className="form-input block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
-                                        </div>
-                                        <div ref={pickerWrapperRef} data-id="picker" className="relative inline-block">
-                                            <label className="text-sm font-medium">Hex</label>
-                                            <input onClick={() => setOpenPicker(true)} name="id" className="form-input block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
-                                            {openPicker && (
-                                                <div className="origin-top-right absolute right-0 mt-2 w-auto rounded-md shadow-lg z-50">
-                                                    <ChromePicker onChangeComplete={handleChangeComplete} />
+                                        {isAddCategory ?
+                                            <>
+                                                <div>
+                                                    <label className="text-sm font-medium">Number</label>
+                                                    <input name="id" className="form-input block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
                                                 </div>
-                                            )}
-                                        </div>
-                                        <div className="col-span-4 flex space-x-2">
-                                            <button className="text-white px-2 py-1 bg-green-600 hover:bg-green-700 rounded text-xs">Add</button>
-                                            <button className="text-white px-2 py-1 bg-blue-600 hover:bg-blue-700 rounded text-xs">Cancel</button>
-                                        </div>
+                                                <div>
+                                                    <label className="text-sm font-medium">Title</label>
+                                                    <input name="id" className="form-input block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
+                                                </div>
+                                                <div>
+                                                    <label className="text-sm font-medium">Colour</label>
+                                                    <input name="id" className="form-input block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
+                                                </div>
+                                                <div ref={pickerWrapperRef} data-id="picker" className="relative inline-block">
+                                                    <label className="text-sm font-medium">Hex</label>
+                                                    <input value={category?.hex} readOnly onClick={() => setOpenPicker(true)} name="id" className="form-input block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
+                                                    {openPicker && (
+                                                        <div className="origin-top-right absolute right-0 mt-2 w-auto rounded-md shadow-lg z-50">
+                                                            <ChromePicker color={colour} onChangeComplete={handleChangeComplete} />
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                <div className="col-span-4 flex space-x-2">
+                                                    <button className="text-white px-2 py-1 bg-green-600 hover:bg-green-700 rounded text-xs">Add</button>
+                                                    <button onClick={() => { setIsAddCategory(false); setCategory(null); }} className="text-white px-2 py-1 bg-blue-600 hover:bg-blue-700 rounded text-xs">Cancel</button>
+                                                </div>
+                                            </>
+                                            :
+                                            <div className="col-span-4 flex space-x-2">
+                                                <button onClick={() => setIsAddCategory(true)} className="mt-2 w-auto text-white px-2 py-1 bg-indigo-600 hover:bg-indigo-700 rounded text-xs">+ Add Category</button>
+                                            </div>
+                                        }
                                     </div>
-                                    <button className="mt-2 text-white px-2 py-1 bg-indigo-600 hover:bg-indigo-700 rounded text-xs">+ Add Category</button>
                                 </div>
                             )}
                             {action === 'add' && (
