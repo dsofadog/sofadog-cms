@@ -405,8 +405,9 @@ const PreviewItem = (props) => {
     }
     function getFeedCategories(){
         let f = feeds?.findIndex(x => x.id === item.feed_id);
-        //console.log("categories ",feeds);
-        let c =feeds[f]?.categories.findIndex(x => x.number = item.category);
+        console.log("categories ",feeds[f]);
+        let c =feeds[f]?.categories.findIndex(x => x.number === item.category);
+        console.log("feeds[f]?.categories[c] ",feeds[f]?.categories[c]);
         setCategories(feeds[f]?.categories[c]);
     }
     return (
