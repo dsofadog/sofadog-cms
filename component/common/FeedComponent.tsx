@@ -87,6 +87,29 @@ const FeedComponent = () => {
                 setLoading(false);
             });
     }
+
+    function updateCategory(category,feed_id){
+        let data = {
+            title: category.title,
+            colour: category.colour,
+            hex: category.hex
+        }
+        setLoading(true);
+        HttpCms.post("feed/"+feed_id+"/categories/"+category.number+"?token=" + appUserInfo?.token, data)
+            .then((response) => {
+                console.log("response cat: ",response.data);
+                let i = feeds.findIndex(x => x.id === feed_id);
+                const f = [...feeds];
+                f[i] = response.data.feed;
+                setFeeds(f);
+            })
+            .catch((e) => {
+                console.log(e);
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+    }
     return (
         <div className="min-h-3/4">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -107,7 +130,7 @@ const FeedComponent = () => {
                                 <Feed action="add" callback={toggleAddNew} addFeed={addFeed}></Feed>
                             )}
                             {feeds?.map((data, i) => (
-                                <Feed data={data} action="view" addFeed={addFeed} addCategory={addCategory}></Feed>
+                                <Feed data={data} action="view" addFeed={addFeed} addCategory={addCategory} updateCategory={updateCategory}></Feed>
                             ))}
                             {feeds?.length === 0 || feeds === null && (
                                 <li>

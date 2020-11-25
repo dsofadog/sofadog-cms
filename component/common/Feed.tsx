@@ -1,9 +1,19 @@
 import { useEffect, useRef, useState } from "react"
 import { ChromePicker } from 'react-color';
 
+import { config as f_config, library } from '@fortawesome/fontawesome-svg-core';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { fas } from '@fortawesome/free-solid-svg-icons';
+import { fab } from '@fortawesome/free-brands-svg-icons';
+
+
+f_config.autoAddCss = false;
+library.add(fas, fab);
+
 const Feed = (props) => {
     const [feed, setFeed] = useState(null);
     const [action, setAction] = useState('view');
+    const [categoryAction, setCategoryAction] = useState('view');
 
     const pickerWrapperRef = useRef(null);
     useOutsideAlerter(pickerWrapperRef);
@@ -27,6 +37,15 @@ const Feed = (props) => {
             }
         }
     }, [props])
+
+    useEffect(() => {
+        if(categoryAction === 'edit'){
+            let i = feed.categories.findIndex(x => x.number === category.number);
+            const f = {...feed};
+            f.categories[i] = category;
+            setFeed(f);
+        }
+    }, [category])
 
     function useOutsideAlerter(ref) {
         useEffect(() => {
@@ -87,13 +106,33 @@ const Feed = (props) => {
             ...category,
             hex: color.hex
         })
+        if(categoryAction === 'edit'){
+            let i = feed.categories.findIndex(x => x.number === category.number);
+            const f = {...feed};
+            f.categories[i].hex = color.hex;
+            setFeed(f);
+        }
     };
 
-    function addCategory() {
+    function manageCategory() {
         if (category) {
-            props.addCategory(category, feed.id);
-            setIsAddCategory(false);
+            if (categoryAction === 'add') {
+                props.addCategory(category, feed.id);
+            } else if (categoryAction === 'edit') {
+                console.log("edit cat: ", category);
+                props.updateCategory(category, feed.id);
+                setCategoryAction('add');
+            }
+
         }
+        setIsAddCategory(false);
+    }
+
+    function changeCategoryState(e, i, state) {
+        e.preventDefault();
+        setCategory(feed?.categories[i]);
+        setColour(feed?.categories[i].hex ? feed?.categories[i].hex : feed?.categories[i].colour);
+        setCategoryAction(state);
     }
 
     return (
@@ -141,9 +180,15 @@ const Feed = (props) => {
                                     <p className="text-sm font-medium text-indigo-600 truncate">Cetegories</p>
                                     <div className="mt-2 w-full flex flex-wrap justify-start">
                                         {feed?.categories?.map((cat, i) => (
-                                            <span style={{ backgroundColor: cat.hex ? cat.hex : cat.colour }} className="inline-flex items-center px-3 py-1 mr-2 mb-2 rounded text-xs font-medium leading-4 text-black uppercase">
-                                                {cat.title}
+                                            <span className="mr-2 mb-2 relative z-0 inline-flex shadow-sm rounded">
+                                                <button style={{ backgroundColor: cat.hex ? cat.hex : cat.colour, borderColor: cat.hex ? cat.hex : cat.colour }} type="button" className="relative inline-flex items-center px-3 py-1 rounded-l border text-xs font-medium text-black  focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 uppercase">
+                                                    {cat.number}.{cat.title}
+                                                </button>
+                                                <button style={{ borderColor: cat.hex ? cat.hex : cat.colour }} type="button" className="-ml-px relative inline-flex items-center px-2 py-1 rounded-r border  bg-white text-xs font-medium text-gray-700 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                                                    <FontAwesomeIcon onClick={(e) => {changeCategoryState(e, i, 'edit'); setIsAddCategory(true)}} className="w-4 h-4 cursor-pointer hover:text-blue-600" icon={['fas', 'edit']} />
+                                                </button>
                                             </span>
+
                                         ))}
                                     </div>
                                     <div className="grid grid-cols-4 gap-4">
@@ -171,8 +216,8 @@ const Feed = (props) => {
                                                     )}
                                                 </div>
                                                 <div className="col-span-4 flex space-x-2">
-                                                    <button onClick={() => addCategory()} className="text-white px-2 py-1 bg-green-600 hover:bg-green-700 rounded text-xs">Add</button>
-                                                    <button onClick={() => { setIsAddCategory(false); setCategory(null); }} className="text-white px-2 py-1 bg-blue-600 hover:bg-blue-700 rounded text-xs">Cancel</button>
+                                                    <button onClick={() => manageCategory()} className="text-white px-2 py-1 bg-green-600 hover:bg-green-700 rounded text-xs">{categoryAction === 'edit' ? 'Update' : 'Add'}</button>
+                                                    <button onClick={() => { setIsAddCategory(false); setCategory(null); setCategoryAction('add'); }} className="text-white px-2 py-1 bg-blue-600 hover:bg-blue-700 rounded text-xs">Cancel</button>
                                                 </div>
                                             </>
                                             :
