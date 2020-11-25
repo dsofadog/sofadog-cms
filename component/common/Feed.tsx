@@ -87,12 +87,35 @@ const Feed = (props) => {
                                 <div className="col-span-3 ">
                                     <p className="text-sm font-medium text-indigo-600 truncate">Cetegories</p>
                                     <div className="mt-2 w-full flex flex-wrap justify-start">
-                                        {feed?.categories?.map((cat,i)=>(
-                                            <span style={{backgroundColor: cat.colour}} className="inline-flex items-center px-3 py-1 mr-2 mb-2 rounded text-xs font-medium leading-4 text-black uppercase">
+                                        {feed?.categories?.map((cat, i) => (
+                                            <span style={{ backgroundColor: cat.colour }} className="inline-flex items-center px-3 py-1 mr-2 mb-2 rounded text-xs font-medium leading-4 text-black uppercase">
                                                 {cat.title}
                                             </span>
-                                        ))}                                        
+                                        ))}
                                     </div>
+                                    <div className="grid grid-cols-4 gap-4">
+                                        <div>
+                                            <label className="text-sm font-medium">Number</label>
+                                            <input name="id" className="form-input block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
+                                        </div>
+                                        <div>
+                                            <label className="text-sm font-medium">Title</label>
+                                            <input name="id" className="form-input block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
+                                        </div>
+                                        <div>
+                                            <label className="text-sm font-medium">Colour</label>
+                                            <input name="id" className="form-input block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
+                                        </div>
+                                        <div>
+                                            <label className="text-sm font-medium">Hex</label>
+                                            <input name="id" className="form-input block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
+                                        </div>
+                                        <div className="col-span-4 flex space-x-2">
+                                            <button className="text-white px-2 py-1 bg-green-600 hover:bg-green-700 rounded text-xs">Add</button>
+                                            <button className="text-white px-2 py-1 bg-blue-600 hover:bg-blue-700 rounded text-xs">Cancel</button>
+                                        </div>
+                                    </div>
+                                    <button className="mt-2 text-white px-2 py-1 bg-indigo-600 hover:bg-indigo-700 rounded text-xs">+ Add Category</button>
                                 </div>
                             )}
                             {action === 'add' && (
