@@ -39,9 +39,9 @@ const Feed = (props) => {
     }, [props])
 
     useEffect(() => {
-        if(categoryAction === 'edit'){
+        if (categoryAction === 'edit') {
             let i = feed.categories.findIndex(x => x.number === category.number);
-            const f = {...feed};
+            const f = { ...feed };
             f.categories[i] = category;
             setFeed(f);
         }
@@ -106,9 +106,9 @@ const Feed = (props) => {
             ...category,
             hex: color.hex
         })
-        if(categoryAction === 'edit'){
+        if (categoryAction === 'edit') {
             let i = feed.categories.findIndex(x => x.number === category.number);
-            const f = {...feed};
+            const f = { ...feed };
             f.categories[i].hex = color.hex;
             setFeed(f);
         }
@@ -130,9 +130,14 @@ const Feed = (props) => {
 
     function changeCategoryState(e, i, state) {
         e.preventDefault();
-        setCategory(feed?.categories[i]);
-        setColour(feed?.categories[i].hex ? feed?.categories[i].hex : feed?.categories[i].colour);
-        setCategoryAction(state);
+        if (state === 'delete') {
+            props.deleteCategory(feed?.categories[i],feed.id);
+            setCategoryAction('add');
+        } else {
+            setCategory(feed?.categories[i]);
+            setColour(feed?.categories[i].hex ? feed?.categories[i].hex : feed?.categories[i].colour);
+            setCategoryAction(state);
+        }
     }
 
     return (
@@ -184,8 +189,9 @@ const Feed = (props) => {
                                                 <button style={{ backgroundColor: cat.hex ? cat.hex : cat.colour, borderColor: cat.hex ? cat.hex : cat.colour }} type="button" className="relative inline-flex items-center px-3 py-1 rounded-l border text-xs font-medium text-black  focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 uppercase">
                                                     {cat.number}.{cat.title}
                                                 </button>
-                                                <button style={{ borderColor: cat.hex ? cat.hex : cat.colour }} type="button" className="-ml-px relative inline-flex items-center px-2 py-1 rounded-r border  bg-white text-xs font-medium text-gray-700 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500">
-                                                    <FontAwesomeIcon onClick={(e) => {changeCategoryState(e, i, 'edit'); setIsAddCategory(true)}} className="w-4 h-4 cursor-pointer hover:text-blue-600" icon={['fas', 'edit']} />
+                                                <button style={{ borderColor: cat.hex ? cat.hex : cat.colour }} type="button" className="-ml-px space-x-1 relative inline-flex items-center px-2 py-1 rounded-r border  bg-white text-xs font-medium text-gray-700 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                                                    <FontAwesomeIcon onClick={(e) => { changeCategoryState(e, i, 'edit'); setIsAddCategory(true) }} className="w-4 h-4 cursor-pointer hover:text-blue-600" icon={['fas', 'edit']} />
+                                                    <FontAwesomeIcon onClick={(e) => changeCategoryState(e, i, 'delete')} className="w-3.5 h-3.5 cursor-pointer hover:text-red-800" icon={['fas', 'trash-alt']} />
                                                 </button>
                                             </span>
 
@@ -196,7 +202,7 @@ const Feed = (props) => {
                                             <>
                                                 <div>
                                                     <label className="text-sm font-medium">Number</label>
-                                                    <input value={category?.number} onChange={(e) => handleCategoryInputChange(e)} name="number" className="form-input block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
+                                                    <input type="number" min="0" value={category?.number} onChange={(e) => handleCategoryInputChange(e)} name="number" className="form-input block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
                                                 </div>
                                                 <div>
                                                     <label className="text-sm font-medium">Title</label>
