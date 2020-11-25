@@ -1,8 +1,13 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
+import { ChromePicker } from 'react-color';
 
 const Feed = (props) => {
     const [feed, setFeed] = useState(null);
     const [action, setAction] = useState('view');
+
+    const pickerWrapperRef = useRef(null);
+    useOutsideAlerter(pickerWrapperRef);
+    const [openPicker, setOpenPicker] = useState(false);
 
     useEffect(() => {
         if (props.data) {
@@ -19,6 +24,26 @@ const Feed = (props) => {
             }
         }
     }, [props])
+
+    function useOutsideAlerter(ref) {
+        useEffect(() => {
+            function handleClickOutside(event) {
+
+                if (ref.current && !ref.current.contains(event.target)) {
+                    if (ref.current.dataset.id === "picker") {
+                        setOpenPicker(false);
+                    }
+                }
+            }
+
+            // Bind the event listener
+            document.addEventListener("mousedown", handleClickOutside);
+            return () => {
+                // Unbind the event listener on clean up
+                document.removeEventListener("mousedown", handleClickOutside);
+            };
+        }, [ref]);
+    }
 
     function handleInputChange(e) {
         //console.log(e.target);
@@ -42,6 +67,10 @@ const Feed = (props) => {
         e.preventDefault();
         props.addFeed(feed);
     }
+
+    const handleChangeComplete = (color) => {
+        console.log("hex",color.hex);
+    };
 
     return (
         <li>
@@ -106,9 +135,14 @@ const Feed = (props) => {
                                             <label className="text-sm font-medium">Colour</label>
                                             <input name="id" className="form-input block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
                                         </div>
-                                        <div>
+                                        <div ref={pickerWrapperRef} data-id="picker" className="relative inline-block">
                                             <label className="text-sm font-medium">Hex</label>
-                                            <input name="id" className="form-input block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
+                                            <input onClick={() => setOpenPicker(true)} name="id" className="form-input block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
+                                            {openPicker && (
+                                                <div className="origin-top-right absolute right-0 mt-2 w-auto rounded-md shadow-lg z-50">
+                                                    <ChromePicker onChangeComplete={handleChangeComplete} />
+                                                </div>
+                                            )}
                                         </div>
                                         <div className="col-span-4 flex space-x-2">
                                             <button className="text-white px-2 py-1 bg-green-600 hover:bg-green-700 rounded text-xs">Add</button>

@@ -28,6 +28,7 @@
     "moment": "^2.29.1",
     "next": "9.5.2",
     "react": "16.13.1",
+    "react-color": "^2.19.3",
     "react-dom": "16.13.1",
     "react-dropzone": "^11.2.0",
     "react-infinite-scroll-hook": "^3.0.0",
