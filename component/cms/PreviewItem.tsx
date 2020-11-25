@@ -36,7 +36,7 @@ const PreviewItem = (props) => {
     const status = CmsConstant.Status;
 
     useEffect(() => {
-        
+        console.log("props.feeds",props.feeds);
         if(props.item){
             setItem(props.item);
             setComment(item?.comments[item?.comments.length-1]);
@@ -425,7 +425,7 @@ const PreviewItem = (props) => {
                                 <div className="w-11/12 mx-auto flex-none float-left">
                                     <div className="md:flex shadow-lg mx-6 md:mx-auto w-full h-full">
                                     {/* border-${categories[item?.category].color} */}
-                                        <div style={{border: getColorCode()}} className={`relative w-full h-full md:w-4/5 px-4 py-2 bg-white rounded-l-lg border-l-8`}>
+                                        <div style={{borderColor: getColorCode()}} className={`relative w-full h-full md:w-4/5 px-4 py-2 bg-white rounded-l-lg border-l-8`}>
                                             <div className="mb-4 grid grid-cols-2">
                                                 <div className="left-0 flex justify-start">
                                                     {isExpand ? 
