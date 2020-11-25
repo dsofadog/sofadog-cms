@@ -36,7 +36,7 @@ const PreviewItem = (props) => {
     const status = CmsConstant.Status;
 
     useEffect(() => {
-        console.log("props.feeds", props.feeds);
+        //console.log("props.feeds", props.feeds);
         if (props.item) {
             setItem(props.item);
             setComment(item?.comments[item?.comments.length - 1]);

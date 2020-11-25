@@ -13,7 +13,7 @@ library.add(fas, fab);
 const Feed = (props) => {
     const [feed, setFeed] = useState(null);
     const [action, setAction] = useState('view');
-    const [categoryAction, setCategoryAction] = useState('view');
+    const [categoryAction, setCategoryAction] = useState('add');
 
     const pickerWrapperRef = useRef(null);
     useOutsideAlerter(pickerWrapperRef);
@@ -27,7 +27,7 @@ const Feed = (props) => {
             setFeed(props.data);
         }
         if (props.action) {
-            console.log("prop.action", props.action);
+            //console.log("prop.action", props.action);
             setAction(props.action);
             if (props.action === 'add') {
                 setFeed({
