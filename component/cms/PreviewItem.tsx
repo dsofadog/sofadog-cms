@@ -17,7 +17,7 @@ import Link from "next/link";
 
 f_config.autoAddCss = false;
 library.add(fas, fab);
-const categories = CmsConstant.Category;
+//const categories = CmsConstant.Category;
 const PreviewItem = (props) => {
     const { setLoading,appUserInfo,userIsSuperAdmin,currentUserPermission} = useContext(LayoutContext);
     const [item, setItem] = useState(null);
@@ -30,20 +30,26 @@ const PreviewItem = (props) => {
     const [isEdit, setIsEdit] = useState(false);
     const [comment, setComment] = useState(null);
     const [isExpand,setIsExpand] = useState(true);
+    const [categories,setCategories] = useState(null);
+    const [feeds,setFeeds] = useState(null);
 
     const status = CmsConstant.Status;
 
     useEffect(() => {
+        
         if(props.item){
             setItem(props.item);
             setComment(item?.comments[item?.comments.length-1]);
+            setFeeds(props.feeds);
         }
+        
     }, [props]);
 
     useEffect(() => {
         //fetchComment(props.item.id);
         if (item) {
             showSentences(0);
+            getFeedCategories();
             showCredits('news_credits', item.news_credits);
         }
     }, [item]);
@@ -84,18 +90,17 @@ const PreviewItem = (props) => {
 
     function refreshData(e) {
         e.preventDefault();
-        //setLoading(true);
-        props.getSigleItem(item.id);
-        // HttpCms.get(`/news_items/${item.id}?token=${appUserInfo?.token}`)
-        //     .then(response => {
-        //         setItem(response.data.news_items[0]);
-        //         console.log(response.data.news_items[0], "response.data.data");
-        //         setLoading(false);
-        //     })
-        //     .catch(e => {
-        //         console.log(e);
-        //         setLoading(false);
-        //     });
+        setLoading(true);
+        HttpCms.get(`/news_items/${item.id}?token=${appUserInfo?.token}`)
+            .then(response => {
+                setItem(response.data.news_items[0]);
+                console.log(response.data.news_items[0], "response.data.data");
+                setLoading(false);
+            })
+            .catch(e => {
+                console.log(e);
+                setLoading(false);
+            });
     }
 
     function showSentences(i) {
@@ -150,7 +155,6 @@ const PreviewItem = (props) => {
     function uplaodVideo(item, apiEndPoint, e) {
         e.preventDefault();
         props.uplaodVideo(item, apiEndPoint, video);
-        setVideo(null);
     }
 
     function deleteItem(item, e) {
@@ -389,7 +393,22 @@ const PreviewItem = (props) => {
         props.updateItem(item.id,item_data,props.index);
         setIsEdit(false);
     }
+    function getColorCode(){
 
+        if(categories != null){
+                return categories?.hex ? categories?.hex : '#e5e7eb';
+           
+        }else{
+            return '#e5e7eb';
+        }
+       
+    }
+    function getFeedCategories(){
+        let f = feeds?.findIndex(x => x.id === item.feed_id);
+        //console.log("categories ",feeds);
+        let c =feeds[f]?.categories.findIndex(x => x.number = item.category);
+        setCategories(feeds[f]?.categories[c]);
+    }
     return (
         <>
             {!isEdit ?
@@ -404,8 +423,8 @@ const PreviewItem = (props) => {
                             <div className="flex flex-no-wrap justify-center">
                                 <div className="w-11/12 mx-auto flex-none float-left">
                                     <div className="md:flex shadow-lg mx-6 md:mx-auto w-full h-full">
-
-                                        <div className={`border-${categories[item?.category].color} relative w-full h-full md:w-4/5 px-4 py-2 bg-white rounded-l-lg border-l-8`}>
+                                    {/* border-${categories[item?.category].color} */}
+                                        <div style={{border: getColorCode()}} className={`relative w-full h-full md:w-4/5 px-4 py-2 bg-white rounded-l-lg border-l-8`}>
                                             <div className="mb-4 grid grid-cols-2">
                                                 <div className="left-0 flex justify-start">
                                                     {isExpand ? 
@@ -527,11 +546,12 @@ const PreviewItem = (props) => {
                                                 </>
                                             )}
                                         </div>
-
-                                        <div className={`bg-${categories[item?.category].color} w-full md:w-1/5 relative z-10 rounded-lg rounded-l-none`}>
+                                        {/* bg-${categories[item?.category].color} */}
+                                        <div style={{backgroundColor: getColorCode()}}className={` w-full md:w-1/5 relative z-10 rounded-lg rounded-l-none`}>
                                             <div className="inset-x-0 top-0 transform">
                                                 <div className="flex justify-center transform">
-                                                    <span className={`bg-${categories[item?.category].color} shadow inline-flex w-full h-10 flex items-center justify-center text-center px-4 py-1 text-sm leading-5 font-semibold tracking-wider uppercase text-white`}>
+                                                {/* bg-${categories[item?.category].color} */}
+                                                    <span style={{backgroundColor: getColorCode()}} className={` shadow inline-flex w-full h-10 flex items-center justify-center text-center px-4 py-1 text-sm leading-5 font-semibold tracking-wider uppercase text-white`}>
                                                         {showStatus(item?.state)}
                                                     </span>
                                                 </div>

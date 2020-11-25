@@ -21,7 +21,7 @@ library.add(fas, fab);
 
 const Demo = () => {
 
-    const categories = CmsConstant.Category;
+    //const categories = CmsConstant.Category;
     const tags = CmsConstant.Tags;
     const status = CmsConstant.Status;
 
@@ -29,6 +29,8 @@ const Demo = () => {
     const [selectedTag, setSelectedTag] = useState([]);
     const [selectedState, setSelectedState] = useState([]);
     const [selectedFeed, setSelectedFeed] = useState(null);
+    const [categories,setCategories] = useState(null);
+
 
     const { setLoading, appUserInfo, currentUserPermission,
         userIsSuperAdmin,
@@ -642,6 +644,7 @@ const Demo = () => {
             return feeds[i].name ? feeds[i].name : feeds[i].id;
         }
     }
+   
 
     return (
         <div className="w-full h-full min-h-screen bg-gray-500">
@@ -692,7 +695,7 @@ const Demo = () => {
                                     <div className="origin-top-right absolute right-0 mt-2 w-108 rounded-md shadow-lg">
                                         <div className="w-full rounded-md bg-white shadow-xs">
                                             <div className="w-full grid grid-cols-4 gap-2 px-2 pt-2">
-                                                <div className="">
+                                                {/* <div className="">
                                                     <div ref={catWrapperRef} data-id="category" className="relative inline-block w-full">
                                                         <div>
                                                             {categories && (
@@ -731,7 +734,7 @@ const Demo = () => {
                                                             </div>
                                                         )}
                                                     </div>
-                                                </div>
+                                                </div> */}
                                                 <div className="">
                                                     <div ref={tagWrapperRef} data-id="tag" className="relative inline-block w-full">
                                                         <div>
@@ -926,6 +929,7 @@ const Demo = () => {
                                 move={decrement_increment_ordinal}
                                 updateItem={updateItem}
                                 getSigleItem={singleItem}
+                                feeds={feeds}
                             />
                         </div>
                     ))}

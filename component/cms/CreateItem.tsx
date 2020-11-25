@@ -15,9 +15,9 @@ library.add(fas, fab, far);
 
 const CreateItem = (props) => {
    
-    const categories = CmsConstant.Category;
+    //const categories = CmsConstant.Category;
     const tags = CmsConstant.Tags;
-
+    const [categories, setCotegories] = useState(null);
     const [openTagDropdown, setOpenTagDropdown] = useState(false);
     const toggleTagDropdown = () => { setOpenTagDropdown(!openTagDropdown) };
 
@@ -252,9 +252,9 @@ const CreateItem = (props) => {
     function handleClickSingleDropdown(cat) {
         setItem({
             ...item,
-            category: `${cat.value}`
+            category: `${cat.number}`
         });
-        setSelectedCategory(cat.value);
+        setSelectedCategory(cat.number);
         toggleCateDropdown();
     }
 
@@ -297,6 +297,8 @@ const CreateItem = (props) => {
         });
         console.log("items",item)
         setSelectedFeed(feed.id);
+        console.log("cate ",feed.categories);
+        setCotegories(feed.categories);
         toggleFeedDropdown();
     }
 
@@ -505,7 +507,7 @@ const CreateItem = (props) => {
             apicallForServer();
         }
     }
-
+    
     function getFeedName() {
         console.log("getFeedName: ",selectedFeed);
         let i = feeds.findIndex(x => x.id === selectedFeed);
@@ -513,7 +515,36 @@ const CreateItem = (props) => {
             return feeds[i].name ? feeds[i].name : feeds[i].id;
         }
     }
+    function getColorCode(){
 
+        if(categories != null){
+           
+            let i = categories?.findIndex(c => c.number === selectedCategory);
+            console.log("categories:-- ",i);
+            if(i >= 0){
+               
+                return categories[i].hex ? categories[i].hex : '#e5e7eb';
+            }else{
+                return '#e5e7eb';
+            }
+        }else{
+            return '#e5e7eb';
+        }
+       
+    }
+    function getCategoryName(){
+        if(categories != null){
+            let i = categories?.findIndex(c => c.number === selectedCategory);
+            if(i >= 0){
+                return categories[i].title ? categories[i].title : '';
+            }else{
+                return '';
+            }
+        }else{
+            return '';
+        }
+       
+    }
     return (
         <div className="w-full mx-auto">
             <div className="flex flex-no-wrap justify-center">
@@ -524,8 +555,8 @@ const CreateItem = (props) => {
             <div className="flex flex-no-wrap justify-center">
                 <div className="w-11/12 mx-auto flex-none float-left">
                     <div className="md:flex shadow-lg mx-6 md:mx-auto w-full h-2xl">
-
-                        <div className={`border-${item?.category != undefined ? categories[item?.category].color : 'gray-200'} relative w-full h-full md:w-4/5 px-4 py-2 bg-white rounded-l-lg border-l-8`}>
+                    {/* ${item?.category != undefined ? categories[item?.category].color : 'gray-200'} */}
+                        <div style={{border: getColorCode()}}className={`border- relative w-full h-full md:w-4/5 px-4 py-2 bg-white rounded-l-lg border-l-8`}>
                             <div className="py-2">
                                 <div className="w-full flex justify-end space-x-2">
                                     <button onClick={() => saveData()} className="px-2 py-1 bg-green-500 text-white rounded text-xs cursor-pointer">{props.state === 'edit' ? 'Update ' : 'Save '} Data</button>
@@ -662,54 +693,7 @@ const CreateItem = (props) => {
                                 </div>
                             </div>
                             <div className="absolute mb-4 mr-4 bottom-0 inset-x-0 flex">
-                                <div className="w-full ml-4 space-x-2 flex justify-start">
-                                    <div ref={catWrapperRef} data-id="category" className="relative inline-block text-left">
-                                        <div>
-                                            {categories && (
-                                                <span onClick={toggleCateDropdown} className="rounded-md shadow-sm">
-                                                    <button type="button" className={`${(selectedCategory === null) && formSubmitted ? 'border-red-500 text-red-600' : 'border-transparent '} inline-flex justify-center w-full rounded-md border border-gray-300 px-2 py-0.5 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150`}
-                                                        id="options-menu" aria-haspopup="true" aria-expanded="true">
-                                                        Choose Category
-                                                        <svg className="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                                            <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                                                        </svg>
-                                                    </button>
-                                                </span>
-                                            )}
-                                        </div>
-                                        {openCategoryDropdown && (
-                                            <div className="origin-top-left absolute left-0 mt-2 w-56 rounded-md shadow-lg z-20">
-                                                <div className="rounded-md bg-white shadow-xs">
-                                                    <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                                                        {categories?.map((cat, i) => (
-                                                            <a key={i} href={void (0)} onClick={() => handleClickSingleDropdown(cat)} className="cursor-pointer block px-4 py-1 text-xs leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900" role="menuitem">
-                                                                {cat.name}
-                                                            </a>
-                                                        ))}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        )}
-                                    </div>
-
-                                    {categories && (
-                                        <>
-                                            {item?.category != null && (
-                                                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium leading-4 bg-blue-100 text-blue-800">
-                                                    {categories[item?.category].name}
-                                                    <button onClick={() => clearCategory()} type="button" className="flex-shrink-0 ml-1.5 inline-flex text-indigo-500 focus:outline-none focus:text-indigo-700" aria-label="Remove small badge">
-                                                        <svg className="h-2 w-2" stroke="currentColor" fill="none" viewBox="0 0 8 8">
-                                                            <path strokeLinecap="round" strokeWidth="1.5" d="M1 1l6 6m0-6L1 7" />
-                                                        </svg>
-                                                    </button>
-                                                </span>
-                                            )}
-                                        </>
-
-                                    )}
-                                </div>
-
-                                <div className="w-full ml-4 space-x-2 flex justify-start">
+                            <div className="w-full ml-4 space-x-2 flex justify-start">
                                     <div ref={feedWrapperRef} data-id="feed" className="relative inline-block text-left">
                                         <div>
                                             {feeds && (
@@ -755,6 +739,54 @@ const CreateItem = (props) => {
 
                                     )}
                                 </div>
+                                <div className="w-full ml-4 space-x-2 flex justify-start">
+                                    <div ref={catWrapperRef} data-id="category" className="relative inline-block text-left">
+                                        <div>
+                                            {categories && (
+                                                <span onClick={toggleCateDropdown} className="rounded-md shadow-sm">
+                                                    <button type="button" className={`${(selectedCategory === null) && formSubmitted ? 'border-red-500 text-red-600' : 'border-transparent '} inline-flex justify-center w-full rounded-md border border-gray-300 px-2 py-0.5 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150`}
+                                                        id="options-menu" aria-haspopup="true" aria-expanded="true">
+                                                        Choose Category
+                                                        <svg className="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                            <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                                                        </svg>
+                                                    </button>
+                                                </span>
+                                            )}
+                                        </div>
+                                        {openCategoryDropdown && (
+                                            <div className="origin-top-left absolute left-0 mt-2 w-56 rounded-md shadow-lg z-20">
+                                                <div className="rounded-md bg-white shadow-xs">
+                                                    <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                                                        {categories?.map((cat, i) => (
+                                                            <a key={i} href={void (0)} onClick={() => handleClickSingleDropdown(cat)} className="cursor-pointer block px-4 py-1 text-xs leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900" role="menuitem">
+                                                                {cat.title}
+                                                            </a>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {categories && (
+                                        <>
+                                            {item?.category != null && (
+                                                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium leading-4 bg-blue-100 text-blue-800">
+                                                    {getCategoryName()}
+                                                    <button onClick={() => clearCategory()} type="button" className="flex-shrink-0 ml-1.5 inline-flex text-indigo-500 focus:outline-none focus:text-indigo-700" aria-label="Remove small badge">
+                                                        <svg className="h-2 w-2" stroke="currentColor" fill="none" viewBox="0 0 8 8">
+                                                            <path strokeLinecap="round" strokeWidth="1.5" d="M1 1l6 6m0-6L1 7" />
+                                                        </svg>
+                                                    </button>
+                                                </span>
+                                            )}
+                                        </>
+
+                                    )}
+                                </div>
+
+                                
 
 
                                 <div className="w-full space-x-2 flex justify-end z-50">
@@ -804,7 +836,7 @@ const CreateItem = (props) => {
                             </div>
                         </div>
 
-                        <div className={`bg-${item?.category != undefined ? categories[item?.category].color : 'gray-200'} w-full md:w-1/5 relative z-10 rounded-lg rounded-l-none`}>
+                        <div style={{backgroundColor: getColorCode()}} className={`w-full md:w-1/5 relative z-10 rounded-lg rounded-l-none`}>
 
                         </div>
 
