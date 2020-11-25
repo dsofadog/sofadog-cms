@@ -24,7 +24,7 @@ library.add(fas, fab);
 const Item = () => {
     const router = useRouter()
     const { item_id } = router.query;
-    const { setLoading, appUserInfo,logoutUserCheck,setRedirectUrl } = useContext(LayoutContext);
+    const { setLoading, appUserInfo, logoutUserCheck, setRedirectUrl } = useContext(LayoutContext);
 
     const [item, setItem] = useState(null);
     const [body, setBody] = useState('');
@@ -37,37 +37,24 @@ const Item = () => {
     const [clips, setClips] = useState({ video: null, thumbnails: null });
     const [isEdit, setIsEdit] = useState(false);
 
-   // const categories = CmsConstant.Category;
+    // const categories = CmsConstant.Category;
     const status = CmsConstant.Status;
-    const [categories,setCategories] = useState(null);
+    const [categories, setCategories] = useState(null);
 
     const [comments, setComments] = useState(null);
     const [feeds, setFeeds] = useState(null);
 
     useEffect(() => {
-        
-        
+        logoutUserCheck(true);
+        if (appUserInfo == null) {
+            console.log("item_id: ", item_id);
+            if (item_id != undefined) {
+                fetchItem();
+                fetchComment(item_id);
+            }
+            getFeeds();      
+        }
 
-        
-       
-       logoutUserCheck(true);
-       if(appUserInfo==null){
-        console.log("item_id: ", item_id);
-        setRedirectUrl(item_id);
-    }
-        //console.log("item_id: ", item_id);
-        // setTimeout(function(){ 
-        //     if (item_id != undefined) {
-        //         fetchItem();
-                
-        //         fetchComment("80c7d392-2fc1-11eb-84b1-2f9d5db1e953");
-        //         //fetchComment(item_id);
-        //     }
-        //     getFeeds();
-
-        // }, 3000);
-       
-        
     }, [item_id]);
 
     useEffect(() => {
@@ -78,7 +65,7 @@ const Item = () => {
         }
     }, [item]);
 
-  
+
 
     function fetchItem() {
         setLoading(true);
@@ -122,10 +109,10 @@ const Item = () => {
         return statusReturn;
     }
     function fetchComment(id) {
-        
+
         HttpCms.get(`/news_items/${id}/comments?token=${appUserInfo?.token}`)
-       // HttpCms.get(`https://run.mocky.io/v3/cdb6424e-ef10-4683-955a-b346919782f6`)
-            .then(response => {                
+            // HttpCms.get(`https://run.mocky.io/v3/cdb6424e-ef10-4683-955a-b346919782f6`)
+            .then(response => {
                 //console.log(response.data, "response.data");
                 setComments(response.data.comments);
             })
@@ -135,184 +122,184 @@ const Item = () => {
     }
     function addComment(data) {
         //let id = comments[comments.length - 1].id + 1;
-       // data.id = id
+        // data.id = id
         console.log("data ", data);
         let commentData = {
-            text:data.text
+            text: data.text
         }
         HttpCms.post(`/news_items/${item_id}/comments?token=${appUserInfo?.token}`, commentData)
             .then((response) => {
-                console.log("Comments Response:-- "+response.data);
-                setComments(response.data.comments); 
+                console.log("Comments Response:-- " + response.data);
+                setComments(response.data.comments);
             })
             .catch((e) => {
                 setLoading(false);
             })
             .finally(() => {
                 setLoading(false);
-        });
+            });
 
         // let c = [...comments];
         //     c.push(data);
         //     setComments(c);
     }
 
-function updateComment(id, data) {
-    let index = comments.findIndex(x => x.id === id);
-    let c = [...comments];
-    c[index].text = data;
-    setComments(c);
-}
-
-function deleteComment(id) {
-    let arr = comments.filter(item => item.id != id);
-    setComments(arr);
-}
-function updateItem(id,item,index) {
-    setLoading(true);
-    HttpCms.patch("/news_items/" + id + "?token="+appUserInfo?.token, item)
-        .then((response) => {
-          
-            if(response.status === 200){
-                //const item = { ...newsItems };
-                //item.news_items[index] = response.data.news_item;
-                //setNewsItems(item);
-                setItem(response.data.news_item);
-            }
-            fetchItem();
-        })
-        .catch((e) => {
-            console.log(e);
-        })
-        .finally(() => {
-            setLoading(false);
-        });
-}
-function uplaodVideo(item, apiEndPoint, video) {
-    setLoading(true);
-    const formData = new FormData();
-    formData.append("source_file", video.video_file);
-    const config = {
-        headers: {
-            'content-type': 'multipart/form-data',
-            'Accept': 'multipart/form-data',
-        }
-    };
-
-    HttpCms.post("/news_items/" + item.id + "/" + apiEndPoint + "?token="+appUserInfo?.token, formData, config)
-        .then((response) => {
-            console.log("video upload Response ",response.data)
-            fetchItem();
-            setLoading(false);
-        })
-        .catch((e) => {
-            console.log(e);
-        })
-        .finally(() => {
-            setLoading(false);
-        });
-}
-function deleteItem(item) {
-    setLoading(true);
-    HttpCms.delete("/news_items/" + item.id + "?token="+appUserInfo?.token)
-        .then((response: any) => {
-           
-            if (response.data.success == true) {
-                //console.log(response, "onssdsdas");
-                //transformNewItems(item, "delete");
-                router.push(
-                    '/cms')
-            }
-        })
-        .catch((e) => {
-            console.log(e);
-        })
-        .finally(() => {
-            setLoading(false);
-        });
-}
-function processedData(data, apiCallEndPoint) {
-    setLoading(true);
-    HttpCms.post("/news_items/" + data.id + "/" + apiCallEndPoint + "?token="+appUserInfo?.token, {})
-        .then((response) => {
-            fetchItem();
-            const event = new Event('build');
-            // setNewsItems(null);
-            // setNewsItemsCached(null);
-            // refreshData(event);
-        })
-        .catch((e) => {
-            console.log(e);
-        })
-        .finally(() => {
-            setLoading(false);
-        });
-
-}
-function getFeeds() {
-
-    //setLoading(true);
-    HttpCms.get("/feeds?token=" + appUserInfo?.token)
-        .then((response) => {
-            console.log("response: ", response.data);
-            setFeeds(response.data.feeds)
-        })
-        .catch((e) => {
-            console.log(e);
-        })
-        .finally(() => {
-            setLoading(false);
-        });
-
-}
-function getColorCode(){
-    if(categories != null){
-            return categories?.hex ? categories?.hex : '#e5e7eb';
-    }else{
-        return '#e5e7eb';
+    function updateComment(id, data) {
+        let index = comments.findIndex(x => x.id === id);
+        let c = [...comments];
+        c[index].text = data;
+        setComments(c);
     }
-}
-function getFeedCategories(){
-    let f = feeds?.findIndex(x => x.id === item.feed_id);
-    console.log("categories ",feeds[f]);
-    let c =feeds[f]?.categories.findIndex(x => x.number === item.category);
-    console.log("feeds[f]?.categories[c] ",feeds[f]?.categories[c]);
-    setCategories(feeds[f]?.categories[c]);
-}
-return (
-    <>
-        {item && (
-        
-            
-       
-            <div className="w-full h-full min-h-screen  bg-gray-500">
 
-                <NavHeader />
+    function deleteComment(id) {
+        let arr = comments.filter(item => item.id != id);
+        setComments(arr);
+    }
+    function updateItem(id, item, index) {
+        setLoading(true);
+        HttpCms.patch("/news_items/" + id + "?token=" + appUserInfo?.token, item)
+            .then((response) => {
 
-               
-                <div className="w-full min-h-96 py-10 px-4">
-                    <div className="max-w-7xl mx-auto">
-                        <div className="w-full">
-                            <div className="w-full mx-auto h-auto">
-                            <PreviewItem                            
-                                showComment={false}
-                                item={item}
-                                processedData={processedData}
-                                uplaodVideo={uplaodVideo}
-                                deleteItem={deleteItem}
-                                updateItem={updateItem}
-                                feeds={feeds}
-                            />
-                                <div className="flex flex-no-wrap justify-center">
-                                    <div className="w-11/12 mx-auto flex-none float-left">
-                                        <div className="md:flex mx-6 md:mx-auto w-full h-full mb-5">
-                                        {/* border-${categories ? categories[item?.category].color : 'gray-200'} */}
-                                            <div style={{borderColor: getColorCode()}} className={`relative w-full h-full md:w-4/5 px-4 py-2 bg-white rounded-lg rounded-r-none border-l-8`}>
-                                            
-                                                {/* <div className="flex items-center mb-4">
+                if (response.status === 200) {
+                    //const item = { ...newsItems };
+                    //item.news_items[index] = response.data.news_item;
+                    //setNewsItems(item);
+                    setItem(response.data.news_item);
+                }
+                fetchItem();
+            })
+            .catch((e) => {
+                console.log(e);
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+    }
+    function uplaodVideo(item, apiEndPoint, video) {
+        setLoading(true);
+        const formData = new FormData();
+        formData.append("source_file", video.video_file);
+        const config = {
+            headers: {
+                'content-type': 'multipart/form-data',
+                'Accept': 'multipart/form-data',
+            }
+        };
+
+        HttpCms.post("/news_items/" + item.id + "/" + apiEndPoint + "?token=" + appUserInfo?.token, formData, config)
+            .then((response) => {
+                console.log("video upload Response ", response.data)
+                fetchItem();
+                setLoading(false);
+            })
+            .catch((e) => {
+                console.log(e);
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+    }
+    function deleteItem(item) {
+        setLoading(true);
+        HttpCms.delete("/news_items/" + item.id + "?token=" + appUserInfo?.token)
+            .then((response: any) => {
+
+                if (response.data.success == true) {
+                    //console.log(response, "onssdsdas");
+                    //transformNewItems(item, "delete");
+                    router.push(
+                        '/cms')
+                }
+            })
+            .catch((e) => {
+                console.log(e);
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+    }
+    function processedData(data, apiCallEndPoint) {
+        setLoading(true);
+        HttpCms.post("/news_items/" + data.id + "/" + apiCallEndPoint + "?token=" + appUserInfo?.token, {})
+            .then((response) => {
+                fetchItem();
+                const event = new Event('build');
+                // setNewsItems(null);
+                // setNewsItemsCached(null);
+                // refreshData(event);
+            })
+            .catch((e) => {
+                console.log(e);
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+
+    }
+    function getFeeds() {
+
+        //setLoading(true);
+        HttpCms.get("/feeds?token=" + appUserInfo?.token)
+            .then((response) => {
+                console.log("response: ", response.data);
+                setFeeds(response.data.feeds)
+            })
+            .catch((e) => {
+                console.log(e);
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+
+    }
+    function getColorCode() {
+        if (categories != null) {
+            return categories?.hex ? categories?.hex : '#e5e7eb';
+        } else {
+            return '#e5e7eb';
+        }
+    }
+    function getFeedCategories() {
+        let f = feeds?.findIndex(x => x.id === item.feed_id);
+        console.log("categories ", feeds[f]);
+        let c = feeds[f]?.categories.findIndex(x => x.number === item.category);
+        console.log("feeds[f]?.categories[c] ", feeds[f]?.categories[c]);
+        setCategories(feeds[f]?.categories[c]);
+    }
+    return (
+        <>
+            {item && (
+
+
+
+                <div className="w-full h-full min-h-screen  bg-gray-500">
+
+                    <NavHeader />
+
+
+                    <div className="w-full min-h-96 py-10 px-4">
+                        <div className="max-w-7xl mx-auto">
+                            <div className="w-full">
+                                <div className="w-full mx-auto h-auto">
+                                    <PreviewItem
+                                        showComment={false}
+                                        item={item}
+                                        processedData={processedData}
+                                        uplaodVideo={uplaodVideo}
+                                        deleteItem={deleteItem}
+                                        updateItem={updateItem}
+                                        feeds={feeds}
+                                    />
+                                    <div className="flex flex-no-wrap justify-center">
+                                        <div className="w-11/12 mx-auto flex-none float-left">
+                                            <div className="md:flex mx-6 md:mx-auto w-full h-full mb-5">
+                                                {/* border-${categories ? categories[item?.category].color : 'gray-200'} */}
+                                                <div style={{ borderColor: getColorCode() }} className={`relative w-full h-full md:w-4/5 px-4 py-2 bg-white rounded-lg rounded-r-none border-l-8`}>
+
+                                                    {/* <div className="flex items-center mb-4">
                                                     <h2 className="text-base text-gray-800 font-medium mr-auto">{item?.title}</h2>
                                                 </div> */}
-                                                {/* {item?.descriptions.length > 0 && (
+                                                    {/* {item?.descriptions.length > 0 && (
                                                     <div className="w-full mb-4">
                                                         <div className="p-4 shadow rounded border border-gray-300">
                                                             <div className="block">
@@ -340,7 +327,7 @@ return (
                                                     </div>
                                                 )} */}
 
-                                                {/* <div className="w-full mb-16">
+                                                    {/* <div className="w-full mb-16">
                                                     <div className="p-4 shadow rounded border border-gray-300">
                                                         <div className="block">
                                                             <div className="border-b border-gray-200">
@@ -366,7 +353,7 @@ return (
                                                         </div>
                                                     </div>
                                                 </div> */}
-                                                {/* <div className="absolute mb-4 mr-4">
+                                                    {/* <div className="absolute mb-4 mr-4">
                                                     <div className="w-full space-x-2 flex justify-end">
                                                         {item?.tags.map(tag => (
                                                             <span key={tag} className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium leading-4 bg-blue-100 text-blue-800">
@@ -375,26 +362,26 @@ return (
                                                         ))}
                                                     </div>
                                                 </div> */}
-                                                <div className="w-full py-5">
-                                                    <div className="w-full py-4 flex items-center">
-                                                        <div className="w-1/5 flex items-center">
-                                                            <span className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-blue-700">
-                                                                <span className="text-lg font-medium leading-none text-white">{comments?.length}</span>
-                                                            </span>
-                                                            <label className="ml-3 text-xl font-bold text-gray-800">Comments</label>
+                                                    <div className="w-full py-5">
+                                                        <div className="w-full py-4 flex items-center">
+                                                            <div className="w-1/5 flex items-center">
+                                                                <span className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-blue-700">
+                                                                    <span className="text-lg font-medium leading-none text-white">{comments?.length}</span>
+                                                                </span>
+                                                                <label className="ml-3 text-xl font-bold text-gray-800">Comments</label>
+                                                            </div>
+                                                            <div className="w-4/5 h-1 border-b-2 border-black"></div>
                                                         </div>
-                                                        <div className="w-4/5 h-1 border-b-2 border-black"></div>
-                                                    </div>
-                                                    <div className="w-full mb-10 space-y-4">
-                                                        {comments?.map((comment, i) => (
-                                                            <Comment type='view' action={updateComment} delete={deleteComment} comment={comment} />
-                                                        ))}
-                                                        <Comment type='add' action={addComment} />
+                                                        <div className="w-full mb-10 space-y-4">
+                                                            {comments?.map((comment, i) => (
+                                                                <Comment type='view' action={updateComment} delete={deleteComment} comment={comment} />
+                                                            ))}
+                                                            <Comment type='add' action={addComment} />
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
 
-                                            {/* <div className={`bg-${categories[item?.category].color} w-full md:w-1/5 relative z-10 rounded-lg rounded-l-none`}>
+                                                {/* <div className={`bg-${categories[item?.category].color} w-full md:w-1/5 relative z-10 rounded-lg rounded-l-none`}>
                                                 <div className="inset-x-0 top-0 transform">
                                                     <div className="flex justify-center transform">
                                                         <span className={`bg-${categories[item?.category].color} shadow inline-flex w-full h-10 flex items-center justify-center text-center px-4 py-1 text-sm leading-5 font-semibold tracking-wider uppercase text-white`}>
@@ -414,6 +401,7 @@ return (
                                                     }
                                                 </div>
                                             </div> */}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -421,10 +409,9 @@ return (
                         </div>
                     </div>
                 </div>
-            </div>
-        )}
-    </>
-)
+            )}
+        </>
+    )
 }
 
 export default Item
