@@ -57,6 +57,15 @@ const Feed = (props) => {
         })
     }
 
+    function handleCategoryInputChange(e) {
+        //console.log(e.target);
+        e.preventDefault();
+        setCategory({
+            ...category,
+            [e.target.name]: e.target.value
+        })
+    }
+
     function getRandomString(length = 10) {
         var randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
         var result = '';
@@ -135,15 +144,15 @@ const Feed = (props) => {
                                             <>
                                                 <div>
                                                     <label className="text-sm font-medium">Number</label>
-                                                    <input name="id" className="form-input block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
+                                                    <input value={category?.number} onChange={(e) => handleCategoryInputChange(e)} name="number" className="form-input block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
                                                 </div>
                                                 <div>
                                                     <label className="text-sm font-medium">Title</label>
-                                                    <input name="id" className="form-input block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
+                                                    <input value={category?.title} onChange={(e) => handleCategoryInputChange(e)} name="title" className="form-input block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
                                                 </div>
                                                 <div>
                                                     <label className="text-sm font-medium">Colour</label>
-                                                    <input name="id" className="form-input block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
+                                                    <input value={category?.colour} onChange={(e) => handleCategoryInputChange(e)} name="colour" className="form-input block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
                                                 </div>
                                                 <div ref={pickerWrapperRef} data-id="picker" className="relative inline-block">
                                                     <label className="text-sm font-medium">Hex</label>
