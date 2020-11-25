@@ -79,11 +79,22 @@ const Feed = (props) => {
                                     {action === 'view' ?
                                         <span className="flex flex-wrap">{feed?.description}</span>
                                         :
-                                        <textarea rows={3} name="description" value={feed?.description} onChange={(e) => handleInputChange(e)} className="form-input block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5"/>
+                                        <textarea rows={3} name="description" value={feed?.description} onChange={(e) => handleInputChange(e)} className="form-input block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
                                     }
                                 </p>
                             </div>
-
+                            {action != 'add' && (
+                                <div className="col-span-3 ">
+                                    <p className="text-sm font-medium text-indigo-600 truncate">Cetegories</p>
+                                    <div className="mt-2 w-full flex flex-wrap justify-start">
+                                        {feed?.categories?.map((cat,i)=>(
+                                            <span style={{backgroundColor: cat.colour}} className="inline-flex items-center px-3 py-1 mr-2 mb-2 rounded text-xs font-medium leading-4 text-black uppercase">
+                                                {cat.title}
+                                            </span>
+                                        ))}                                        
+                                    </div>
+                                </div>
+                            )}
                             {action === 'add' && (
                                 <div className="flex space-x-4">
                                     <button onClick={(e) => submitFeed(e)} className="bg-green-600 hover:bg-green-700 text-white text-sm py-1 px-2 rounded cursor-pointer">Submit</button>
