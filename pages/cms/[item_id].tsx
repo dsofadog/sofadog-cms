@@ -150,10 +150,12 @@ const Item = () => {
     const [clips, setClips] = useState({ video: null, thumbnails: null });
     const [isEdit, setIsEdit] = useState(false);
 
-    const categories = CmsConstant.Category;
+   // const categories = CmsConstant.Category;
     const status = CmsConstant.Status;
+    const [categories,setCategories] = useState(null);
 
     const [comments, setComments] = useState(null);
+    const [feeds, setFeeds] = useState(null);
 
     useEffect(() => {
         logoutUserCheck();
@@ -162,11 +164,14 @@ const Item = () => {
             fetchItem();
             fetchComment(item_id);
         }
+        getFeeds();
+        
     }, [item_id]);
 
     useEffect(() => {
         if (item) {
             showSentences(0);
+            getFeedCategories();
             showCredits('news_credits', item.news_credits);
         }
     }, [item]);
@@ -351,6 +356,36 @@ function processedData(data, apiCallEndPoint) {
         });
 
 }
+function getFeeds() {
+
+    //setLoading(true);
+    HttpCms.get("/feeds?token=" + appUserInfo?.token)
+        .then((response) => {
+            console.log("response: ", response.data);
+            setFeeds(response.data.feeds)
+        })
+        .catch((e) => {
+            console.log(e);
+        })
+        .finally(() => {
+            setLoading(false);
+        });
+
+}
+function getColorCode(){
+    if(categories != null){
+            return categories?.hex ? categories?.hex : '#e5e7eb';
+    }else{
+        return '#e5e7eb';
+    }
+}
+function getFeedCategories(){
+    let f = feeds?.findIndex(x => x.id === item.feed_id);
+    console.log("categories ",feeds[f]);
+    let c =feeds[f]?.categories.findIndex(x => x.number === item.category);
+    console.log("feeds[f]?.categories[c] ",feeds[f]?.categories[c]);
+    setCategories(feeds[f]?.categories[c]);
+}
 return (
     <>
         {item && (
@@ -366,22 +401,20 @@ return (
                     <div className="max-w-7xl mx-auto">
                         <div className="w-full">
                             <div className="w-full mx-auto h-auto">
-                            <PreviewItem
-                                                // index={i}
-                                                // totalData={paginationData?.total_data}
-                                                showComment={false}
-                                                item={item}
-                                                 processedData={processedData}
-                                                 uplaodVideo={uplaodVideo}
-                                                 deleteItem={deleteItem}
-                                                // move={decrement_increment_ordinal}
-                                                 updateItem={updateItem}
-                                            />
+                            <PreviewItem                            
+                                showComment={false}
+                                item={item}
+                                processedData={processedData}
+                                uplaodVideo={uplaodVideo}
+                                deleteItem={deleteItem}
+                                updateItem={updateItem}
+                                feeds={feeds}
+                            />
                                 <div className="flex flex-no-wrap justify-center">
                                     <div className="w-11/12 mx-auto flex-none float-left">
                                         <div className="md:flex mx-6 md:mx-auto w-full h-full mb-5">
-
-                                            <div className={`border-${categories ? categories[item?.category].color : 'gray-200'} relative w-full h-full md:w-4/5 px-4 py-2 bg-white rounded-lg rounded-r-none border-l-8`}>
+                                        {/* border-${categories ? categories[item?.category].color : 'gray-200'} */}
+                                            <div style={{borderColor: getColorCode()}} className={`relative w-full h-full md:w-4/5 px-4 py-2 bg-white rounded-lg rounded-r-none border-l-8`}>
                                             
                                                 {/* <div className="flex items-center mb-4">
                                                     <h2 className="text-base text-gray-800 font-medium mr-auto">{item?.title}</h2>
