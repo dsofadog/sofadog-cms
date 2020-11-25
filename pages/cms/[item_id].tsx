@@ -46,9 +46,6 @@ const Item = () => {
 
     useEffect(() => {
         checkOnRefresh();
-    
-       
-        
     }, [item_id]);
 
     useEffect(() => {
