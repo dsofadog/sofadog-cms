@@ -219,7 +219,7 @@ const Demo = () => {
     function handleLoadMore() {
         if (selectedFeed != null) {
             return false;
-        } else {
+        }else{
             setScrollCount(scrollCount + 1);
             fetchItems(false);
         }       
