@@ -91,7 +91,7 @@ const Comment = (props) => {
         }
         if (event.keyCode === 13) {
             //reply();
-            event.preventDefault();
+            //event.preventDefault();
         }
     }, []);
 
