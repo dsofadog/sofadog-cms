@@ -27,10 +27,10 @@ const Login = () => {
   const tempData=[];
 
   useEffect(() => {
-    setUserInfo({
-      email: "superuser@so.fa.dog",
-      password: "090CE11ce@",
-    });
+    // setUserInfo({
+    //   email: "superuser@so.fa.dog",
+    //   password: "090CE11ce@",
+    // });
     // setUserInfo({
     //     email: '',
     //     password: '',
