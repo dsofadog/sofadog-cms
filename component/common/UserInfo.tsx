@@ -206,13 +206,27 @@ const UserInfo = (props) => {
 
     function getRoleName(role){
         let index = roles.findIndex(x => x.id === role);
-        if(index != -1){
+        console.log("insex and role",index,role);
+        if(index >= 0){
             return roles[index].description;
+        }else{
+            return 'ffff'
         }
         
     }
     function resetUserPassword(){
         props.resetPassword();
+    }
+    function displayAllRoleNames(role){
+        let r = [];
+        userData?.admin_roles.map(role=>{
+            console.log('role ',role)
+            if(role.description != undefined){
+                r.push(role.description);
+            }
+            
+        })
+        return r.join(', ');
     }
     return (
         <li>
@@ -254,7 +268,7 @@ const UserInfo = (props) => {
                                                 Roles
                                             </div>
                                             <div className="mt-2 flex items-center text-sm leading-5 text-gray-500">
-                                            {userData?.admin_roles[0]?.description}
+                                            {displayAllRoleNames(userData?.admin_roles)}
                                             </div>
                                         </div>
                                     </div>
@@ -386,14 +400,19 @@ const UserInfo = (props) => {
                                             {selectedRole?.length > 0 && (
                                                     <>
                                                         {selectedRole.map((role, i) => (
-                                                            <span key={i} className="inline-flex items-center mr-2 mb-2 h-8 px-2 py-0.5 rounded text-xs font-medium leading-4 bg-blue-100 text-blue-800">
-                                                                {getRoleName(role)}
-                                                                <button onClick={(e)=>removeAddRole(e,role,'remove_role')} type="button" className="flex-shrink-0 ml-1.5 inline-flex text-indigo-500 focus:outline-none focus:text-indigo-700" aria-label="Remove small badge">
-                                                                    <svg className="h-2 w-2" stroke="currentColor" fill="none" viewBox="0 0 8 8">
-                                                                        <path strokeLinecap="round" strokeWidth="1.5" d="M1 1l6 6m0-6L1 7" />
-                                                                    </svg>
-                                                                </button>
-                                                            </span>
+                                                            <>
+                                                             {role != undefined && (
+                                                                <span key={i} className="inline-flex items-center mr-2 mb-2 h-8 px-2 py-0.5 rounded text-xs font-medium leading-4 bg-blue-100 text-blue-800">
+                                                                    {getRoleName(role)}
+                                                                    <button onClick={(e)=>removeAddRole(e,role,'remove_role')} type="button" className="flex-shrink-0 ml-1.5 inline-flex text-indigo-500 focus:outline-none focus:text-indigo-700" aria-label="Remove small badge">
+                                                                        <svg className="h-2 w-2" stroke="currentColor" fill="none" viewBox="0 0 8 8">
+                                                                            <path strokeLinecap="round" strokeWidth="1.5" d="M1 1l6 6m0-6L1 7" />
+                                                                        </svg>
+                                                                    </button>
+                                                                </span>
+                                                             )}
+                                                            </>
+                                                         
                                                         ))}
                                                     </>
 

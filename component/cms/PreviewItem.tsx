@@ -174,6 +174,7 @@ const PreviewItem = (props) => {
     const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
 
     function actionRender(item) {
+        console.log("state: ",item.state);
         // className="px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer"
         switch (item.state) {
             case "new": {
@@ -342,7 +343,7 @@ const PreviewItem = (props) => {
                         )
                         }
 
-                        <button onClick={(e) => actionPerformed(item, "claim", e)} className={`${currentUserPermission('pushed_to_feed', "") && item?.owners?.ready_for_push == undefined ? 'px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
+                        <button onClick={(e) => actionPerformed(item, "claim", e)} className={`${currentUserPermission('pushed_to_feed', "") && item?.owners?.pushed_to_feed == undefined ? 'px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
                             Claim
                     </button>
 

@@ -435,6 +435,7 @@ const Demo = () => {
                 // setNewsItemsCached(null);
                 // refreshData(event);
                 transformNewItems(response.data.news_item, "overide_index")
+                
 
             })
             .catch((e) => {

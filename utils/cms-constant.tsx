@@ -157,8 +157,8 @@ export default class CmsConstant {
             description: "User Manager"
         },
         {
-            id: "super_user",
-            description: "Super User"
+            id: "super_admin",
+            description: "Super Admin"
         }
     ]
 
