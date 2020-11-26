@@ -431,9 +431,9 @@ const PreviewItem = (props) => {
                                             <div className="mb-4 grid grid-cols-2">
                                                 <div className="left-0 flex justify-start">
                                                     {isExpand ?
-                                                        <FontAwesomeIcon onClick={() => setIsExpand(false)} className="w-5 hover:text-gray-900 cursor-pointer" icon={['fas', 'chevron-down']} />
+                                                        <FontAwesomeIcon onClick={() => setIsExpand(false)} className="w-5 h-5 hover:text-gray-900 cursor-pointer" icon={['fas', 'chevron-down']} />
                                                         :
-                                                        <FontAwesomeIcon onClick={() => setIsExpand(true)} className="w-5 hover:text-gray-900 cursor-pointer" icon={['fas', 'chevron-up']} />
+                                                        <FontAwesomeIcon onClick={() => setIsExpand(true)} className="w-5 h-5 hover:text-gray-900 cursor-pointer" icon={['fas', 'chevron-up']} />
                                                     }
 
                                                 </div>
