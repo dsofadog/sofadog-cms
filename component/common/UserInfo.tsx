@@ -129,6 +129,7 @@ const UserInfo = (props) => {
             first_name: userData.first_name,
             last_name: userData.last_name,
             email: userData.email,
+            job_title: userData.job_title,
             admin_roles: selectedRole
         }
         if (action === 'add') {
@@ -152,6 +153,7 @@ const UserInfo = (props) => {
             first_name: userData.first_name,
             last_name: userData.last_name,
             email: userData.email,
+            job_title: userData.job_title,
             admin_roles: selectedRole
         }
         props.enableDisableUser(status, data);
@@ -167,6 +169,7 @@ const UserInfo = (props) => {
             first_name: userData.first_name,
             last_name: userData.last_name,
             email: userData.email,
+            job_title: userData.job_title,
             admin_roles: selectedRole
         }
 
@@ -203,7 +206,10 @@ const UserInfo = (props) => {
 
     function getRoleName(role){
         let index = roles.findIndex(x => x.id === role);
-        return roles[index].description;
+        if(index != -1){
+            return roles[index].description;
+        }
+        
     }
     function resetUserPassword(){
         props.resetPassword();

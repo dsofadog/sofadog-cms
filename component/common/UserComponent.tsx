@@ -65,10 +65,17 @@ const UserComponent = () => {
             });
 	}
 	function updateUser(id,userData){
+		console.log("userData ",userData);
 		setLoading(true);
 		HttpCms.patch("admin_user/"+id+"?token="+appUserInfo?.token, userData)
 		.then((response) => {
 			setAddNew(false);
+
+			let i = user.findIndex(x => x.email === response.data.user.email);
+			if(i >= 0){
+				user[i] = response.data.user;
+			}
+			
 			console.log(user,"usekkkkkkkkkkkkkkkkkkkkkkkkkk");
 			console.log(response,"response");
 			setLoading(false);
