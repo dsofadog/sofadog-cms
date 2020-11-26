@@ -137,7 +137,7 @@ library.add(fas, fab);
 const Item = () => {
     const router = useRouter()
     const { item_id } = router.query;
-    const { setLoading, appUserInfo } = useContext(LayoutContext);
+    const { setLoading, appUserInfo,logoutUserCheck } = useContext(LayoutContext);
 
     const [item, setItem] = useState(null);
     const [body, setBody] = useState('');
@@ -158,7 +158,7 @@ const Item = () => {
     const [feeds, setFeeds] = useState(null);
 
     useEffect(() => {
-        logoutUserCheck();
+       logoutUserCheck();
         console.log("item_id: ", item_id);
         if (item_id != undefined) {
             fetchItem();
@@ -176,16 +176,7 @@ const Item = () => {
         }
     }, [item]);
 
-    function logoutUserCheck() {
-        console.log(appUserInfo);
-        if (appUserInfo == null) {
-            //|| (appUserInfo?.token !="" && appUserInfo?.token != undefined)
-            setLoading(false);
-            console.log("isnadsadsa");
-            Router.push('/');
-            return false;
-        }
-    }
+  
 
     function fetchItem() {
         setLoading(true);

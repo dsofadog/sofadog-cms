@@ -3,6 +3,7 @@ import Notification from '../component/common/Notification';
 import ProgressSpinner from '../component/common/ProgressSpinner';
 import CmsConstant from '../utils/cms-constant';
 const LayoutContext = createContext(null);
+import Router from 'next/router';
 
 
 function LayoutProvider({ children }) {
@@ -58,6 +59,33 @@ const checkPermission = (permission) => {
  
 }
 
+const setSessionStorage = (STATE_KEY,value) => {
+   value = JSON.stringify(value);
+  sessionStorage.setItem(STATE_KEY, value);
+}
+
+const getSessionStorage = (STATE_KEY) => {
+  sessionStorage.getItem(STATE_KEY);
+}
+
+
+const  logoutUserCheck =() => {
+  if (appUserInfo == null) {      
+       let user_info = sessionStorage.getItem("user_info");    
+         user_info =JSON.parse(user_info);    
+         console.log(user_info,"user_info");    
+       if(user_info==''){
+          setLoading(false);
+         Router.push('/');
+          return false;
+
+       }else{
+          setAppUserInfo(user_info);
+       }
+      
+  }
+}
+
 
 
 
@@ -96,7 +124,10 @@ const clearAPPData =() =>{
     setCurrentUserState,
     clearAPPData,
     userIsSuperAdmin, 
-    setUserIsSuperAdmin
+    setUserIsSuperAdmin,
+    setSessionStorage,
+    getSessionStorage,
+    logoutUserCheck
 
   };
 

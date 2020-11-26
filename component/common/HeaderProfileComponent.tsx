@@ -14,21 +14,13 @@ f_config.autoAddCss = false;
 library.add(fas, fab);
 
 const HeaderProfileComponent = () => {
-    const { setLoading, appUserInfo, setAppUserInfo, setNotification,clearAPPData,currentUserPermission } = useContext(LayoutContext);
+    const { setLoading, appUserInfo, setAppUserInfo, setNotification,clearAPPData,currentUserPermission,logoutUserCheck} = useContext(LayoutContext);
     const profileWrapperRef = useRef(null);
     useOutsideAlerter(profileWrapperRef);
     const [openProfileDropdown, setOpenProfileDropdown] = useState(false);
     const toggleProfileDropdown = () => { setOpenProfileDropdown(!openProfileDropdown) };
     const [onOffShift,setOnOffShift] = useState(false);
-    function logoutUserCheck() {
-      
-        if (appUserInfo == null) {
-            //|| (appUserInfo?.token !="" && appUserInfo?.token != undefined)
-            setLoading(false);         
-            Router.push('/');
-            return false;
-        }
-    }
+   
     useEffect(() =>{
         setOnOffShift(appUserInfo?.user?.on_shift)
     },[])
