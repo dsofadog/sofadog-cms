@@ -34,7 +34,7 @@ const Demo = () => {
     const [categories, setCategories] = useState(null);
 
 
-    const { setLoading, appUserInfo, setAppUserInfo,currentUserPermission,
+    const { setLoading, appUserInfo, setAppUserInfo, currentUserPermission,
         userIsSuperAdmin,
         currentUserState,
         setCurrentUserState,
@@ -104,7 +104,7 @@ const Demo = () => {
         getFeeds();
     }, []);
 
-   
+
 
     function useOutsideAlerter(ref) {
         useEffect(() => {
@@ -219,7 +219,7 @@ const Demo = () => {
     function handleLoadMore() {
         if (selectedFeed != null) {
             return false;
-        }else{
+        } else {
             setScrollCount(scrollCount + 1);
             fetchItems(false);
         }       
@@ -234,7 +234,7 @@ const Demo = () => {
         // }
     }
 
-    function clearData(e){
+    function clearData(e) {
         e.preventDefault();
         setSelectedCategory(null);
         setSelectedTag([]);
@@ -253,7 +253,7 @@ const Demo = () => {
         e.preventDefault();
         //setSelectedCategory(null);
         //setSelectedTag([]);
-       // setSelectedState([]);
+        // setSelectedState([]);
         setNewsItems(null);
         setNewsItemsCached(null);
         setScrollCount(0);
@@ -339,8 +339,8 @@ const Demo = () => {
 
     }
 
-    const  toggleAppViewChanged = ()=>{
-        let toggleAppViewValue  = !toggleAppView;
+    const toggleAppViewChanged = () => {
+        let toggleAppViewValue = !toggleAppView;
         setToggleAppView(toggleAppViewValue);
     }
 
@@ -555,15 +555,15 @@ const Demo = () => {
         setSearch(e.target.value);
     }
 
-    function clearSearch(){
+    function clearSearch() {
         setSearch('');
     }
 
-    useEffect(()=>{
-        if(search.length === 0){
+    useEffect(() => {
+        if (search.length === 0) {
             filteringNewsItem();
         }
-    },[search])
+    }, [search])
 
     function isTagSelected(tag) {
         if (selectedTag.length > 0) {
@@ -952,60 +952,60 @@ const Demo = () => {
                     )}
                 </>
                 <>
-              
- <div  className={`${toggleAppView ? 'flex flex-col' : 'hidden'}`}>
-  <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-    <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-      <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead>
-            <tr>
-            <th scope="col" className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Ordinal Sr
-              </th>
-              <th scope="col" className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Title
-              </th>
-              <th scope="col" className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Tag
-              </th>
-              <th scope="col" className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              state
-              </th>
-              <th scope="col" className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Action
-              </th>             
-            </tr>
-          </thead>
-          <tbody>
-          {newsItems?.news_items.map((item, i) => (                       
-                            <PreviewItemTable
-                                index={i}
-                                showComment={true}
-                                totalData={paginationData?.total_data}
-                                item={item}
-                                processedData={processedData}
-                                uplaodVideo={uplaodVideo}
-                                deleteItem={deleteItem}
-                                move={decrement_increment_ordinal}
-                                updateItem={updateItem}
-                                getSigleItem={singleItem}
-                                feeds={feeds}
-                            />
-                       
-                    ))}
 
-         </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-</div>
+                    <div className={`${toggleAppView ? 'flex flex-col' : 'hidden'}`}>
+                        <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                            <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+                                <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+                                    <table className="min-w-full divide-y divide-gray-200">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col" className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    Ordinal Sr
+              </th>
+                                                <th scope="col" className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    Title
+              </th>
+                                                <th scope="col" className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    Tag
+              </th>
+                                                <th scope="col" className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    state
+              </th>
+                                                <th scope="col" className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    Action
+              </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {newsItems?.news_items.map((item, i) => (
+                                                <PreviewItemTable
+                                                    index={i}
+                                                    showComment={true}
+                                                    totalData={paginationData?.total_data}
+                                                    item={item}
+                                                    processedData={processedData}
+                                                    uplaodVideo={uplaodVideo}
+                                                    deleteItem={deleteItem}
+                                                    move={decrement_increment_ordinal}
+                                                    updateItem={updateItem}
+                                                    getSigleItem={singleItem}
+                                                    feeds={feeds}
+                                                />
 
-                </>              
+                                            ))}
 
-                
-                 <div  className={`${!toggleAppView ? 'flex flex-col' : 'hidden'}`}>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </>
+
+
+                <div className={`${!toggleAppView ? 'flex flex-col' : 'hidden'}`}>
                     {newsItems?.news_items.map((item, i) => (
                         <div key={i}>
                             <PreviewItem
@@ -1023,10 +1023,10 @@ const Demo = () => {
                             />
                         </div>
                     ))}
-                    </div>
+                </div>
 
 
-               
+
             </div>
             {
                 !scrollLoading && newsItems && (
