@@ -29,7 +29,7 @@ const Demo = () => {
     const [selectedTag, setSelectedTag] = useState([]);
     const [selectedState, setSelectedState] = useState([]);
     const [selectedFeed, setSelectedFeed] = useState(null);
-    const [categories,setCategories] = useState(null);
+    const [categories, setCategories] = useState(null);
 
 
     const { setLoading, appUserInfo, currentUserPermission,
@@ -170,6 +170,7 @@ const Demo = () => {
             "tags": selectedTag.join(),
             "category": selectedCategory,
             "state": selectedState.join(),
+            "title": search
         }
         let url = returnUrlForNewItems(dataUrlObj);
         console.log(url, "url made");
@@ -218,10 +219,12 @@ const Demo = () => {
     }
 
     function handleLoadMore() {
-        if (selectedFeed === null) {
+        if (selectedFeed != null) {
+            return false;
+        }else{
             setScrollCount(scrollCount + 1);
             fetchItems(false);
-        }
+        }       
 
         // if (search.length === 0 && selectedState == null) {
         //     if (newsItems?.news_items.length > 0) {
@@ -323,7 +326,8 @@ const Demo = () => {
 
     }
 
-    const filteringCategoryTag = () => {
+    const filteringNewsItem = () => {
+        setScrollCount(0);
         setLoading(true);
         console.log(selectedState.join(), "selectedState");
 
@@ -336,6 +340,7 @@ const Demo = () => {
             "category": selectedCategory,
             "state": selectedState.join(),
             "feed_id": selectedFeed,
+            "title": search
         }
 
         let api = returnUrlForNewItems(dataUrlObj);
@@ -531,26 +536,15 @@ const Demo = () => {
         setSearch(e.target.value);
     }
 
-    useEffect(() => {
+    function clearSearch(){
+        setSearch('');
+    }
 
-        if (search.length === 0) {
-            setNewsItems(newsItemsCached);
-        } else {
-            let itemsToDisplay = [];
-            itemsToDisplay = newsItemsCached.news_items.filter(
-                item =>
-                    item.title
-                        .toLowerCase()
-                        .includes(search.toLowerCase())
-            )
-
-            setNewsItems({
-                news_items: itemsToDisplay,
-                total_items: itemsToDisplay.length
-            })
+    useEffect(()=>{
+        if(search.length === 0){
+            filteringNewsItem();
         }
-
-    }, [search]);
+    },[search])
 
     function isTagSelected(tag) {
         if (selectedTag.length > 0) {
@@ -564,8 +558,6 @@ const Demo = () => {
         }
         return false;
     }
-
-
 
     // function handleScroll(e) {
     //     const target = e.target;
@@ -644,7 +636,7 @@ const Demo = () => {
             return feeds[i].name ? feeds[i].name : feeds[i].id;
         }
     }
-   
+
 
     return (
         <div className="w-full h-full min-h-screen bg-gray-500">
@@ -674,13 +666,18 @@ const Demo = () => {
                         <div className="flex-1 flex items-center justify-center px-2 space-x-2 lg:ml-6 lg:justify-end">
                             <div className="max-w-lg w-full lg:max-w-xs">
                                 <label htmlFor="search" className="sr-only">Search</label>
-                                <div className="relative">
-                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <svg className="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
-                                        </svg>
+                                <div className="mt-1 flex rounded-md shadow-sm">
+                                    <div className="relative flex items-stretch flex-grow focus-within:z-10">
+                                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <svg className="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
+                                            </svg>
+                                        </div>
+                                        <input id="search" value={search} onChange={(e) => handleChangeSearch(e)} className="block w-full pl-10 pr-3 py-2 border border-transparent rounded-md leading-5 bg-gray-700 text-gray-300 placeholder-gray-400 focus:outline-none focus:bg-white focus:text-gray-900 sm:text-sm transition duration-150 ease-in-out" placeholder="Search" type="search" />
                                     </div>
-                                    <input id="search" value={search} onChange={(e) => handleChangeSearch(e)} className="block w-full pl-10 pr-3 py-2 border border-transparent rounded-md leading-5 bg-gray-700 text-gray-300 placeholder-gray-400 focus:outline-none focus:bg-white focus:text-gray-900 sm:text-sm transition duration-150 ease-in-out" placeholder="Search" type="search" />
+                                    <button onClick={(e) => filteringNewsItem()} className="-ml-px relative inline-flex items-center space-x-2 px-4 py-2 text-sm font-medium rounded-r-md text-white bg-indigo-500 hover:bg-indigo-400 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-600 active:bg-indigo-600">
+                                        <span>Submit</span>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -767,7 +764,7 @@ const Demo = () => {
                                                                         <>
                                                                             {selectedTag.length > 0 && (
                                                                                 <div className="w-full mt-2 flex justify-center">
-                                                                                    <button onClick={(e) => { clearTag(e); filteringCategoryTag(); }} className="w-auto text-white text-sm bg-blue-600 hover:bg-blue-700 rounded px-4 py-1">Clear</button>
+                                                                                    <button onClick={(e) => { clearTag(e); filteringNewsItem(); }} className="w-auto text-white text-sm bg-blue-600 hover:bg-blue-700 rounded px-4 py-1">Clear</button>
                                                                                 </div>
                                                                             )}
                                                                         </>
@@ -816,7 +813,7 @@ const Demo = () => {
                                                                         <>
                                                                             {selectedState && (
                                                                                 <div className="w-full mt-2 flex justify-center">
-                                                                                    <button onClick={(e) => { clearState(e); filteringCategoryTag(); }} className="w-auto text-white text-sm bg-blue-600 hover:bg-blue-700 rounded px-4 py-1">Clear</button>
+                                                                                    <button onClick={(e) => { clearState(e); filteringNewsItem(); }} className="w-auto text-white text-sm bg-blue-600 hover:bg-blue-700 rounded px-4 py-1">Clear</button>
                                                                                 </div>
                                                                             )}
                                                                         </>
@@ -862,7 +859,7 @@ const Demo = () => {
                                                                         <>
                                                                             {selectedFeed && (
                                                                                 <div className="w-full mt-2 flex justify-center">
-                                                                                    <button onClick={(e) => { clearFeeds(e); filteringCategoryTag(); }} className="w-auto text-white text-sm bg-blue-600 hover:bg-blue-700 rounded px-4 py-1">Clear</button>
+                                                                                    <button onClick={(e) => { clearFeeds(e); filteringNewsItem(); }} className="w-auto text-white text-sm bg-blue-600 hover:bg-blue-700 rounded px-4 py-1">Clear</button>
                                                                                 </div>
                                                                             )}
                                                                         </>
@@ -874,7 +871,7 @@ const Demo = () => {
                                                 </div>
                                             </div>
                                             <div className="w-full p-2 space-x-2 flex">
-                                                <button onClick={(e) => filteringCategoryTag()} className="text-white text-sm bg-indigo-600 hover:bg-indigo-800 rounded w-1/2 p-2">Submit</button>
+                                                <button onClick={(e) => filteringNewsItem()} className="text-white text-sm bg-indigo-600 hover:bg-indigo-800 rounded w-1/2 p-2">Submit</button>
                                                 <button onClick={(e) => { refreshData(e); toggleFilterDropdown(); }} className="text-gray-800 text-sm border border-indigo-600 hover:bg-gray-200 rounded w-1/2 p-2">Clear All</button>
                                             </div>
                                         </div>
@@ -937,11 +934,13 @@ const Demo = () => {
 
                 </>
             </div>
-            {!scrollLoading && newsItems && (
-                <div className="fixed bottom-0 right-0 mb-4 mr-4 z-50 cursor-pointer">
-                    <FontAwesomeIcon onClick={(e) => scrollToSection()} className="w-12 h-12 p-2 rounded-full cursor-pointer text-white bg-blue-500 hover:bg-blue-600" icon={['fas', 'arrow-up']} />
-                </div>
-            )}
+            {
+                !scrollLoading && newsItems && (
+                    <div className="fixed bottom-0 right-0 mb-4 mr-4 z-50 cursor-pointer">
+                        <FontAwesomeIcon onClick={(e) => scrollToSection()} className="w-12 h-12 p-2 rounded-full cursor-pointer text-white bg-blue-500 hover:bg-blue-600" icon={['fas', 'arrow-up']} />
+                    </div>
+                )
+            }
 
         </div >
     )
