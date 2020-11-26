@@ -16,7 +16,9 @@ const Login = () => {
     currentUserState,
     setCurrentUserState,
     userIsSuperAdmin, 
-    setUserIsSuperAdmin
+    setUserIsSuperAdmin,
+    setSessionStorage,
+    getSessionStorage
   } = useContext(LayoutContext);
 
   const [userInfo, setUserInfo] = useState(null);
@@ -110,6 +112,7 @@ const Login = () => {
           let lastName = response.data.user.last_name;
           response.data.displayName = firstName.charAt(0) + lastName.charAt(0);
           setAppUserInfo(response.data);
+          setSessionStorage('user_info',response.data);
           console.log("login response ",response.data);
           currentUserRoleManagement(response.data);
           if(response.data.user.on_shift == null){

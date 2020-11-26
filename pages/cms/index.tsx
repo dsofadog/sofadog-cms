@@ -32,11 +32,14 @@ const Demo = () => {
     const [categories,setCategories] = useState(null);
 
 
-    const { setLoading, appUserInfo, currentUserPermission,
+    const { setLoading, appUserInfo, setAppUserInfo,currentUserPermission,
         userIsSuperAdmin,
         currentUserState,
         setCurrentUserState,
-        currentUserAction
+        currentUserAction,
+        setSessionStorage,
+        getSessionStorage,
+        logoutUserCheck
     } = useContext(LayoutContext);
 
     const [openCategoryDropdown, setOpenCategoryDropdown] = useState(false);
@@ -89,7 +92,7 @@ const Demo = () => {
     useEffect(() => {
 
         console.log(currentUserState, currentUserAction);
-        logoutUserCheck();
+        //logoutUserCheck();
         setNewsItems(null);
         setNewsItemsCached(null);
         setScrollCount(0);
@@ -97,16 +100,7 @@ const Demo = () => {
         getFeeds();
     }, []);
 
-    function logoutUserCheck() {
-
-        if (appUserInfo == null) {
-            //|| (appUserInfo?.token !="" && appUserInfo?.token != undefined)
-            setLoading(false);
-
-            Router.push('/');
-            return false;
-        }
-    }
+   
 
     function useOutsideAlerter(ref) {
         useEffect(() => {

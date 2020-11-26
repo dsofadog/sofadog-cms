@@ -19,7 +19,7 @@ const NotificationBell = () => {
     const bellWrapperRef = useRef(null);
     useOutsideAlerter(bellWrapperRef);
     const [openBellDropdown, setOpenBellDropdown] = useState(false);
-    const { setLoading, appUserInfo, currentUserPermission } = useContext(LayoutContext);
+    const { setLoading, appUserInfo, currentUserPermission ,logoutUserCheck} = useContext(LayoutContext);
     const toggleBellDropdown = () => { setOpenBellDropdown(!openBellDropdown) };
     const [notifications, setNotificatons] = useState(null);
     const router = useRouter();
@@ -27,7 +27,12 @@ const NotificationBell = () => {
 
     function useOutsideAlerter(ref) {
         useEffect(() => {
-            getNotifications();
+            
+            logoutUserCheck();
+            setTimeout(() => {
+                getNotifications();
+            }, 2)
+         
             function handleClickOutside(event) {
                 if (ref.current && !ref.current.contains(event.target)) {
                     if (ref.current.dataset.id === "bell") {
