@@ -233,7 +233,7 @@ const UserInfo = (props) => {
                             <>
                                 <div className="min-w-0 flex-1 px-4 md:grid md:grid-cols-3 md:gap-4">
                                     <div>
-                                        <div className="text-sm leading-5 font-medium text-indigo-600 truncate">{userData?.first_name + userData?.last_name}</div>
+                                        <div className="text-sm leading-5 font-medium text-indigo-600 truncate">{userData?.first_name}&nbsp;{ userData?.last_name}</div>
                                         <div className="mt-2 flex items-center text-sm leading-5 text-gray-500">
                                             <span className="truncate">{userData?.email}</span>
                                         </div>
