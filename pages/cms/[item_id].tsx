@@ -52,8 +52,13 @@ const Item = () => {
                 fetchItem();
                 fetchComment(item_id);
             }
-            getFeeds();      
+                  
+        }else{
+            console.log("item_idsss: ", item_id);
+            fetchItem();
+            fetchComment(item_id);
         }
+        getFeeds();
 
     }, [item_id]);
 

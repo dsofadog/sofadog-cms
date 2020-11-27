@@ -135,8 +135,19 @@ const NotificationBell = () => {
                                                     </div>
 
                                                 ))
+                                                
                                             }
+                    
+                                            <div className="w-full flex px-4 py-1 text-xs leading-5 text-gray-700 hover:bg-gray-200 hover:text-gray-900 cursor-pointer">
+                                                <div  className="w-11/12 flex justify-start">
+                                                    <label className="text-sm text-gray-800 cursor-pointer"><span>Mark all as read</span></label>
+                                                </div>
+                                                <div className="w-1/12 flex items-center justify-end">
+                                                    <FontAwesomeIcon onClick={() => readNotification(notifications)} className="w-5 h-5 cursor-pointer hover:text-white rounded-full bg-gray-300 hover:bg-green-500 p-1" icon={['fas', 'check']} />
+                                                </div>
+                                            </div>
                                         </>
+                                        
                                         :
                                         <>
                                             <div className="w-full flex px-4 py-1 text-xs leading-5 text-gray-700 cursor-pointer">

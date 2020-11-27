@@ -215,7 +215,7 @@ const Feed = (props) => {
                                                 </div>
                                                 <div ref={pickerWrapperRef} data-id="picker" className="relative inline-block">
                                                     <label className="text-sm font-medium">Hex</label>
-                                                    <input value={category?.hex} readOnly onClick={() => setOpenPicker(true)} name="id" className="form-input block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
+                                                    <input value={category?.hex} onChange={(e) => handleCategoryInputChange(e)} name="hex" onClick={() => setOpenPicker(true)}  className="form-input block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
                                                     {openPicker && (
                                                         <div className="origin-top-right absolute right-0 mt-2 w-auto rounded-md shadow-lg z-50">
                                                             <ChromePicker color={colour} onChangeComplete={handleChangeComplete} />

@@ -180,7 +180,7 @@ const PreviewItem = (props) => {
             case "new": {
                 return (
                     <>
-                        { item?.owners?.new != undefined && item?.owners?.new != appUserInfo?.user?.email && (
+                        { item?.owners?.new != undefined && item?.owners?.new == appUserInfo?.user?.email && (
                             <p >Claimed by {item?.owners?.new}</p>
                         )
                         }
@@ -205,7 +205,7 @@ const PreviewItem = (props) => {
                 return (
 
                     <>
-                        { item?.owners?.awaiting_review_by_lead_journalist != undefined && item?.owners?.awaiting_review_by_lead_journalist != appUserInfo?.user?.email && (
+                        { item?.owners?.awaiting_review_by_lead_journalist != undefined && item?.owners?.awaiting_review_by_lead_journalist == appUserInfo?.user?.email && (
                             <p >Claimed by {item?.owners?.awaiting_review_by_lead_journalist}</p>
                         )
                         }
@@ -227,7 +227,7 @@ const PreviewItem = (props) => {
             case "awaiting_video_upload": {
                 return (
                     <>
-                        { item?.owners?.awaiting_video_upload != undefined && item?.owners?.awaiting_video_upload != appUserInfo?.user?.email && (
+                        { item?.owners?.awaiting_video_upload != undefined && item?.owners?.awaiting_video_upload == appUserInfo?.user?.email && (
                             <p >Claimed by {item?.owners?.awaiting_video_upload}</p>
                         )
                         }
@@ -294,7 +294,7 @@ const PreviewItem = (props) => {
             case "awaiting_review_by_lead_video_editor": {
                 return (
                     <>
-                        { item?.owners?.awaiting_review_by_lead_video_editor != undefined && item?.owners?.awaiting_review_by_lead_video_editor != appUserInfo?.user?.email && (
+                        { item?.owners?.awaiting_review_by_lead_video_editor != undefined && item?.owners?.awaiting_review_by_lead_video_editor == appUserInfo?.user?.email && (
                             <p >Claimed by {item?.owners?.awaiting_review_by_lead_video_editor}</p>
                         )
                         }
@@ -320,7 +320,7 @@ const PreviewItem = (props) => {
             case "ready_for_push": {
                 return (
                     <>
-                        { item?.owners?.ready_for_push != undefined && item?.owners?.ready_for_push != appUserInfo?.user?.email && (
+                        { item?.owners?.ready_for_push != undefined && item?.owners?.ready_for_push == appUserInfo?.user?.email && (
                             <p >Claimed by {item?.owners?.ready_for_push}</p>
                         )
                         }
@@ -338,8 +338,10 @@ const PreviewItem = (props) => {
             case "pushed_to_feed": {
                 return (
                     <>
-                        { item?.owners?.pushed_to_feed != undefined && item?.owners?.pushed_to_feed != appUserInfo?.user?.email && (
-                            <p >Claimed by {item?.owners?.pushed_to_feed}</p>
+                        { item?.owners?.pushed_to_feed != undefined && item?.owners?.pushed_to_feed == appUserInfo?.user?.email && (
+                            <>
+                            <div><p >Claimed by {item?.owners?.pushed_to_feed}</p><br></br></div>
+                            </>
                         )
                         }
 
@@ -357,8 +359,11 @@ const PreviewItem = (props) => {
 
                 return (
                     <>
-                        { item?.owners?.removed_from_feed != undefined && item?.owners?.removed_from_feed != appUserInfo?.user?.email && (
-                            <p >Claimed by {item?.owners?.removed_from_feed}</p>
+                        { item?.owners?.removed_from_feed != undefined && item?.owners?.removed_from_feed == appUserInfo?.user?.email && (
+                            
+                            <>
+                            <p >Claimed by {item?.owners?.removed_from_feed}</p><br></br>
+                            </>
                         )
                         }
 
@@ -431,9 +436,9 @@ const PreviewItem = (props) => {
                                             <div className="mb-4 grid grid-cols-2">
                                                 <div className="left-0 flex justify-start">
                                                     {isExpand ?
-                                                        <FontAwesomeIcon onClick={() => setIsExpand(false)} className="w-5 hover:text-gray-900 cursor-pointer" icon={['fas', 'chevron-down']} />
+                                                        <FontAwesomeIcon onClick={() => setIsExpand(false)} className="w-5 h-5 hover:text-gray-900 cursor-pointer" icon={['fas', 'chevron-down']} />
                                                         :
-                                                        <FontAwesomeIcon onClick={() => setIsExpand(true)} className="w-5 hover:text-gray-900 cursor-pointer" icon={['fas', 'chevron-up']} />
+                                                        <FontAwesomeIcon onClick={() => setIsExpand(true)} className="w-5 h-5 hover:text-gray-900 cursor-pointer" icon={['fas', 'chevron-up']} />
                                                     }
 
                                                 </div>
@@ -520,6 +525,7 @@ const PreviewItem = (props) => {
                                                         </div>
                                                     </>
                                                 )}
+                                                
                                                 {
                                                     props.showComment && (
                                                         <div className="w-full py-4">
@@ -534,8 +540,6 @@ const PreviewItem = (props) => {
                                                             </div>
                                                         </div>
                                                     )
-
-
                                                 }
 
                                             </div>

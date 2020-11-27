@@ -425,7 +425,7 @@ const UserInfo = (props) => {
                                             <>
                                                 <div className="sm:col-span-2">
                                                     <label htmlFor="email" className="block text-sm font-medium leading-5 text-gray-700">
-                                                        New Passowrd
+                                                        New Password
                                                     </label>
                                                     <div className="mt-1 rounded-md shadow-sm">
                                                         <input type="password" name="password" value={userPass} onChange={(e)=>handPassChange(e)} className="form-input block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
@@ -433,7 +433,7 @@ const UserInfo = (props) => {
                                                 </div>
                                                 <div className="hidden sm:col-span-2">
                                                     <label htmlFor="email" className="block text-sm font-medium leading-5 text-gray-700">
-                                                        Confirm Passowrd
+                                                        Confirm Password
                                                     </label>
                                                     <div className="mt-1 rounded-md shadow-sm">
                                                         <input type="password" className="form-input block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
