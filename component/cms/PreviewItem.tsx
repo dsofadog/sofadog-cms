@@ -536,7 +536,6 @@ const PreviewItem = (props) => {
                                                         </div>
                                                     </>
                                                 )}
-
                                                 {
                                                     props.showComment && (
                                                         <div className="w-full py-4">
