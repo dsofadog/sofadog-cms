@@ -65,27 +65,24 @@ const Item = () => {
             console.log("item_id: ", item_id);
             setRedirectUrl(item_id);
         }
-            console.log("item_id: ", item_id);
-            setTimeout(function(){ 
-                if (item_id != undefined) {
-                    fetchItem();
-                    
-                    fetchComment(item_id);
-                    //fetchComment(item_id);
-                }
-                getFeeds();
-    
-            }, 3000);
+        if (item_id != undefined) {
+            fetchItem();
+            
+            fetchComment(item_id);
+            //fetchComment(item_id);
+        }
+        getFeeds();
     };
 
   
 
     function fetchItem() {
         setLoading(true);
+        console.log(`/news_items/${item_id}?token=${appUserInfo?.token}`);
         HttpCms.get(`/news_items/${item_id}?token=${appUserInfo?.token}`)
             .then(response => {
-                setItem(response.data.news_items[0]);
-                console.log(response.data.news_items[0], "response.data.data");
+                setItem(response?.data?.news_items[0]);
+                console.log(response?.data?.news_items[0], "response.data.data");
                 setLoading(false);
             })
             .catch(e => {
@@ -127,7 +124,7 @@ const Item = () => {
             // HttpCms.get(`https://run.mocky.io/v3/cdb6424e-ef10-4683-955a-b346919782f6`)
             .then(response => {
                 //console.log(response.data, "response.data");
-                setComments(response.data.comments);
+                setComments(response?.data?.comments);
             })
             .catch(e => {
                 console.log(e);
