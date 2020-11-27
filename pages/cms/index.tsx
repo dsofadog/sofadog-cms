@@ -230,7 +230,7 @@ const Demo = () => {
         // }
     }
 
-    function refreshData(e) {
+    function clearData(e){
         e.preventDefault();
         setSelectedCategory(null);
         setSelectedTag([]);
@@ -239,6 +239,21 @@ const Demo = () => {
         setNewsItemsCached(null);
         setScrollCount(0);
         setSelectedFeed(null);
+        if (scrollCount === 0) {
+            fetchItems();
+        }
+
+    }
+
+    function refreshData(e) {
+        e.preventDefault();
+        //setSelectedCategory(null);
+        //setSelectedTag([]);
+       // setSelectedState([]);
+        setNewsItems(null);
+        setNewsItemsCached(null);
+        setScrollCount(0);
+        //setSelectedFeed(null);
         if (scrollCount === 0) {
             fetchItems();
         }
