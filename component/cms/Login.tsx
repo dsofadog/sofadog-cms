@@ -18,7 +18,8 @@ const Login = () => {
     userIsSuperAdmin, 
     setUserIsSuperAdmin,
     setSessionStorage,
-    getSessionStorage
+    getSessionStorage,
+    redirectUrl
   } = useContext(LayoutContext);
 
   const [userInfo, setUserInfo] = useState(null);
@@ -45,10 +46,17 @@ const Login = () => {
   }
 
   const  currentUserRoleManagement = async (data) => {
-     await  manageuser(data);
-     console.log(currentUserState,"currentUserState");
-      console.log(currentUserAction,"currentUserAction 1 ");  
-     Router.push("/cms");
+     await  manageuser(data);    
+     //Router.push("/cms");
+
+     if(redirectUrl !=''){
+      Router.push(
+        '/cms/[item_id]',
+        '/cms/' + redirectUrl)
+      
+    }else{
+      Router.push('/');
+    }
  
     
   };
@@ -56,31 +64,30 @@ const Login = () => {
   function manageuser(data){
     data?.user?.admin_roles.forEach(function (item) { 
       rolesAdded(item.id);
-      stateAdded(item.id);     
+      //stateAdded(item.id);     
     });
   }
 
 
 
-  const stateAdded = (role) => {
-  console.log(appState,role,"role",appState[role]);
-    if (appState[role] !== undefined && appState[role] !== null) {
-      console.log(currentUserState,"currentUserState");     
-      let data = appState[role]; 
-      if(Array.isArray(currentUserState) && currentUserState.length){
-        console.log(currentUserState,"before");
-        setCurrentUserState(currentUserState => [...currentUserState, data]);
-        console.log(currentUserState,"after");
-    }else{
-       let data = [];
-       data.push(appState[role]);
-       setCurrentUserState(data);
-       console.log(currentUserState,"after 777");
-    }
+  // const stateAdded = (role) => {
+  // console.log(appState,role,"role",appState[role]);
+  //   if (appState[role] !== undefined && appState[role] !== null) {
+  //     console.log(currentUserState,"currentUserState");     
+  //     let data = appState[role]; 
+  //     if(Array.isArray(currentUserState) && currentUserState.length){     
+  //       setCurrentUserState(currentUserState => [...currentUserState, data]);
+       
+  //   }else{
+  //      let data = [];
+  //      data.push(appState[role]);
+  //      setCurrentUserState(data);
+     
+  //   }
       
-      console.log(currentUserState,"currentUserState 999999");  
-    }
-  };
+
+  //   }
+  // };
 
   const rolesAdded = (role) => {
       if(role=="super_admin"){         
@@ -91,15 +98,11 @@ const Login = () => {
         if(key==role){   
             appAction[key].forEach(function(value) {
               setCurrentUserAction(currentUserAction => [...currentUserAction, value]);  
-              console.log(currentUserAction,"currentUserAction 1 ");  
-                         
               
           });
 
         }
       }
-
-    
   };
 
   const doLogin = (e) => {
@@ -112,8 +115,7 @@ const Login = () => {
           let lastName = response.data.user.last_name;
           response.data.displayName = firstName.charAt(0) + lastName.charAt(0);
           setAppUserInfo(response.data);
-          setSessionStorage('user_info',response.data);
-          console.log("login response ",response.data);
+          setSessionStorage('user_info',response.data);          
           currentUserRoleManagement(response.data);
           if(response.data.user.on_shift == null){
             checkShiftSatus(response.data);

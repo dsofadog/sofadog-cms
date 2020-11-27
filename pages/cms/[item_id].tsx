@@ -16,120 +16,7 @@ import CmsConstant from '../../utils/cms-constant';
 import Comment from '../../component/cms/Comment';
 import PreviewItem from '../../component/cms/PreviewItem';
 
-createServer({
-    routes() {
-        this.passthrough('https://v.so.fa.dog/**');
-        this.passthrough('https://v-int.so.fa.dog/**');
-        this.passthrough('https://run.mocky.io/v3/**');
-        
-        this.namespace = '/api';
-        this.get("/news_items", () => ({
-            news_items: [
-                {
-                    "id": "0be48eb0-1321-11eb-a65a-4785025e4324",
-                    "title": "What's At Stake? Puerto Ricans and the Latino Vote ",
-                    "category": 5,
-                    "news_credits": [
-                        {
-                            "url": "",
-                            "link_text": "AP "
-                        }
-                    ],
-                    "visual_credits": [
-                        {
-                            "url": "",
-                            "link_text": "AP "
-                        },
-                        {
-                            "url": "",
-                            "link_text": "Scanpix"
-                        }
-                    ],
-                    "descriptions": [
-                        {
-                            "language": "english",
-                            "sentences": [
-                                "They have been American citizens since 1917, and yet they can’t vote So why are Trump and Biden tapping them? They comprise 27% of Hispanics of voting age in Florida, a key state for Trump’s 2016 victory This small island territory is in Hurricane Alley, and they have been reliant on federal aidThe candidates are banking on Latinos' close-knit ties to influence their friends and families in the mainland US Biden’s campaign says, “With your vote there, you help us here”Trump pledged $13B in aid for Hurricane Maria. He says he's ‘the best thing that happened to Puerto Rico'"
-                            ]
-                        }
-                    ],
-                    "updated_at": 1603231936,
-                    "created_at": 1603231821,
-                    "state": "pushed_to_feed",
-                    "clips": [
-                        {
-                            "id": "4e3d9b08-1321-11eb-b334-596528e5b754",
-                            "url": "https://cdn.so.fa.dog/aws-transcoded-clips-int/43-0be48eb0-1321-11eb-a65a-4785025e4324.m3u8",
-                            "aspect_ratio": "43",
-                            "updated_at": 1603231933,
-                            "created_at": 1603231933
-                        },
-                        {
-                            "id": "4e3e81b2-1321-11eb-b334-596528e5b754",
-                            "url": "https://cdn.so.fa.dog/aws-transcoded-clips-int/1959-0be48eb0-1321-11eb-a65a-4785025e4324.m3u8",
-                            "aspect_ratio": "1959",
-                            "updated_at": 1603231933,
-                            "created_at": 1603231933
-                        },
-                        {
-                            "id": "4e3f5420-1321-11eb-b334-596528e5b754",
-                            "url": "https://cdn.so.fa.dog/aws-transcoded-clips-int/169-0be48eb0-1321-11eb-a65a-4785025e4324.m3u8",
-                            "aspect_ratio": "169",
-                            "updated_at": 1603231933,
-                            "created_at": 1603231933
-                        }
-                    ],
-                    "tags": [],
-                    "thumbnails": [
-                        {
-                            "id": "4e4027c4-1321-11eb-b334-596528e5b754",
-                            "url": "https://cdn.so.fa.dog/thumbnails-int/0be48eb0-1321-11eb-a65a-4785025e4324.jpg_43.jpg",
-                            "aspect_ratio": "43",
-                            "updated_at": 1603231933,
-                            "created_at": 1603231933
-                        },
-                        {
-                            "id": "4e40f8d4-1321-11eb-b334-596528e5b754",
-                            "url": "https://cdn.so.fa.dog/thumbnails-int/0be48eb0-1321-11eb-a65a-4785025e4324.jpg_1959.jpg",
-                            "aspect_ratio": "1959",
-                            "updated_at": 1603231933,
-                            "created_at": 1603231933
-                        },
-                        {
-                            "id": "4e41c8ae-1321-11eb-b334-596528e5b754",
-                            "url": "https://cdn.so.fa.dog/thumbnails-int/0be48eb0-1321-11eb-a65a-4785025e4324.jpg_169.jpg",
-                            "aspect_ratio": "169",
-                            "updated_at": 1603231933,
-                            "created_at": 1603231933
-                        }
-                    ],
-                    "deleted": null,
-                    "ordinal": 453,
-                    "comments": [
-                        {
-                            id: 1,
-                            email: 'tushar@so.fa.dog',
-                            first_name: 'Tushar',
-                            last_name: 'Kharat',
-                            job_title: 'Software Developer',
-                            text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-                            created: 'Oct 26'
-                        },
-                        {
-                            id: 2,
-                            email: 'delaney@so.fa.dog',
-                            first_name: 'Delaney',
-                            last_name: 'Burke',
-                            job_title: 'CTO',
-                            text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-                            created: 'Oct 27'
-                        }
-                    ]
-                }
-            ],
-        }))
-    },
-})
+
 
 f_config.autoAddCss = false;
 library.add(fas, fab);
@@ -137,7 +24,7 @@ library.add(fas, fab);
 const Item = () => {
     const router = useRouter()
     const { item_id } = router.query;
-    const { setLoading, appUserInfo,logoutUserCheck } = useContext(LayoutContext);
+    const { setLoading, appUserInfo,logoutUserCheck,setRedirectUrl } = useContext(LayoutContext);
 
     const [item, setItem] = useState(null);
     const [body, setBody] = useState('');
@@ -158,13 +45,28 @@ const Item = () => {
     const [feeds, setFeeds] = useState(null);
 
     useEffect(() => {
-       logoutUserCheck();
+        
+        
+
+        
+       
+       logoutUserCheck(true);
+       if(appUserInfo==null){
         console.log("item_id: ", item_id);
-        if (item_id != undefined) {
-            fetchItem();
-            fetchComment(item_id);
-        }
-        getFeeds();
+        setRedirectUrl(item_id);
+    }
+        //console.log("item_id: ", item_id);
+        // setTimeout(function(){ 
+        //     if (item_id != undefined) {
+        //         fetchItem();
+                
+        //         fetchComment("80c7d392-2fc1-11eb-84b1-2f9d5db1e953");
+        //         //fetchComment(item_id);
+        //     }
+        //     getFeeds();
+
+        // }, 3000);
+       
         
     }, [item_id]);
 
@@ -221,7 +123,7 @@ const Item = () => {
     }
     function fetchComment(id) {
         
-        HttpCms.get(`/news_items/${id}/comments?token=${appUserInfo.token}`)
+        HttpCms.get(`/news_items/${id}/comments?token=${appUserInfo?.token}`)
        // HttpCms.get(`https://run.mocky.io/v3/cdb6424e-ef10-4683-955a-b346919782f6`)
             .then(response => {                
                 //console.log(response.data, "response.data");
@@ -238,7 +140,7 @@ const Item = () => {
         let commentData = {
             text:data.text
         }
-        HttpCms.post(`/news_items/${item_id}/comments?token=${appUserInfo.token}`, commentData)
+        HttpCms.post(`/news_items/${item_id}/comments?token=${appUserInfo?.token}`, commentData)
             .then((response) => {
                 console.log("Comments Response:-- "+response.data);
                 setComments(response.data.comments); 
