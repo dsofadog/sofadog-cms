@@ -62,13 +62,17 @@ const Item = () => {
             console.log("item_id: ", item_id);
             setRedirectUrl(item_id);
         }
-        if (item_id != undefined) {
-            fetchItem();
-            
-            fetchComment(item_id);
-            //fetchComment(item_id);
-        }
-        getFeeds();
+            console.log("item_id: ", item_id);
+            setTimeout(function(){ 
+                if (item_id != undefined) {
+                    fetchItem();
+                    
+                    fetchComment(item_id);
+                    //fetchComment(item_id);
+                }
+                getFeeds();
+    
+            }, 3000);
     };
 
   
