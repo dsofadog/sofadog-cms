@@ -159,7 +159,8 @@ const clearAPPData =() =>{
     setSessionStorage,
     getSessionStorage,
     logoutUserCheck,
-    setRedirectUrl
+    setRedirectUrl,
+    redirectUrl
 
   };
 
