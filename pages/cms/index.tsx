@@ -234,7 +234,7 @@ const Demo = () => {
         // }
     }
 
-    function clearData(e) {
+    function clearData(e){
         e.preventDefault();
         setSelectedCategory(null);
         setSelectedTag([]);
@@ -253,7 +253,7 @@ const Demo = () => {
         e.preventDefault();
         //setSelectedCategory(null);
         //setSelectedTag([]);
-        // setSelectedState([]);
+       // setSelectedState([]);
         setNewsItems(null);
         setNewsItemsCached(null);
         setScrollCount(0);
