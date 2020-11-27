@@ -22,6 +22,7 @@ function LayoutProvider({ children }) {
   const [currentUserAction, setCurrentUserAction] = useState([]);
   const [currentUserState, setCurrentUserState] = useState([]);
   const [userIsSuperAdmin, setUserIsSuperAdmin] = useState(0);
+  const [redirectUrl, setRedirectUrl] = useState('');
   
   const currentUserPermission = (permission,user_type) => {
    // console.log(currentUserAction);
@@ -68,19 +69,49 @@ const getSessionStorage = (STATE_KEY) => {
   sessionStorage.getItem(STATE_KEY);
 }
 
+const  currentUserRoleManagement = async (data) => {
+  await  manageuser(data);
+ 
+};
 
-const  logoutUserCheck =() => {
+function manageuser(data){
+ data?.user?.admin_roles.forEach(function (item) { 
+   rolesAdded(item.id);
+   //stateAdded(item.id);     
+ });
+}
+
+const rolesAdded = (role) => {
+  if(role=="super_admin"){         
+    setUserIsSuperAdmin(1);
+  }
+for (const [key, value] of Object.entries(appAction)) {   
+   // console.log(key, value,role);    
+    if(key==role){   
+        appAction[key].forEach(function(value) {
+          setCurrentUserAction(currentUserAction => [...currentUserAction, value]);  
+          
+      });
+
+    }
+  }
+};
+
+
+const  logoutUserCheck =(redirectCallback=false) => {
+ 
   if (appUserInfo == null) {      
-       let user_info = sessionStorage.getItem("user_info");    
-         user_info =JSON.parse(user_info);    
-         console.log(user_info,"user_info");    
-       if(user_info==''){
+       let user_info = sessionStorage.getItem("user_info");
+        user_info =JSON.parse(user_info);
+       if( user_info == null  || user_info==''){
           setLoading(false);
-         Router.push('/');
+          clearAPPData();          
+          Router.push('/');        
           return false;
 
        }else{
           setAppUserInfo(user_info);
+          currentUserRoleManagement(user_info);
        }
       
   }
@@ -127,7 +158,8 @@ const clearAPPData =() =>{
     setUserIsSuperAdmin,
     setSessionStorage,
     getSessionStorage,
-    logoutUserCheck
+    logoutUserCheck,
+    setRedirectUrl
 
   };
 
