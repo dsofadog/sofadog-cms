@@ -227,7 +227,7 @@ const Demo = () => {
         // }
     }
 
-    function refreshData(e) {
+    function clearData(e){
         e.preventDefault();
         setSelectedCategory(null);
         setSelectedTag([]);
@@ -236,6 +236,21 @@ const Demo = () => {
         setNewsItemsCached(null);
         setScrollCount(0);
         setSelectedFeed(null);
+        if (scrollCount === 0) {
+            fetchItems();
+        }
+
+    }
+
+    function refreshData(e) {
+        e.preventDefault();
+        //setSelectedCategory(null);
+        //setSelectedTag([]);
+       // setSelectedState([]);
+        setNewsItems(null);
+        setNewsItemsCached(null);
+        setScrollCount(0);
+        //setSelectedFeed(null);
         if (scrollCount === 0) {
             fetchItems();
         }
@@ -869,7 +884,7 @@ const Demo = () => {
                                             </div>
                                             <div className="w-full p-2 space-x-2 flex">
                                                 <button onClick={(e) => filteringCategoryTag()} className="text-white text-sm bg-indigo-600 hover:bg-indigo-800 rounded w-1/2 p-2">Submit</button>
-                                                <button onClick={(e) => { refreshData(e); toggleFilterDropdown(); }} className="text-gray-800 text-sm border border-indigo-600 hover:bg-gray-200 rounded w-1/2 p-2">Clear All</button>
+                                                <button onClick={(e) => { clearData(e); toggleFilterDropdown(); }} className="text-gray-800 text-sm border border-indigo-600 hover:bg-gray-200 rounded w-1/2 p-2">Clear All</button>
                                             </div>
                                         </div>
                                     </div>

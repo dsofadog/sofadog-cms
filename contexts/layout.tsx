@@ -126,6 +126,7 @@ const clearAPPData =() =>{
   setUserIsSuperAdmin(0);  
   setCurrentUserAction([]);
   setCurrentUserState([]);
+  setSessionStorage('user_info','');
 }
 
   const initialState = {
