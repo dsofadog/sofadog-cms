@@ -21,7 +21,7 @@ library.add(fas, fab);
 
 const Demo = () => {
 
-    //const categories = CmsConstant.Category;
+    //const categories = CmsConstant.Category; 
     const tags = CmsConstant.Tags;
     const status = CmsConstant.Status;
 
