@@ -20,10 +20,10 @@ const NavHeader = () => {
                         </div>
                         <div className="flex-shrink-0 flex items-center space-x-2">
                             <Link href="/cms">
-                                <img className="h-8 w-auto cursor-pointer" src="/color-logo.png" alt="So.Fa.Dog" />
+                                <img className="h-8 w-8 cursor-pointer" src="/color-logo.png" alt="So.Fa.Dog" />
                             </Link>
                             <Link href="/cms">
-                                <img className="h-4 w-auto cursor-pointer" src="/logo-title-white.png" alt="So.Fa.Dog" />
+                                <img className="h-4 w-8 cursor-pointer" src="/logo-title-white.png" alt="So.Fa.Dog" />
                             </Link>
                         </div>
                     </div>
