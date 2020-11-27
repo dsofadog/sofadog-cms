@@ -19,7 +19,8 @@ const Login = () => {
     setUserIsSuperAdmin,
     setSessionStorage,
     getSessionStorage,
-    redirectUrl
+    redirectUrl,
+    setRedirectUrl
   } = useContext(LayoutContext);
 
   const [userInfo, setUserInfo] = useState(null);
@@ -48,14 +49,17 @@ const Login = () => {
   const  currentUserRoleManagement = async (data) => {
      await  manageuser(data);    
      //Router.push("/cms");
+     console.log(redirectUrl,"redirectUrl",redirectUrl!='');
 
      if(redirectUrl !=''){
       Router.push(
         '/cms/[item_id]',
-        '/cms/' + redirectUrl)
+        '/cms/' + redirectUrl);
+        setRedirectUrl('');
       
     }else{
-      Router.push('/');
+      //setRedirectUrl('');
+      Router.push("/cms");
     }
  
     

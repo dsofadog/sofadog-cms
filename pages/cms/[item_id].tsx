@@ -45,27 +45,8 @@ const Item = () => {
     const [feeds, setFeeds] = useState(null);
 
     useEffect(() => {
-        
-        
-
-        
-       
-       logoutUserCheck(true);
-       if(appUserInfo==null){
-        console.log("item_id: ", item_id);
-        setRedirectUrl(item_id);
-    }
-        //console.log("item_id: ", item_id);
-        // setTimeout(function(){ 
-        //     if (item_id != undefined) {
-        //         fetchItem();
-                
-        //         fetchComment("80c7d392-2fc1-11eb-84b1-2f9d5db1e953");
-        //         //fetchComment(item_id);
-        //     }
-        //     getFeeds();
-
-        // }, 3000);
+        checkOnRefresh();
+    
        
         
     }, [item_id]);
@@ -77,6 +58,25 @@ const Item = () => {
             showCredits('news_credits', item.news_credits);
         }
     }, [item]);
+
+    const  checkOnRefresh = async () => {
+       await  logoutUserCheck(true);
+        if(appUserInfo==null && item_id != undefined ){
+            console.log("item_id: ", item_id);
+            setRedirectUrl(item_id);
+        }
+            console.log("item_id: ", item_id);
+            setTimeout(function(){ 
+                if (item_id != undefined) {
+                    fetchItem();
+                    
+                    fetchComment(item_id);
+                    //fetchComment(item_id);
+                }
+                getFeeds();
+    
+            }, 3000);
+    };
 
   
 
