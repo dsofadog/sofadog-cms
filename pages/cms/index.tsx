@@ -278,9 +278,9 @@ const Demo = () => {
     }
 
     function handleClickSingleDropdown(data, type) {
-
+        console.log("cat",data);
         if (type === 'cat') {
-            setSelectedCategory(data.value);
+            setSelectedCategory(data.number);
             toggleCateDropdown();
         } else if (type === 'state') {
             setSelectedState(data);
@@ -354,7 +354,7 @@ const Demo = () => {
 
         let api = returnUrlForNewItems(dataUrlObj);
 
-
+        console.log("filter API ",api);
         HttpCms.get(api)
             .then(response => {
 
@@ -611,8 +611,11 @@ const Demo = () => {
 
     }
     function handleClickSingleDropdownFeed(feed) {
-        console.log("selected feed", feed.id)
+        console.log("selected feed", feed)
         setSelectedFeed(feed.id);
+     //   let i = feeds.findIndex(x=>x.id= fe)
+        setCategories(feed.categories);
+
         toggleFeedDropdown();
     }
 
@@ -644,6 +647,12 @@ const Demo = () => {
         let i = feeds.findIndex(x => x.id === selectedFeed);
         if (i >= 0) {
             return feeds[i].name ? feeds[i].name : feeds[i].id;
+        }
+    }
+    function getCategoryTitle(){
+        let i = categories.findIndex(x=> x.number === selectedCategory);
+        if(i >=0){
+            return categories[i].title;
         }
     }
 
@@ -702,46 +711,7 @@ const Demo = () => {
                                     <div className="origin-top-right absolute right-0 mt-2 w-108 rounded-md shadow-lg">
                                         <div className="w-full rounded-md bg-white shadow-xs">
                                             <div className="w-full grid grid-cols-4 gap-2 px-2 pt-2">
-                                                {/* <div className="">
-                                                    <div ref={catWrapperRef} data-id="category" className="relative inline-block w-full">
-                                                        <div>
-                                                            {categories && (
-                                                                <span onClick={toggleCateDropdown} className="rounded-md shadow-sm">
-                                                                    <button type="button" className={`${selectedCategory != null ? 'border-indigo-600' : 'border-gray-300'} w-full inline-flex justify-center rounded-md border  px-2 py-2 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150`} id="options-menu" aria-haspopup="true" aria-expanded="true">
-                                                                        <span className="w-full truncate uppercase">
-                                                                            {categories && selectedCategory ?
-                                                                                categories[selectedCategory].name : 'Category'
-                                                                            }
-                                                                        </span>
-                                                                        <svg className="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                                                            <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                                                                        </svg>
-                                                                    </button>
-                                                                </span>
-                                                            )}
-                                                        </div>
-                                                        {openCategoryDropdown && (
-                                                            <div className="origin-top-left absolute left-0 mt-2 w-56 rounded-md shadow-lg z-20">
-                                                                <div className="rounded-md bg-white shadow-xs">
-                                                                    <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                                                                        {categories?.map((cat, i) => (
-                                                                            <a key={i} href={void (0)} onClick={() => selectedCategory === cat.value ? clearCategory() : handleClickSingleDropdown(cat, 'cat')} className={`${selectedCategory === cat.value ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white'} cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900`} role="menuitem">
-                                                                                {cat.name}
-                                                                            </a>
-                                                                        ))}
-                                                                        <>
-                                                                            {selectedCategory && (
-                                                                                <div className="w-full mt-2 flex justify-center">
-                                                                                    <button onClick={(e) => { clearCategory(); filteringCategoryTag(); }} className="w-auto text-white text-sm bg-blue-600 hover:bg-blue-700 rounded px-4 py-1">Clear</button>
-                                                                                </div>
-                                                                            )}
-                                                                        </>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                </div> */}
+                                                
                                                 <div className="">
                                                     <div ref={tagWrapperRef} data-id="tag" className="relative inline-block w-full">
                                                         <div>
@@ -870,6 +840,47 @@ const Demo = () => {
                                                                             {selectedFeed && (
                                                                                 <div className="w-full mt-2 flex justify-center">
                                                                                     <button onClick={(e) => { clearFeeds(e); filteringNewsItem(); }} className="w-auto text-white text-sm bg-blue-600 hover:bg-blue-700 rounded px-4 py-1">Clear</button>
+                                                                                </div>
+                                                                            )}
+                                                                        </>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                                <div className="">
+                                                    <div ref={catWrapperRef} data-id="category" className="relative inline-block w-full">
+                                                        <div>
+                                                            {categories && (
+                                                                <span onClick={toggleCateDropdown} className="rounded-md shadow-sm">
+                                                                    <button type="button" className={`${selectedCategory != null ? 'border-indigo-600' : 'border-gray-300'} w-full inline-flex justify-center rounded-md border  px-2 py-2 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150`} id="options-menu" aria-haspopup="true" aria-expanded="true">
+                                                                        <span className="w-full truncate uppercase">
+                                                                            
+                                                                            {selectedCategory ?
+                                                                               getCategoryTitle() : 'Category'
+                                                                            }
+                                                                        </span>
+                                                                        <svg className="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                                            <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                                                                        </svg>
+                                                                    </button>
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                        {openCategoryDropdown && (
+                                                            <div className="origin-top-left absolute left-0 mt-2 w-56 rounded-md shadow-lg z-20">
+                                                                <div className="rounded-md bg-white shadow-xs">
+                                                                    <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                                                                        {categories?.map((cat, i) => (
+                                                                            <a key={i} href={void (0)} onClick={() => selectedCategory === cat.number ? clearCategory() : handleClickSingleDropdown(cat, 'cat')} className={`${selectedCategory === cat.number ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white'} cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900`} role="menuitem">
+                                                                                {cat.title}
+                                                                            </a>
+                                                                        ))}
+                                                                        <>
+                                                                            {selectedCategory && (
+                                                                                <div className="w-full mt-2 flex justify-center">
+                                                                                    <button onClick={(e) => { clearCategory()}} className="w-auto text-white text-sm bg-blue-600 hover:bg-blue-700 rounded px-4 py-1">Clear</button>
                                                                                 </div>
                                                                             )}
                                                                         </>
