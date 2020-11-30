@@ -5,6 +5,8 @@ import moment from 'moment';
 import HttpCms from '../../utils/http-cms';
 import CreateItem from '../../component/cms/CreateItem';
 import PreviewItem from '../../component/cms/PreviewItem';
+import PreviewItemTable from '../../component/cms/PreviewItemTable';
+
 import CmsConstant from '../../utils/cms-constant';
 import { LayoutContext } from '../../contexts/';
 import { config as f_config, library } from '@fortawesome/fontawesome-svg-core';
@@ -39,7 +41,9 @@ const Demo = () => {
         currentUserAction,
         setSessionStorage,
         getSessionStorage,
-        logoutUserCheck
+        logoutUserCheck,
+        toggleAppView,
+        setToggleAppView,
     } = useContext(LayoutContext);
 
     const [openCategoryDropdown, setOpenCategoryDropdown] = useState(false);
@@ -329,6 +333,12 @@ const Demo = () => {
         new_date.add(-scrollCount, 'days');
         let dateReturn = new_date.format("YYYY-MM-DD");
         return dateReturn;
+
+    }
+
+   const  toggleAppViewChanged = ()=>{
+      let toggleAppViewValue  = !toggleAppView;
+      setToggleAppView(toggleAppViewValue);
 
     }
 
@@ -908,6 +918,16 @@ const Demo = () => {
                                     </button>
                                 </span>
                             </div>
+                            <div className="flex-shrink-0">
+                                <span className="rounded-md shadow-sm">
+                                    <button onClick={() => { toggleAppViewChanged(); }} type="button" className="relative inline-flex items-center px-2 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-400 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-600 active:bg-indigo-600 transition duration-150 ease-in-out">
+                                        <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
+                                        </svg>
+                                        <span>List/card view</span>
+                                    </button>
+                                </span>
+                            </div>
                             <NotificationBell />
                             <HeaderProfileComponent></HeaderProfileComponent>
                         </div>
@@ -923,8 +943,61 @@ const Demo = () => {
                         <CreateItem state="new" close={openCreateBox} create={createNewItem} />
                     )}
                 </>
-
                 <>
+              
+ <div  className={`${toggleAppView ? 'flex flex-col' : 'hidden'}`}>
+  <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+    <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+      <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+        <table className="min-w-full divide-y divide-gray-200">
+          <thead>
+            <tr>
+            <th scope="col" className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Ordinal Sr
+              </th>
+              <th scope="col" className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Title
+              </th>
+              <th scope="col" className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Tag
+              </th>
+              <th scope="col" className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              state
+              </th>
+              <th scope="col" className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Action
+              </th>             
+            </tr>
+          </thead>
+          <tbody>
+          {newsItems?.news_items.map((item, i) => (                       
+                            <PreviewItemTable
+                                index={i}
+                                showComment={true}
+                                totalData={paginationData?.total_data}
+                                item={item}
+                                processedData={processedData}
+                                uplaodVideo={uplaodVideo}
+                                deleteItem={deleteItem}
+                                move={decrement_increment_ordinal}
+                                updateItem={updateItem}
+                                getSigleItem={singleItem}
+                                feeds={feeds}
+                            />
+                       
+                    ))}
+
+         </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+                </>              
+
+                
+                 <div  className={`${!toggleAppView ? 'flex flex-col' : 'hidden'}`}>
                     {newsItems?.news_items.map((item, i) => (
                         <div key={i}>
                             <PreviewItem
@@ -942,9 +1015,10 @@ const Demo = () => {
                             />
                         </div>
                     ))}
+                    </div>
 
 
-                </>
+               
             </div>
             {!scrollLoading && newsItems && (
                 <div className="fixed bottom-0 right-0 mb-4 mr-4 z-50 cursor-pointer">

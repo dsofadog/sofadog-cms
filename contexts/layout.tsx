@@ -23,6 +23,7 @@ function LayoutProvider({ children }) {
   const [currentUserState, setCurrentUserState] = useState([]);
   const [userIsSuperAdmin, setUserIsSuperAdmin] = useState(0);
   const [redirectUrl, setRedirectUrl] = useState('');
+  const [toggleAppView,setToggleAppView] = useState(false);
   
   const currentUserPermission = (permission,user_type) => {
    // console.log(currentUserAction);
@@ -161,7 +162,9 @@ const clearAPPData =() =>{
     getSessionStorage,
     logoutUserCheck,
     setRedirectUrl,
-    redirectUrl
+    redirectUrl,
+    toggleAppView,
+    setToggleAppView
 
   };
 
