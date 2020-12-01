@@ -72,7 +72,7 @@ const ProfileComponent = () => {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
                 <div className="min-h-96 pt-2">
                     <div className="bg-white shadow overflow-hidden sm:rounded-md">
-                        <div className="mt-6 grid grid-cols-1 gap-y-2 gap-x-2 sm:grid-cols-4">
+                        <div className="h-32 p-4 grid grid-cols-1 gap-y-1 gap-x-2 sm:grid-cols-4">
                             <div className="sm:col-span-2">
                                 <label htmlFor="email" className="block text-sm font-medium leading-5 text-gray-700">
                                     New Password
@@ -81,8 +81,8 @@ const ProfileComponent = () => {
                                     <input type="password" name="password" value={userPass} onChange={(e)=>handleInputChange(e)} className="form-input block w-full transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
                                 </div>
                             </div>
-                            <div className="sm:col-span-2 flex space-x-4">
-                                <button onClick={(e) => setUserPassword("set_password")} className="text-white text-sm px-2 py-1 bg-green-600 hover:bg-green-500 rounded">Submit</button>        
+                            <div className="col-span-4 flex space-x-4">
+                                <button onClick={(e) => setUserPassword("set_password")} className="text-white text-sm px-4 py-2 bg-green-600 hover:bg-green-500 rounded">Submit</button>        
                             </div>
                         </div>
                     </div>
