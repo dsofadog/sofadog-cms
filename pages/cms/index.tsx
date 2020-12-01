@@ -344,7 +344,7 @@ const Demo = () => {
         let dataUrlObj = {
             "token": appUserInfo?.token,
             "limit": paginationData.limit,
-            "date": selectedFeed == null ? returndateAsRequired() : '',
+            "date":  returndateAsRequired(),
             "tags": selectedTag.join(),
             "category": selectedCategory,
             "state": selectedState.join(),
