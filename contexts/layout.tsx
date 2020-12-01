@@ -162,13 +162,9 @@ const clearAPPData =() =>{
     getSessionStorage,
     logoutUserCheck,
     setRedirectUrl,
-<<<<<<< HEAD
     redirectUrl,
     toggleAppView,
     setToggleAppView
-=======
-    redirectUrl
->>>>>>> refresh code
 
   };
 
