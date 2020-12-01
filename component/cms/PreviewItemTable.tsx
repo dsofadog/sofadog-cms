@@ -182,7 +182,7 @@ const PreviewItemTable = (props) => {
             <button
               onClick={(e) => actionPerformed(item, "claim", e)}
               className={`${
-                currentUserPermission("new", "kkkk") &&
+                currentUserPermission("new", "") &&
                 item?.owners?.new == undefined
                   ? "px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer"
                   : "hidden"
@@ -619,7 +619,7 @@ const PreviewItemTable = (props) => {
   }
   function getFeedCategories() {
     let f = feeds?.findIndex((x) => x.id === item.feed_id);
-    console.log("categories ", feeds[f]);
+    //console.log("categories ", feeds[f]);
     let c = feeds[f]?.categories.findIndex((x) => x.number === item.category);
     console.log("feeds[f]?.categories[c] ", feeds[f]?.categories[c]);
     setCategories(feeds[f]?.categories[c]);
