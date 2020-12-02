@@ -1,6 +1,6 @@
 // pages/index.jsx
 import Head from 'next/head';
-import Login from '../component/cms/Login';
+import Login from 'component/cms/Login';
 
 const Home = () => (
     <div>

@@ -1,8 +1,10 @@
 import Router from "next/router";
 import React, { useContext, useEffect, useState } from "react";
-import HttpCms from "../../utils/http-cms";
-import { LayoutContext } from "../../contexts/";
+
 import { resolve6 } from "dns";
+
+import { LayoutContext } from "contexts";
+import HttpCms from "utils/http-cms";
 
 const Login = () => {
   const {

@@ -1,12 +1,16 @@
+import { useEffect, useRef, useState } from 'react';
+
+import { userInfo } from 'os';
+import { parseTwoDigitYear } from 'moment';
+
 import { config as f_config, library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import { far } from '@fortawesome/free-regular-svg-icons';
-import { useEffect, useRef, useState } from 'react';
-import CmsConstant from '../../utils/cms-constant';
-import { userInfo } from 'os';
-import { parseTwoDigitYear } from 'moment';
+
+import CmsConstant from 'utils/cms-constant';
+
 
 f_config.autoAddCss = false;
 library.add(fas, fab, far);

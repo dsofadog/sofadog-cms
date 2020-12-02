@@ -1,6 +1,4 @@
 import { useContext, useEffect, useRef, useState } from "react";
-import { LayoutContext } from "../../contexts";
-import httpCms from "../../utils/http-cms";
 import Link from "next/link"
 import { useRouter } from 'next/router'
 
@@ -10,6 +8,8 @@ import { fas } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import { far } from '@fortawesome/free-regular-svg-icons';
 
+import { LayoutContext } from "contexts";
+import httpCms from "utils/http-cms";
 
 f_config.autoAddCss = false;
 library.add(fas, fab, far);

@@ -1,22 +1,24 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import Link from "next/link";
 import Router from 'next/router';
-import moment from 'moment';
-import HttpCms from '../../utils/http-cms';
-import CreateItem from '../../component/cms/CreateItem';
-import PreviewItem from '../../component/cms/PreviewItem';
-import PreviewItemTable from '../../component/cms/PreviewItemTable';
 
-import CmsConstant from '../../utils/cms-constant';
-import { LayoutContext } from '../../contexts/';
 import { config as f_config, library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons';
+
 import { scroller } from "react-scroll";
 import useInfiniteScroll from 'react-infinite-scroll-hook';
-import HeaderProfileComponent from '../../component/common/HeaderProfileComponent';
-import NotificationBell from '../../component/common/NotificationBell';
+import moment from 'moment';
+
+import CreateItem from 'component/cms/CreateItem';
+import PreviewItem from 'component/cms/PreviewItem';
+import PreviewItemTable from 'component/cms/PreviewItemTable';
+import HeaderProfileComponent from 'component/common/HeaderProfileComponent';
+import NotificationBell from 'component/common/NotificationBell';
+import { LayoutContext } from 'contexts/';
+import CmsConstant from 'utils/cms-constant';
+import HttpCms from 'utils/http-cms';
 
 f_config.autoAddCss = false;
 library.add(fas, fab);
@@ -219,10 +221,10 @@ const Demo = () => {
     function handleLoadMore() {
         if (selectedFeed != null) {
             return false;
-        }else{
+        } else {
             setScrollCount(scrollCount + 1);
             fetchItems(false);
-        }       
+        }
 
         // if (search.length === 0 && selectedState == null) {
         //     if (newsItems?.news_items.length > 0) {
@@ -234,7 +236,7 @@ const Demo = () => {
         // }
     }
 
-    function clearData(e){
+    function clearData(e) {
         e.preventDefault();
         setSelectedCategory(null);
         setSelectedTag([]);
@@ -253,7 +255,7 @@ const Demo = () => {
         e.preventDefault();
         //setSelectedCategory(null);
         //setSelectedTag([]);
-       // setSelectedState([]);
+        // setSelectedState([]);
         setNewsItems(null);
         setNewsItemsCached(null);
         setScrollCount(0);
@@ -282,7 +284,7 @@ const Demo = () => {
     }
 
     function handleClickSingleDropdown(data, type) {
-        console.log("cat",data);
+        console.log("cat", data);
         if (type === 'cat') {
             setSelectedCategory(data.number);
             toggleCateDropdown();
@@ -353,7 +355,7 @@ const Demo = () => {
         let dataUrlObj = {
             "token": appUserInfo?.token,
             "limit": paginationData.limit,
-            "date":  returndateAsRequired(),
+            "date": returndateAsRequired(),
             "tags": selectedTag.join(),
             "category": selectedCategory,
             "state": selectedState.join(),
@@ -363,7 +365,7 @@ const Demo = () => {
 
         let api = returnUrlForNewItems(dataUrlObj);
 
-        console.log("filter API ",api);
+        console.log("filter API ", api);
         HttpCms.get(api)
             .then(response => {
 
@@ -453,7 +455,7 @@ const Demo = () => {
                 // setNewsItemsCached(null);
                 // refreshData(event);
                 transformNewItems(response.data.news_item, "overide_index")
-                
+
 
             })
             .catch((e) => {
@@ -622,7 +624,7 @@ const Demo = () => {
     function handleClickSingleDropdownFeed(feed) {
         console.log("selected feed", feed)
         setSelectedFeed(feed.id);
-     //   let i = feeds.findIndex(x=>x.id= fe)
+        //   let i = feeds.findIndex(x=>x.id= fe)
         setCategories(feed.categories);
 
         toggleFeedDropdown();
@@ -658,9 +660,9 @@ const Demo = () => {
             return feeds[i].name ? feeds[i].name : feeds[i].id;
         }
     }
-    function getCategoryTitle(){
-        let i = categories.findIndex(x=> x.number === selectedCategory);
-        if(i >=0){
+    function getCategoryTitle() {
+        let i = categories.findIndex(x => x.number === selectedCategory);
+        if (i >= 0) {
             return categories[i].title;
         }
     }
@@ -720,7 +722,7 @@ const Demo = () => {
                                     <div className="origin-top-right absolute right-0 mt-2 w-108 rounded-md shadow-lg">
                                         <div className="w-full rounded-md bg-white shadow-xs">
                                             <div className="w-full grid grid-cols-4 gap-2 px-2 pt-2">
-                                                
+
                                                 <div className="">
                                                     <div ref={tagWrapperRef} data-id="tag" className="relative inline-block w-full">
                                                         <div>
@@ -865,9 +867,9 @@ const Demo = () => {
                                                                 <span onClick={toggleCateDropdown} className="rounded-md shadow-sm">
                                                                     <button type="button" className={`${selectedCategory != null ? 'border-indigo-600' : 'border-gray-300'} w-full inline-flex justify-center rounded-md border  px-2 py-2 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150`} id="options-menu" aria-haspopup="true" aria-expanded="true">
                                                                         <span className="w-full truncate uppercase">
-                                                                            
+
                                                                             {selectedCategory ?
-                                                                               getCategoryTitle() : 'Category'
+                                                                                getCategoryTitle() : 'Category'
                                                                             }
                                                                         </span>
                                                                         <svg className="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -889,7 +891,7 @@ const Demo = () => {
                                                                         <>
                                                                             {selectedCategory && (
                                                                                 <div className="w-full mt-2 flex justify-center">
-                                                                                    <button onClick={(e) => { clearCategory()}} className="w-auto text-white text-sm bg-blue-600 hover:bg-blue-700 rounded px-4 py-1">Clear</button>
+                                                                                    <button onClick={(e) => { clearCategory() }} className="w-auto text-white text-sm bg-blue-600 hover:bg-blue-700 rounded px-4 py-1">Clear</button>
                                                                                 </div>
                                                                             )}
                                                                         </>

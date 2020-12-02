@@ -1,14 +1,16 @@
 import { useEffect, useState, useContext, useRef } from "react";
-import CmsConstant from '../../utils/cms-constant';
 
 import { config as f_config, library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import { far } from '@fortawesome/free-regular-svg-icons';
+
+import { LayoutContext } from 'contexts';
+import CmsConstant from 'utils/cms-constant';
+import HttpCms from 'utils/http-cms';
 import DescriptionInputs from './DescriptionInputs';
-import { LayoutContext } from '../../contexts';
-import HttpCms from '../../utils/http-cms';
+
 
 f_config.autoAddCss = false;
 library.add(fas, fab, far);

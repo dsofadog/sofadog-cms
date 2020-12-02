@@ -1,10 +1,6 @@
-import { useRouter } from 'next/router';
-import Router from 'next/router';
 import React, { useContext, useEffect, useState } from 'react';
-import Editor from '../../component/cms/Editor';
-import NavHeader from "../../component/common/NavHeader";
-import { LayoutContext } from '../../contexts';
-import HttpCms from '../../utils/http-cms';
+import Router, { useRouter } from 'next/router';
+
 import { config as f_config, library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { fas } from '@fortawesome/free-solid-svg-icons';
@@ -12,9 +8,14 @@ import { fab } from '@fortawesome/free-brands-svg-icons';
 
 //Mirage Server
 import { createServer } from "miragejs";
-import CmsConstant from '../../utils/cms-constant';
-import Comment from '../../component/cms/Comment';
-import PreviewItem from '../../component/cms/PreviewItem';
+
+import Comment from 'component/cms/Comment';
+import Editor from 'component/cms/Editor';
+import NavHeader from "component/common/NavHeader";
+import PreviewItem from 'component/cms/PreviewItem';
+import { LayoutContext } from 'contexts';
+import CmsConstant from 'utils/cms-constant';
+import HttpCms from 'utils/http-cms';
 
 
 

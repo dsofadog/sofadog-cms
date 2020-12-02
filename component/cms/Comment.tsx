@@ -1,14 +1,18 @@
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import dynamic from "next/dynamic";
+import Router, { useRouter } from 'next/router';
+
 import { config as f_config, library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons';
-import { useCallback, useContext, useEffect, useRef, useState } from 'react';
-import dynamic from "next/dynamic";
-import { LayoutContext } from '../../contexts';
-import { useRouter } from 'next/router';
-import Router from 'next/router';
-//import Editor from './Editor';
+
 import TimeAgo from 'react-timeago'
+
+//import Editor from './Editor';
+
+import { LayoutContext } from 'contexts';
+
 
 f_config.autoAddCss = false;
 library.add(fas, fab);

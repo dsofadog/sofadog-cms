@@ -1,10 +1,11 @@
 import React, { useState, createContext } from 'react';
-import Notification from '../component/common/Notification';
-import ProgressSpinner from '../component/common/ProgressSpinner';
-import CmsConstant from '../utils/cms-constant';
-const LayoutContext = createContext(null);
 import Router from 'next/router';
 
+import Notification from 'component/common/Notification';
+import ProgressSpinner from 'component/common/ProgressSpinner';
+import CmsConstant from 'utils/cms-constant';
+
+const LayoutContext = createContext(null);
 
 function LayoutProvider({ children }) {
   const actionbyRoles = CmsConstant.actionbyRoles;

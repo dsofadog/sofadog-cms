@@ -1,14 +1,17 @@
+import { useContext, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Router from "next/router";
-import { useContext, useEffect, useRef, useState } from "react";
-import { LayoutContext } from "../../contexts";
 
 import { config as f_config, library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons';
-import httpCms from "../../utils/http-cms";
+
+import { LayoutContext } from "contexts";
+import httpCms from "utils/http-cms";
+
 import { userInfo } from "os";
+
 
 f_config.autoAddCss = false;
 library.add(fas, fab);

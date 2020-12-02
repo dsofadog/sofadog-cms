@@ -1,11 +1,13 @@
+import { useState, useContext } from "react"
+
 import { profile } from "console"
 import Link from "next/link"
-import { useState, useContext } from "react"
-import FeedComponent from "../../../component/common/FeedComponent"
-import NavHeader from "../../../component/common/NavHeader"
-import UserComponent from "../../../component/common/UserComponent"
-import ProfileComponent from "../../../component/common/ProfileComponent";
-import { LayoutContext } from "../../../contexts";
+
+import FeedComponent from "component/common/FeedComponent"
+import NavHeader from "component/common/NavHeader"
+import ProfileComponent from "component/common/ProfileComponent";
+import UserComponent from "component/common/UserComponent"
+import { LayoutContext } from "contexts";
 
 
 const Setting = () => {

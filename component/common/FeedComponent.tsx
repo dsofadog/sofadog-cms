@@ -1,7 +1,8 @@
 import { useContext, useEffect, useState } from "react";
-import { LayoutContext } from "../../contexts";
+
+import { LayoutContext } from "contexts";
+import HttpCms from 'utils/http-cms';
 import Feed from "./Feed";
-import HttpCms from '../../utils/http-cms';
 
 const dummyData = [
     {
