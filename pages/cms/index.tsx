@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useRef } from 'react';
+import React, { useState, useEffect, useContext, useRef, useCallback } from 'react';
 import Link from "next/link";
 import Router from 'next/router';
 
@@ -10,6 +10,7 @@ import { fab } from '@fortawesome/free-brands-svg-icons';
 import { scroller } from "react-scroll";
 import useInfiniteScroll from 'react-infinite-scroll-hook';
 import moment from 'moment';
+import _ from 'lodash'
 
 import CreateItem from 'component/cms/CreateItem';
 import PreviewItem from 'component/cms/PreviewItem';
@@ -19,9 +20,27 @@ import NotificationBell from 'component/common/NotificationBell';
 import { LayoutContext } from 'contexts/';
 import CmsConstant from 'utils/cms-constant';
 import HttpCms from 'utils/http-cms';
+import Filter from 'component/cms/Filter';
 
 f_config.autoAddCss = false;
 library.add(fas, fab);
+
+type Params = {
+    token: string;
+    limit: number;
+    date: string;
+    tags: string;
+    category: string;
+    state: string;
+    feed_id?: string,
+    title: string;
+}
+
+
+const defaultPagination = {
+    limit: 200,
+    total_data: 0
+}
 
 const Demo = () => {
 
@@ -29,14 +48,11 @@ const Demo = () => {
     const tags = CmsConstant.Tags;
     const status = CmsConstant.Status;
 
-    const [selectedCategory, setSelectedCategory] = useState(null);
-    const [selectedTag, setSelectedTag] = useState([]);
-    const [selectedState, setSelectedState] = useState([]);
-    const [selectedFeed, setSelectedFeed] = useState(null);
-    const [categories, setCategories] = useState(null);
-
-
-    const { setLoading, appUserInfo, setAppUserInfo, currentUserPermission,
+    const {
+        setLoading,
+        appUserInfo,
+        setAppUserInfo,
+        currentUserPermission,
         userIsSuperAdmin,
         currentUserState,
         setCurrentUserState,
@@ -48,17 +64,6 @@ const Demo = () => {
         setToggleAppView,
     } = useContext(LayoutContext);
 
-    const [openCategoryDropdown, setOpenCategoryDropdown] = useState(false);
-    const toggleCateDropdown = () => { setOpenCategoryDropdown(!openCategoryDropdown) };
-    const [openTagDropdown, setOpenTagDropdown] = useState(false);
-    const toggleTagDropdown = () => { setOpenTagDropdown(!openTagDropdown) };
-    const [openStateDropdown, setOpenStateDropdown] = useState(false);
-    const toggleStateDropdown = () => { setOpenStateDropdown(!openStateDropdown) };
-    const [openFilterDropdown, setOpenFilterDropdown] = useState(false);
-    const toggleFilterDropdown = () => { setOpenFilterDropdown(!openFilterDropdown) };
-    const [openFeedDropdown, setOpenFeedDropdown] = useState(false);
-    const toggleFeedDropdown = () => { setOpenFeedDropdown(!openFeedDropdown) };
-
     const [paginationData, setPaginationData] = useState(
         {
             limit: 200,
@@ -66,80 +71,75 @@ const Demo = () => {
         }
     );
 
+    const [filter, setFilter] = useState<{
+        tags: string[];
+        states: string[];
+        feed: string;
+        category: string;
+    }>({
+        tags: [],
+        states: [],
+        feed: null,
+        category: null
+    })
+
     const [isCreate, setIsCreate] = useState(false);
     const [newsItems, setNewsItems] = useState(null);
-    const [newsItemsCached, setNewsItemsCached] = useState(null);
     const [search, setSearch] = useState("");
     const [feeds, setFeeds] = useState(null);
 
-    const catWrapperRef = useRef(null);
-    const tagWrapperRef = useRef(null);
-    const stateWrapperRef = useRef(null);
-    const filterWrapperRef = useRef(null);
-    const feedWrapperRef = useRef(null);
-    useOutsideAlerter(catWrapperRef);
-    useOutsideAlerter(tagWrapperRef);
-    useOutsideAlerter(stateWrapperRef);
-    useOutsideAlerter(filterWrapperRef);
-    useOutsideAlerter(feedWrapperRef);
 
-    const [hasNextPage, setHasNextPage] = useState(true);
     const [scrollLoading, setScrollLoading] = useState(false);
     const infiniteRef = useInfiniteScroll({
         loading: scrollLoading,
-        hasNextPage,
-        onLoadMore: handleLoadMore,
+        hasNextPage: true,
+        onLoadMore: () => {
+            setParams({
+                ...params,
+                token: appUserInfo?.token,
+                date: moment(params.date).subtract(1, 'day').format('YYYY-MM-DD')
+            })
+        },
         scrollContainer: 'window',
     });
 
-    const [scrollCount, setScrollCount] = useState<number>(0);
-
+    const [params, setParams] = useState<Params>({
+        token: appUserInfo?.token,
+        limit: defaultPagination.limit,
+        date: moment().format("YYYY-MM-DD"),
+        tags: filter.tags.join(),
+        category: filter.category,
+        state: filter.states.join(),
+        feed_id: filter.feed,
+        title: search
+    })
 
     useEffect(() => {
-
-        console.log(currentUserState, currentUserAction);
-        //logoutUserCheck();
-        setNewsItems(null);
-        setNewsItemsCached(null);
-        setScrollCount(0);
-        fetchItems();
+        // console.log(currentUserState, currentUserAction);
+        // logoutUserCheck();
+        // fetchItems();
         getFeeds();
     }, []);
 
 
+    useEffect(() => {
+        console.log('filter', filter)
+        setParams({
+            ...params,
+            token: appUserInfo?.token,
+            date: moment().format("YYYY-MM-DD"),
+            tags: filter.tags.join(),
+            category: filter.category,
+            state: filter.states.join(),
+            feed_id: filter.feed
+        })
+    }, [filter])
 
-    function useOutsideAlerter(ref) {
-        useEffect(() => {
-            function handleClickOutside(event) {
-
-                if (ref.current && !ref.current.contains(event.target)) {
-                    if (ref.current.dataset.id === "tag") {
-                        setOpenTagDropdown(false);
-                    }
-                    if (ref.current.dataset.id === "category") {
-                        setOpenCategoryDropdown(false);
-                    }
-                    if (ref.current.dataset.id === "state") {
-                        setOpenStateDropdown(false);
-                    }
-                    if (ref.current.dataset.id === "filter") {
-                        setOpenFilterDropdown(false);
-                    }
-                    if (ref.current.dataset.id === "feed") {
-                        setOpenFeedDropdown(false);
-                    }
-                }
-            }
-
-            // Bind the event listener
-            document.addEventListener("mousedown", handleClickOutside);
-            return () => {
-                // Unbind the event listener on clean up
-                document.removeEventListener("mousedown", handleClickOutside);
-            };
-        }, [ref]);
-    }
-
+    useEffect(() => {
+        if (params.token) {
+            fetchItems()
+        }
+    }, [params])
 
 
     const returnUrlForNewItems = (dataUrlObj) => {
@@ -156,114 +156,48 @@ const Demo = () => {
         return apiUrl;
     }
 
-    //const [myFlag,setMyFlag] = useState(true);
-    let myFlag = true;
-    const fetchItems = async (isLoader = true) => {
-
-        setLoading(isLoader);
+    const fetchItems = async () => {
 
         setScrollLoading(true);
-        let dataUrlObj = {
-            "token": appUserInfo?.token,
-            "limit": paginationData.limit,
-            "date": returndateAsRequired(),
-            "tags": selectedTag.join(),
-            "category": selectedCategory,
-            "state": selectedState.join(),
-            "title": search
-        }
-        let url = returnUrlForNewItems(dataUrlObj);
-        console.log(url, "url made");
-        //let url = `news_items?token=abcdef&limit=${paginationData.limit}&date=${getCurrentDate("-")}`;
 
-        await HttpCms.get(url)
-            .then(response => {
-                if (response.data.news_items.length > 0) {
-                    if (newsItems) {
-                        console.log(currentUserState, "currentUserState");
-                        // if(Array.isArray(currentUserState) && currentUserState.length){
-                        //     console.log(currentUserState[0]);
-                        //     setSelectedState(currentUserState[0]);
-                        // }
-                        const item = { ...newsItems };
-                        response.data.news_items.map((data, i) => {
-                            item.news_items.push(data);
-                        });
-                        setNewsItems(item);
-                        setNewsItemsCached(item);
-                    } else {
-                        setNewsItems(response.data);
-                        setNewsItemsCached(response.data);
-                    }
+        let url = returnUrlForNewItems(params);
 
-                    myFlag = false;
+        try {
+            const res = await HttpCms.get(url)
+            if (res.data.news_items.length > 0) {
+                if (newsItems) {
+                    const tempNewsitems = { ...newsItems };
+                    res.data.news_items.map((data, i) => {
+                        tempNewsitems.news_items.push(data);
+                    });
+                    setNewsItems(tempNewsitems);
                 } else {
-                    //setHasNextPage(false);
+                    setNewsItems(res.data);
                 }
-                setHasNextPage(true);
-
-                setPaginationData({
-                    ...paginationData,
-                    total_data: response.data.total_items
-                });
-            })
-            .catch(e => {
-                console.log(e);
-            })
-            .finally(() => {
-                if (!myFlag) {
-                    setLoading(false);
-                }
-                setScrollLoading(false);
+            }
+            setPaginationData({
+                ...paginationData,
+                total_data: res.data.total_items
             });
-    }
-
-    function handleLoadMore() {
-        if (selectedFeed != null) {
-            return false;
-        } else {
-            setScrollCount(scrollCount + 1);
-            fetchItems(false);
-        }
-
-        // if (search.length === 0 && selectedState == null) {
-        //     if (newsItems?.news_items.length > 0) {
-        //         fetchItems(false);
-        //     } else {
-        //         fetchItems(true);
-        //     }
-
-        // }
-    }
-
-    function clearData(e) {
-        e.preventDefault();
-        setSelectedCategory(null);
-        setSelectedTag([]);
-        setSelectedState([]);
-        setNewsItems(null);
-        setNewsItemsCached(null);
-        setScrollCount(0);
-        setSelectedFeed(null);
-        if (scrollCount === 0) {
-            fetchItems();
-        }
-
-    }
-
-    function refreshData(e) {
-        e.preventDefault();
-        //setSelectedCategory(null);
-        //setSelectedTag([]);
-        // setSelectedState([]);
-        setNewsItems(null);
-        setNewsItemsCached(null);
-        setScrollCount(0);
-        //setSelectedFeed(null);
-        if (scrollCount === 0) {
-            fetchItems();
+        } catch (err) {
+            console.log('err', err);
+        } finally {
+            setScrollLoading(false)
         }
     }
+
+    // function refreshData(e) {
+    //     e.preventDefault();
+    //     //setSelectedCategory(null);
+    //     //setSelectedTag([]);
+    //     // setSelectedState([]);
+    //     setNewsItems(null);
+    //     setScrollCount(0);
+    //     //setSelectedFeed(null);
+    //     if (scrollCount === 0) {
+    //         fetchItems();
+    //     }
+    // }
 
     function deleteItem(item) {
         setLoading(true);
@@ -283,108 +217,9 @@ const Demo = () => {
             });
     }
 
-    function handleClickSingleDropdown(data, type) {
-        console.log("cat", data);
-        if (type === 'cat') {
-            setSelectedCategory(data.number);
-            toggleCateDropdown();
-        } else if (type === 'state') {
-            setSelectedState(data);
-            toggleStateDropdown();
-            transformNewItems(data, 'filter_by_state')
-        }
-
-    }
-    function handleClickMultiDropdown2(state) {
-        if (selectedState.includes(state.name)) {
-            return;
-        } else {
-            setSelectedState([...selectedState, state.name])
-        }
-        toggleStateDropdown();
-    }
-
-    function handleClickMultiDropdown(tag) {
-        if (selectedTag.includes(tag.value)) {
-            return;
-        } else {
-            setSelectedTag([...selectedTag, tag.value])
-        }
-        toggleTagDropdown();
-    }
-
-    function clearCategory() {
-        setSelectedCategory(null);
-    }
-    function clearState(e) {
-        e.preventDefault();
-        setSelectedState([]);
-        toggleStateDropdown();
-    }
-
-    function clearTag(tag) {
-        setSelectedTag(selectedTag.filter(item => item !== tag));
-    }
-
-    function clearStatus(value) {
-        setSelectedState(selectedState.filter(item => item !== value));
-    }
-
-    const returndateAsRequired = () => {
-        console.log(scrollCount, "scrollCount");
-        let today = moment().format('DD.MM.YYYY');
-        let startdate = today;
-        var new_date = moment(startdate, "DD-MM-YYYY");
-        new_date.add(-scrollCount, 'days');
-        let dateReturn = new_date.format("YYYY-MM-DD");
-        return dateReturn;
-
-    }
-
     const toggleAppViewChanged = () => {
         let toggleAppViewValue = !toggleAppView;
         setToggleAppView(toggleAppViewValue);
-    }
-
-    const filteringNewsItem = () => {
-        setScrollCount(0);
-        setLoading(true);
-        console.log(selectedState.join(), "selectedState");
-
-        let apiUrl = "news_items?";
-        let dataUrlObj = {
-            "token": appUserInfo?.token,
-            "limit": paginationData.limit,
-            "date": returndateAsRequired(),
-            "tags": selectedTag.join(),
-            "category": selectedCategory,
-            "state": selectedState.join(),
-            "feed_id": selectedFeed,
-            "title": search
-        }
-
-        let api = returnUrlForNewItems(dataUrlObj);
-
-        console.log("filter API ", api);
-        HttpCms.get(api)
-            .then(response => {
-
-                setNewsItems(response.data);
-                setPaginationData({
-                    ...paginationData,
-                    total_data: response.data.total_items
-                });
-                setLoading(false);
-
-            })
-            .catch(e => {
-                console.log(e);
-                setLoading(false);
-            })
-            .finally(() => {
-                setLoading(false);
-            });
-
     }
 
     function transformNewItems(itemValue, actionType) {
@@ -412,7 +247,6 @@ const Demo = () => {
             case "filter_by_state":
                 let dataAll = newsItems?.news_items.filter(item => item.state == itemValue.name);
                 arr.news_items = dataAll;
-                setNewsItemsCached(arr)
                 break;
             case "overide_index":
                 console.log(newsItems.news_items);
@@ -420,7 +254,6 @@ const Demo = () => {
                 old_index = newsItems.news_items.findIndex(item => item.id == itemValue.id);
                 newsItems.news_items[old_index] = itemValue;
                 setNewsItems(newsItems);
-                //setNewsItemsCached(arr)
                 break;
             default:
             // code block
@@ -452,7 +285,6 @@ const Demo = () => {
                 //fetchItems();
                 //  const event = new Event('build');
                 // setNewsItems(null);
-                // setNewsItemsCached(null);
                 // refreshData(event);
                 transformNewItems(response.data.news_item, "overide_index")
 
@@ -553,32 +385,18 @@ const Demo = () => {
             });
     }
 
-    function handleChangeSearch(e) {
-        setSearch(e.target.value);
-    }
-
     function clearSearch() {
         setSearch('');
     }
 
-    useEffect(() => {
-        if (search.length === 0) {
-            filteringNewsItem();
-        }
-    }, [search])
+    // TODO call fetchItems instead
+    // useEffect(() => {
+    //     if (search.length === 0) {
+    //         filteringNewsItem();
+    //     }
+    // }, [search])
 
-    function isTagSelected(tag) {
-        if (selectedTag.length > 0) {
-            return selectedTag.includes(tag);
-        }
-        return false;
-    }
-    function isStateSelected(value) {
-        if (selectedState.length > 0) {
-            return selectedState.includes(value);
-        }
-        return false;
-    }
+
 
     // function handleScroll(e) {
     //     const target = e.target;
@@ -621,19 +439,9 @@ const Demo = () => {
             });
 
     }
-    function handleClickSingleDropdownFeed(feed) {
-        console.log("selected feed", feed)
-        setSelectedFeed(feed.id);
-        //   let i = feeds.findIndex(x=>x.id= fe)
-        setCategories(feed.categories);
 
-        toggleFeedDropdown();
-    }
 
-    function clearFeeds(e) {
-        e.preventDefault();
-        setSelectedFeed(null);
-    }
+
     function singleItem(item_id) {
         setLoading(true);
         HttpCms.get(`/news_items/${item_id}?token=${appUserInfo?.token}`)
@@ -653,19 +461,7 @@ const Demo = () => {
             });
     }
 
-    function getFeedName() {
-        //console.log("getFeedName: ",selectedFeed);
-        let i = feeds.findIndex(x => x.id === selectedFeed);
-        if (i >= 0) {
-            return feeds[i].name ? feeds[i].name : feeds[i].id;
-        }
-    }
-    function getCategoryTitle() {
-        let i = categories.findIndex(x => x.number === selectedCategory);
-        if (i >= 0) {
-            return categories[i].title;
-        }
-    }
+
 
 
     return (
@@ -703,9 +499,16 @@ const Demo = () => {
                                                 <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
                                             </svg>
                                         </div>
-                                        <input id="search" value={search} onChange={(e) => handleChangeSearch(e)} className="block w-full pl-10 pr-3 py-2 border border-transparent rounded-md leading-5 bg-gray-700 text-gray-300 placeholder-gray-400 focus:outline-none focus:bg-white focus:text-gray-900 sm:text-sm transition duration-150 ease-in-out" placeholder="Search" type="search" />
+                                        <input id="search" value={search} onChange={(e) => setSearch(e.target.value)} className="block w-full pl-10 pr-3 py-2 border border-transparent rounded-md leading-5 bg-gray-700 text-gray-300 placeholder-gray-400 focus:outline-none focus:bg-white focus:text-gray-900 sm:text-sm transition duration-150 ease-in-out" placeholder="Search" type="search" />
                                     </div>
-                                    <button onClick={(e) => filteringNewsItem()} className="-ml-px relative inline-flex items-center space-x-2 px-4 py-2 text-sm font-medium rounded-r-md text-white bg-indigo-500 hover:bg-indigo-400 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-600 active:bg-indigo-600">
+                                    <button onClick={(e) => {
+                                        setNewsItems(null)
+                                        setParams({
+                                            ...params,
+                                            date: moment().format("YYYY-MM-DD"),
+                                            title: search
+                                        })
+                                    }} className="-ml-px relative inline-flex items-center space-x-2 px-4 py-2 text-sm font-medium rounded-r-md text-white bg-indigo-500 hover:bg-indigo-400 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-600 active:bg-indigo-600">
                                         <span>Submit</span>
                                     </button>
                                 </div>
@@ -713,206 +516,19 @@ const Demo = () => {
                         </div>
                         <div className="flex items-center space-x-2">
 
-                            <div ref={filterWrapperRef} data-id="filter" className="relative inline-block text-left">
-                                <button onClick={() => toggleFilterDropdown()} className="text-white space-x-2 relative inline-flex items-center px-2 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-400 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-600 active:bg-indigo-600 transition duration-150 ease-in-out">
-                                    <FontAwesomeIcon className="w-3" icon={['fas', 'filter']} />
-                                    <span>Filter</span>
-                                </button>
-                                {openFilterDropdown && (
-                                    <div className="origin-top-right absolute right-0 mt-2 w-108 rounded-md shadow-lg">
-                                        <div className="w-full rounded-md bg-white shadow-xs">
-                                            <div className="w-full grid grid-cols-4 gap-2 px-2 pt-2">
-
-                                                <div className="">
-                                                    <div ref={tagWrapperRef} data-id="tag" className="relative inline-block w-full">
-                                                        <div>
-                                                            <span onClick={toggleTagDropdown} className="rounded-md shadow-sm">
-                                                                <button type="button" className={`${selectedTag.length > 0 ? 'border-indigo-600' : 'border-gray-300'} w-full inline-flex justify-center rounded-md border  px-2 py-2 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150`} id="options-menu" aria-haspopup="true" aria-expanded="true">
-                                                                    <span className="w-full truncate uppercase">
-                                                                        {selectedTag.length > 0 ?
-                                                                            <>
-                                                                                {selectedTag.join()}
-                                                                            </>
-                                                                            :
-                                                                            'Tags'
-                                                                        }
-                                                                    </span>
-                                                                    <svg className="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                                                        <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                                                                    </svg>
-                                                                </button>
-                                                            </span>
-                                                        </div>
-                                                        {openTagDropdown && (
-                                                            <div className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg">
-                                                                <div className="rounded-md bg-white shadow-xs">
-                                                                    <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                                                                        {tags?.map((tag, i) => (
-                                                                            <a key={i} href={void (0)} onClick={() => isTagSelected(tag.value) ? clearTag(tag.value) : handleClickMultiDropdown(tag)} className={`${isTagSelected(tag.value) ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white'} cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900`} role="menuitem">
-                                                                                {tag.name}
-                                                                            </a>
-                                                                        ))}
-                                                                        <>
-                                                                            {selectedTag.length > 0 && (
-                                                                                <div className="w-full mt-2 flex justify-center">
-                                                                                    <button onClick={(e) => { clearTag(e); filteringNewsItem(); }} className="w-auto text-white text-sm bg-blue-600 hover:bg-blue-700 rounded px-4 py-1">Clear</button>
-                                                                                </div>
-                                                                            )}
-                                                                        </>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                                <div className="">
-                                                    <div ref={stateWrapperRef} data-id="state" className="w-full relative inline-block text-left">
-                                                        <div>
-                                                            {status && (
-                                                                <span onClick={toggleStateDropdown} className="rounded-md shadow-sm">
-                                                                    <button type="button" className={`${selectedState.length > 0 ? 'border-indigo-600' : 'border-gray-300'} w-full inline-flex justify-center rounded-md border  px-2 py-2 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150`} id="options-menu" aria-haspopup="true" aria-expanded="true">
-
-                                                                        <span className="w-full truncate uppercase">
-                                                                            {
-                                                                                selectedState.length > 0 ?
-                                                                                    <>
-                                                                                        {selectedState.join()}
-                                                                                    </>
-                                                                                    :
-                                                                                    'State'
-                                                                            }
-                                                                        </span>
-                                                                        <svg className="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                                                            <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                                                                        </svg>
-                                                                    </button>
-                                                                </span>
-                                                            )}
-                                                        </div>
-                                                        {openStateDropdown && (
-                                                            <div className="origin-top-left absolute left-0 mt-2 w-56 rounded-md shadow-lg z-20">
-                                                                <div className="rounded-md bg-white shadow-xs">
-                                                                    <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                                                                        {status?.map((status, i) => (
-                                                                            // <a key={i} href={void (0)} onClick={(e) => selectedState?.name === status.name ? clearState(e) : handleClickMultiDropdown2(status)} className={`${selectedState?.name === status.name ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white'} cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900 uppercase`} role="menuitem">
-                                                                            //     {status.value}
-                                                                            // </a>
-                                                                            <a key={i} href={void (0)} onClick={() => isStateSelected(status.name) ? clearStatus(status.name) : handleClickMultiDropdown2(status)} className={`${isStateSelected(status.name) ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white'} cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900`} role="menuitem">
-                                                                                {status.value}
-                                                                            </a>
-                                                                        ))}
-                                                                        <>
-                                                                            {selectedState && (
-                                                                                <div className="w-full mt-2 flex justify-center">
-                                                                                    <button onClick={(e) => { clearState(e); filteringNewsItem(); }} className="w-auto text-white text-sm bg-blue-600 hover:bg-blue-700 rounded px-4 py-1">Clear</button>
-                                                                                </div>
-                                                                            )}
-                                                                        </>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                                <div className="">
-                                                    <div ref={feedWrapperRef} data-id="feed" className="w-full relative inline-block text-left">
-                                                        <div>
-                                                            {status && (
-                                                                <span onClick={toggleFeedDropdown} className="rounded-md shadow-sm">
-                                                                    <button type="button" className={`${selectedFeed != null ? 'border-indigo-600' : 'border-gray-300'} w-full inline-flex justify-center rounded-md border  px-2 py-2 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150`} id="options-menu" aria-haspopup="true" aria-expanded="true">
-
-                                                                        <span className="w-full truncate uppercase">
-                                                                            {
-                                                                                selectedFeed ?
-                                                                                    <>
-                                                                                        {getFeedName()}
-                                                                                    </>
-                                                                                    :
-                                                                                    'Feed'
-                                                                            }
-                                                                        </span>
-                                                                        <svg className="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                                                            <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                                                                        </svg>
-                                                                    </button>
-                                                                </span>
-                                                            )}
-                                                        </div>
-                                                        {openFeedDropdown && (
-                                                            <div className="origin-top-left absolute left-0 mt-2 w-56 rounded-md shadow-lg z-20">
-                                                                <div className="rounded-md bg-white shadow-xs">
-                                                                    <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                                                                        {feeds?.map((feed, i) => (
-                                                                            <a key={i} href={void (0)} onClick={() => handleClickSingleDropdownFeed(feed)} className={`${feed.id === selectedFeed ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white'} cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900`} role="menuitem">
-                                                                                {feed.name ? feed.name : feed.id}
-                                                                            </a>
-                                                                        ))}
-                                                                        <>
-                                                                            {selectedFeed && (
-                                                                                <div className="w-full mt-2 flex justify-center">
-                                                                                    <button onClick={(e) => { clearFeeds(e); filteringNewsItem(); }} className="w-auto text-white text-sm bg-blue-600 hover:bg-blue-700 rounded px-4 py-1">Clear</button>
-                                                                                </div>
-                                                                            )}
-                                                                        </>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                                <div className="">
-                                                    <div ref={catWrapperRef} data-id="category" className="relative inline-block w-full">
-                                                        <div>
-                                                            {categories && (
-                                                                <span onClick={toggleCateDropdown} className="rounded-md shadow-sm">
-                                                                    <button type="button" className={`${selectedCategory != null ? 'border-indigo-600' : 'border-gray-300'} w-full inline-flex justify-center rounded-md border  px-2 py-2 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150`} id="options-menu" aria-haspopup="true" aria-expanded="true">
-                                                                        <span className="w-full truncate uppercase">
-
-                                                                            {selectedCategory ?
-                                                                                getCategoryTitle() : 'Category'
-                                                                            }
-                                                                        </span>
-                                                                        <svg className="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                                                            <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                                                                        </svg>
-                                                                    </button>
-                                                                </span>
-                                                            )}
-                                                        </div>
-                                                        {openCategoryDropdown && (
-                                                            <div className="origin-top-left absolute left-0 mt-2 w-56 rounded-md shadow-lg z-20">
-                                                                <div className="rounded-md bg-white shadow-xs">
-                                                                    <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                                                                        {categories?.map((cat, i) => (
-                                                                            <a key={i} href={void (0)} onClick={() => selectedCategory === cat.number ? clearCategory() : handleClickSingleDropdown(cat, 'cat')} className={`${selectedCategory === cat.number ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white'} cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900`} role="menuitem">
-                                                                                {cat.title}
-                                                                            </a>
-                                                                        ))}
-                                                                        <>
-                                                                            {selectedCategory && (
-                                                                                <div className="w-full mt-2 flex justify-center">
-                                                                                    <button onClick={(e) => { clearCategory() }} className="w-auto text-white text-sm bg-blue-600 hover:bg-blue-700 rounded px-4 py-1">Clear</button>
-                                                                                </div>
-                                                                            )}
-                                                                        </>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="w-full p-2 space-x-2 flex">
-                                                <button onClick={(e) => filteringNewsItem()} className="text-white text-sm bg-indigo-600 hover:bg-indigo-800 rounded w-1/2 p-2">Submit</button>
-                                                <button onClick={(e) => { refreshData(e); toggleFilterDropdown(); }} className="text-gray-800 text-sm border border-indigo-600 hover:bg-gray-200 rounded w-1/2 p-2">Clear All</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
+                            <Filter feeds={feeds} onSubmit={state => {
+                                const { availableCategories, ...newFilter } = state
+                                setFilter({
+                                    ...filter,
+                                    ...newFilter
+                                })
+                            }} />
 
                             <div className="">
-                                <button onClick={(e) => refreshData(e)} className="relative inline-flex items-center space-x-2 px-2 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-400 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-600 active:bg-indigo-600 transition duration-150 ease-in-out">
+                                <button onClick={(e) => {
+                                    // refreshData(e)
+                                    console.log('refreshed clicked')
+                                }} className="relative inline-flex items-center space-x-2 px-2 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-400 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-600 active:bg-indigo-600 transition duration-150 ease-in-out">
                                     <FontAwesomeIcon className="w-3" icon={['fas', 'sync-alt']} />
                                     <span>Refresh</span>
                                 </button>
@@ -944,92 +560,107 @@ const Demo = () => {
                     </div>
                 </div>
             </nav>
-            <div ref={infiniteRef as React.RefObject<HTMLDivElement>} className="max-w-7xl mx-auto">
-                <>
-                    <div className="sfd-top invisible"></div>
-                </>
-                <>
-                    {isCreate && (
-                        <CreateItem state="new" close={openCreateBox} create={createNewItem} />
-                    )}
-                </>
-                <>
+            <div className="container mx-auto">
+                <div ref={infiniteRef as React.RefObject<HTMLDivElement>} className="max-w-7xl mx-auto">
+                    <>
+                        <div className="sfd-top invisible"></div>
+                    </>
+                    <>
+                        {isCreate && (
+                            <CreateItem state="new" close={openCreateBox} create={createNewItem} />
+                        )}
+                    </>
+                    <>
 
-                    <div className={`${toggleAppView ? 'flex flex-col' : 'hidden'}`}>
-                        <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-                            <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-                                <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
-                                    <table className="min-w-full divide-y divide-gray-200">
-                                        <thead>
-                                            <tr>
-                                                <th scope="col" className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                    Ordinal Sr
-              </th>
-                                                <th scope="col" className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                    Title
-              </th>
-                                                <th scope="col" className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                    Tag
-              </th>
-                                                <th scope="col" className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                    state
-              </th>
-                                                <th scope="col" className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                    Action
-              </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {newsItems?.news_items.map((item, i) => (
-                                                <PreviewItemTable
-                                                    index={i}
-                                                    showComment={true}
-                                                    totalData={paginationData?.total_data}
-                                                    item={item}
-                                                    processedData={processedData}
-                                                    uplaodVideo={uplaodVideo}
-                                                    deleteItem={deleteItem}
-                                                    move={decrement_increment_ordinal}
-                                                    updateItem={updateItem}
-                                                    getSigleItem={singleItem}
-                                                    feeds={feeds}
-                                                />
+                        <div className={`${toggleAppView ? 'flex flex-col' : 'hidden'}`}>
+                            <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                                <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+                                    <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+                                        <table className="min-w-full divide-y divide-gray-200">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col" className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                        Ordinal Sr
+                                                    </th>
+                                                    <th scope="col" className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                        Title
+                                                    </th>
+                                                    <th scope="col" className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                        Tag
+                                                    </th>
+                                                    <th scope="col" className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                        state
+                                                    </th>
+                                                    <th scope="col" className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                        Action
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {newsItems?.news_items.map((item, i) => (
+                                                    <PreviewItemTable
+                                                        index={i}
+                                                        showComment={true}
+                                                        totalData={paginationData?.total_data}
+                                                        item={item}
+                                                        processedData={processedData}
+                                                        uplaodVideo={uplaodVideo}
+                                                        deleteItem={deleteItem}
+                                                        move={decrement_increment_ordinal}
+                                                        updateItem={updateItem}
+                                                        getSigleItem={singleItem}
+                                                        feeds={feeds}
+                                                    />
 
-                                            ))}
+                                                ))}
 
-                                        </tbody>
-                                    </table>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+
+                    </>
+
+
+                    <div className={`${!toggleAppView ? 'flex flex-col' : 'hidden'}`}>
+                        {newsItems?.news_items.map((item, i) => (
+                            <div key={i}>
+                                <PreviewItem
+                                    index={i}
+                                    showComment={true}
+                                    totalData={paginationData?.total_data}
+                                    item={item}
+                                    processedData={processedData}
+                                    uplaodVideo={uplaodVideo}
+                                    deleteItem={deleteItem}
+                                    move={decrement_increment_ordinal}
+                                    updateItem={updateItem}
+                                    getSigleItem={singleItem}
+                                    feeds={feeds}
+                                />
+                            </div>
+                        ))}
                     </div>
 
-                </>
 
 
-                <div className={`${!toggleAppView ? 'flex flex-col' : 'hidden'}`}>
-                    {newsItems?.news_items.map((item, i) => (
-                        <div key={i}>
-                            <PreviewItem
-                                index={i}
-                                showComment={true}
-                                totalData={paginationData?.total_data}
-                                item={item}
-                                processedData={processedData}
-                                uplaodVideo={uplaodVideo}
-                                deleteItem={deleteItem}
-                                move={decrement_increment_ordinal}
-                                updateItem={updateItem}
-                                getSigleItem={singleItem}
-                                feeds={feeds}
-                            />
-                        </div>
-                    ))}
                 </div>
 
+                {scrollLoading && (
 
+                    <div className="box-border p-4">
+                        <div className="flex flex-row text-white justify-center items-center">
+                            <FontAwesomeIcon className="w-12 h-12 p-2 rounded-full" icon={['fas', 'spinner']} spin />
+                            <p>Loading new items from {moment(params.date).format('ll')}</p>
+                        </div>
+                        
+                    </div>
+                )}
 
             </div>
+
             {
                 !scrollLoading && newsItems && (
                     <div className="fixed bottom-0 right-0 mb-4 mr-4 z-50 cursor-pointer">
