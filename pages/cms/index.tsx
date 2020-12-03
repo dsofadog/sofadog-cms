@@ -186,19 +186,6 @@ const Demo = () => {
         }
     }
 
-    // function refreshData(e) {
-    //     e.preventDefault();
-    //     //setSelectedCategory(null);
-    //     //setSelectedTag([]);
-    //     // setSelectedState([]);
-    //     setNewsItems(null);
-    //     setScrollCount(0);
-    //     //setSelectedFeed(null);
-    //     if (scrollCount === 0) {
-    //         fetchItems();
-    //     }
-    // }
-
     function deleteItem(item) {
         setLoading(true);
         HttpCms.delete("/news_items/" + item.id + "?token=" + appUserInfo?.token)
@@ -385,26 +372,6 @@ const Demo = () => {
             });
     }
 
-    function clearSearch() {
-        setSearch('');
-    }
-
-    // TODO call fetchItems instead
-    // useEffect(() => {
-    //     if (search.length === 0) {
-    //         filteringNewsItem();
-    //     }
-    // }, [search])
-
-
-
-    // function handleScroll(e) {
-    //     const target = e.target;
-    //     if (target.scrollHeight - target.scrollTop === target.clientHeight) {
-    //         alert('at bottom!');
-    //     }
-    // }
-
     const scrollToSection = () => {
         scroller.scrollTo("sfd-top", {
             duration: 800,
@@ -413,16 +380,6 @@ const Demo = () => {
         });
     };
 
-    function showStatus(itemkey) {
-        let statusReturn = '';
-        status?.map((s, i) => {
-            if (s.name === itemkey.name) {
-                statusReturn = s.value;
-            }
-        });
-
-        return statusReturn;
-    }
     function getFeeds() {
 
         //setLoading(true);
@@ -502,7 +459,6 @@ const Demo = () => {
                                         <input id="search" value={search} onChange={(e) => setSearch(e.target.value)} className="block w-full pl-10 pr-3 py-2 border border-transparent rounded-md leading-5 bg-gray-700 text-gray-300 placeholder-gray-400 focus:outline-none focus:bg-white focus:text-gray-900 sm:text-sm transition duration-150 ease-in-out" placeholder="Search" type="search" />
                                     </div>
                                     <button onClick={(e) => {
-                                        setNewsItems(null)
                                         setParams({
                                             ...params,
                                             date: moment().format("YYYY-MM-DD"),
@@ -518,6 +474,7 @@ const Demo = () => {
 
                             <Filter feeds={feeds} onSubmit={state => {
                                 const { availableCategories, ...newFilter } = state
+                                setNewsItems(null)
                                 setFilter({
                                     ...filter,
                                     ...newFilter
@@ -526,8 +483,11 @@ const Demo = () => {
 
                             <div className="">
                                 <button onClick={(e) => {
-                                    // refreshData(e)
-                                    console.log('refreshed clicked')
+                                    setNewsItems(null)
+                                    setParams({
+                                        ...params,
+                                        date: moment().format("YYYY-MM-DD")
+                                    })
                                 }} className="relative inline-flex items-center space-x-2 px-2 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-400 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-600 active:bg-indigo-600 transition duration-150 ease-in-out">
                                     <FontAwesomeIcon className="w-3" icon={['fas', 'sync-alt']} />
                                     <span>Refresh</span>
@@ -655,7 +615,7 @@ const Demo = () => {
                             <FontAwesomeIcon className="w-12 h-12 p-2 rounded-full" icon={['fas', 'spinner']} spin />
                             <p>Loading new items from {moment(params.date).format('ll')}</p>
                         </div>
-                        
+
                     </div>
                 )}
 
