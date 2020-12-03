@@ -91,7 +91,6 @@ const Filter = (props: Props) => {
 
     const { feeds, onSubmit } = props
 
-    //const categories = CmsConstant.Category; 
     const tags = CmsConstant.Tags;
     const status = CmsConstant.Status;
 
@@ -110,7 +109,11 @@ const Filter = (props: Props) => {
     useOutsideAlerter(feedWrapperRef);
 
     const [openCategoryDropdown, setOpenCategoryDropdown] = useState(false);
-    const toggleCateDropdown = () => { setOpenCategoryDropdown(!openCategoryDropdown) };
+    const toggleCateDropdown = () => { 
+        if(state.availableCategories.length > 0){
+            setOpenCategoryDropdown(!openCategoryDropdown)
+        }
+     };
     const [openTagDropdown, setOpenTagDropdown] = useState(false);
     const toggleTagDropdown = () => { setOpenTagDropdown(!openTagDropdown) };
     const [openStateDropdown, setOpenStateDropdown] = useState(false);
@@ -119,24 +122,6 @@ const Filter = (props: Props) => {
     const toggleFilterDropdown = () => { setOpenFilterDropdown(!openFilterDropdown) };
     const [openFeedDropdown, setOpenFeedDropdown] = useState(false);
     const toggleFeedDropdown = () => { setOpenFeedDropdown(!openFeedDropdown) };
-
-    function clearData(e) {
-        // TODO review commneted statements
-
-
-        e.preventDefault();
-        dispatch({ type: ActionType.ResetAll })
-        // setSelectedCategory(null);
-        // setSelectedTag([]);
-        // setSelectedState([]);
-        // setNewsItems(null);
-        // setScrollCount(0);
-        // setSelectedFeed(null);
-        // if (scrollCount === 0) {
-        //     fetchItems();
-        // }
-
-    }
 
     function clearAll() {
         dispatch({ type: ActionType.ResetAll })
@@ -242,15 +227,11 @@ const Filter = (props: Props) => {
                                                                     <span className="hidden sm:block mr-3">
                                                                         <button onClick={(e) => {
                                                                             dispatch({ type: ActionType.ResetTags })
-                                                                            // TODO call filter maybe
-                                                                            // filteringNewsItem();
                                                                         }} className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Clear</button>
                                                                     </span>}
                                                                 <span className="hidden sm:block">
                                                                     <button onClick={(e) => {
                                                                         toggleTagDropdown()
-                                                                        // TODO call filter maybe
-                                                                        // filteringNewsItem();
                                                                     }} className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Close</button>
                                                                 </span>
                                                             </div>
@@ -295,14 +276,10 @@ const Filter = (props: Props) => {
                                                         //     {status.value}
                                                         // </a>
                                                         <a key={i} href={void (0)} onClick={() => {
-                                                            console.log('clicked', state.states, status.name)
                                                             if (state.states.includes(status.name)) {
-                                                                console.log('if if')
                                                                 dispatch({ type: ActionType.DeselectState, payload: status.name })
-                                                                console.log('after')
                                                             } else {
                                                                 dispatch({ type: ActionType.SelectState, payload: status.name })
-                                                                // transformNewItems(data, 'filter_by_state')
                                                             }
                                                         }} className={`${state.states.includes(status.name) ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white'} cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900`} role="menuitem">
                                                             {status.value}
@@ -316,15 +293,11 @@ const Filter = (props: Props) => {
                                                                     <span className="hidden sm:block mr-3">
                                                                         <button onClick={(e) => {
                                                                             dispatch({ type: ActionType.ResetStates })
-                                                                            // TODO call filter maybe
-                                                                            // filteringNewsItem();
                                                                         }} className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Clear</button>
                                                                     </span>}
                                                                 <span className="hidden sm:block">
                                                                     <button onClick={(e) => {
                                                                         toggleStateDropdown()
-                                                                        // TODO call filter maybe
-                                                                        // filteringNewsItem();
                                                                     }} className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Close</button>
                                                                 </span>
                                                             </div>
@@ -377,8 +350,6 @@ const Filter = (props: Props) => {
                                                                 dispatch({ type: ActionType.SetAvailableCategories, payload: feed.categories })
                                                                 dispatch({ type: ActionType.DeselectCategory })
                                                             }
-
-
                                                         }} className={`${feed.id === state.feed ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white'} cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900`} role="menuitem">
                                                             {feed.name ? feed.name : feed.id}
                                                         </a>
@@ -391,15 +362,13 @@ const Filter = (props: Props) => {
                                                                     <span className="hidden sm:block mr-3">
                                                                         <button onClick={(e) => {
                                                                             dispatch({ type: ActionType.DeselectFeed })
-                                                                            // TODO call filter maybe
-                                                                            // filteringNewsItem();
+                                                                            dispatch({ type: ActionType.SetAvailableCategories, payload: []})
+                                                                            dispatch({ type: ActionType.DeselectCategory })
                                                                         }} className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Clear</button>
                                                                     </span>}
                                                                 <span className="hidden sm:block">
                                                                     <button onClick={(e) => {
                                                                         toggleFeedDropdown()
-                                                                        // TODO call filter maybe
-                                                                        // filteringNewsItem();
                                                                     }} className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Close</button>
                                                                 </span>
                                                             </div>
@@ -415,9 +384,9 @@ const Filter = (props: Props) => {
                             <div className="">
                                 <div ref={catWrapperRef} data-id="category" className="relative inline-block w-full">
                                     <div>
-                                        {state.availableCategories.length > 0 && (
+                                        {(
                                             <span onClick={toggleCateDropdown} className="rounded-md shadow-sm">
-                                                <button type="button" className={`${state.category ? 'border-indigo-600' : 'border-gray-300'} w-full inline-flex justify-center rounded-md border  px-2 py-2 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150`} id="options-menu" aria-haspopup="true" aria-expanded="true">
+                                                <button type="button" className={`${state.category ? 'border-indigo-600' : 'border-gray-300'} w-full inline-flex justify-center rounded-md border  px-2 py-2 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150 cursor-not-allowed`} id="options-menu" aria-haspopup="true" aria-expanded="true">
                                                     <span className="w-full truncate uppercase">
 
                                                         {state.category ?
@@ -454,15 +423,11 @@ const Filter = (props: Props) => {
                                                                     <span className="hidden sm:block mr-3">
                                                                         <button onClick={(e) => {
                                                                             dispatch({ type: ActionType.DeselectCategory })
-                                                                            // TODO call filter maybe
-                                                                            // filteringNewsItem();
                                                                         }} className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Clear</button>
                                                                     </span>}
                                                                 <span className="hidden sm:block">
                                                                     <button onClick={(e) => {
                                                                         toggleCateDropdown()
-                                                                        // TODO call filter maybe
-                                                                        // filteringNewsItem();
                                                                     }} className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Close</button>
                                                                 </span>
                                                             </div>
@@ -477,18 +442,11 @@ const Filter = (props: Props) => {
                         </div>
                         <div className="w-full p-2 space-x-2 flex">
                             <button onClick={(e) => {
-
-                                // TODO call filter
-                                // filteringNewsItem()
                                 onSubmit(state)
                                 toggleFilterDropdown()
                             }} className="text-white text-sm bg-indigo-600 hover:bg-indigo-800 rounded w-1/2 p-2">Submit</button>
                             <button onClick={(e) => {
-                                // TODO call reset criteria to default then refresh
-                                //  refreshData(e); 
                                 clearAll()
-                                console.log('clear all')
-                                // toggleFilterDropdown();
                             }} className="text-gray-800 text-sm border border-indigo-600 hover:bg-gray-200 rounded w-1/2 p-2">Clear All</button>
                         </div>
                     </div>
