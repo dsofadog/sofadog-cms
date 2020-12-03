@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState, useContext } from "react";
 import Link from "next/link";
 
 import { useDropzone } from 'react-dropzone';
+import _ from 'lodash'
 
 import { config as f_config, library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -510,7 +511,7 @@ const PreviewItem = (props) => {
                                             <div className="w-full mb-6">
                                                 {!isExpand && (
                                                     <>
-                                                        <div className="p-4 shadow rounded border border-gray-300">
+                                                        <div className="p-4 shadow rounded border border-gray-300 mb-6">
                                                             <div className="block">
                                                                 <div className="border-b border-gray-200">
                                                                     <nav className="flex -mb-px">
@@ -528,6 +529,26 @@ const PreviewItem = (props) => {
                                                                             <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-indigo-500"></div>
                                                                             <div className="truncate hover:text-gray-600 text-xs">
                                                                                 <a href={credit.url} target="_blank">{credit.link_text}</a>
+                                                                            </div>
+                                                                        </div>
+                                                                    ))}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="p-4 shadow rounded border border-gray-300">
+                                                            <div className="block">
+                                                                <div className="border-b border-gray-200">
+                                                                    
+                                                                    <a href={void (0)} className={`border-indigo-500 text-indigo-600 cursor-pointer ml-8 group inline-flex items-center py-2 px-1 border-b-2 font-medium text-sm leading-5  focus:outline-none focus:text-indigo-800 focus:border-indigo-700`} aria-current="page">
+                                                                        <span>Owners</span>
+                                                                    </a>
+                                                                </div>
+                                                                <div className="mt-4 max-h-24 overflow-y-scroll" role="group" aria-labelledby="teams-headline">
+                                                                    {Object.keys(item?.owners).reverse().map(key => (
+                                                                        <div key={key} className="flex items-center space-x-3 pl-3">
+                                                                            <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-indigo-500"></div>
+                                                                            <div className="truncate hover:text-gray-600 text-xs">
+                                                                                <p>{_.upperFirst(key.replace(/_/g, ' '))}: {item?.owners[key]}</p>
                                                                             </div>
                                                                         </div>
                                                                     ))}
