@@ -181,7 +181,7 @@ const PreviewItem = (props) => {
             case "new": {
                 return (
                     <div className="grid">
-                        { item?.owners?.new != undefined && item?.owners?.new == appUserInfo?.user?.email && (
+                        {item?.owners?.new != undefined && item?.owners?.new == appUserInfo?.user?.email && (
                             <p className="text-xs">Claimed by: {item?.owners?.new}</p>
                         )
                         }
@@ -206,7 +206,7 @@ const PreviewItem = (props) => {
                 return (
 
                     <div className="grid">
-                        { item?.owners?.awaiting_review_by_lead_journalist != undefined && item?.owners?.awaiting_review_by_lead_journalist == appUserInfo?.user?.email && (
+                        {item?.owners?.awaiting_review_by_lead_journalist != undefined && item?.owners?.awaiting_review_by_lead_journalist == appUserInfo?.user?.email && (
                             <p className="text-xs">Claimed by: {item?.owners?.awaiting_review_by_lead_journalist}</p>
                         )
                         }
@@ -228,7 +228,7 @@ const PreviewItem = (props) => {
             case "awaiting_video_upload": {
                 return (
                     <div className="grid w-full">
-                        { item?.owners?.awaiting_video_upload != undefined && item?.owners?.awaiting_video_upload == appUserInfo?.user?.email && (
+                        {item?.owners?.awaiting_video_upload != undefined && item?.owners?.awaiting_video_upload == appUserInfo?.user?.email && (
                             <p className="text-xs text-center">Claimed by: {item?.owners?.awaiting_video_upload}</p>
                         )
                         }
@@ -294,11 +294,11 @@ const PreviewItem = (props) => {
             case "awaiting_review_by_lead_video_editor": {
                 return (
                     <div className="grid">
-                        { item?.owners?.awaiting_review_by_lead_video_editor != undefined && item?.owners?.awaiting_review_by_lead_video_editor == appUserInfo?.user?.email && (
+                        {item?.owners?.awaiting_review_by_lead_video_editor != undefined && item?.owners?.awaiting_review_by_lead_video_editor == appUserInfo?.user?.email && (
                             <p className="text-xs">Claimed by: {item?.owners?.awaiting_review_by_lead_video_editor}</p>
                         )
                         }
-                        <a href={'https://cdn.so.fa.dog/sources/'+item.id} className={`w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer'`} >
+                        <a href={'https://cdn.so.fa.dog/sources/' + item.id} className={`w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer'`} >
                             Download
                         </a>
                         <button onClick={(e) => actionPerformed(item, "claim", e)} className={`${currentUserPermission('awaiting_review_by_lead_video_editor', "") && item?.owners?.awaiting_review_by_lead_video_editor == undefined ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
@@ -322,7 +322,7 @@ const PreviewItem = (props) => {
             case "ready_for_push": {
                 return (
                     <div className="grid">
-                        { item?.owners?.ready_for_push != undefined && item?.owners?.ready_for_push == appUserInfo?.user?.email && (
+                        {item?.owners?.ready_for_push != undefined && item?.owners?.ready_for_push == appUserInfo?.user?.email && (
                             <p className="text-xs">Claimed by: {item?.owners?.ready_for_push}</p>
                         )
                         }
@@ -331,7 +331,7 @@ const PreviewItem = (props) => {
                             Claim
                         </button>
                         <div className="w-full flex justify-center">
-                            <a href={'https://cdn.so.fa.dog/sources/'+item.id} className={`w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer'`} >
+                            <a href={'https://cdn.so.fa.dog/sources/' + item.id} className={`w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer'`} >
                                 Download
                             </a>
                             <span onClick={(e) => actionPerformed(item, "push_to_feed", e)} className={`${currentUserPermission('ready_for_push', "") && (item?.owners?.ready_for_push !== undefined && item?.owners?.ready_for_push == appUserInfo?.user?.email) ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-green-800 bg-green-100 hover:bg-green-200 text-green-800 cursor-pointer' : 'hidden'}`}>
@@ -345,7 +345,7 @@ const PreviewItem = (props) => {
             case "pushed_to_feed": {
                 return (
                     <div className="grid">
-                        { item?.owners?.pushed_to_feed != undefined && item?.owners?.pushed_to_feed == appUserInfo?.user?.email && (
+                        {item?.owners?.pushed_to_feed != undefined && item?.owners?.pushed_to_feed == appUserInfo?.user?.email && (
                             <>
                                 <p className="text-xs">Claimed by: {item?.owners?.pushed_to_feed}</p>
                             </>
@@ -355,7 +355,7 @@ const PreviewItem = (props) => {
                             Claim
                         </button>
                         <div className="w-full flex justify-center">
-                            <a href={'https://cdn.so.fa.dog/sources/'+item.id}  className={`w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer'`} >
+                            <a href={'https://cdn.so.fa.dog/sources/' + item.id} className={`w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer'`} >
                                 Download
                             </a>
                             <span onClick={(e) => actionPerformed(item, "remove_from_feed", e)} className={`${currentUserPermission('pushed_to_feed', "") && (item?.owners?.pushed_to_feed !== undefined && item?.owners?.pushed_to_feed == appUserInfo?.user?.email) ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-red-800 bg-red-100 hover:bg-red-200 text-red-800 cursor-pointeren' : 'hidden'}`}>
@@ -368,7 +368,7 @@ const PreviewItem = (props) => {
             case "removed_from_feed": {
                 return (
                     <div className="grid">
-                        { item?.owners?.removed_from_feed != undefined && item?.owners?.removed_from_feed == appUserInfo?.user?.email && (
+                        {item?.owners?.removed_from_feed != undefined && item?.owners?.removed_from_feed == appUserInfo?.user?.email && (
                             <>
                                 <p className="text-xs">Claimed by: {item?.owners?.removed_from_feed}</p>
                             </>
@@ -379,7 +379,7 @@ const PreviewItem = (props) => {
                         </button>
 
                         <div className="w-full flex justify-center">
-                            <a href={'https://cdn.so.fa.dog/sources/'+item.id} className={`w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer'`} >
+                            <a href={'https://cdn.so.fa.dog/sources/' + item.id} className={`w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer'`} >
                                 Download
                             </a>
                             <span onClick={(e) => actionPerformed(item, "push_to_feed", e)} className={`${currentUserPermission('removed_from_feed', "") && (item?.owners?.removed_from_feed !== undefined && item?.owners?.removed_from_feed == appUserInfo?.user?.email) ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-green-800 bg-green-100 hover:bg-green-200 text-green-800 cursor-pointer' : 'hidden'}`}>
@@ -538,7 +538,7 @@ const PreviewItem = (props) => {
                                                         <div className="p-4 shadow rounded border border-gray-300">
                                                             <div className="block">
                                                                 <div className="border-b border-gray-200">
-                                                                    
+
                                                                     <a href={void (0)} className={`border-indigo-500 text-indigo-600 cursor-pointer ml-8 group inline-flex items-center py-2 px-1 border-b-2 font-medium text-sm leading-5  focus:outline-none focus:text-indigo-800 focus:border-indigo-700`} aria-current="page">
                                                                         <span>Owners</span>
                                                                     </a>
@@ -552,6 +552,14 @@ const PreviewItem = (props) => {
                                                                             </div>
                                                                         </div>
                                                                     ))}
+                                                                    {Object.keys(item?.owners).length === 0 && (
+                                                                        <div className="flex items-center space-x-3 pl-3">
+                                                                            <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-indigo-500"></div>
+                                                                            <div className="truncate hover:text-gray-600 text-xs">
+                                                                                <p>None</p>
+                                                                            </div>
+                                                                        </div>
+                                                                    )}
                                                                 </div>
                                                             </div>
                                                         </div>
