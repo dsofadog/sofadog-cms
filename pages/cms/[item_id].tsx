@@ -10,7 +10,7 @@ import { fab } from '@fortawesome/free-brands-svg-icons';
 import { createServer } from "miragejs";
 
 import Comment from 'component/cms/Comment';
-import Editor from 'component/cms/Editor';
+// import Editor from 'component/cms/Editor';
 import NavHeader from "component/common/NavHeader";
 import PreviewItem from 'component/cms/PreviewItem';
 import { LayoutContext } from 'contexts';
@@ -132,41 +132,7 @@ const Item = () => {
                 console.log(e);
             });
     }
-    function addComment(data) {
-        //let id = comments[comments.length - 1].id + 1;
-        // data.id = id
-        console.log("data ", data);
-        let commentData = {
-            text: data.text
-        }
-        HttpCms.post(`/news_items/${item_id}/comments?token=${appUserInfo?.token}`, commentData)
-            .then((response) => {
-                console.log("Comments Response:-- " + response.data);
-                setComments(response.data.comments);
-            })
-            .catch((e) => {
-                setLoading(false);
-            })
-            .finally(() => {
-                setLoading(false);
-            });
-
-        // let c = [...comments];
-        //     c.push(data);
-        //     setComments(c);
-    }
-
-    function updateComment(id, data) {
-        let index = comments.findIndex(x => x.id === id);
-        let c = [...comments];
-        c[index].text = data;
-        setComments(c);
-    }
-
-    function deleteComment(id) {
-        let arr = comments.filter(item => item.id != id);
-        setComments(arr);
-    }
+    
     function updateItem(id, item, index) {
         setLoading(true);
         HttpCms.patch("/news_items/" + id + "?token=" + appUserInfo?.token, item)
@@ -294,7 +260,7 @@ const Item = () => {
                             <div className="w-full">
                                 <div className="w-full mx-auto h-auto">
                                     <PreviewItem
-                                        showComment={false}
+                                        showComment={true}
                                         item={item}
                                         processedData={processedData}
                                         uplaodVideo={uplaodVideo}
@@ -374,23 +340,7 @@ const Item = () => {
                                                         ))}
                                                     </div>
                                                 </div> */}
-                                                    <div className="w-full py-5">
-                                                        <div className="w-full py-4 flex items-center">
-                                                            <div className="w-1/5 flex items-center">
-                                                                <span className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-blue-700">
-                                                                    <span className="text-lg font-medium leading-none text-white">{comments?.length}</span>
-                                                                </span>
-                                                                <label className="ml-3 text-xl font-bold text-gray-800">Comments</label>
-                                                            </div>
-                                                            <div className="w-4/5 h-1 border-b-2 border-black"></div>
-                                                        </div>
-                                                        <div className="w-full mb-10 space-y-4">
-                                                            {comments?.map((comment, i) => (
-                                                                <Comment type='view' action={updateComment} delete={deleteComment} comment={comment} />
-                                                            ))}
-                                                            <Comment type='add' action={addComment} />
-                                                        </div>
-                                                    </div>
+                                                    
                                                 </div>
 
                                                 {/* <div className={`bg-${categories[item?.category].color} w-full md:w-1/5 relative z-10 rounded-lg rounded-l-none`}>
