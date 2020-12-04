@@ -14,6 +14,7 @@ import CmsConstant from 'utils/cms-constant';
 import HttpCms from 'utils/http-cms';
 import CreateItem from "./CreateItem";
 import PreviewClip from "./PreviewClip";
+import Comments from "./Comments";
 
 f_config.autoAddCss = false;
 library.add(fas, fab);
@@ -33,6 +34,7 @@ const PreviewItem = (props) => {
     const [isExpand, setIsExpand] = useState(true);
     const [categories, setCategories] = useState(null);
     const [feeds, setFeeds] = useState(null);
+    const [commentVisibility, setCommentVisibility] = useState(false)
 
     const status = CmsConstant.Status;
 
@@ -60,34 +62,6 @@ const PreviewItem = (props) => {
         //fetchComment(props.item.id);
 
     }, []);
-
-    function fetchComment(id) {
-        console.log("calling fetch api");
-        // setLoading(true);
-        HttpCms.get(`/news_items/${id}/comments?token=${appUserInfo?.token}`)
-
-            .then(response => {
-
-                console.log(response.data, "response.data");
-                if (response.data.comments.length > 0) {
-                    let c = response.data.comments[response.data.comments.length - 1];
-                    console.log("c ", c);
-
-                    setComment({
-                        text: c,
-                        count: response.data.comments.length
-                    });
-                    console.log("comments ", comment);
-                    // setLoading(false);
-                }
-
-
-            })
-            .catch(e => {
-                console.log(e);
-                setLoading(false);
-            });
-    }
 
     function refreshData(e) {
         e.preventDefault();
@@ -434,7 +408,7 @@ const PreviewItem = (props) => {
             {!isEdit ?
                 <>
                     {categories && item ? (
-                        <div className="w-full mx-auto h-auto max-h-2xl">
+                        <div className="w-full mx-auto h-auto">
                             <div className="flex flex-no-wrap justify-center">
                                 <div className="w-1/12 mx-auto flex-none float-left">
                                     <div className="bg-purple-700 p-1 h-32 w-1 mx-auto"></div>
@@ -455,7 +429,7 @@ const PreviewItem = (props) => {
 
                                                 </div>
                                                 <div className="right-0 flex justify-end space-x-2">
-                                                    <button onClick={() => openCreateBox(true)} className="px-2 py-1 bg-blue-500 hover:bg-blue-700 text-white rounded text-xs cursor-pointer flex items-center">
+                                                    <button onClick={() => openCreateBox(true)} className="px-2 py-1 bg-white hover:bg-grey-50 text-black rounded text-xs cursor-pointer flex items-center">
                                                         <FontAwesomeIcon className="w-4 mr-1 cursor-pointer" icon={['fas', 'edit']} />
                                                         Edit
                                                     </button>
@@ -478,7 +452,11 @@ const PreviewItem = (props) => {
                                                 </div>
                                             </div>
                                             <div className="flex items-center mb-4">
-                                                <h2 className="text-base text-gray-800 font-medium mr-auto">{item?.title}</h2>
+                                                <h2 className="text-base text-gray-800 font-medium mr-auto">
+                                                    <Link href={`/cms/[item_id]`} as={`/cms/${item.id}`}>
+                                                        {item?.title}
+                                                    </Link>
+                                                </h2>
                                             </div>
                                             {item?.descriptions.length > 0 && (
                                                 <div className="w-full mb-4">
@@ -568,15 +546,14 @@ const PreviewItem = (props) => {
                                                 {
                                                     props.showComment && (
                                                         <div className="w-full py-4">
-                                                            <div className="w-full truncate">
-                                                                <span className="text-xs truncate" dangerouslySetInnerHTML={{ __html: (comment?.text) }}></span>
-                                                            </div>
                                                             <div className="w-full flex text-center justify-end space-x-2">
                                                                 <span className="text-white w-6 h-6 rounded-full p-3 bg-blue-600 text-xs flex items-center justify-center">{item?.comments.length}</span>
-                                                                <Link href={`/cms/[item_id]`} as={`/cms/${item.id}`}>
-                                                                    <label className="text-sm font-bold text-gray-800 cursor-pointer hover:underline">Comments</label>
-                                                                </Link>
+                                                                <label
+                                                                onClick={()=>setCommentVisibility(!commentVisibility)}
+                                                                className="text-sm font-bold text-gray-800 cursor-pointer hover:underline"
+                                                                >Comments</label>
                                                             </div>
+                                                            {commentVisibility && <Comments newsItem={item} />}
                                                         </div>
                                                     )
                                                 }
