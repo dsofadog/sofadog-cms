@@ -28,3 +28,15 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/import?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+
+## Downloading .env.local
+
+1. $ npm install -g vercel
+2. $ vercel login [email]
+3. $ vercel link 
+    $ Set up "~/path_to_project"? [Y/n] y
+    $ Which scope should contain your project? SoFaDog
+    $ Link to existing project? [y/N] y
+    $ What’s the name of your existing project? sofadogcms
+4. $ vercel env pull .env.local
