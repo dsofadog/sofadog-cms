@@ -1,5 +1,5 @@
 const api = {
-    url:'https://v-int.so.fa.dog'
+    url: process.env.API_URL
 }
 
 export default api;
