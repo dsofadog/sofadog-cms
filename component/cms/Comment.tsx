@@ -159,9 +159,13 @@ const Comment = (props: Props) => {
                             </div>
                         </div>
 
-                        <div className="w-full space-y-1 px-2 pb-4">
+                        <div className="w-full space-y-1 px-2 pr-5 pb-4">
                             <div>
-                                <span className="text-base text-gray-600" dangerouslySetInnerHTML={{ __html: comment?.text }} ></span>
+                                <span style={{
+                                    overflowWrap: 'break-word', 
+                                    wordWrap: 'break-word',
+                                    hyphens: 'auto'
+                                }} className="text-base text-gray-600" dangerouslySetInnerHTML={{ __html: comment?.text }} ></span>
                             </div>
                         </div>
                     </>
