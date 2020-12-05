@@ -8,8 +8,8 @@ import { fas } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 
 import { scroller } from "react-scroll";
-import useInfiniteScroll from 'react-infinite-scroll-hook';
-import moment from 'moment';
+import useInfiniteScroll from 'react-infinite-scroll-hook'; 
+import moment from 'moment'
 import _ from 'lodash'
 
 import CreateItem from 'component/cms/CreateItem';
@@ -21,6 +21,8 @@ import { LayoutContext } from 'contexts/';
 import CmsConstant from 'utils/cms-constant';
 import HttpCms from 'utils/http-cms';
 import Filter from 'component/cms/Filter';
+
+// momentTimezone.tz.setDefault('Etc/UTC')
 
 f_config.autoAddCss = false;
 library.add(fas, fab);
@@ -90,6 +92,16 @@ const Demo = () => {
 
 
     const [scrollLoading, setScrollLoading] = useState(false);
+    const [params, setParams] = useState<Params>({
+        token: appUserInfo?.token,
+        limit: defaultPagination.limit,
+        date: moment.utc().add(1, 'day').format("YYYY-MM-DD"),
+        tags: filter.tags.join(),
+        category: filter.category,
+        state: filter.states.join(),
+        feed_id: filter.feed,
+        title: search
+    })
     const infiniteRef = useInfiniteScroll({
         loading: scrollLoading,
         hasNextPage: true,
@@ -97,28 +109,19 @@ const Demo = () => {
             setParams({
                 ...params,
                 token: appUserInfo?.token,
-                date: moment(params.date).subtract(1, 'day').format('YYYY-MM-DD')
+                date: moment.utc(params.date).subtract(1, 'day').format('YYYY-MM-DD')
             })
         },
         scrollContainer: 'window',
     });
 
-    const [params, setParams] = useState<Params>({
-        token: appUserInfo?.token,
-        limit: defaultPagination.limit,
-        date: moment().format("YYYY-MM-DD"),
-        tags: filter.tags.join(),
-        category: filter.category,
-        state: filter.states.join(),
-        feed_id: filter.feed,
-        title: search
-    })
 
     useEffect(() => {
         // console.log(currentUserState, currentUserAction);
         // logoutUserCheck();
         // fetchItems();
         getFeeds();
+        // console.log(momentTimezone())
     }, []);
 
 
@@ -127,7 +130,7 @@ const Demo = () => {
         setParams({
             ...params,
             token: appUserInfo?.token,
-            date: moment().format("YYYY-MM-DD"),
+            date: moment.utc().format("YYYY-MM-DD"),
             tags: filter.tags.join(),
             category: filter.category,
             state: filter.states.join(),
@@ -136,6 +139,8 @@ const Demo = () => {
     }, [filter])
 
     useEffect(() => {
+        console.log(params)
+
         if (params.token) {
             fetchItems()
         }
@@ -462,7 +467,7 @@ const Demo = () => {
                                         setNewsItems(null)
                                         setParams({
                                             ...params,
-                                            date: moment().format("YYYY-MM-DD"),
+                                            date: moment.utc().format("YYYY-MM-DD"),
                                             title: search
                                         })
                                     }} className="-ml-px relative inline-flex items-center space-x-2 px-4 py-2 text-sm font-medium rounded-r-md text-white bg-indigo-500 hover:bg-indigo-400 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-600 active:bg-indigo-600">
@@ -487,7 +492,7 @@ const Demo = () => {
                                     setNewsItems(null)
                                     setParams({
                                         ...params,
-                                        date: moment().format("YYYY-MM-DD")
+                                        date: moment.utc().format("YYYY-MM-DD")
                                     })
                                 }} className="relative inline-flex items-center space-x-2 px-2 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-400 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-600 active:bg-indigo-600 transition duration-150 ease-in-out">
                                     <FontAwesomeIcon className="w-3" icon={['fas', 'sync-alt']} />
