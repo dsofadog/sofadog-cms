@@ -30,7 +30,6 @@ const PreviewItem = (props) => {
     const [isClips, setIsClips] = useState(false);
     const [clips, setClips] = useState({ video: null, thumbnails: null });
     const [isEdit, setIsEdit] = useState(false);
-    const [comment, setComment] = useState(null);
     const [isExpand, setIsExpand] = useState(true);
     const [categories, setCategories] = useState(null);
     const [feeds, setFeeds] = useState(null);
@@ -42,7 +41,6 @@ const PreviewItem = (props) => {
         //console.log("props.feeds", props.feeds);
         if (props.item) {
             setItem(props.item);
-            setComment(item?.comments[item?.comments.length - 1]);
             setFeeds(props.feeds);
         }
 
