@@ -40,7 +40,7 @@ type Params = {
 
 
 const defaultPagination = {
-    limit: 200,
+    limit: 50,
     total_data: 0
 }
 
