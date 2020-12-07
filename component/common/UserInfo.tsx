@@ -135,9 +135,9 @@ const UserInfo = (props) => {
             email: userData.email,
             job_title: userData.job_title,
             admin_roles: selectedRole
-        }
+        } as any
         if (action === 'add') {
-           
+            data.password = userPass
             props.addUser(data)
             
         } else {
