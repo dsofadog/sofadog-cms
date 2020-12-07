@@ -78,12 +78,7 @@ const Demo = () => {
         states: string[];
         feed: string;
         category: string;
-    }>({
-        tags: [],
-        states: [],
-        feed: null,
-        category: null
-    })
+    }>(null)
 
     const [fetchItemsFailed, setFetchItemsFailed] = useState(false)
     const [isCreate, setIsCreate] = useState(false);
@@ -96,11 +91,11 @@ const Demo = () => {
     const [params, setParams] = useState<Params>({
         token: appUserInfo?.token,
         limit: defaultPagination.limit,
-        date: moment.utc().add(1, 'day').format("YYYY-MM-DD"),
-        tags: filter.tags.join(),
-        category: filter.category,
-        state: filter.states.join(),
-        feed_id: filter.feed,
+        date: moment.utc().format("YYYY-MM-DD"),
+        tags: '',
+        category: null,
+        state: '',
+        feed_id: null,
         title: search
     })
     const infiniteRef = useInfiniteScroll({
@@ -110,7 +105,7 @@ const Demo = () => {
             setParams({
                 ...params,
                 token: appUserInfo?.token,
-                date: moment.utc(params.date).subtract(1, 'day').format('YYYY-MM-DD')
+                date: (params.token? moment.utc(params.date).subtract(1, 'day'): moment.utc(params.date)).format('YYYY-MM-DD')
             })
         },
         scrollContainer: 'window',
@@ -128,15 +123,18 @@ const Demo = () => {
 
     useEffect(() => {
         console.log('filter', filter)
-        setParams({
-            ...params,
-            token: appUserInfo?.token,
-            date: moment.utc().format("YYYY-MM-DD"),
-            tags: filter.tags.join(),
-            category: filter.category,
-            state: filter.states.join(),
-            feed_id: filter.feed
-        })
+        if(filter !== null){
+            setParams({
+                ...params,
+                token: appUserInfo?.token,
+                date: moment.utc().format("YYYY-MM-DD"),
+                tags: filter.tags.join(),
+                category: filter.category,
+                state: filter.states.join(),
+                feed_id: filter.feed
+            })
+        }
+        
     }, [filter])
 
     useEffect(() => {
