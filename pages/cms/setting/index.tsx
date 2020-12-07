@@ -1,4 +1,4 @@
-import { useState, useContext } from "react"
+import { useState, useContext, useEffect } from "react"
 
 import { profile } from "console"
 import Link from "next/link"
@@ -14,9 +14,14 @@ const Setting = () => {
 
     const [tabIndex, setTabIndex] = useState<number>(0);
     const {
-
         currentUserPermission,
     } = useContext(LayoutContext);
+
+    useEffect(()=>{
+        if(!currentUserPermission("super_admin", "")){
+            setTabIndex(2)
+        }
+    }, [currentUserPermission])
 
     return (
         <div className="w-full h-full min-h-screen bg-gray-500">
