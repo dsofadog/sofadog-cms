@@ -88,17 +88,7 @@ const PreviewItemTable = (props) => {
 
   function refreshData(e) {
     e.preventDefault();
-    setLoading(true);
-    HttpCms.get(`/news_items/${item.id}?token=${appUserInfo?.token}`)
-      .then((response) => {
-        setItem(response.data.news_items[0]);
-        console.log(response.data.news_items[0], "response.data.data");
-        setLoading(false);
-      })
-      .catch((e) => {
-        console.log(e);
-        setLoading(false);
-      });
+    props.getSigleItem(item.id);
   }
 
   function showSentences(i) {
