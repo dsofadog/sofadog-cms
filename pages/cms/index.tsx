@@ -85,6 +85,7 @@ const Demo = () => {
         category: null
     })
 
+    const [fetchItemsFailed, setFetchItemsFailed] = useState(false)
     const [isCreate, setIsCreate] = useState(false);
     const [newsItems, setNewsItems] = useState(null);
     const [search, setSearch] = useState("");
@@ -163,32 +164,36 @@ const Demo = () => {
 
     const fetchItems = async () => {
 
-        setScrollLoading(true);
+        if(!fetchItemsFailed){
+            setScrollLoading(true);
 
-        let url = returnUrlForNewItems(params);
-
-        try {
-            const res = await HttpCms.get(url)
-            if (res.data.news_items.length > 0) {
-                if (newsItems) {
-                    const tempNewsitems = { ...newsItems };
-                    res.data.news_items.map((data, i) => {
-                        tempNewsitems.news_items.push(data);
-                    });
-                    setNewsItems(tempNewsitems);
-                } else {
-                    setNewsItems(res.data);
+            let url = returnUrlForNewItems(params);
+    
+            try {
+                const res = await HttpCms.get(url)
+                if (res.data.news_items.length > 0) {
+                    if (newsItems) {
+                        const tempNewsitems = { ...newsItems };
+                        res.data.news_items.map((data, i) => {
+                            tempNewsitems.news_items.push(data);
+                        });
+                        setNewsItems(tempNewsitems);
+                    } else {
+                        setNewsItems(res.data);
+                    }
                 }
+                setPaginationData({
+                    ...paginationData,
+                    total_data: res.data.total_items
+                });
+            } catch (err) {
+                console.log('err', err);
+                setFetchItemsFailed(true)
+            } finally {
+                setScrollLoading(false)
             }
-            setPaginationData({
-                ...paginationData,
-                total_data: res.data.total_items
-            });
-        } catch (err) {
-            console.log('err', err);
-        } finally {
-            setScrollLoading(false)
         }
+        
     }
 
     function deleteItem(item) {
@@ -464,6 +469,7 @@ const Demo = () => {
                                         <input id="search" value={search} onChange={(e) => setSearch(e.target.value)} className="block w-full pl-10 pr-3 py-2 border border-transparent rounded-md leading-5 bg-gray-700 text-gray-300 placeholder-gray-400 focus:outline-none focus:bg-white focus:text-gray-900 sm:text-sm transition duration-150 ease-in-out" placeholder="Search" type="search" />
                                     </div>
                                     <button onClick={(e) => {
+                                        setFetchItemsFailed(false)
                                         setNewsItems(null)
                                         setParams({
                                             ...params,
@@ -480,6 +486,7 @@ const Demo = () => {
 
                             <Filter feeds={feeds} onSubmit={state => {
                                 const { availableCategories, ...newFilter } = state
+                                setFetchItemsFailed(false)
                                 setNewsItems(null)
                                 setFilter({
                                     ...filter,
@@ -489,6 +496,7 @@ const Demo = () => {
 
                             <div className="">
                                 <button onClick={(e) => {
+                                    setFetchItemsFailed(false)
                                     setNewsItems(null)
                                     setParams({
                                         ...params,
@@ -617,6 +625,26 @@ const Demo = () => {
 
                 </div>
 
+                {fetchItemsFailed && (
+                    <div className="box-border p-4">
+                        <div className="flex flex-row text-white justify-center items-center">
+                            <FontAwesomeIcon className="w-12 h-12 p-2 rounded-full" icon={['fas', 'exclamation-circle']} />
+                            <p>Something went wrong</p>
+                        </div>
+                        <div className="flex flex-row justify-center items-center">
+                            <button type="button" onClick={()=>{
+                                setFetchItemsFailed(false)
+                                setNewsItems(null)
+                                setParams({
+                                    ...params,
+                                    date: moment.utc().format("YYYY-MM-DD")
+                                })
+                            }} className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Retry</button>
+                        </div>
+
+
+                    </div>
+                )}
                 {scrollLoading && (
 
                     <div className="box-border p-4">
@@ -637,6 +665,8 @@ const Demo = () => {
                     </div>
                 )
             }
+
+       
 
         </div >
     )
