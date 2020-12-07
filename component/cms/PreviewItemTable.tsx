@@ -185,10 +185,10 @@ const PreviewItemTable = (props) => {
               onClick={(e) => actionPerformed(item, "claim", e)}
               className={`${
                 currentUserPermission("new", "") &&
-                item?.owners?.new == undefined
+                  item?.owners?.new == undefined
                   ? "px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer"
                   : "hidden"
-              }`}
+                }`}
             >
               Claim
             </button>
@@ -201,11 +201,11 @@ const PreviewItemTable = (props) => {
               onClick={(e) => actionPerformed(item, "submit", e)}
               className={`${
                 currentUserPermission("new", "kkkk") &&
-                item?.owners?.new !== undefined &&
-                item?.owners?.new == appUserInfo?.user?.email
+                  item?.owners?.new !== undefined &&
+                  item?.owners?.new == appUserInfo?.user?.email
                   ? "px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer"
                   : "hidden"
-              }`}
+                }`}
             >
               Submit
             </button>
@@ -218,7 +218,7 @@ const PreviewItemTable = (props) => {
           <>
             {item?.owners?.awaiting_review_by_lead_journalist != undefined &&
               item?.owners?.awaiting_review_by_lead_journalist !=
-                appUserInfo?.user?.email && (
+              appUserInfo?.user?.email && (
                 <p>
                   Claimed by {item?.owners?.awaiting_review_by_lead_journalist}
                 </p>
@@ -231,10 +231,10 @@ const PreviewItemTable = (props) => {
                   "awaiting_review_by_lead_journalist",
                   ""
                 ) &&
-                item?.owners?.awaiting_review_by_lead_journalist == undefined
+                  item?.owners?.awaiting_review_by_lead_journalist == undefined
                   ? "px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer"
                   : "hidden"
-              }`}
+                }`}
             >
               Claim
             </button>
@@ -244,13 +244,13 @@ const PreviewItemTable = (props) => {
                   "awaiting_review_by_lead_journalist",
                   ""
                 ) &&
-                item?.owners?.awaiting_review_by_lead_journalist !==
+                  item?.owners?.awaiting_review_by_lead_journalist !==
                   undefined &&
-                item?.owners?.awaiting_review_by_lead_journalist ==
+                  item?.owners?.awaiting_review_by_lead_journalist ==
                   appUserInfo?.user?.email
                   ? "flex space-x-2 items-center justify-center"
                   : "hidden"
-              }`}
+                }`}
             >
               <svg
                 onClick={(e) =>
@@ -293,7 +293,7 @@ const PreviewItemTable = (props) => {
           <>
             {item?.owners?.awaiting_video_upload != undefined &&
               item?.owners?.awaiting_video_upload !=
-                appUserInfo?.user?.email && (
+              appUserInfo?.user?.email && (
                 <p>Claimed by {item?.owners?.awaiting_video_upload}</p>
               )}
 
@@ -301,21 +301,21 @@ const PreviewItemTable = (props) => {
               onClick={(e) => actionPerformed(item, "claim", e)}
               className={`${
                 currentUserPermission("awaiting_video_upload", "") &&
-                item?.owners?.awaiting_video_upload == undefined
+                  item?.owners?.awaiting_video_upload == undefined
                   ? "px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer"
                   : "hidden"
-              }`}
+                }`}
             >
               Claim
             </button>
             <div
               className={`${
                 currentUserPermission("awaiting_video_upload", "kkkk") &&
-                item?.owners?.awaiting_video_upload !== undefined &&
-                item?.owners?.awaiting_video_upload == appUserInfo?.user?.email
+                  item?.owners?.awaiting_video_upload !== undefined &&
+                  item?.owners?.awaiting_video_upload == appUserInfo?.user?.email
                   ? "block text-center justify-center items-center"
                   : "hidden"
-              }`}
+                }`}
             >
               {video != null ? (
                 <>
@@ -342,58 +342,58 @@ const PreviewItemTable = (props) => {
                   </div>
                 </>
               ) : (
-                <>
-                  <div
-                    className={`${
-                      !currentUserPermission("awaiting_video_upload")
-                        ? "hidden"
-                        : "w-full p-2"
-                    }`}
-                  >
+                  <>
                     <div
-                      {...getRootProps()}
-                      className="w-full flex justify-center px-6 pt-5 pb-6 border-2 border-gray-100 border-dashed rounded-md"
+                      className={`${
+                        !currentUserPermission("awaiting_video_upload")
+                          ? "hidden"
+                          : "w-full p-2"
+                        }`}
                     >
-                      <input {...getInputProps()} />
-                      <div className="cursor-pointer text-center">
-                        <svg
-                          className="mx-auto h-12 w-12 text-gray-200"
-                          stroke="currentColor"
-                          fill="none"
-                          viewBox="0 0 48 48"
-                        >
-                          <path
-                            d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                        {isDragActive ? (
-                          <p className="mt-1 text-sm text-gray-400">
-                            Drop the files here ...
-                          </p>
-                        ) : (
-                          <>
+                      <div
+                        {...getRootProps()}
+                        className="w-full flex justify-center px-6 pt-5 pb-6 border-2 border-gray-100 border-dashed rounded-md"
+                      >
+                        <input {...getInputProps()} />
+                        <div className="cursor-pointer text-center">
+                          <svg
+                            className="mx-auto h-12 w-12 text-gray-200"
+                            stroke="currentColor"
+                            fill="none"
+                            viewBox="0 0 48 48"
+                          >
+                            <path
+                              d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                          {isDragActive ? (
                             <p className="mt-1 text-sm text-gray-400">
-                              <button
-                                type="button"
-                                className="font-medium text-gray-50 hover:text-gray-100 pr-2 focus:outline-none focus:underline transition duration-150 ease-in-out"
-                              >
-                                Upload a file
+                              Drop the files here ...
+                            </p>
+                          ) : (
+                              <>
+                                <p className="mt-1 text-sm text-gray-400">
+                                  <button
+                                    type="button"
+                                    className="font-medium text-gray-50 hover:text-gray-100 pr-2 focus:outline-none focus:underline transition duration-150 ease-in-out"
+                                  >
+                                    Upload a file
                               </button>
                               or drag and drop
                             </p>
-                            <p className="mt-1 text-xs text-gray-200">
-                              MP4, MOV, WMV up to 500MB
+                                <p className="mt-1 text-xs text-gray-200">
+                                  MP4, MOV, WMV up to 500MB
                             </p>
-                          </>
-                        )}
+                              </>
+                            )}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </>
-              )}
+                  </>
+                )}
             </div>
           </>
         );
@@ -404,7 +404,7 @@ const PreviewItemTable = (props) => {
           <>
             {item?.owners?.awaiting_review_by_lead_video_editor != undefined &&
               item?.owners?.awaiting_review_by_lead_video_editor !=
-                appUserInfo?.user?.email && (
+              appUserInfo?.user?.email && (
                 <p>
                   Claimed by{" "}
                   {item?.owners?.awaiting_review_by_lead_video_editor}
@@ -418,10 +418,10 @@ const PreviewItemTable = (props) => {
                   "awaiting_review_by_lead_video_editor",
                   ""
                 ) &&
-                item?.owners?.awaiting_review_by_lead_video_editor == undefined
+                  item?.owners?.awaiting_review_by_lead_video_editor == undefined
                   ? "px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer"
                   : "hidden"
-              }`}
+                }`}
             >
               Claim
             </button>
@@ -431,13 +431,13 @@ const PreviewItemTable = (props) => {
                   "awaiting_review_by_lead_video_editor",
                   ""
                 ) &&
-                item?.owners?.awaiting_review_by_lead_video_editor !==
+                  item?.owners?.awaiting_review_by_lead_video_editor !==
                   undefined &&
-                item?.owners?.awaiting_review_by_lead_video_editor ==
+                  item?.owners?.awaiting_review_by_lead_video_editor ==
                   appUserInfo?.user?.email
                   ? "flex space-x-2 items-center justify-center"
                   : "hidden"
-              }`}
+                }`}
             >
               <span
                 onClick={(e) => actionPerformed(item, "Preview Clips", e)}
@@ -493,10 +493,10 @@ const PreviewItemTable = (props) => {
               onClick={(e) => actionPerformed(item, "claim", e)}
               className={`${
                 currentUserPermission("ready_for_push", "") &&
-                item?.owners?.ready_for_push == undefined
+                  item?.owners?.ready_for_push == undefined
                   ? "px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer"
                   : "hidden"
-              }`}
+                }`}
             >
               Claim
             </button>
@@ -505,11 +505,11 @@ const PreviewItemTable = (props) => {
               onClick={(e) => actionPerformed(item, "push_to_feed", e)}
               className={`${
                 currentUserPermission("ready_for_push", "") &&
-                item?.owners?.ready_for_push !== undefined &&
-                item?.owners?.ready_for_push == appUserInfo?.user?.email
+                  item?.owners?.ready_for_push !== undefined &&
+                  item?.owners?.ready_for_push == appUserInfo?.user?.email
                   ? "px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-green-800 bg-green-100 hover:bg-green-200 text-green-800 cursor-pointer"
                   : "hidden"
-              }`}
+                }`}
             >
               Push To Feed
             </span>
@@ -528,10 +528,10 @@ const PreviewItemTable = (props) => {
               onClick={(e) => actionPerformed(item, "claim", e)}
               className={`${
                 currentUserPermission("pushed_to_feed", "") &&
-                item?.owners?.ready_for_push == undefined
+                  item?.owners?.ready_for_push == undefined
                   ? "px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer"
                   : "hidden"
-              }`}
+                }`}
             >
               Claim
             </button>
@@ -540,11 +540,11 @@ const PreviewItemTable = (props) => {
               onClick={(e) => actionPerformed(item, "remove_from_feed", e)}
               className={`${
                 currentUserPermission("pushed_to_feed", "") &&
-                item?.owners?.pushed_to_feed !== undefined &&
-                item?.owners?.pushed_to_feed == appUserInfo?.user?.email
+                  item?.owners?.pushed_to_feed !== undefined &&
+                  item?.owners?.pushed_to_feed == appUserInfo?.user?.email
                   ? "hiddpx-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-red-800 bg-red-100 hover:bg-red-200 text-red-800 cursor-pointeren"
                   : "hidden"
-              }`}
+                }`}
             >
               Remove From Feed
             </span>
@@ -563,10 +563,10 @@ const PreviewItemTable = (props) => {
               onClick={(e) => actionPerformed(item, "claim", e)}
               className={`${
                 currentUserPermission("removed_from_feed", "") &&
-                item?.owners?.removed_from_feed == undefined
+                  item?.owners?.removed_from_feed == undefined
                   ? "px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer"
                   : "hidden"
-              }`}
+                }`}
             >
               Claim
             </button>
@@ -575,11 +575,11 @@ const PreviewItemTable = (props) => {
               onClick={(e) => actionPerformed(item, "push_to_feed", e)}
               className={`${
                 currentUserPermission("removed_from_feed", "") &&
-                item?.owners?.removed_from_feed !== undefined &&
-                item?.owners?.removed_from_feed == appUserInfo?.user?.email
+                  item?.owners?.removed_from_feed !== undefined &&
+                  item?.owners?.removed_from_feed == appUserInfo?.user?.email
                   ? "px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-green-800 bg-green-100 hover:bg-green-200 text-green-800 cursor-pointer"
                   : "hidden"
-              }`}
+                }`}
             >
               Push To Feed
             </span>
@@ -626,6 +626,7 @@ const PreviewItemTable = (props) => {
     console.log("feeds[f]?.categories[c] ", feeds[f]?.categories[c]);
     setCategories(feeds[f]?.categories[c]);
   }
+
   return (
     <>
       <tr className="bg-white">
@@ -653,7 +654,30 @@ const PreviewItemTable = (props) => {
         </td>
 
         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-          {actionRender(item)}
+          <span className="flex">
+            <span className="flex-1">
+              {actionRender(item)}
+            </span>
+            <span className="flex-1">
+              {
+                props.index != 0 && (
+                  <button className="px-2 py-0.5 text-gray-600 text-xs rounded">
+                    <FontAwesomeIcon onClick={(e) => moveItem(item, "increment_ordinal", e)} className="w-5 hover:text-gray-900" icon={['fas', 'arrow-up']} />
+                  </button>
+                )
+              }
+
+              {
+                props.index != props.totalData && (
+                  <button className="px-2 py-0.5 text-gray-600 text-xs rounded">
+                    <FontAwesomeIcon onClick={(e) => moveItem(item, "decrement_ordinal", e)} className="w-5 hover:text-gray-900" icon={['fas', 'arrow-down']} />
+                  </button>
+                )
+              }
+            </span>
+
+          </span>
+
         </td>
       </tr>
     </>
