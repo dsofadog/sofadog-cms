@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { useDropzone } from 'react-dropzone';
 import _ from 'lodash'
+import moment from 'moment'
 
 import { config as f_config, library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -470,12 +471,13 @@ const PreviewItem = (props) => {
                                                     }
                                                 </div>
                                             </div>
-                                            <div className="flex items-center mb-4">
+                                            <div className="mb-4">
                                                 <h2 className="text-base text-gray-800 font-medium mr-auto">
                                                     <Link href={`/cms/[item_id]`} as={`/cms/${item.id}`}>
                                                         {item?.title}
                                                     </Link>
                                                 </h2>
+                                                <small className="text-gray-400">{`Created date: ${moment.unix(item.created_at).format('lll')}`}{item.due_date ? ` | Due date: ${moment(item.due_date).format('lll')}`: ''} {item.enqueued_at? ` | Enqueued date: ${moment(item.enqueued_at).format('lll')}`: ''}</small>
                                             </div>
                                             {item?.descriptions.length > 0 && (
                                                 <div className="w-full mb-4">

@@ -1,5 +1,7 @@
 import { useEffect, useState, useContext, useRef } from "react";
 
+import moment from 'moment'
+
 import { config as f_config, library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { fas } from '@fortawesome/free-solid-svg-icons';
@@ -16,7 +18,7 @@ f_config.autoAddCss = false;
 library.add(fas, fab, far);
 
 const CreateItem = (props) => {
-   
+
     //const categories = CmsConstant.Category;
     const tags = CmsConstant.Tags;
     const [categories, setCotegories] = useState(null);
@@ -28,7 +30,7 @@ const CreateItem = (props) => {
 
     const [openCategoryDropdown, setOpenCategoryDropdown] = useState(false);
     const toggleCateDropdown = () => { setOpenCategoryDropdown(!openCategoryDropdown) };
-    const { setLoading, appUserInfo,currentUserPermission } = useContext(LayoutContext);
+    const { setLoading, appUserInfo, currentUserPermission } = useContext(LayoutContext);
     const [item, setItem] = useState(null);
     const [selectedTag, setSelectedTag] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState(null);
@@ -36,8 +38,9 @@ const CreateItem = (props) => {
     const [activeCredit, setActiveCredit] = useState(0);
     const [formSubmitted, setFormSubmitted] = useState(false);
     const [formproceed, setFormproceed] = useState(false);
-    const [selectedFeed,setSelectedFeed] = useState(null);
-    const [feeds,setFeeds] = useState(null);
+    const [selectedFeed, setSelectedFeed] = useState(null);
+    const [selectedDueDate, setSelectedDueDate] = useState(null);
+    const [feeds, setFeeds] = useState(null);
     const blankSentence = { sentence: "", editable: true, error: false }
     const [descriptions, setDescriptions] = useState(
         [
@@ -69,9 +72,11 @@ const CreateItem = (props) => {
     const catWrapperRef = useRef(null);
     const feedWrapperRef = useRef(null);
     const tagWrapperRef = useRef(null);
+    const dueDateWrapperRef = useRef(null);
     useOutsideAlerter(catWrapperRef);
     useOutsideAlerter(tagWrapperRef);
     useOutsideAlerter(feedWrapperRef);
+    useOutsideAlerter(dueDateWrapperRef);
 
     useEffect(() => {
         getFeeds();
@@ -138,15 +143,15 @@ const CreateItem = (props) => {
         }
     }, [props.state]);
 
-    useEffect(()=>{
-        if(props.state === 'edit'){
+    useEffect(() => {
+        if (props.state === 'edit') {
             let i = feeds?.findIndex(x => x.id === props?.data.feed_id);
-            if(i >= 0){
+            if (i >= 0) {
                 handleClickSingleDropdownFeed(feeds[i]);
             }
-             
+
         }
-    },[feeds])
+    }, [feeds])
     function useOutsideAlerter(ref) {
         useEffect(() => {
             function handleClickOutside(event) {
@@ -175,6 +180,7 @@ const CreateItem = (props) => {
         setSelectedTag([]);
         setSelectedCategory(null);
         setSelectedFeed(null);
+        setSelectedDueDate(null)
         setDescriptions([{ language: "english", sentences: [] }, { language: "estonian", sentences: [] }]);
         setCredits([{ credit: "News Credits", creditSentences: [] }, { credit: "Visual Credits", creditSentences: [] }]);
     }
@@ -301,25 +307,43 @@ const CreateItem = (props) => {
 
 
     function handleClickSingleDropdownFeed(feed) {
-        console.log("selected feed",feed.id)
-        
+        console.log("selected feed", feed.id)
+
         setItem({
             ...item,
             feed_id: feed.id
         });
-        console.log("items",item)
+        console.log("items", item)
         setSelectedFeed(feed.id);
-        console.log("cate ",feed.categories);
+        console.log("cate ", feed.categories);
         setCotegories(feed.categories);
         setOpenFeedDropdown(false);
     }
 
+
+
     function clearFeeds() {
         setItem({
             ...item,
-             feed_id: null
+            feed_id: null
         });
         setSelectedFeed(null);
+    }
+
+    function handleDueDate(e){
+        setItem({
+            ...item,
+            due_date: e.target.value
+        });
+        setSelectedDueDate(e.target.value)
+    }
+
+    function clearDueDate() {
+        setItem({
+            ...item,
+            due_date: null
+        });
+        setSelectedDueDate(null);
     }
 
     function showSentences(i) {
@@ -390,7 +414,7 @@ const CreateItem = (props) => {
     }
 
     function categoryValidation(): Boolean {
-      
+
         //console.log(item?.category);
         //console.log(selectedTag);
         if (selectedCategory === null) {
@@ -399,6 +423,10 @@ const CreateItem = (props) => {
             return true;
         }
 
+    }
+
+    function dueDateValidation(): Boolean {
+        return setSelectedDueDate !== null
     }
 
     function tagValidation() {
@@ -412,7 +440,8 @@ const CreateItem = (props) => {
         let desc = descriptionValidation();
         let credit = creditVisualValidation();
         let category = categoryValidation();
-        if (desc && credit && category && item?.title != undefined) {
+        let dueDate = dueDateValidation();
+        if (desc && credit && category && dueDate && item?.title != undefined) {
             return true;
         } else {
             return false
@@ -429,7 +458,8 @@ const CreateItem = (props) => {
             news_credits: [],
             visual_credits: [],
             tags: selectedTag,
-            feed_id:item?.feed_id
+            feed_id: item?.feed_id,
+            due_date: moment.utc(selectedDueDate).format('YYYY-MM-DD')
         }
 
         if (descriptions) {
@@ -494,12 +524,12 @@ const CreateItem = (props) => {
     }
 
 
-    function getFeeds(){
-       
-            //setLoading(true);
-            HttpCms.get("/feeds?token="+appUserInfo?.token)
+    function getFeeds() {
+
+        //setLoading(true);
+        HttpCms.get("/feeds?token=" + appUserInfo?.token)
             .then((response) => {
-                console.log("response: ",response.data);
+                console.log("response: ", response.data);
                 setFeeds(response.data.feeds)
             })
             .catch((e) => {
@@ -508,54 +538,54 @@ const CreateItem = (props) => {
             .finally(() => {
                 setLoading(false);
             });
- 
+
     }
 
     function saveData() {
-        console.log("items on submit :- ",item);
+        console.log("items on submit :- ", item);
         //console.log(selectedTag);
         let conditionMatch = validationData();
         if (conditionMatch) {
             apicallForServer();
         }
     }
-    
+
     function getFeedName() {
-        console.log("getFeedName: ",selectedFeed);
+        console.log("getFeedName: ", selectedFeed);
         let i = feeds.findIndex(x => x.id === selectedFeed);
         if (i >= 0) {
             return feeds[i].name ? feeds[i].name : feeds[i].id;
         }
     }
-    function getColorCode(){
+    function getColorCode() {
 
-        if(categories != null){
-           
+        if (categories != null) {
+
             let i = categories?.findIndex(c => c.number === selectedCategory);
-            console.log("categories:-- ",i);
-            if(i >= 0){
-               
+            console.log("categories:-- ", i);
+            if (i >= 0) {
+
                 return categories[i].hex ? categories[i].hex : '#e5e7eb';
-            }else{
+            } else {
                 return '#e5e7eb';
             }
-        }else{
+        } else {
             return '#e5e7eb';
         }
-       
+
     }
-    function getCategoryName(){
-        if(categories != null){
+    function getCategoryName() {
+        if (categories != null) {
             let i = categories?.findIndex(c => c.number === selectedCategory);
-            if(i >= 0){
+            if (i >= 0) {
                 return categories[i].title ? categories[i].title : '';
-            }else{
+            } else {
                 return '';
             }
-        }else{
+        } else {
             return '';
         }
-       
+
     }
     return (
         <div className="w-full mx-auto">
@@ -566,9 +596,9 @@ const CreateItem = (props) => {
             </div>
             <div className="flex flex-no-wrap justify-center">
                 <div className="w-11/12 mx-auto flex-none float-left">
-                    <div className="md:flex shadow-lg mx-6 md:mx-auto w-full h-2xl">
-                    {/* ${item?.category != undefined ? categories[item?.category].color : 'gray-200'} */}
-                        <div style={{borderColor: getColorCode()}}className={`border relative w-full h-full md:w-4/5 px-4 py-2 bg-white rounded-l-lg border-l-8`}>
+                    <div className="md:flex shadow-lg mx-6 md:mx-auto w-full">
+                        {/* ${item?.category != undefined ? categories[item?.category].color : 'gray-200'} */}
+                        <div style={{ borderColor: getColorCode() }} className={`border relative w-full h-full md:w-4/5 px-4 py-2 bg-white rounded-l-lg border-l-8`}>
                             <div className="py-2">
                                 <div className="w-full flex justify-end space-x-2">
                                     <button onClick={() => saveData()} className="px-2 py-1 bg-green-500 text-white rounded text-xs cursor-pointer">{props.state === 'edit' ? 'Update ' : 'Save '} Data</button>
@@ -704,22 +734,28 @@ const CreateItem = (props) => {
                                     </div>
                                 </div>
                             </div>
-                            <div className="absolute mb-4 mr-4 bottom-0 inset-x-0 flex">
-                            <div className="w-full ml-4 space-x-2 flex justify-start">
-                                    <div ref={feedWrapperRef} data-id="feed" className="relative inline-block text-left">
-                                        <div>
-                                            {feeds && (
-                                                <span onClick={toggleFeedDropdown} className="rounded-md shadow-sm">
-                                                    <button type="button" className={`${(selectedFeed === null) && formSubmitted ? 'border-red-500 text-red-600' : 'border-transparent '} inline-flex justify-center w-full rounded-md border border-gray-300 px-2 py-0.5 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150`}
-                                                        id="options-menu" aria-haspopup="true" aria-expanded="true">
-                                                        Choose Feed
-                                                        <svg className="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                                            <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                                                        </svg>
-                                                    </button>
-                                                </span>
-                                            )}
-                                        </div>
+
+
+
+                            <div className="grid grid-cols-8 gap-8 pt-5 mb-5">
+                                {/* <div className="col-span-6">
+                                    <label htmlFor="street_address" className="block text-sm font-medium leading-5 text-gray-700">Street address</label>
+                                    <input id="street_address" className="form-input mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
+                                </div> */}
+                                <div className="col-span-8 sm:col-span-8 lg:col-span-2">
+                                    <label className="block text-sm font-medium leading-5 text-gray-700">Feed</label>
+                                    <div ref={feedWrapperRef} data-id="feed" className="relative inline-block text-left w-full">
+                                        {feeds && (
+                                            <span onClick={toggleFeedDropdown} className="rounded-md shadow-sm block">
+                                                <button type="button" className={`${(selectedFeed === null) && formSubmitted ? 'border-red-500 text-red-600' : 'border-transparent '} w-full inline-flex justify-between rounded-md border border-gray-300 px-2 py-0.5 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800`}
+                                                    id="options-menu" aria-haspopup="true" aria-expanded="true">
+                                                    Choose Feed
+                                                    <svg className="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                        <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                                                    </svg>
+                                                </button>
+                                            </span>
+                                        )}
                                         {openFeedDropdown && (
                                             <div className="origin-top-left absolute left-0 mt-2 w-56 rounded-md shadow-lg z-20">
                                                 <div className="rounded-md bg-white shadow-xs">
@@ -738,9 +774,9 @@ const CreateItem = (props) => {
                                     {feeds && (
                                         <>
                                             {selectedFeed != null && (
-                                                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium leading-4 bg-blue-100 text-blue-800">
+                                                <span className="mt-2 w-full inline-flex justify-between items-center px-2 py-0.5 rounded text-xs font-medium leading-4 bg-blue-100 text-blue-800">
                                                     {getFeedName()}
-                                                    <button onClick={() => clearFeeds()} type="button" className="flex-shrink-0 ml-1.5 inline-flex text-indigo-500 focus:outline-none focus:text-indigo-700" aria-label="Remove small badge">
+                                                    <button onClick={() => clearFeeds()} type="button" className="ml-1.5 inline-flex text-indigo-500 focus:outline-none focus:text-indigo-700" aria-label="Remove small badge">
                                                         <svg className="h-2 w-2" stroke="currentColor" fill="none" viewBox="0 0 8 8">
                                                             <path strokeLinecap="round" strokeWidth="1.5" d="M1 1l6 6m0-6L1 7" />
                                                         </svg>
@@ -748,24 +784,22 @@ const CreateItem = (props) => {
                                                 </span>
                                             )}
                                         </>
-
                                     )}
                                 </div>
-                                <div className="w-full ml-4 space-x-2 flex justify-start">
-                                    <div ref={catWrapperRef} data-id="category" className="relative inline-block text-left">
-                                        <div>
-                                            {categories && (
-                                                <span onClick={toggleCateDropdown} className="rounded-md shadow-sm">
-                                                    <button type="button" className={`${(selectedCategory === null) && formSubmitted ? 'border-red-500 text-red-600' : 'border-transparent '} inline-flex justify-center w-full rounded-md border border-gray-300 px-2 py-0.5 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150`}
-                                                        id="options-menu" aria-haspopup="true" aria-expanded="true">
-                                                        Choose Category
-                                                        <svg className="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                                            <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                                                        </svg>
-                                                    </button>
-                                                </span>
-                                            )}
-                                        </div>
+                                <div className="col-span-8 sm:col-span-8 lg:col-span-2">
+                                    {categories && <label className="block text-sm font-medium leading-5 text-gray-700">Category</label>}
+                                    <div ref={catWrapperRef} data-id="category" className="relative inline-block text-left w-full">
+                                        {categories && (
+                                            <span onClick={toggleCateDropdown} className="rounded-md shadow-sm block">
+                                                <button type="button" className={`${(selectedCategory === null) && formSubmitted ? 'border-red-500 text-red-600' : 'border-transparent '} disabled w-full inline-flex justify-between rounded-md border border-gray-300 px-2 py-0.5 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800`}
+                                                    id="options-menu" aria-haspopup="true" aria-expanded="true">
+                                                    Choose Category
+                                                    <svg className="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                        <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                                                    </svg>
+                                                </button>
+                                            </span>
+                                        )}
                                         {openCategoryDropdown && (
                                             <div className="origin-top-left absolute left-0 mt-2 w-56 rounded-md shadow-lg z-20">
                                                 <div className="rounded-md bg-white shadow-xs">
@@ -784,9 +818,9 @@ const CreateItem = (props) => {
                                     {categories && (
                                         <>
                                             {item?.category != null && (
-                                                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium leading-4 bg-blue-100 text-blue-800">
+                                                <span className="mt-2 w-full inline-flex justify-between items-center px-2 py-0.5 rounded text-xs font-medium leading-4 bg-blue-100 text-blue-800">
                                                     {getCategoryName()}
-                                                    <button onClick={() => clearCategory()} type="button" className="flex-shrink-0 ml-1.5 inline-flex text-indigo-500 focus:outline-none focus:text-indigo-700" aria-label="Remove small badge">
+                                                    <button onClick={() => clearCategory()} type="button" className="ml-1.5 inline-flex text-indigo-500 focus:outline-none focus:text-indigo-700" aria-label="Remove small badge">
                                                         <svg className="h-2 w-2" stroke="currentColor" fill="none" viewBox="0 0 8 8">
                                                             <path strokeLinecap="round" strokeWidth="1.5" d="M1 1l6 6m0-6L1 7" />
                                                         </svg>
@@ -797,24 +831,18 @@ const CreateItem = (props) => {
 
                                     )}
                                 </div>
-
-                                
-
-
-                                <div className="w-full space-x-2 flex justify-end z-50">
-                                    <div ref={tagWrapperRef} data-id="tag" className="relative inline-block text-left">
-                                        <div>
-                                            <span onClick={toggleTagDropdown} className="rounded-md shadow-sm">
-                                                <button type="button" className={`${selectedTag.length == 0 && formSubmitted ? '' : ' '} inline-flex justify-center w-full rounded-md border border-gray-300 px-2 py-0.5 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150`}
-
-                                                    id="options-menu" aria-haspopup="true" aria-expanded="true">
-                                                    Tags
-                                                        <svg className="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                                        <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                                                    </svg>
-                                                </button>
-                                            </span>
-                                        </div>
+                                <div className="col-span-8 sm:col-span-8 lg:col-span-2">
+                                    <label className="block text-sm font-medium leading-5 text-gray-700">Tags</label>
+                                    <div ref={tagWrapperRef} data-id="tag" className="relative inline-block text-left w-full">
+                                        <span onClick={toggleTagDropdown} className="rounded-md shadow-sm">
+                                            <button type="button" className={`${selectedTag.length == 0 && formSubmitted ? '' : ' '} inline-flex justify-between w-full rounded-md border border-gray-300 px-2 py-0.5 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800x`}
+                                                id="options-menu" aria-haspopup="true" aria-expanded="true">
+                                                Choose tags
+                                                    <svg className="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                                    <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                                                </svg>
+                                            </button>
+                                        </span>
                                         {openTagDropdown && (
                                             <div className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg">
                                                 <div className="rounded-md bg-white shadow-xs">
@@ -832,7 +860,7 @@ const CreateItem = (props) => {
                                     {selectedTag?.length > 0 && (
                                         <>
                                             {selectedTag.map((tag, i) => (
-                                                <span key={i} className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium leading-4 bg-blue-100 text-blue-800">
+                                                <span key={i} className="mt-2 w-full inline-flex justify-between items-center px-2 py-0.5 rounded text-xs font-medium leading-4 bg-blue-100 text-blue-800">
                                                     {tag}
                                                     <button onClick={() => clearTag(tag)} type="button" className="flex-shrink-0 ml-1.5 inline-flex text-indigo-500 focus:outline-none focus:text-indigo-700" aria-label="Remove small badge">
                                                         <svg className="h-2 w-2" stroke="currentColor" fill="none" viewBox="0 0 8 8">
@@ -845,10 +873,15 @@ const CreateItem = (props) => {
 
                                     )}
                                 </div>
+                                <div className="col-span-8 sm:col-span-8 lg:col-span-2">
+                                    <label className="block text-sm font-medium leading-5 text-gray-700">Due date</label>
+                                    <input onChange={handleDueDate} placeholder="Due date" id="due-date" type="date" className={((selectedFeed === null) && formSubmitted ? 'border-red-500 text-red-600' : 'border-transparent ') + 'py-0.5 text-sm form-input block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5'} />
+                                </div>
                             </div>
+
                         </div>
 
-                        <div style={{backgroundColor: getColorCode()}} className={`w-full md:w-1/5 relative z-10 rounded-lg rounded-l-none`}>
+                        <div style={{ backgroundColor: getColorCode() }} className={`w-full md:w-1/5 relative z-10 rounded-lg rounded-l-none`}>
 
                         </div>
 
