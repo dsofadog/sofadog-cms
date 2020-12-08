@@ -153,20 +153,23 @@ const PreviewItem = (props) => {
             case "new": {
                 return (
                     <div className="grid">
-                        {item?.owners?.new != undefined && item?.owners?.new == appUserInfo?.user?.email && (
+                        {item?.owners?.new && item?.owners?.new == appUserInfo?.user?.email && (
                             <p className="text-xs">Claimed by: {item?.owners?.new}</p>
                         )
                         }
 
-                        <button onClick={(e) => actionPerformed(item, "claim", e)} className={`${currentUserPermission('new', "kkkk") && item?.owners?.new == undefined ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
+                        <button onClick={(e) => actionPerformed(item, "claim", e)} className={`${currentUserPermission('new', "kkkk") && !item?.owners?.new ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
                             Claim
+                        </button>
+                        <button onClick={(e) => actionPerformed(item, "unclaim", e)} className={`${currentUserPermission('new', "kkkk") && item?.owners?.new ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
+                            Unclaim
                         </button>
                         {/* {
                        JSON.stringify(item?.owners?.new) 
                        
                     }  sadasdsada    {appUserInfo.user?.email}      */}
 
-                        <button onClick={(e) => actionPerformed(item, "submit", e)} className={`${currentUserPermission('new', "kkkk") && (item?.owners?.new !== undefined && item?.owners?.new == appUserInfo?.user?.email) ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
+                        <button onClick={(e) => actionPerformed(item, "submit", e)} className={`${currentUserPermission('new', "kkkk") && (item?.owners?.new && item?.owners?.new == appUserInfo?.user?.email) ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
                             Submit
                         </button>
                     </div>
@@ -178,15 +181,18 @@ const PreviewItem = (props) => {
                 return (
 
                     <div className="grid">
-                        {item?.owners?.awaiting_review_by_lead_journalist != undefined && item?.owners?.awaiting_review_by_lead_journalist == appUserInfo?.user?.email && (
+                        {item?.owners?.awaiting_review_by_lead_journalist && item?.owners?.awaiting_review_by_lead_journalist == appUserInfo?.user?.email && (
                             <p className="text-xs">Claimed by: {item?.owners?.awaiting_review_by_lead_journalist}</p>
                         )
                         }
 
-                        <button onClick={(e) => actionPerformed(item, "claim", e)} className={`${currentUserPermission('awaiting_review_by_lead_journalist', "") && item?.owners?.awaiting_review_by_lead_journalist == undefined ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
+                        <button onClick={(e) => actionPerformed(item, "claim", e)} className={`${currentUserPermission('awaiting_review_by_lead_journalist', "") && !item?.owners?.awaiting_review_by_lead_journalist ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
                             Claim
                         </button>
-                        <div className={`${currentUserPermission('awaiting_review_by_lead_journalist', "") && (item?.owners?.awaiting_review_by_lead_journalist !== undefined && item?.owners?.awaiting_review_by_lead_journalist == appUserInfo?.user?.email) ? 'flex space-x-2 items-center justify-center' : 'hidden'}`}>
+                        <button onClick={(e) => actionPerformed(item, "unclaim", e)} className={`${currentUserPermission('awaiting_review_by_lead_journalist', "") && item?.owners?.awaiting_review_by_lead_journalist ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
+                            Unclaim
+                        </button>
+                        <div className={`${currentUserPermission('awaiting_review_by_lead_journalist', "") && (item?.owners?.awaiting_review_by_lead_journalist && item?.owners?.awaiting_review_by_lead_journalist == appUserInfo?.user?.email) ? 'flex space-x-2 items-center justify-center' : 'hidden'}`}>
                             <svg onClick={(e) => actionPerformed(item, "lead_journalist_approve", e)} className="h-8 w-8 text-green-400 hover:text-green-600 cursor-pointer" x-description="Heroicon name: check-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path>
                             </svg>
@@ -200,14 +206,17 @@ const PreviewItem = (props) => {
             case "awaiting_video_upload": {
                 return (
                     <div className="grid w-full">
-                        {item?.owners?.awaiting_video_upload != undefined && item?.owners?.awaiting_video_upload == appUserInfo?.user?.email && (
+                        {item?.owners?.awaiting_video_upload && item?.owners?.awaiting_video_upload == appUserInfo?.user?.email && (
                             <p className="text-xs text-center">Claimed by: {item?.owners?.awaiting_video_upload}</p>
                         )
                         }
-                        <button onClick={(e) => actionPerformed(item, "claim", e)} className={`${currentUserPermission('awaiting_video_upload', "") && item?.owners?.awaiting_video_upload == undefined ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
+                        <button onClick={(e) => actionPerformed(item, "claim", e)} className={`${currentUserPermission('awaiting_video_upload', "") && !item?.owners?.awaiting_video_upload ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
                             Claim
                         </button>
-                        <div className={`${currentUserPermission('awaiting_video_upload', "kkkk") && (item?.owners?.awaiting_video_upload !== undefined && item?.owners?.awaiting_video_upload == appUserInfo?.user?.email) ? 'w-full block text-center justify-center items-center' : 'hidden'}`}>
+                        <button onClick={(e) => actionPerformed(item, "unclaim", e)} className={`${currentUserPermission('awaiting_video_upload', "") && item?.owners?.awaiting_video_upload ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
+                            Unclaim
+                        </button>
+                        <div className={`${currentUserPermission('awaiting_video_upload', "kkkk") && (item?.owners?.awaiting_video_upload && item?.owners?.awaiting_video_upload == appUserInfo?.user?.email) ? 'w-full block text-center justify-center items-center' : 'hidden'}`}>
                             {video != null ? (
                                 <>
                                     <div className="flex justify-center items-center">
@@ -266,17 +275,20 @@ const PreviewItem = (props) => {
             case "awaiting_review_by_lead_video_editor": {
                 return (
                     <div className="grid">
-                        {item?.owners?.awaiting_review_by_lead_video_editor != undefined && item?.owners?.awaiting_review_by_lead_video_editor == appUserInfo?.user?.email && (
+                        {item?.owners?.awaiting_review_by_lead_video_editor && item?.owners?.awaiting_review_by_lead_video_editor == appUserInfo?.user?.email && (
                             <p className="text-xs">Claimed by: {item?.owners?.awaiting_review_by_lead_video_editor}</p>
                         )
                         }
                         <a href={'https://cdn.so.fa.dog/sources/' + item.id} className={`w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer'`} >
                             Download
                         </a>
-                        <button onClick={(e) => actionPerformed(item, "claim", e)} className={`${currentUserPermission('awaiting_review_by_lead_video_editor', "") && item?.owners?.awaiting_review_by_lead_video_editor == undefined ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
+                        <button onClick={(e) => actionPerformed(item, "claim", e)} className={`${currentUserPermission('awaiting_review_by_lead_video_editor', "") && !item?.owners?.awaiting_review_by_lead_video_editor ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
                             Claim
                         </button>
-                        <div className={`${currentUserPermission('awaiting_review_by_lead_video_editor', "") && (item?.owners?.awaiting_review_by_lead_video_editor !== undefined && item?.owners?.awaiting_review_by_lead_video_editor == appUserInfo?.user?.email) ? 'flex space-x-2 items-center justify-center' : 'hidden'}`}>
+                        <button onClick={(e) => actionPerformed(item, "unclaim", e)} className={`${currentUserPermission('awaiting_review_by_lead_video_editor', "") && item?.owners?.awaiting_review_by_lead_video_editor ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
+                            Unclaim
+                        </button>
+                        <div className={`${currentUserPermission('awaiting_review_by_lead_video_editor', "") && (item?.owners?.awaiting_review_by_lead_video_editor && item?.owners?.awaiting_review_by_lead_video_editor == appUserInfo?.user?.email) ? 'flex space-x-2 items-center justify-center' : 'hidden'}`}>
 
                             <span onClick={(e) => actionPerformed(item, "Preview Clips", e)} className="w-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-blue-800 bg-blue-100 hover:bg-blue-200 text-blue-800 cursor-pointer">
                                 Preview Clips
@@ -294,19 +306,22 @@ const PreviewItem = (props) => {
             case "ready_for_push": {
                 return (
                     <div className="grid">
-                        {item?.owners?.ready_for_push != undefined && item?.owners?.ready_for_push == appUserInfo?.user?.email && (
+                        {item?.owners?.ready_for_push && item?.owners?.ready_for_push == appUserInfo?.user?.email && (
                             <p className="text-xs">Claimed by: {item?.owners?.ready_for_push}</p>
                         )
                         }
 
-                        <button onClick={(e) => actionPerformed(item, "claim", e)} className={`${currentUserPermission('ready_for_push', "") && item?.owners?.ready_for_push == undefined ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
+                        <button onClick={(e) => actionPerformed(item, "claim", e)} className={`${currentUserPermission('ready_for_push', "") && !item?.owners?.ready_for_push ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
                             Claim
+                        </button>
+                        <button onClick={(e) => actionPerformed(item, "unclaim", e)} className={`${currentUserPermission('ready_for_push', "") && item?.owners?.ready_for_push ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
+                            Unclaim
                         </button>
                         <div className="w-full flex justify-center">
                             <a href={'https://cdn.so.fa.dog/sources/' + item.id} className={`w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer'`} >
                                 Download
                             </a>
-                            <span onClick={(e) => actionPerformed(item, "push_to_feed", e)} className={`${currentUserPermission('ready_for_push', "") && (item?.owners?.ready_for_push !== undefined && item?.owners?.ready_for_push == appUserInfo?.user?.email) ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-green-800 bg-green-100 hover:bg-green-200 text-green-800 cursor-pointer' : 'hidden'}`}>
+                            <span onClick={(e) => actionPerformed(item, "push_to_feed", e)} className={`${currentUserPermission('ready_for_push', "") && (item?.owners?.ready_for_push && item?.owners?.ready_for_push == appUserInfo?.user?.email) ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-green-800 bg-green-100 hover:bg-green-200 text-green-800 cursor-pointer' : 'hidden'}`}>
                                 Push To Feed
                             </span>
                         </div>
@@ -317,20 +332,23 @@ const PreviewItem = (props) => {
             case "pushed_to_feed": {
                 return (
                     <div className="grid">
-                        {item?.owners?.pushed_to_feed != undefined && item?.owners?.pushed_to_feed == appUserInfo?.user?.email && (
+                        {item?.owners?.pushed_to_feed && item?.owners?.pushed_to_feed == appUserInfo?.user?.email && (
                             <>
                                 <p className="text-xs">Claimed by: {item?.owners?.pushed_to_feed}</p>
                             </>
                         )
                         }
-                        <button onClick={(e) => actionPerformed(item, "claim", e)} className={`${currentUserPermission('pushed_to_feed', "") && item?.owners?.pushed_to_feed == undefined ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
+                        <button onClick={(e) => actionPerformed(item, "claim", e)} className={`${currentUserPermission('pushed_to_feed', "") && !item?.owners?.pushed_to_feed ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
                             Claim
+                        </button>
+                        <button onClick={(e) => actionPerformed(item, "unclaim", e)} className={`${currentUserPermission('pushed_to_feed', "") && item?.owners?.pushed_to_feed ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
+                            Unclaim
                         </button>
                         <div className="w-full flex justify-center">
                             <a href={'https://cdn.so.fa.dog/sources/' + item.id} className={`w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer'`} >
                                 Download
                             </a>
-                            <span onClick={(e) => actionPerformed(item, "remove_from_feed", e)} className={`${currentUserPermission('pushed_to_feed', "") && (item?.owners?.pushed_to_feed !== undefined && item?.owners?.pushed_to_feed == appUserInfo?.user?.email) ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-red-800 bg-red-100 hover:bg-red-200 text-red-800 cursor-pointeren' : 'hidden'}`}>
+                            <span onClick={(e) => actionPerformed(item, "remove_from_feed", e)} className={`${currentUserPermission('pushed_to_feed', "") && (item?.owners?.pushed_to_feed && item?.owners?.pushed_to_feed == appUserInfo?.user?.email) ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-red-800 bg-red-100 hover:bg-red-200 text-red-800 cursor-pointeren' : 'hidden'}`}>
                                 Remove From Feed
                             </span>
                         </div>
@@ -340,21 +358,24 @@ const PreviewItem = (props) => {
             case "removed_from_feed": {
                 return (
                     <div className="grid">
-                        {item?.owners?.removed_from_feed != undefined && item?.owners?.removed_from_feed == appUserInfo?.user?.email && (
+                        {item?.owners?.removed_from_feed && item?.owners?.removed_from_feed == appUserInfo?.user?.email && (
                             <>
                                 <p className="text-xs">Claimed by: {item?.owners?.removed_from_feed}</p>
                             </>
                         )
                         }
-                        <button onClick={(e) => actionPerformed(item, "claim", e)} className={`${currentUserPermission('removed_from_feed', "") && item?.owners?.removed_from_feed == undefined ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
+                        <button onClick={(e) => actionPerformed(item, "claim", e)} className={`${currentUserPermission('removed_from_feed', "") && !item?.owners?.removed_from_feed ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
                             Claim
+                        </button>
+                        <button onClick={(e) => actionPerformed(item, "unclaim", e)} className={`${currentUserPermission('removed_from_feed', "") && item?.owners?.removed_from_feed ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
+                            Unclaim
                         </button>
 
                         <div className="w-full flex justify-center">
                             <a href={'https://cdn.so.fa.dog/sources/' + item.id} className={`w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer'`} >
                                 Download
                             </a>
-                            <span onClick={(e) => actionPerformed(item, "push_to_feed", e)} className={`${currentUserPermission('removed_from_feed', "") && (item?.owners?.removed_from_feed !== undefined && item?.owners?.removed_from_feed == appUserInfo?.user?.email) ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-green-800 bg-green-100 hover:bg-green-200 text-green-800 cursor-pointer' : 'hidden'}`}>
+                            <span onClick={(e) => actionPerformed(item, "push_to_feed", e)} className={`${currentUserPermission('removed_from_feed', "") && (item?.owners?.removed_from_feed && item?.owners?.removed_from_feed == appUserInfo?.user?.email) ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-green-800 bg-green-100 hover:bg-green-200 text-green-800 cursor-pointer' : 'hidden'}`}>
                                 Push To Feed
                             </span>
                         </div>

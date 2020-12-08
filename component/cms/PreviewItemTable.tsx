@@ -166,7 +166,7 @@ const PreviewItemTable = (props) => {
       case "new": {
         return (
           <>
-            {item?.owners?.new != undefined &&
+            {item?.owners?.new &&
               item?.owners?.new != appUserInfo?.user?.email && (
                 <p>Claimed by {item?.owners?.new}</p>
               )}
@@ -175,12 +175,23 @@ const PreviewItemTable = (props) => {
               onClick={(e) => actionPerformed(item, "claim", e)}
               className={`${
                 currentUserPermission("new", "") &&
-                  item?.owners?.new == undefined
+                  !item?.owners?.new
                   ? "px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer"
                   : "hidden"
                 }`}
             >
               Claim
+            </button>
+            <button
+              onClick={(e) => actionPerformed(item, "unclaim", e)}
+              className={`${
+                currentUserPermission("new", "") &&
+                  item?.owners?.new
+                  ? "px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer"
+                  : "hidden"
+                }`}
+            >
+              Unclaim
             </button>
             {/* {
                        JSON.stringify(item?.owners?.new) 
@@ -191,7 +202,7 @@ const PreviewItemTable = (props) => {
               onClick={(e) => actionPerformed(item, "submit", e)}
               className={`${
                 currentUserPermission("new", "kkkk") &&
-                  item?.owners?.new !== undefined &&
+                  item?.owners?.new &&
                   item?.owners?.new == appUserInfo?.user?.email
                   ? "px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer"
                   : "hidden"
@@ -206,7 +217,7 @@ const PreviewItemTable = (props) => {
         // return  'Approve | Reject'
         return (
           <>
-            {item?.owners?.awaiting_review_by_lead_journalist != undefined &&
+            {item?.owners?.awaiting_review_by_lead_journalist &&
               item?.owners?.awaiting_review_by_lead_journalist !=
               appUserInfo?.user?.email && (
                 <p>
@@ -221,12 +232,26 @@ const PreviewItemTable = (props) => {
                   "awaiting_review_by_lead_journalist",
                   ""
                 ) &&
-                  item?.owners?.awaiting_review_by_lead_journalist == undefined
+                  !item?.owners?.awaiting_review_by_lead_journalist
                   ? "px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer"
                   : "hidden"
                 }`}
             >
               Claim
+            </button>
+            <button
+              onClick={(e) => actionPerformed(item, "unclaim", e)}
+              className={`${
+                currentUserPermission(
+                  "awaiting_review_by_lead_journalist",
+                  ""
+                ) &&
+                  item?.owners?.awaiting_review_by_lead_journalist
+                  ? "px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer"
+                  : "hidden"
+                }`}
+            >
+              Unclaim
             </button>
             <div
               className={`${
@@ -234,8 +259,7 @@ const PreviewItemTable = (props) => {
                   "awaiting_review_by_lead_journalist",
                   ""
                 ) &&
-                  item?.owners?.awaiting_review_by_lead_journalist !==
-                  undefined &&
+                  item?.owners?.awaiting_review_by_lead_journalist &&
                   item?.owners?.awaiting_review_by_lead_journalist ==
                   appUserInfo?.user?.email
                   ? "flex space-x-2 items-center justify-center"
@@ -281,7 +305,7 @@ const PreviewItemTable = (props) => {
       case "awaiting_video_upload": {
         return (
           <>
-            {item?.owners?.awaiting_video_upload != undefined &&
+            {item?.owners?.awaiting_video_upload &&
               item?.owners?.awaiting_video_upload !=
               appUserInfo?.user?.email && (
                 <p>Claimed by {item?.owners?.awaiting_video_upload}</p>
@@ -291,17 +315,28 @@ const PreviewItemTable = (props) => {
               onClick={(e) => actionPerformed(item, "claim", e)}
               className={`${
                 currentUserPermission("awaiting_video_upload", "") &&
-                  item?.owners?.awaiting_video_upload == undefined
+                  !item?.owners?.awaiting_video_upload
                   ? "px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer"
                   : "hidden"
                 }`}
             >
               Claim
             </button>
+            <button
+              onClick={(e) => actionPerformed(item, "unclaim", e)}
+              className={`${
+                currentUserPermission("awaiting_video_upload", "") &&
+                  item?.owners?.awaiting_video_upload
+                  ? "px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer"
+                  : "hidden"
+                }`}
+            >
+              Unclaim
+            </button>
             <div
               className={`${
                 currentUserPermission("awaiting_video_upload", "kkkk") &&
-                  item?.owners?.awaiting_video_upload !== undefined &&
+                  item?.owners?.awaiting_video_upload &&
                   item?.owners?.awaiting_video_upload == appUserInfo?.user?.email
                   ? "block text-center justify-center items-center"
                   : "hidden"
@@ -392,7 +427,7 @@ const PreviewItemTable = (props) => {
       case "awaiting_review_by_lead_video_editor": {
         return (
           <>
-            {item?.owners?.awaiting_review_by_lead_video_editor != undefined &&
+            {item?.owners?.awaiting_review_by_lead_video_editor &&
               item?.owners?.awaiting_review_by_lead_video_editor !=
               appUserInfo?.user?.email && (
                 <p>
@@ -408,12 +443,26 @@ const PreviewItemTable = (props) => {
                   "awaiting_review_by_lead_video_editor",
                   ""
                 ) &&
-                  item?.owners?.awaiting_review_by_lead_video_editor == undefined
+                  !item?.owners?.awaiting_review_by_lead_video_editor
                   ? "px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer"
                   : "hidden"
                 }`}
             >
               Claim
+            </button>
+            <button
+              onClick={(e) => actionPerformed(item, "unclaim", e)}
+              className={`${
+                currentUserPermission(
+                  "awaiting_review_by_lead_video_editor",
+                  ""
+                ) &&
+                  item?.owners?.awaiting_review_by_lead_video_editor
+                  ? "px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer"
+                  : "hidden"
+                }`}
+            >
+              Unclaim
             </button>
             <div
               className={`${
@@ -421,8 +470,7 @@ const PreviewItemTable = (props) => {
                   "awaiting_review_by_lead_video_editor",
                   ""
                 ) &&
-                  item?.owners?.awaiting_review_by_lead_video_editor !==
-                  undefined &&
+                  item?.owners?.awaiting_review_by_lead_video_editor &&
                   item?.owners?.awaiting_review_by_lead_video_editor ==
                   appUserInfo?.user?.email
                   ? "flex space-x-2 items-center justify-center"
@@ -474,7 +522,7 @@ const PreviewItemTable = (props) => {
       case "ready_for_push": {
         return (
           <>
-            {item?.owners?.ready_for_push != undefined &&
+            {item?.owners?.ready_for_push &&
               item?.owners?.ready_for_push != appUserInfo?.user?.email && (
                 <p>Claimed by {item?.owners?.ready_for_push}</p>
               )}
@@ -483,7 +531,7 @@ const PreviewItemTable = (props) => {
               onClick={(e) => actionPerformed(item, "claim", e)}
               className={`${
                 currentUserPermission("ready_for_push", "") &&
-                  item?.owners?.ready_for_push == undefined
+                  !item?.owners?.ready_for_push
                   ? "px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer"
                   : "hidden"
                 }`}
@@ -491,11 +539,23 @@ const PreviewItemTable = (props) => {
               Claim
             </button>
 
+            <button
+              onClick={(e) => actionPerformed(item, "unclaim", e)}
+              className={`${
+                currentUserPermission("ready_for_push", "") &&
+                  item?.owners?.ready_for_push
+                  ? "px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer"
+                  : "hidden"
+                }`}
+            >
+              Unclaim
+            </button>
+
             <span
               onClick={(e) => actionPerformed(item, "push_to_feed", e)}
               className={`${
                 currentUserPermission("ready_for_push", "") &&
-                  item?.owners?.ready_for_push !== undefined &&
+                  item?.owners?.ready_for_push &&
                   item?.owners?.ready_for_push == appUserInfo?.user?.email
                   ? "px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-green-800 bg-green-100 hover:bg-green-200 text-green-800 cursor-pointer"
                   : "hidden"
@@ -509,7 +569,7 @@ const PreviewItemTable = (props) => {
       case "pushed_to_feed": {
         return (
           <>
-            {item?.owners?.pushed_to_feed != undefined &&
+            {item?.owners?.pushed_to_feed &&
               item?.owners?.pushed_to_feed != appUserInfo?.user?.email && (
                 <p>Claimed by {item?.owners?.pushed_to_feed}</p>
               )}
@@ -518,7 +578,7 @@ const PreviewItemTable = (props) => {
               onClick={(e) => actionPerformed(item, "claim", e)}
               className={`${
                 currentUserPermission("pushed_to_feed", "") &&
-                  item?.owners?.ready_for_push == undefined
+                  !item?.owners?.ready_for_push
                   ? "px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer"
                   : "hidden"
                 }`}
@@ -526,11 +586,23 @@ const PreviewItemTable = (props) => {
               Claim
             </button>
 
+            <button
+              onClick={(e) => actionPerformed(item, "unclaim", e)}
+              className={`${
+                currentUserPermission("pushed_to_feed", "") &&
+                  item?.owners?.ready_for_push
+                  ? "px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer"
+                  : "hidden"
+                }`}
+            >
+              Unclaim
+            </button>
+
             <span
               onClick={(e) => actionPerformed(item, "remove_from_feed", e)}
               className={`${
                 currentUserPermission("pushed_to_feed", "") &&
-                  item?.owners?.pushed_to_feed !== undefined &&
+                  item?.owners?.pushed_to_feed &&
                   item?.owners?.pushed_to_feed == appUserInfo?.user?.email
                   ? "hiddpx-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-red-800 bg-red-100 hover:bg-red-200 text-red-800 cursor-pointeren"
                   : "hidden"
@@ -544,7 +616,7 @@ const PreviewItemTable = (props) => {
       case "removed_from_feed": {
         return (
           <>
-            {item?.owners?.removed_from_feed != undefined &&
+            {item?.owners?.removed_from_feed &&
               item?.owners?.removed_from_feed != appUserInfo?.user?.email && (
                 <p>Claimed by {item?.owners?.removed_from_feed}</p>
               )}
@@ -553,7 +625,7 @@ const PreviewItemTable = (props) => {
               onClick={(e) => actionPerformed(item, "claim", e)}
               className={`${
                 currentUserPermission("removed_from_feed", "") &&
-                  item?.owners?.removed_from_feed == undefined
+                  !item?.owners?.removed_from_feed
                   ? "px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer"
                   : "hidden"
                 }`}
@@ -561,11 +633,23 @@ const PreviewItemTable = (props) => {
               Claim
             </button>
 
+            <button
+              onClick={(e) => actionPerformed(item, "unclaim", e)}
+              className={`${
+                currentUserPermission("removed_from_feed", "") &&
+                  item?.owners?.removed_from_feed
+                  ? "px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer"
+                  : "hidden"
+                }`}
+            >
+              Unclaim
+            </button>
+
             <span
               onClick={(e) => actionPerformed(item, "push_to_feed", e)}
               className={`${
                 currentUserPermission("removed_from_feed", "") &&
-                  item?.owners?.removed_from_feed !== undefined &&
+                  item?.owners?.removed_from_feed &&
                   item?.owners?.removed_from_feed == appUserInfo?.user?.email
                   ? "px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-green-800 bg-green-100 hover:bg-green-200 text-green-800 cursor-pointer"
                   : "hidden"
