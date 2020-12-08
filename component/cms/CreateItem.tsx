@@ -91,6 +91,7 @@ const CreateItem = (props) => {
             });
             setSelectedCategory(data.category);
             setSelectedFeed(data.feed_id);
+            setSelectedDueDate(data.due_date);
             if (data.tags.length > 0) {
                 setSelectedTag(data.tags);
             }
@@ -875,7 +876,7 @@ const CreateItem = (props) => {
                                 </div>
                                 <div className="col-span-8 sm:col-span-8 lg:col-span-2">
                                     <label className="block text-sm font-medium leading-5 text-gray-700">Due date</label>
-                                    <input onChange={handleDueDate} placeholder="Due date" id="due-date" type="date" className={((selectedFeed === null) && formSubmitted ? 'border-red-500 text-red-600' : 'border-transparent ') + 'py-0.5 text-sm form-input block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5'} />
+                                    <input value={selectedDueDate} onChange={handleDueDate} placeholder="Due date" id="due-date" type="date" className={((selectedFeed === null) && formSubmitted ? 'border-red-500 text-red-600' : 'border-transparent ') + 'py-0.5 text-sm form-input block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5'} />
                                 </div>
                             </div>
 
