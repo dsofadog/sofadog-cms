@@ -27,6 +27,7 @@ function LayoutProvider({ children }) {
   const [toggleAppView,setToggleAppView] = useState(false);
   
   const currentUserPermission = (permission,user_type) => {
+    console.log(permission, currentUserAction)
    // console.log(currentUserAction);
     let superAdmin   = currentUserAction.includes('super_admin');
     let classValue='';
@@ -99,6 +100,14 @@ for (const [key, value] of Object.entries(appAction)) {
   }
 };
 
+const hasRole = (role)=>{
+  let userInfo = sessionStorage.getItem("user_info");
+  userInfo = JSON.parse(userInfo) as any
+
+  const roles = (userInfo as any).user.admin_roles.map(role=>role.id)
+
+  return roles.includes(role)
+}
 
 const  logoutUserCheck =(redirectCallback=false) => {
  
@@ -152,6 +161,7 @@ const clearAPPData =() =>{
     appAction, 
     setAppAction,
     currentUserPermission,
+    hasRole,
     appState,
     setAppState,
     currentUserState,
