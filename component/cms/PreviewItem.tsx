@@ -135,7 +135,11 @@ const PreviewItem = (props) => {
 
     function deleteItem(item, e) {
         e.preventDefault();
-        props.deleteItem(item)
+
+        const confirmation = confirm('Are you sure? This action cannot be undone.')
+        if(confirmation){
+            props.deleteItem(item)
+        }
     }
 
     function moveItem(item, apiEndPoint, e) {
