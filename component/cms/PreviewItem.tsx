@@ -514,9 +514,9 @@ const PreviewItem = (props) => {
                                                             </div>
                                                             <div className="mt-4" role="group" aria-labelledby="teams-headline">
                                                                 {sentences?.sentences.map((sentence, i) => (
-                                                                    <div key={i} className="flex items-center space-x-3 pl-3">
+                                                                    <div key={i} className="flex items-center space-x-3 pl-3 mb-2">
                                                                         <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-indigo-500"></div>
-                                                                        <div className="truncate hover:text-gray-600 text-base">
+                                                                        <div className={(!isExpand? '': 'truncate') +' hover:text-gray-600 text-base'}>
                                                                             <span>{sentence}</span>
                                                                         </div>
                                                                     </div>
@@ -562,7 +562,7 @@ const PreviewItem = (props) => {
                                                                         <span>Owners</span>
                                                                     </a>
                                                                 </div>
-                                                                <div className="mt-4 max-h-24 overflow-y-scroll" role="group" aria-labelledby="teams-headline">
+                                                                <div className="mt-4" role="group" aria-labelledby="teams-headline">
                                                                     {Object.keys(item?.owners).reverse().map(key => (
                                                                         <div key={key} className="flex items-center space-x-3 pl-3">
                                                                             <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-indigo-500"></div>
