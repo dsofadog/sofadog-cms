@@ -96,9 +96,10 @@ const NotificationBell = () => {
     function notificationAction(notification) {
         //readNotification(notification.itemId)
         if (notification.object_type === 'news_item') {
-            router.push(
-                '/cms/[item_id]',
-                '/cms/' + notification.object_id)
+            // router.push(
+            //     '/cms/[item_id]',
+            //     '/cms/' + notification.object_id)
+            router.replace('/cms?id=' + notification.object_id)
         }
     }
     return (

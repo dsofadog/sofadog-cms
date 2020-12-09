@@ -161,7 +161,7 @@ const PreviewItem = (props) => {
     }
 
     function actionRender(item) {
-        console.log("state: ", item.state);
+        // console.log("state: ", item.state);
         // className="px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer"
         switch (item.state) {
             case "new": {
@@ -493,7 +493,7 @@ const PreviewItem = (props) => {
                                             </div>
                                             <div className="mb-4">
                                                 <h2 className="text-base text-gray-800 font-medium mr-auto">
-                                                    <Link href={`/cms/[item_id]`} as={`/cms/${item.id}`}>
+                                                    <Link href={`/cms?id=${item.id}`}>
                                                         {item?.title}
                                                     </Link>
                                                 </h2>

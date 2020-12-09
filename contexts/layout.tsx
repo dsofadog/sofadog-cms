@@ -27,7 +27,7 @@ function LayoutProvider({ children }) {
   const [toggleAppView,setToggleAppView] = useState(false);
   
   const currentUserPermission = (permission,user_type) => {
-    console.log(permission, currentUserAction)
+    // console.log(permission, currentUserAction)
    // console.log(currentUserAction);
     let superAdmin   = currentUserAction.includes('super_admin');
     let classValue='';

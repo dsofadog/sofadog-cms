@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, useRef, useCallback } from 'react';
 import Link from "next/link";
-import Router from 'next/router';
+import Router, { useRouter } from 'next/router';
 
 import { config as f_config, library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -8,7 +8,7 @@ import { fas } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 
 import { scroller } from "react-scroll";
-import useInfiniteScroll from 'react-infinite-scroll-hook'; 
+import useInfiniteScroll from 'react-infinite-scroll-hook';
 import moment from 'moment'
 import _ from 'lodash'
 
@@ -44,11 +44,15 @@ const defaultPagination = {
     total_data: 0
 }
 
+
+
 const Demo = () => {
 
     //const categories = CmsConstant.Category; 
     const tags = CmsConstant.Tags;
     const status = CmsConstant.Status;
+
+    const router = useRouter();
 
     const {
         setLoading,
@@ -80,6 +84,7 @@ const Demo = () => {
         category: string;
     }>(null)
 
+    const [searchId, setSearchId] = useState(router.query?.id)
     const [fetchItemsFailed, setFetchItemsFailed] = useState(false)
     const [isCreate, setIsCreate] = useState(false);
     const [newsItems, setNewsItems] = useState(null);
@@ -102,10 +107,11 @@ const Demo = () => {
         loading: scrollLoading,
         hasNextPage: true,
         onLoadMore: () => {
+            console.log('in onLoadMore')
             setParams({
                 ...params,
                 token: appUserInfo?.token,
-                date: (params.token? moment.utc(params.date).subtract(1, 'day'): moment.utc(params.date)).format('YYYY-MM-DD')
+                date: (params.token ? moment.utc(params.date).subtract(1, 'day') : moment.utc(params.date)).format('YYYY-MM-DD')
             })
         },
         scrollContainer: 'window',
@@ -113,6 +119,7 @@ const Demo = () => {
 
 
     useEffect(() => {
+        console.log('router.query', router.query)
         // console.log(currentUserState, currentUserAction);
         // logoutUserCheck();
         // fetchItems();
@@ -123,7 +130,7 @@ const Demo = () => {
 
     useEffect(() => {
         console.log('filter', filter)
-        if(filter !== null){
+        if (filter !== null) {
             setParams({
                 ...params,
                 token: appUserInfo?.token,
@@ -134,16 +141,29 @@ const Demo = () => {
                 feed_id: filter.feed
             })
         }
-        
+
     }, [filter])
 
     useEffect(() => {
         console.log(params)
 
-        if (params.token) {
+        if (params.token && !searchId) {
             fetchItems()
         }
     }, [params])
+
+    useEffect(()=>{
+        if(searchId){
+            fetchItem()
+        }
+    }, [searchId])
+
+    useEffect(()=>{
+        console.log('id', router.query.id)
+        if(router.query.id){
+            setSearchId(router.query.id)
+        }
+    }, [router.query.id])
 
 
     const returnUrlForNewItems = (dataUrlObj) => {
@@ -162,11 +182,11 @@ const Demo = () => {
 
     const fetchItems = async () => {
 
-        if(!fetchItemsFailed){
+        if (!fetchItemsFailed) {
             setScrollLoading(true);
 
             let url = returnUrlForNewItems(params);
-    
+
             try {
                 const res = await HttpCms.get(url)
                 if (res.data.news_items.length > 0) {
@@ -191,8 +211,24 @@ const Demo = () => {
                 setScrollLoading(false)
             }
         }
-        
+
     }
+
+    const fetchItem = async ()=>{
+
+        let url = returnUrlForNewItems(params);
+        setLoading(true);
+        HttpCms.get(`/news_items/${searchId}?token=${appUserInfo?.token}`)
+        .then(response => {
+            setNewsItems(response?.data);
+            setLoading(false);
+        })
+        .catch(e => {
+            console.log(e);
+            setLoading(false);
+        });
+    }
+
 
     function deleteItem(item) {
         setLoading(true);
@@ -467,6 +503,7 @@ const Demo = () => {
                                         <input id="search" value={search} onChange={(e) => setSearch(e.target.value)} className="block w-full pl-10 pr-3 py-2 border border-transparent rounded-md leading-5 bg-gray-700 text-gray-300 placeholder-gray-400 focus:outline-none focus:bg-white focus:text-gray-900 sm:text-sm transition duration-150 ease-in-out" placeholder="Search" type="search" />
                                     </div>
                                     <button onClick={(e) => {
+                                        setSearchId(null)
                                         setFetchItemsFailed(false)
                                         setNewsItems(null)
                                         setParams({
@@ -484,6 +521,7 @@ const Demo = () => {
 
                             <Filter feeds={feeds} onSubmit={state => {
                                 const { availableCategories, ...newFilter } = state
+                                setSearchId(null)
                                 setFetchItemsFailed(false)
                                 setNewsItems(null)
                                 setFilter({
@@ -630,7 +668,7 @@ const Demo = () => {
                             <p>Something went wrong</p>
                         </div>
                         <div className="flex flex-row justify-center items-center">
-                            <button type="button" onClick={()=>{
+                            <button type="button" onClick={() => {
                                 setFetchItemsFailed(false)
                                 setNewsItems(null)
                                 setParams({
@@ -664,10 +702,18 @@ const Demo = () => {
                 )
             }
 
-       
+
 
         </div >
     )
+}
+
+Demo.getInitialProps = async ({ query }) => {
+    const id = query.id
+
+    return {
+        id: id,
+    }
 }
 
 export default Demo
