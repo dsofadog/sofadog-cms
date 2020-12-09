@@ -147,6 +147,19 @@ const PreviewItem = (props) => {
     }, [])
     const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
 
+
+    function renderPreviewButton() {
+
+        const canView = currentUserPermission('lead_journalist', "") ||
+            currentUserPermission('video_editor', "") ||
+            currentUserPermission('lead_video_editor', "") ||
+            currentUserPermission('super_admin', "")
+
+        return (canView ? (<button type="button" onClick={(e) => actionPerformed(item, "Preview Clips", e)} className="w-max-content mx-auto px-2 py-0.5 my-1 text-xs leading-5 font-semibold rounded border border-blue-800 bg-blue-100 hover:bg-blue-200 text-blue-800">
+                Preview Clips
+            </button>) : null)
+    }
+
     function actionRender(item) {
         console.log("state: ", item.state);
         // className="px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer"
@@ -289,11 +302,11 @@ const PreviewItem = (props) => {
                         <button onClick={(e) => actionPerformed(item, "unclaim", e)} className={`${currentUserPermission('awaiting_review_by_lead_video_editor', "") && item?.owners?.awaiting_review_by_lead_video_editor ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
                             Unclaim
                         </button>
+                        {renderPreviewButton()}
                         <div className={`${currentUserPermission('awaiting_review_by_lead_video_editor', "") && (item?.owners?.awaiting_review_by_lead_video_editor && item?.owners?.awaiting_review_by_lead_video_editor == appUserInfo?.user?.email) ? 'flex space-x-2 items-center justify-center' : 'hidden'}`}>
 
-                            <span onClick={(e) => actionPerformed(item, "Preview Clips", e)} className="w-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-blue-800 bg-blue-100 hover:bg-blue-200 text-blue-800 cursor-pointer">
-                                Preview Clips
-						    </span>
+                            
+
                             <svg onClick={(e) => actionPerformed(item, "lead_video_editor_approve", e)} className="h-8 w-8 text-green-400 hover:text-green-600 cursor-pointer" x-description="Heroicon name: check-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path>
                             </svg>
@@ -318,7 +331,9 @@ const PreviewItem = (props) => {
                         <button onClick={(e) => actionPerformed(item, "unclaim", e)} className={`${currentUserPermission('ready_for_push', "") && item?.owners?.ready_for_push ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
                             Unclaim
                         </button>
+                        {renderPreviewButton()}
                         <div className="w-full flex justify-center">
+                            
                             <a href={'https://cdn.so.fa.dog/sources/' + item.id} className={`w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer'`} >
                                 Download
                             </a>
@@ -345,6 +360,8 @@ const PreviewItem = (props) => {
                         <button onClick={(e) => actionPerformed(item, "unclaim", e)} className={`${currentUserPermission('pushed_to_feed', "") && item?.owners?.pushed_to_feed ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
                             Unclaim
                         </button>
+                        {renderPreviewButton()}
+
                         <div className="w-full flex justify-center">
                             <a href={'https://cdn.so.fa.dog/sources/' + item.id} className={`w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer'`} >
                                 Download
@@ -372,7 +389,10 @@ const PreviewItem = (props) => {
                             Unclaim
                         </button>
 
+                        {renderPreviewButton()}
+
                         <div className="w-full flex justify-center">
+                            
                             <a href={'https://cdn.so.fa.dog/sources/' + item.id} className={`w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer'`} >
                                 Download
                             </a>
@@ -477,7 +497,7 @@ const PreviewItem = (props) => {
                                                         {item?.title}
                                                     </Link>
                                                 </h2>
-                                                <small className="text-gray-400">{`Created date: ${moment.unix(item.created_at).format('lll')}`}{item.due_date ? ` | Due date: ${moment(item.due_date).format('lll')}`: ''} {item.enqueued_at? ` | Enqueued date: ${moment(item.enqueued_at).format('lll')}`: ''}</small>
+                                                <small className="text-gray-400">{`Created date: ${moment.unix(item.created_at).format('lll')}`}{item.due_date ? ` | Due date: ${moment(item.due_date).format('lll')}` : ''} {item.enqueued_at ? ` | Enqueued date: ${moment(item.enqueued_at).format('lll')}` : ''}</small>
                                             </div>
                                             {item?.descriptions.length > 0 && (
                                                 <div className="w-full mb-4">
@@ -570,8 +590,8 @@ const PreviewItem = (props) => {
                                                             <div className="w-full flex text-center justify-end space-x-2">
                                                                 <span className="text-white w-6 h-6 rounded-full p-3 bg-blue-600 text-xs flex items-center justify-center">{item?.comments.length}</span>
                                                                 <label
-                                                                onClick={()=>setCommentVisibility(!commentVisibility)}
-                                                                className="text-sm font-bold text-gray-800 cursor-pointer hover:underline"
+                                                                    onClick={() => setCommentVisibility(!commentVisibility)}
+                                                                    className="text-sm font-bold text-gray-800 cursor-pointer hover:underline"
                                                                 >Comments</label>
                                                             </div>
                                                             {commentVisibility && <Comments newsItem={item} />}
