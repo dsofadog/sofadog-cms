@@ -16,15 +16,21 @@ const Setting = () => {
     const {
         currentUserPermission,
     } = useContext(LayoutContext);
+    const [bootstrapped, setBootstrapped] = useState(false)
 
     useEffect(()=>{
-        if(currentUserPermission("super_admin", "") || currentUserPermission("user_manager", "")){
-            setTabIndex(0)
-        }else if(currentUserPermission("feed_manager", "")){
-            setTabIndex(1)
-        }else{
-            setTabIndex(2)
+        if(!bootstrapped){
+             console.log('in useEffect')
+            if(currentUserPermission("super_admin", "") || currentUserPermission("user_manager", "")){
+                setTabIndex(0)
+            }else if(currentUserPermission("feed_manager", "")){
+                setTabIndex(1)
+            }else{
+                setTabIndex(2)
+            }
+            setBootstrapped(true)
         }
+        
     }, [currentUserPermission])
 
 
