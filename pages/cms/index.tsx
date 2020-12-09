@@ -493,7 +493,7 @@ const Demo = () => {
                         <div className="flex-1 flex items-center justify-center px-2 space-x-2 lg:ml-6 lg:justify-end">
                             <div className="max-w-lg w-full lg:max-w-xs">
                                 <label htmlFor="search" className="sr-only">Search</label>
-                                <div className="mt-1 flex rounded-md shadow-sm">
+                                <div className="flex rounded-md shadow-sm">
                                     <div className="relative flex items-stretch flex-grow focus-within:z-10">
                                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                             <svg className="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
