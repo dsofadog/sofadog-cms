@@ -516,7 +516,7 @@ const PreviewItem = (props) => {
                                                                 {sentences?.sentences.map((sentence, i) => (
                                                                     <div key={i} className="flex items-center space-x-3 pl-3">
                                                                         <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-indigo-500"></div>
-                                                                        <div className="truncate hover:text-gray-600 text-xs">
+                                                                        <div className="truncate hover:text-gray-600 text-base">
                                                                             <span>{sentence}</span>
                                                                         </div>
                                                                     </div>
@@ -546,7 +546,7 @@ const PreviewItem = (props) => {
                                                                     {creditsData?.data.map((credit, i) => (
                                                                         <div key={i} className="flex items-center space-x-3 pl-3">
                                                                             <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-indigo-500"></div>
-                                                                            <div className="truncate hover:text-gray-600 text-xs">
+                                                                            <div className="truncate hover:text-gray-600 text-base">
                                                                                 <a href={credit.url} target="_blank">{credit.link_text}</a>
                                                                             </div>
                                                                         </div>
@@ -566,7 +566,7 @@ const PreviewItem = (props) => {
                                                                     {Object.keys(item?.owners).reverse().map(key => (
                                                                         <div key={key} className="flex items-center space-x-3 pl-3">
                                                                             <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-indigo-500"></div>
-                                                                            <div className="truncate hover:text-gray-600 text-xs">
+                                                                            <div className="truncate hover:text-gray-600 text-base">
                                                                                 <p>{_.upperFirst(key.replace(/_/g, ' '))}: {item?.owners[key]}</p>
                                                                             </div>
                                                                         </div>
