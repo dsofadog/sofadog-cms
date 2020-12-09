@@ -63,6 +63,7 @@ const PreviewItem = (props) => {
     }, []);
 
     function refreshData(e) {
+        setVideo(null)
         e.preventDefault();
         props.getSigleItem(item.id);
         // setLoading(true);

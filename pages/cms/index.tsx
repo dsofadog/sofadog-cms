@@ -612,6 +612,7 @@ const Demo = () => {
                                             <tbody>
                                                 {newsItems?.news_items.map((item, i) => (
                                                     <PreviewItemTable
+                                                        key={item.id}
                                                         index={i}
                                                         showComment={true}
                                                         totalData={paginationData?.total_data}
@@ -641,6 +642,7 @@ const Demo = () => {
                         {newsItems?.news_items.map((item, i) => (
                             <div key={i}>
                                 <PreviewItem
+                                    key={item.id}
                                     index={i}
                                     showComment={true}
                                     totalData={paginationData?.total_data}
