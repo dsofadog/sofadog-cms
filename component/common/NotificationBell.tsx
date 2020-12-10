@@ -19,7 +19,7 @@ const NotificationBell = () => {
     const bellWrapperRef = useRef(null);
     useOutsideAlerter(bellWrapperRef);
     const [openBellDropdown, setOpenBellDropdown] = useState(false);
-    const { setLoading, appUserInfo, currentUserPermission ,logoutUserCheck} = useContext(LayoutContext);
+    const { setLoading, appUserInfo, currentUserPermission, logoutUserCheck } = useContext(LayoutContext);
     const toggleBellDropdown = () => { setOpenBellDropdown(!openBellDropdown) };
     const [notifications, setNotificatons] = useState(null);
     const router = useRouter();
@@ -27,12 +27,12 @@ const NotificationBell = () => {
 
     function useOutsideAlerter(ref) {
         useEffect(() => {
-            
+
             logoutUserCheck();
             setTimeout(() => {
                 getNotifications();
             }, 2)
-         
+
             function handleClickOutside(event) {
                 if (ref.current && !ref.current.contains(event.target)) {
                     if (ref.current.dataset.id === "bell") {
@@ -93,6 +93,27 @@ const NotificationBell = () => {
         }
 
     }
+
+    function markAllAsRead(){
+        httpCms.post(`/notifications/read?token=${appUserInfo?.token}`)
+                .then((response) => {
+                    if (response.data != null) {
+                        console.log("notification: ", response.data);
+                        setNotificatons(response.data.notifications);
+                        setLoading(false);
+
+                    } else {
+                        alert("Something wrong !!");
+                    }
+                })
+                .catch((e) => {
+                    setLoading(false);
+                })
+                .finally(() => {
+                    setLoading(false);
+                });
+    }
+
     function notificationAction(notification) {
         //readNotification(notification.itemId)
         if (notification.object_type === 'news_item') {
@@ -123,6 +144,14 @@ const NotificationBell = () => {
                                 {
                                     notifications?.length > 0 ?
                                         <>
+                                            <div className="w-full flex px-4 py-1 text-xs leading-5 text-gray-700 hover:bg-gray-200 hover:text-gray-900 cursor-pointer">
+                                                <div className="w-11/12 flex justify-start">
+                                                    <label className="font-bold text-sm text-gray-800 cursor-pointer"><span>Mark all as read</span></label>
+                                                </div>
+                                                <div className="w-1/12 flex items-center justify-end">
+                                                    <FontAwesomeIcon onClick={() => markAllAsRead()} className="w-5 h-5 cursor-pointer hover:text-white rounded-full bg-gray-300 hover:bg-green-500 p-1" icon={['fas', 'check']} />
+                                                </div>
+                                            </div>
                                             {
                                                 notifications?.map((notification) => (
 
@@ -136,19 +165,12 @@ const NotificationBell = () => {
                                                     </div>
 
                                                 ))
-                                                
+
                                             }
-                    
-                                            <div className="w-full flex px-4 py-1 text-xs leading-5 text-gray-700 hover:bg-gray-200 hover:text-gray-900 cursor-pointer">
-                                                <div  className="w-11/12 flex justify-start">
-                                                    <label className="text-sm text-gray-800 cursor-pointer"><span>Mark all as read</span></label>
-                                                </div>
-                                                <div className="w-1/12 flex items-center justify-end">
-                                                    <FontAwesomeIcon onClick={() => readNotification(notifications)} className="w-5 h-5 cursor-pointer hover:text-white rounded-full bg-gray-300 hover:bg-green-500 p-1" icon={['fas', 'check']} />
-                                                </div>
-                                            </div>
+
+
                                         </>
-                                        
+
                                         :
                                         <>
                                             <div className="w-full flex px-4 py-1 text-xs leading-5 text-gray-700 cursor-pointer">
