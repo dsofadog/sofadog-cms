@@ -21,6 +21,7 @@ import { LayoutContext } from 'contexts/';
 import CmsConstant from 'utils/cms-constant';
 import HttpCms from 'utils/http-cms';
 import Filter from 'component/cms/Filter';
+import NewsItemsHeader from 'component/cms/NewsItemsHeader';
 
 // momentTimezone.tz.setDefault('Etc/UTC')
 
@@ -152,15 +153,15 @@ const Demo = () => {
         }
     }, [params])
 
-    useEffect(()=>{
-        if(searchId){
+    useEffect(() => {
+        if (searchId) {
             fetchItem()
         }
     }, [searchId])
 
-    useEffect(()=>{
+    useEffect(() => {
         console.log('id', router.query.id)
-        if(router.query.id){
+        if (router.query.id) {
             setSearchId(router.query.id)
         }
     }, [router.query.id])
@@ -214,19 +215,19 @@ const Demo = () => {
 
     }
 
-    const fetchItem = async ()=>{
+    const fetchItem = async () => {
 
         let url = returnUrlForNewItems(params);
         setLoading(true);
         HttpCms.get(`/news_items/${searchId}?token=${appUserInfo?.token}`)
-        .then(response => {
-            setNewsItems(response?.data);
-            setLoading(false);
-        })
-        .catch(e => {
-            console.log(e);
-            setLoading(false);
-        });
+            .then(response => {
+                setNewsItems(response?.data);
+                setLoading(false);
+            })
+            .catch(e => {
+                console.log(e);
+                setLoading(false);
+            });
     }
 
 
@@ -466,7 +467,7 @@ const Demo = () => {
 
 
     return (
-        <div className="w-full h-full min-h-screen bg-gray-100">
+        <div className="flex flex-col h-full h-screen bg-gray-100">
             <nav className="sfd-nav bg-gray-800 sticky top-0 z-30">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-16">
@@ -570,7 +571,8 @@ const Demo = () => {
                     </div>
                 </div>
             </nav>
-            <div className="container mx-auto">
+            <NewsItemsHeader/>
+            <div className="lex-1 overflow-y-auto">
                 <div ref={infiniteRef as React.RefObject<HTMLDivElement>} className="max-w-7xl mx-auto">
                     <>
                         <div className="sfd-top invisible"></div>
