@@ -95,7 +95,7 @@ const HeaderProfileComponent = () => {
                 </span>
                 <div className="ml-3">
                     <p className="text-sm font-medium text-white">
-                    Tom Cook
+                    {appUserInfo?.user.first_name} {appUserInfo?.user.last_name}
                     </p>
                     <p className="text-xs font-medium text-gray-300 group-hover:text-gray-200">
                     {appUserInfo?.user.job_title}
