@@ -511,7 +511,7 @@ const Demo = () => {
                                             date: moment.utc().format("YYYY-MM-DD"),
                                             title: search
                                         })
-                                    }} className="-ml-px relative inline-flex items-center space-x-2 px-4 py-2 text-sm font-medium rounded-r-md text-white bg-indigo-500 hover:bg-indigo-400 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-600 active:bg-indigo-600">
+                                    }} className="-ml-px relative inline-flex items-center space-x-2 px-4 py-2 text-sm font-medium rounded-r-md text-white bg-indigo-500 hover:bg-indigo-400 focus:outline-none focus:ring-indigo focus:border-indigo-600 active:bg-indigo-600">
                                         <span>Submit</span>
                                     </button>
                                 </div>
@@ -538,7 +538,7 @@ const Demo = () => {
                                         ...params,
                                         date: moment.utc().format("YYYY-MM-DD")
                                     })
-                                }} className="relative inline-flex items-center space-x-2 px-2 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-400 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-600 active:bg-indigo-600 transition duration-150 ease-in-out">
+                                }} className="relative inline-flex items-center space-x-2 px-2 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-400 focus:outline-none focus:ring-indigo focus:border-indigo-600 active:bg-indigo-600 transition duration-150 ease-in-out">
                                     <FontAwesomeIcon className="w-3" icon={['fas', 'sync-alt']} />
                                     <span>Refresh</span>
                                 </button>
@@ -546,7 +546,7 @@ const Demo = () => {
 
                             <div className="flex-shrink-0">
                                 <span className="rounded-md shadow-sm">
-                                    <button onClick={() => { openCreateBox(true); scrollToSection(); }} type="button" className="relative inline-flex items-center px-2 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-400 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-600 active:bg-indigo-600 transition duration-150 ease-in-out">
+                                    <button onClick={() => { openCreateBox(true); scrollToSection(); }} type="button" className="relative inline-flex items-center px-2 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-400 focus:outline-none focus:ring-indigo focus:border-indigo-600 active:bg-indigo-600 transition duration-150 ease-in-out">
                                         <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                             <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
                                         </svg>
@@ -556,7 +556,7 @@ const Demo = () => {
                             </div>
                             <div className="flex-shrink-0">
                                 <span className="rounded-md shadow-sm">
-                                    <button onClick={() => { toggleAppViewChanged(); }} type="button" className="relative inline-flex items-center px-2 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-400 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-600 active:bg-indigo-600 transition duration-150 ease-in-out">
+                                    <button onClick={() => { toggleAppViewChanged(); }} type="button" className="relative inline-flex items-center px-2 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-400 focus:outline-none focus:ring-indigo focus:border-indigo-600 active:bg-indigo-600 transition duration-150 ease-in-out">
                                         <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                             <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
                                         </svg>
@@ -686,7 +686,7 @@ const Demo = () => {
                 {scrollLoading && (
 
                     <div className="box-border p-4">
-                        <div className="flex flex-row text-white justify-center items-center">
+                        <div className="flex flex-row justify-center items-center">
                             <FontAwesomeIcon className="w-12 h-12 p-2 rounded-full" icon={['fas', 'spinner']} spin />
                             <p>Loading new items from {moment(params.date).format('ll')}</p>
                         </div>
