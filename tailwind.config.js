@@ -4,6 +4,7 @@ const defaultTheme = require('tailwindcss/defaultTheme')
 module.exports = {
     theme: {
         extend: {
+            fontWeight: ['hover', 'focus'],
             fontFamily: {
                 sans: ['Inter var', ...defaultTheme.fontFamily.sans],
             },
@@ -49,7 +50,8 @@ module.exports = {
             },
         },
     },
-    plugins: [
-        require('@tailwindcss/ui'),
-    ]
+    variants: {
+        wordBreak: ['responsive', 'group-hover'],
+        textOverflow: ['responsive', 'group-hover'],
+    }
 }
