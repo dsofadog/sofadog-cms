@@ -592,7 +592,7 @@ const CreateItem = (props) => {
         <div className="w-full mx-auto">
             <div className="flex flex-no-wrap justify-center">
                 <div className="w-1/12 mx-auto flex-none float-left">
-                    <div className="bg-purple-700 p-1 h-32 w-1 mx-auto"></div>
+                    <div className="bg-gray-300 p-1 h-32 w-1 mx-auto"></div>
                 </div>
             </div>
             <div className="flex flex-no-wrap justify-center">
