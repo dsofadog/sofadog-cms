@@ -388,23 +388,24 @@ const Demo = () => {
 
 
 
-    function singleItem(item_id) {
-        setLoading(true);
-        HttpCms.get(`/news_items/${item_id}?token=${appUserInfo?.token}`)
-            .then(response => {
-                console.log("response.data.news_item: ", response.data.news_items)
-                let index = newsItems.news_items.findIndex(x => x.id === item_id);
-                const n = { ...newsItems }
-                n.news_items[index] = response.data.news_items[0];
-                setNewsItems(n);
-                // setItem(response.data.news_items[0]);
-                // console.log(response.data.news_items[0], "response.data.data");
-                setLoading(false);
-            })
-            .catch(e => {
-                console.log(e);
-                setLoading(false);
-            });
+    async function singleItem(item_id) {
+        try{
+            setLoading(true);
+            const res = await HttpCms.get(`/news_items/${item_id}?token=${appUserInfo?.token}`)
+            console.log("response.data.news_item: ", res.data.news_items)
+            let index = newsItems.news_items.findIndex(x => x.id === item_id);
+            const n = { ...newsItems }
+            n.news_items[index] = res.data.news_items[0];
+            setNewsItems(n);
+            // setItem(response.data.news_items[0]);
+            // console.log(response.data.news_items[0], "response.data.data");
+            setLoading(false);
+        }catch(err){
+            console.log(err)
+        }finally {
+            setLoading(false);
+        }
+       
     }
 
 
