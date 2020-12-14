@@ -118,7 +118,7 @@ const NotificationBell = () => {
                 </span>
                 {openBellDropdown && (
                     <div className="origin-top-right absolute right-0 mt-2 w-84 rounded-md shadow-lg">
-                        <div className="h-full rounded-md bg-white shadow-xs">
+                        <div className="h-full rounded-md bg-white ring-1 ring-black ring-opacity-5">
                             <div className="h-96 divide-y overflow-y-auto py-1 text-left" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
                                 {
                                     notifications?.length > 0 ?

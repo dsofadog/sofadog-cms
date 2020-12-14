@@ -10,12 +10,12 @@ const EditItem = () => {
 
     return (
         <div className="w-full mx-auto">
-            <div className="flex flex-no-wrap justify-center">
+            <div className="flex flex-nowrap justify-center">
                 <div className="w-1/12 mx-auto flex-none float-left">
                     <div className="bg-purple-700 p-1 h-32 w-1 mx-auto"></div>
                 </div>
             </div>
-            <div className="flex flex-no-wrap justify-center">
+            <div className="flex flex-nowrap justify-center">
                 <div className="w-11/12 mx-auto flex-none float-left">
                     <div className="md:flex shadow-lg mx-6 md:mx-auto w-full h-xl">
 
@@ -107,7 +107,7 @@ const EditItem = () => {
                                     <div className="relative inline-block text-left">
                                         <div>
                                             <span onClick={toggleCateDropdown} className="rounded-md shadow-sm">
-                                                <button type="button" className="inline-flex justify-center w-full rounded-md border border-gray-300 px-2 py-0.5 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150" id="options-menu" aria-haspopup="true" aria-expanded="true">
+                                                <button type="button" className="inline-flex justify-center w-full rounded-md border border-gray-300 px-2 py-0.5 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:ring-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150" id="options-menu" aria-haspopup="true" aria-expanded="true">
                                                     Category
                                                         <svg className="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                                         <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
@@ -117,7 +117,7 @@ const EditItem = () => {
                                         </div>
                                         {openCategoryDropdown && (
                                             <div className="origin-top-left absolute left-0 mt-2 w-56 rounded-md shadow-lg z-20">
-                                                <div className="rounded-md bg-white shadow-xs">
+                                                <div className="rounded-md bg-white ring-1 ring-black ring-opacity-5">
                                                     <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
                                                         <a href="#" className="block px-4 py-1 text-xs leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900" role="menuitem">
                                                             LIFE & POLITICS
@@ -161,7 +161,7 @@ const EditItem = () => {
                                     <div className="relative inline-block text-left">
                                         <div>
                                             <span onClick={toggleTagDropdown} className="rounded-md shadow-sm">
-                                                <button type="button" className="inline-flex justify-center w-full rounded-md border border-gray-300 px-2 py-0.5 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150" id="options-menu" aria-haspopup="true" aria-expanded="true">
+                                                <button type="button" className="inline-flex justify-center w-full rounded-md border border-gray-300 px-2 py-0.5 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:ring-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150" id="options-menu" aria-haspopup="true" aria-expanded="true">
                                                     Tags
                                                         <svg className="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                                         <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
@@ -171,7 +171,7 @@ const EditItem = () => {
                                         </div>
                                         {openTagDropdown && (
                                             <div className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg">
-                                                <div className="rounded-md bg-white shadow-xs">
+                                                <div className="rounded-md bg-white ring-1 ring-black ring-opacity-5">
                                                     <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
                                                         <a href="#" className="block px-4 py-1 text-xs leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900" role="menuitem">
                                                             Local Estonian Content

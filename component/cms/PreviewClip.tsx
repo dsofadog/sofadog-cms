@@ -46,7 +46,7 @@ const PreviewClip = (props) => {
     return (
         <div className="flex flex-col rounded shadow-lg overflow-hidden">
             <div className="relative flex-shrink-0">
-                <div className="relative block w-full h-full rounded overflow-hidden focus:outline-none focus:shadow-outline">
+                <div className="relative block w-full h-full rounded overflow-hidden focus:outline-none focus:ring">
                     <ReactPlayer
                         ref={myRef}
                         className='react-player'

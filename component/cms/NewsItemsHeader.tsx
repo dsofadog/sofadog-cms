@@ -61,7 +61,7 @@ const NewsItemsHeader = (props: Props) => {
                         <input
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
-                            className="w-full pl-8 pr-3 text-base placeholder-gray-600 border border-gray-300 rounded-lg focus:shadow-outline" type="text" placeholder="Search" />
+                            className="w-full pl-8 pr-3 text-sm placeholder-gray-600 border border-gray-300 rounded-lg focus:shadow-outline" type="text" placeholder="Search" />
                         <button onClick={() => {
                             onSubmitParams({
                                 ...params,
@@ -69,7 +69,7 @@ const NewsItemsHeader = (props: Props) => {
                                 title: search
                             })
                         }}
-                            className="absolute inset-y-0 right-0 border border-gray-300 flex items-center px-4 font-bold text-gray-500 bg-white rounded-r-lg hover:bg-gray-100 focus:bg-gray-100">Submit</button>
+                            className="text-sm absolute inset-y-0 right-0 border border-gray-300 flex items-center px-4 font-semibold text-gray-500 bg-white rounded-r-lg hover:bg-gray-100 focus:bg-gray-100">Submit</button>
                     </div>
                 </div>
                 <div className="flex-shrink-0 mt-3 flex sm:mt-0 sm:ml-4">

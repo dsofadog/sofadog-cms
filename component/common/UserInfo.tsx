@@ -284,7 +284,7 @@ const UserInfo = (props) => {
                             <div className="min-w-0 flex-1 px-4 md:grid md:grid-cols-1 md:gap-4">
                                 <div className="col-span-1">
                                     <div className="sm:hidden">
-                                        <select aria-label="Selected tab" className="mt-1 form-select block w-full pl-3 pr-10 py-2 text-base leading-6 border-gray-300 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 sm:text-sm sm:leading-5 transition ease-in-out duration-150">
+                                        <select aria-label="Selected tab" className="mt-1 form-select block w-full pl-3 pr-10 py-2 text-base leading-6 border-gray-300 focus:outline-none focus:ring-blue focus:border-blue-300 sm:text-sm sm:leading-5 transition ease-in-out duration-150">
                                             <option onClick={() => setTabIndex(1)} selected={tabIndex === 1 ? true : false}>Basic Info</option>
                                             <option onClick={() => setTabIndex(2)} selected={tabIndex === 2 ? true : false}>Role</option>
                                             <option onClick={() => setTabIndex(3)} selected={tabIndex === 3 ? true : false}>Change Password</option>
@@ -293,13 +293,13 @@ const UserInfo = (props) => {
                                     <div className="hidden sm:block">
                                         <div className="border-b border-gray-200">
                                             <nav className="-mb-px flex">
-                                                <a href={void (0)} onClick={() => setTabIndex(1)} className={`${tabIndex === 1 ? ' border-indigo-500 text-indigo-600 focus:text-indigo-800 focus:border-indigo-700' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:text-gray-700 focus:border-gray-300'} cursor-pointer whitespace-no-wrap ml-8 py-4 px-1 border-b-2 font-medium text-sm leading-5 focus:outline-none`} aria-current="page">
+                                                <a href={void (0)} onClick={() => setTabIndex(1)} className={`${tabIndex === 1 ? ' border-indigo-500 text-indigo-600 focus:text-indigo-800 focus:border-indigo-700' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:text-gray-700 focus:border-gray-300'} cursor-pointer whitespace-nowrap ml-8 py-4 px-1 border-b-2 font-medium text-sm leading-5 focus:outline-none`} aria-current="page">
                                                     Basic Info
                                                 </a>
-                                                <a href={void (0)} onClick={() => setTabIndex(2)} className={`${tabIndex === 2 ? ' border-indigo-500 text-indigo-600 focus:text-indigo-800 focus:border-indigo-700' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:text-gray-700 focus:border-gray-300'} cursor-pointer whitespace-no-wrap ml-8 py-4 px-1 border-b-2 font-medium text-sm leading-5 focus:outline-none`} aria-current="page">
+                                                <a href={void (0)} onClick={() => setTabIndex(2)} className={`${tabIndex === 2 ? ' border-indigo-500 text-indigo-600 focus:text-indigo-800 focus:border-indigo-700' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:text-gray-700 focus:border-gray-300'} cursor-pointer whitespace-nowrap ml-8 py-4 px-1 border-b-2 font-medium text-sm leading-5 focus:outline-none`} aria-current="page">
                                                     Role
                                                 </a>
-                                                <a href={void (0)} onClick={() => setTabIndex(3)} className={`${tabIndex === 3 ? ' border-indigo-500 text-indigo-600 focus:text-indigo-800 focus:border-indigo-700' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:text-gray-700 focus:border-gray-300'} cursor-pointer whitespace-no-wrap ml-8 py-4 px-1 border-b-2 font-medium text-sm leading-5 focus:outline-none`} aria-current="page">
+                                                <a href={void (0)} onClick={() => setTabIndex(3)} className={`${tabIndex === 3 ? ' border-indigo-500 text-indigo-600 focus:text-indigo-800 focus:border-indigo-700' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:text-gray-700 focus:border-gray-300'} cursor-pointer whitespace-nowrap ml-8 py-4 px-1 border-b-2 font-medium text-sm leading-5 focus:outline-none`} aria-current="page">
                                                     Manage Password
                                                 </a>
                                                 {action === 'add' &&(
@@ -372,7 +372,7 @@ const UserInfo = (props) => {
                                                             <div>
                                                                 {roles && (
                                                                     <span onClick={toggleRoleDropdown} className="rounded-md shadow-sm">
-                                                                        <button type="button" className="inline-flex justify-center w-full rounded-md border border-gray-300 px-2 py-1.5 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150 capitalize" id="options-menu" aria-haspopup="true" aria-expanded="true">
+                                                                        <button type="button" className="inline-flex justify-center w-full rounded-md border border-gray-300 px-2 py-1.5 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:ring-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150 capitalize" id="options-menu" aria-haspopup="true" aria-expanded="true">
                                                                         
                                                                             Select Role
                                                                                     
@@ -385,7 +385,7 @@ const UserInfo = (props) => {
                                                             </div>
                                                             {openRoleDropdown && (
                                                                 <div className="origin-top-left absolute left-0 mt-2 w-56 rounded-md shadow-lg z-50">
-                                                                    <div className="rounded-md bg-white shadow-xs">
+                                                                    <div className="rounded-md bg-white ring-1 ring-black ring-opacity-5">
                                                                         <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
                                                                             {roles?.map((role, i) => (
                                                                                 <a key={i} href={void (0)} onClick={(e) => handleMultiSelectChange(e,role)} className={`${isRoleSelected(role) ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white' } cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900 uppercase`} role="menuitem">

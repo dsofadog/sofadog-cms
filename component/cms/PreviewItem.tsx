@@ -454,12 +454,12 @@ const PreviewItem = (props) => {
                 <>
                     {categories && item ? (
                         <div className="w-full mx-auto h-auto">
-                            <div className="flex flex-no-wrap justify-center">
+                            <div className="flex flex-nowrap justify-center">
                                 <div className="w-1/12 mx-auto flex-none float-left">
                                     <div className="bg-gray-300 p-1 h-32 w-1 mx-auto"></div>
                                 </div>
                             </div>
-                            <div className="flex flex-no-wrap justify-center">
+                            <div className="flex flex-nowrap justify-center">
                                 <div className="w-11/12 mx-auto flex-none float-left">
                                     <div className="md:flex shadow-lg mx-6 md:mx-auto w-full h-full">
                                         {/* border-${categories[item?.category].color} */}

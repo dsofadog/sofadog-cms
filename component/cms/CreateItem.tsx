@@ -590,12 +590,12 @@ const CreateItem = (props) => {
     }
     return (
         <div className="w-full mx-auto">
-            <div className="flex flex-no-wrap justify-center">
+            <div className="flex flex-nowrap justify-center">
                 <div className="w-1/12 mx-auto flex-none float-left">
                     <div className="bg-gray-300 p-1 h-32 w-1 mx-auto"></div>
                 </div>
             </div>
-            <div className="flex flex-no-wrap justify-center">
+            <div className="flex flex-nowrap justify-center">
                 <div className="w-11/12 mx-auto flex-none float-left">
                     <div className="md:flex shadow-lg mx-6 md:mx-auto w-full">
                         {/* ${item?.category != undefined ? categories[item?.category].color : 'gray-200'} */}
@@ -741,14 +741,14 @@ const CreateItem = (props) => {
                             <div className="grid grid-cols-8 gap-8 pt-5 mb-5">
                                 {/* <div className="col-span-6">
                                     <label htmlFor="street_address" className="block text-sm font-medium leading-5 text-gray-700">Street address</label>
-                                    <input id="street_address" className="form-input mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
+                                    <input id="street_address" className="form-input mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
                                 </div> */}
                                 <div className="col-span-8 sm:col-span-8 lg:col-span-2">
                                     <label className="block text-sm font-medium leading-5 text-gray-700">Feed</label>
                                     <div ref={feedWrapperRef} data-id="feed" className="relative inline-block text-left w-full">
                                         {feeds && (
                                             <span onClick={toggleFeedDropdown} className="rounded-md shadow-sm block">
-                                                <button type="button" className={`${(selectedFeed === null) && formSubmitted ? 'border-red-500 text-red-600' : 'border-transparent '} w-full inline-flex justify-between rounded-md border border-gray-300 px-2 py-0.5 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800`}
+                                                <button type="button" className={`${(selectedFeed === null) && formSubmitted ? 'border-red-500 text-red-600' : 'border-transparent '} w-full inline-flex justify-between rounded-md border border-gray-300 px-2 py-0.5 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:ring-blue active:bg-gray-50 active:text-gray-800`}
                                                     id="options-menu" aria-haspopup="true" aria-expanded="true">
                                                     Choose Feed
                                                     <svg className="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -759,7 +759,7 @@ const CreateItem = (props) => {
                                         )}
                                         {openFeedDropdown && (
                                             <div className="origin-top-left absolute left-0 mt-2 w-56 rounded-md shadow-lg z-20">
-                                                <div className="rounded-md bg-white shadow-xs">
+                                                <div className="rounded-md bg-white ring-1 ring-black ring-opacity-5">
                                                     <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
                                                         {feeds?.map((feed, i) => (
                                                             <a key={i} href={void (0)} onClick={() => handleClickSingleDropdownFeed(feed)} className="cursor-pointer block px-4 py-1 text-xs leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900" role="menuitem">
@@ -792,7 +792,7 @@ const CreateItem = (props) => {
                                     <div ref={catWrapperRef} data-id="category" className="relative inline-block text-left w-full">
                                         {categories && (
                                             <span onClick={toggleCateDropdown} className="rounded-md shadow-sm block">
-                                                <button type="button" className={`${(selectedCategory === null) && formSubmitted ? 'border-red-500 text-red-600' : 'border-transparent '} disabled w-full inline-flex justify-between rounded-md border border-gray-300 px-2 py-0.5 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800`}
+                                                <button type="button" className={`${(selectedCategory === null) && formSubmitted ? 'border-red-500 text-red-600' : 'border-transparent '} disabled w-full inline-flex justify-between rounded-md border border-gray-300 px-2 py-0.5 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:ring-blue active:bg-gray-50 active:text-gray-800`}
                                                     id="options-menu" aria-haspopup="true" aria-expanded="true">
                                                     Choose Category
                                                     <svg className="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -803,7 +803,7 @@ const CreateItem = (props) => {
                                         )}
                                         {openCategoryDropdown && (
                                             <div className="origin-top-left absolute left-0 mt-2 w-56 rounded-md shadow-lg z-20">
-                                                <div className="rounded-md bg-white shadow-xs">
+                                                <div className="rounded-md bg-white ring-1 ring-black ring-opacity-5">
                                                     <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
                                                         {categories?.map((cat, i) => (
                                                             <a key={i} href={void (0)} onClick={() => handleClickSingleDropdown(cat)} className="cursor-pointer block px-4 py-1 text-xs leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900" role="menuitem">
@@ -836,7 +836,7 @@ const CreateItem = (props) => {
                                     <label className="block text-sm font-medium leading-5 text-gray-700">Tags</label>
                                     <div ref={tagWrapperRef} data-id="tag" className="relative inline-block text-left w-full">
                                         <span onClick={toggleTagDropdown} className="rounded-md shadow-sm">
-                                            <button type="button" className={`${selectedTag.length == 0 && formSubmitted ? '' : ' '} inline-flex justify-between w-full rounded-md border border-gray-300 px-2 py-0.5 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800x`}
+                                            <button type="button" className={`${selectedTag.length == 0 && formSubmitted ? '' : ' '} inline-flex justify-between w-full rounded-md border border-gray-300 px-2 py-0.5 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:ring-blue active:bg-gray-50 active:text-gray-800x`}
                                                 id="options-menu" aria-haspopup="true" aria-expanded="true">
                                                 Choose tags
                                                     <svg className="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -846,7 +846,7 @@ const CreateItem = (props) => {
                                         </span>
                                         {openTagDropdown && (
                                             <div className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg">
-                                                <div className="rounded-md bg-white shadow-xs">
+                                                <div className="rounded-md bg-white ring-1 ring-black ring-opacity-5">
                                                     <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
                                                         {tags?.map((tag, i) => (
                                                             <a key={i} href={void (0)} onClick={() => handleClickMultiDropdown(tag)} className="cursor-pointer block px-4 py-1 text-xs leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900" role="menuitem">
@@ -876,7 +876,7 @@ const CreateItem = (props) => {
                                 </div>
                                 <div className="col-span-8 sm:col-span-8 lg:col-span-2">
                                     <label className="block text-sm font-medium leading-5 text-gray-700">Due date</label>
-                                    <input value={selectedDueDate} onChange={handleDueDate} placeholder="Due date" id="due-date" type="date" className={((selectedFeed === null) && formSubmitted ? 'border-red-500 text-red-600' : 'border-transparent ') + 'py-0.5 text-sm form-input block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5'} />
+                                    <input value={selectedDueDate} onChange={handleDueDate} placeholder="Due date" id="due-date" type="date" className={((selectedFeed === null) && formSubmitted ? 'border-red-500 text-red-600' : 'border-transparent ') + 'py-0.5 text-sm form-input block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5'} />
                                 </div>
                             </div>
 

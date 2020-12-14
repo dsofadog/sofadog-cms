@@ -132,14 +132,14 @@ const HeaderProfileComponent = () => {
                             </div>
                             </div>
                            
-                                <Link href={'/cms/setting'}>
+                                <Link href={'/cms/settings/profile'}>
 
                                     {/* <a href={void (0)} className={`${currentUserPermission('user_manager',"") ? 'flex items-center space-x-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900' : 'hidden'}`}role="menuitem">
                                         <FontAwesomeIcon className="w-3 h-3" icon={['fas', 'cog']} />
                                         <span>Settings</span>
                                     </a> */}
 
-                                    <a href={void (0)} className={`${true ? 'flex space-x-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900' : 'hidden'}`}role="menuitem">
+                                    <a href={void (0)} className={`${true ? 'flex space-x-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900' : 'hidden'}`} role="menuitem">
                                         <FontAwesomeIcon className="w-3" icon={['fas', 'cog']} />
                                         <span>Settings</span>
                                     </a>
