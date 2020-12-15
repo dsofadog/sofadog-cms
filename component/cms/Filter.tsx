@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import CmsConstant from 'utils/cms-constant';
+import Category from './feeds/Category';
 
 f_config.autoAddCss = false;
 library.add(fas, fab);
@@ -173,6 +174,9 @@ const Filter = (props: Props) => {
         }, [ref]);
     }
 
+    function getColorCode(category) {
+        return category?.hex ? category?.hex : '#e5e7eb';
+    }
 
     return (
         <div ref={filterWrapperRef} data-id="filter" className="relative inline-block text-left">
@@ -415,7 +419,8 @@ const Filter = (props: Props) => {
                                                             } else {
                                                                 dispatch({ type: ActionType.SelectCategory, payload: cat.number })
                                                             }
-                                                        }} className={`${state.category === cat.number ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white'} cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900`} role="menuitem">
+                                                        }} className={`${state.category === cat.number ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white'} flex items-center cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900`} role="menuitem">
+                                                            {cat.hex && <FontAwesomeIcon  className="w-4 h-4 fill-current mr-2" icon={['fas', 'circle']} style={{color: getColorCode(cat)}}/>}
                                                             {cat.title}
                                                         </a>
                                                     ))}
