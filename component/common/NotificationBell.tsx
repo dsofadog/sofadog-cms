@@ -49,7 +49,7 @@ const NotificationBell = () => {
         }, [ref]);
     }
     function getNotifications() {
-        setLoading(true);
+        // setLoading(true);
         console.log("Start Notification---------- ")
         httpCms.get(`/notifications?token=${appUserInfo?.token}`)
             .then((response) => {
@@ -63,14 +63,14 @@ const NotificationBell = () => {
                 }
             })
             .catch((e) => {
-                setLoading(false);
+                // setLoading(false);
             })
             .finally(() => {
-                setLoading(false);
+                // setLoading(false);
             });
     }
     function readNotification(notification) {
-        setLoading(true);
+        // setLoading(true);
         console.log("Start Notification---------- ", notification.read)
         if (notification.read === false) {
             httpCms.post(`/notifications/${notification?.id}/read?token=${appUserInfo?.token}`)
@@ -85,10 +85,10 @@ const NotificationBell = () => {
                     }
                 })
                 .catch((e) => {
-                    setLoading(false);
+                    // setLoading(false);
                 })
                 .finally(() => {
-                    setLoading(false);
+                    // setLoading(false);
                 });
         }
 

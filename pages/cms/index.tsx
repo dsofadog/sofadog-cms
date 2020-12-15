@@ -169,15 +169,15 @@ const Demo = () => {
     const fetchItem = async () => {
 
         let url = returnUrlForNewItems(params);
-        setLoading(true);
+        // setLoading(true);
         HttpCms.get(`/news_items/${searchId}?token=${appUserInfo?.token}`)
             .then(response => {
                 setNewsItems(response?.data);
-                setLoading(false);
+                // setLoading(false);
             })
             .catch(e => {
                 console.log(e);
-                setLoading(false);
+                // setLoading(false);
             });
     }
 
@@ -381,7 +381,7 @@ const Demo = () => {
                 console.log(e);
             })
             .finally(() => {
-                setLoading(false);
+                // setLoading(false);
             });
 
     }
@@ -390,7 +390,7 @@ const Demo = () => {
 
     async function singleItem(item_id) {
         try{
-            setLoading(true);
+            // setLoading(true);
             const res = await HttpCms.get(`/news_items/${item_id}?token=${appUserInfo?.token}`)
             console.log("response.data.news_item: ", res.data.news_items)
             let index = newsItems.news_items.findIndex(x => x.id === item_id);
@@ -399,11 +399,11 @@ const Demo = () => {
             setNewsItems(n);
             // setItem(response.data.news_items[0]);
             // console.log(response.data.news_items[0], "response.data.data");
-            setLoading(false);
+            // setLoading(false);
         }catch(err){
             console.log(err)
         }finally {
-            setLoading(false);
+            // setLoading(false);
         }
        
     }

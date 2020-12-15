@@ -112,7 +112,7 @@ const Login = () => {
   };
 
   const doLogin = (e) => {
-    setLoading(true);
+    // setLoading(true);
     e.preventDefault();
     HttpCms.post("/admin_user/login", userInfo)
       .then((response) => {
@@ -152,10 +152,10 @@ const Login = () => {
       })
       .catch((e) => {
         
-        setLoading(false);
+        // setLoading(false);
       })
       .finally(() => {
-        setLoading(false);
+        // setLoading(false);
       });
   };
   function checkShiftSatus(appUserInfo){
