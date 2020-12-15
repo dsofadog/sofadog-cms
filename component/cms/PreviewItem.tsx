@@ -619,7 +619,7 @@ const PreviewItem = (props) => {
                                             </div>
                                         </div>
                                         {/* bg-${categories[item?.category].color} */}
-                                        <div style={{ backgroundColor: getColorCode() }} className={` w-full md:w-1/5 relative z-10 rounded-lg rounded-l-none`}>
+                                        <div style={{ backgroundColor: getColorCode() }} className={` w-full md:w-1/5 relative rounded-lg rounded-l-none`}>
                                             <div className="inset-x-0 top-0 transform">
                                                 <div className="flex justify-center transform">
                                                     {/* bg-${categories[item?.category].color} */}
