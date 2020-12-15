@@ -423,7 +423,7 @@ const Demo = () => {
                     setNewsItems(null)
                     setParams(newParams)
                 }}
-                onRefresh={() => {
+                onRefresh={(title) => {
                     setFetchItemsFailed(false)
                     setNewsItems(null)
                     if(searchId){
@@ -431,6 +431,7 @@ const Demo = () => {
                     }else{
                         setParams({
                             ...params,
+                            title,
                             date: moment.utc().format("YYYY-MM-DD")
                         })
                     }

@@ -13,7 +13,7 @@ type Props = {
     params: any;
     feeds: any[];
     onSubmitParams: (params: any) => void;
-    onRefresh: () => void;
+    onRefresh: (title: string) => void;
     onNewClicked: () => void;
     onViewModeChange: (viewMode) => void;
     viewMode: 'list' | 'table'
@@ -26,6 +26,7 @@ const NewsItemsHeader = (props: Props) => {
     const { appUserInfo } = useContext(LayoutContext);
 
     const [search, setSearch] = useState("");
+    const [searchSubmitted, setSearchSubmitted] = useState(false)
     const [filter, setFilter] = useState<{
         tags: string[];
         states: string[];
@@ -42,11 +43,24 @@ const NewsItemsHeader = (props: Props) => {
                 tags: filter.tags.join(),
                 category: filter.category,
                 state: filter.states.join(),
-                feed_id: filter.feed
+                feed_id: filter.feed,
+                title: search
             })
         }
     }, [filter])
 
+
+    const onKeyUp = (e)=>{
+        if(e.which === 13){
+            onSubmitParams({
+                ...params,
+                date: moment.utc().format("YYYY-MM-DD"),
+                title: search
+            }) 
+            setSearchSubmitted(true)
+        }
+    }
+    
     return (
         <header className="bg-white shadow z-10">
             <div className="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8 flex items-center">
@@ -61,15 +75,16 @@ const NewsItemsHeader = (props: Props) => {
                         <input
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
+                            onKeyUp={(e)=>onKeyUp(e)}
                             className="w-full pl-8 pr-3 text-sm placeholder-gray-600 border border-gray-300 rounded-lg focus:shadow-outline" type="text" placeholder="Search" />
-                        <button onClick={() => {
+                        {/* <button onClick={() => {
                             onSubmitParams({
                                 ...params,
                                 date: moment.utc().format("YYYY-MM-DD"),
                                 title: search
                             })
                         }}
-                            className="text-sm absolute inset-y-0 right-0 border border-gray-300 flex items-center px-4 font-semibold text-gray-500 bg-white rounded-r-lg hover:bg-gray-100 focus:bg-gray-100">Submit</button>
+                            className="text-sm absolute inset-y-0 right-0 border border-gray-300 flex items-center px-4 font-semibold text-gray-500 bg-white rounded-r-lg hover:bg-gray-100 focus:bg-gray-100">Submit</button> */}
                     </div>
                 </div>
                 <div className="flex-shrink-0 mt-3 flex sm:mt-0 sm:ml-4">
@@ -82,7 +97,7 @@ const NewsItemsHeader = (props: Props) => {
                         })
                     }} />
 
-                    <button onClick={onRefresh} type="button" className="btn btn-default mr-3">
+                    <button onClick={()=>onRefresh(search)} type="button" className="btn btn-default mr-3">
                         <FontAwesomeIcon className="w-3 mr-2" icon={['fas', 'sync-alt']} />
                         Refresh
                     </button>
