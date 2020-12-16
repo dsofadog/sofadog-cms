@@ -40,6 +40,7 @@
     "postcss": "^7.0.35",
     "react": "16.13.1",
     "react-color": "^2.19.3",
+    "react-day-picker": "^7.4.8",
     "react-dom": "16.13.1",
     "react-dropzone": "^11.2.4",
     "react-hook-form": "^6.12.2",
@@ -53,8 +54,10 @@
     "redux-persist": "^6.0.0",
     "redux-thunk": "^2.3.0",
     "rooks": "^4.3.0",
+    "sass": "^1.30.0",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.1",
     "tslib": "^2.0.3",
+    "wysiwyg.css": "0.0.3",
     "yup": "^0.32.8"
   },
   "devDependencies": {

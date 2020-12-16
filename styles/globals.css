@@ -114,3 +114,20 @@ trix-editor {
     /* Apply 'spinner' keyframes looping once every second (1s)  */
     animation: spinner 1s linear infinite;
   }
+
+
+
+  /* Day picker override */
+  .DayPickerInput {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+  }
+  .override-DayPickerInput-Overlay {
+    position: absolute;
+    left: 0;
+    z-index: 20;
+  
+    background: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  }
+  

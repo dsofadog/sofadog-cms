@@ -2,12 +2,14 @@ import React, { useEffect, useState, useRef } from 'react';
 
 import ReactPlayer from 'react-player';
 import Hls from "hls.js";
+import moment from 'moment'
 
 const PreviewClip = (props) => {
 
     const myRef = useRef(null);
     const [playing, setPlaying] = useState(false)
     const [controls, setControls] = useState(false)
+    const [progress, setProgress] = useState({} as any)
     const [url, setUrl] = useState({video: "",image: ""});
 
     useEffect(() => {
@@ -43,6 +45,10 @@ const PreviewClip = (props) => {
         setControls(false)
     }
 
+    function handleProgress(progress){
+        setProgress(progress)
+    }
+
     return (
         <div className="flex flex-col rounded shadow-lg overflow-hidden">
             <div className="relative flex-shrink-0">
@@ -66,7 +72,12 @@ const PreviewClip = (props) => {
                         onPlay={handlePlay}
                         onPause={handlePause}
                         onEnded={handleEnded}
+                        onProgress={handleProgress}
                     />
+
+                     <div className="p-2 flex justify-center">
+                        <p className="text-sm">Time played: {moment.utc((progress.playedSeconds || 0)*1000).format('HH:mm:ss')}</p>
+                    </div>
                     
                     {!playing && (
                         <div onClick={handlePlayPause} className="absolute inset-0 w-full h-full flex items-center justify-center">
