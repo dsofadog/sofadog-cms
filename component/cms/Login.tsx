@@ -26,7 +26,7 @@ const Login = () => {
     notify
   } = useContext(LayoutContext);
 
-  const [userInfo, setUserInfo] = useState(null);
+  const [userInfo, setUserInfo] = useState({email: '', password: ''});
   const tempData=[];
 
   useEffect(() => {
