@@ -3,6 +3,7 @@ import 'react-quill/dist/quill.snow.css';
 import 'animate.css/animate.min.css';
 import 'react-notifications-component/dist/theme.css'
 import "nprogress/nprogress.css";
+import 'react-day-picker/lib/style.css';
 
 import dynamic from 'next/dynamic'
 
