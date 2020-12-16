@@ -9,7 +9,7 @@ const PreviewClip = (props) => {
     const myRef = useRef(null);
     const [playing, setPlaying] = useState(false)
     const [controls, setControls] = useState(false)
-    const [progress, setProgress] = useState({})
+    const [progress, setProgress] = useState({} as any)
     const [url, setUrl] = useState({video: "",image: ""});
 
     useEffect(() => {
