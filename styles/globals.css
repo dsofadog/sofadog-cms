@@ -117,7 +117,7 @@ trix-editor {
 
 
 
-  /* Day picker*/
+  /* Day picker override */
   .DayPickerInput {
     outline: 2px solid transparent;
     outline-offset: 2px;

@@ -1,4 +1,5 @@
 import 'styles/globals.css';
+import 'styles/override.sass'
 import 'react-quill/dist/quill.snow.css';
 import 'animate.css/animate.min.css';
 import 'react-notifications-component/dist/theme.css'
