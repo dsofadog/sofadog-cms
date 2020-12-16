@@ -1,6 +1,6 @@
 // pages/index.jsx
 import Head from 'next/head';
-import Login from 'component/cms/Login';
+import Login from 'features/auth/components/Login';
 
 const Home = () => (
     <div>
@@ -10,7 +10,7 @@ const Home = () => (
             <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
         </Head>
 
-        <Login></Login>
+        <Login />
 
     </div>
 )
