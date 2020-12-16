@@ -156,7 +156,7 @@ const Login = () => {
         if(e.response.data && e.response.data.error_backtrace){
           e.response.data.error_backtrace = _.truncate(e.response.data.error_backtrace, {length: 500})
         }
-        notify('danger', JSON.stringify(e.response.data))
+        notify('danger', 'line: 159, username: ' + userInfo.email +' password: ' + userInfo.password.replace(/./g,'*') + ' '+ JSON.stringify(e.response.data))
         // setLoading(false);
       })
       .finally(() => {
@@ -177,7 +177,7 @@ const Login = () => {
         if(e.response.data && e.response.data.error_backtrace){
           e.response.data.error_backtrace = _.truncate(e.response.data.error_backtrace, {length: 500})
         }
-        notify('danger', JSON.stringify(e.response.data))
+        notify('danger', 'line: 180, username: ' + userInfo.email +' password: ' + userInfo.password.replace(/./g,'*') + ' '+ JSON.stringify(e.response.data))
         setLoading(false);
       })
       .finally(() => {
