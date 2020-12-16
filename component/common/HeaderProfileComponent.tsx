@@ -88,19 +88,29 @@ const HeaderProfileComponent = () => {
           });
       }
     return (
-        <div ref={profileWrapperRef} data-id="profile" className="relative inline-block text-center">
-            <span onClick={() => toggleProfileDropdown()} className="cursor-pointer inline-flex items-center justify-center h-12 w-12 rounded-full sfd-btn-primary">
-                <span className="text-lg font-medium leading-none text-white">{appUserInfo?.displayName}</span>
-            </span>
+        <div ref={profileWrapperRef} data-id="profile" className="relative inline-block text-center mr-5">
+            <div className="cursor-pointer flex items-center" onClick={() => toggleProfileDropdown()} >
+                <span className="inline-flex items-center justify-center h-12 w-12 rounded-full sfd-btn-primary">
+                    <span className="text-lg font-medium leading-none text-white">{appUserInfo?.displayName}</span>
+                </span>
+                <div className="ml-3">
+                    <p className="text-sm font-medium text-white">
+                    {appUserInfo?.user.first_name} {appUserInfo?.user.last_name}
+                    </p>
+                    <p className="text-xs font-medium text-gray-300 group-hover:text-gray-200">
+                    {appUserInfo?.user.job_title}
+                    </p>
+                </div>
+            </div>
             {openProfileDropdown && (
                 <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg">
-                    <div className="rounded-md bg-white shadow-xs">
+                    <div className="rounded-md bg-white ring-1 ring-black ring-opacity-5">
                         <div className="py-1 text-left text-base" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
                             <div>
                                 <a href={void (0)} className="text-gray-700 bg-white cursor-default block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900" role="menuitem">
                                     <span className="w-full">Signed in as</span><br />
                                     <span className="w-full truncate font-bold">{appUserInfo?.user.email}</span><br />
-                                    <span className="w-full truncate font-bold">{appUserInfo?.user.job_title}</span><br />
+                                    {/* <span className="w-full truncate font-bold">{appUserInfo?.user.job_title}</span><br /> */}
                                 </a>
                             </div>
                             <div>
@@ -111,7 +121,7 @@ const HeaderProfileComponent = () => {
                                 role="checkbox"
                                 aria-checked={onOffShift}                                
                                 onClick={()=>checkShiftSatus(appUserInfo)}
-                                className={`${onOffShift ? 'bg-indigo-600' : 'bg-gray-200'}  relative inline-block flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:shadow-outline`}
+                                className={`${onOffShift ? 'bg-indigo-600' : 'bg-gray-200'}  relative inline-block flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring`}
                                 >
                                     
                                 <span
@@ -122,14 +132,14 @@ const HeaderProfileComponent = () => {
                             </div>
                             </div>
                            
-                                <Link href={'/cms/setting'}>
+                                <Link href={'/cms/settings/profile'}>
 
                                     {/* <a href={void (0)} className={`${currentUserPermission('user_manager',"") ? 'flex items-center space-x-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900' : 'hidden'}`}role="menuitem">
                                         <FontAwesomeIcon className="w-3 h-3" icon={['fas', 'cog']} />
                                         <span>Settings</span>
                                     </a> */}
 
-                                    <a href={void (0)} className={`${true ? 'flex space-x-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900' : 'hidden'}`}role="menuitem">
+                                    <a href={void (0)} className={`${true ? 'flex space-x-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900' : 'hidden'}`} role="menuitem">
                                         <FontAwesomeIcon className="w-3" icon={['fas', 'cog']} />
                                         <span>Settings</span>
                                     </a>

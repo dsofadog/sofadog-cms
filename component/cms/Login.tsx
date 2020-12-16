@@ -112,7 +112,7 @@ const Login = () => {
   };
 
   const doLogin = (e) => {
-    setLoading(true);
+    // setLoading(true);
     e.preventDefault();
     HttpCms.post("/admin_user/login", userInfo)
       .then((response) => {
@@ -152,10 +152,10 @@ const Login = () => {
       })
       .catch((e) => {
         
-        setLoading(false);
+        // setLoading(false);
       })
       .finally(() => {
-        setLoading(false);
+        // setLoading(false);
       });
   };
   function checkShiftSatus(appUserInfo){
@@ -202,7 +202,7 @@ const Login = () => {
                   type="email"
                   onChange={(e) => handleChangeInput(e)}
                   required
-                  className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 sm:text-sm sm:leading-5"
+                  className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue focus:border-blue-300 focus:z-10 sm:text-sm sm:leading-5"
                   placeholder="Email address"
                 />
               </div>
@@ -214,7 +214,7 @@ const Login = () => {
                   type="password"
                   onChange={(e) => handleChangeInput(e)}
                   required
-                  className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 sm:text-sm sm:leading-5"
+                  className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue focus:border-blue-300 focus:z-10 sm:text-sm sm:leading-5"
                   placeholder="Password"
                 />
               </div>

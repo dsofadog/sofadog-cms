@@ -159,7 +159,7 @@ const Comment = (props: Props) => {
                             </div>
                         </div>
 
-                        <div className="w-full space-y-1 px-2 pr-5 pb-4">
+                        <div className="wysiwyg w-full space-y-1 px-2 pr-5 pb-4">
                             <div>
                                 <span style={{
                                     overflowWrap: 'break-word', 

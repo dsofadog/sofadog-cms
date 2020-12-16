@@ -7,7 +7,7 @@ const Notification = (props) => {
             {show && (
                 <div className="z-50 fixed inset-0 flex items-end justify-center px-4 py-6 pointer-events-none sm:p-6 sm:items-start sm:justify-end">
                     <div className="max-w-sm w-full bg-white shadow-lg rounded-lg pointer-events-auto">
-                        <div className="rounded-lg shadow-xs overflow-hidden">
+                        <div className="rounded-lg ring-1 ring-black ring-opacity-5 overflow-hidden">
                             <div className="p-4">
                                 <div className="flex items-center">
                                     <div className="w-0 flex-1 flex justify-between">

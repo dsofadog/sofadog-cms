@@ -16,6 +16,7 @@ import HttpCms from 'utils/http-cms';
 import CreateItem from "./CreateItem";
 import PreviewClip from "./PreviewClip";
 import Comments from "./Comments";
+import Loader from "component/common/Loader";
 
 f_config.autoAddCss = false;
 library.add(fas, fab);
@@ -28,6 +29,7 @@ const PreviewItem = (props) => {
     const [creditsData, setCreditsData] = useState(null);
     const [activeLang, setActiveLang] = useState(0);
     const [video, setVideo] = useState(null);
+    const [loadingThumbnails, setLoadingThumbnails] = useState(false)
     const [isClips, setIsClips] = useState(false);
     const [clips, setClips] = useState({ video: null, thumbnails: null });
     const [isEdit, setIsEdit] = useState(false);
@@ -62,10 +64,15 @@ const PreviewItem = (props) => {
 
     }, []);
 
-    function refreshData(e) {
+    async function refreshData(slowReload) {
         setVideo(null)
-        e.preventDefault();
-        props.getSigleItem(item.id);
+        await props.getSigleItem(item.id);
+        setLoadingThumbnails(true)
+        setTimeout(()=>{
+            setLoadingThumbnails(false)
+        }, slowReload? 5000: 1000)
+
+
         // setLoading(true);
         // HttpCms.get(`/news_items/${item.id}?token=${appUserInfo?.token}`)
         //     .then(response => {
@@ -409,11 +416,7 @@ const PreviewItem = (props) => {
                 );
             }
             case "transcoding": {
-                return (
-                    <span onClick={(e) => refreshData(e)} className="px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-green-800 bg-green-100 hover:bg-green-200 text-green-800 cursor-pointer">
-                        Refresh
-                    </span>
-                );
+                return null;
             }
 
             default: {
@@ -454,12 +457,12 @@ const PreviewItem = (props) => {
                 <>
                     {categories && item ? (
                         <div className="w-full mx-auto h-auto">
-                            <div className="flex flex-no-wrap justify-center">
+                            <div className="flex flex-nowrap justify-center">
                                 <div className="w-1/12 mx-auto flex-none float-left">
                                     <div className="bg-gray-300 p-1 h-32 w-1 mx-auto"></div>
                                 </div>
                             </div>
-                            <div className="flex flex-no-wrap justify-center">
+                            <div className="flex flex-nowrap justify-center">
                                 <div className="w-11/12 mx-auto flex-none float-left">
                                     <div className="md:flex shadow-lg mx-6 md:mx-auto w-full h-full">
                                         {/* border-${categories[item?.category].color} */}
@@ -616,7 +619,7 @@ const PreviewItem = (props) => {
                                             </div>
                                         </div>
                                         {/* bg-${categories[item?.category].color} */}
-                                        <div style={{ backgroundColor: getColorCode() }} className={` w-full md:w-1/5 relative z-10 rounded-lg rounded-l-none`}>
+                                        <div style={{ backgroundColor: getColorCode() }} className={` w-full md:w-1/5 relative rounded-lg rounded-l-none`}>
                                             <div className="inset-x-0 top-0 transform">
                                                 <div className="flex justify-center transform">
                                                     {/* bg-${categories[item?.category].color} */}
@@ -625,19 +628,33 @@ const PreviewItem = (props) => {
                                                     </span>
                                                 </div>
                                             </div>
-                                            <div className="h-auto w-full flex items-start">
-                                                {item?.state != "awaiting_video_upload" ?
+                                            <div className="h-auto w-full flex items-start justify-center">
+                                                {item?.state != "awaiting_video_upload" && item?.state != "transcoding"?
                                                     <>
                                                         {item.thumbnails.length > 0 && (
-                                                            <img className={`${isExpand ? 'w-1/2' : 'w-full'} h-auto mx-auto shadow-2xl`}
-                                                                src={item.thumbnails[0].url} alt="" />
+                                                             <Loader active={loadingThumbnails} message=''>
+                                                                <img 
+                                                                className={`${isExpand ? 'w-1/2' : 'w-full'} h-auto mx-auto shadow-2xl`}
+                                                                src={item.thumbnails[0].url} 
+                                                                alt="" />
+                                                             </Loader>
+                                                            
                                                         )}
+                                                        {
+                                                           
+                                                        }
                                                     </>
                                                     : null
                                                 }
 
                                             </div>
+                                            <div className="w-full flex justify-center mt-4 mb-2">
+                                                <span onClick={() => refreshData(item.state === 'transcoding')} className="px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-green-800 bg-green-100 hover:bg-green-200 text-green-800 cursor-pointer">
+                                                    Refresh
+                                                </span>
+                                                </div>
                                             <div className="w-full flex justify-center mt-4 mb-8">
+                                                
                                                 {actionRender(item)}
                                             </div>
                                         </div>

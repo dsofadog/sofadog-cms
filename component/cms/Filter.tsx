@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import CmsConstant from 'utils/cms-constant';
+import Category from './feeds/Category';
 
 f_config.autoAddCss = false;
 library.add(fas, fab);
@@ -173,23 +174,30 @@ const Filter = (props: Props) => {
         }, [ref]);
     }
 
+    function getColorCode(category) {
+        return category?.hex ? category?.hex : '#e5e7eb';
+    }
 
     return (
         <div ref={filterWrapperRef} data-id="filter" className="relative inline-block text-left">
-            <button onClick={() => toggleFilterDropdown()} className="text-white space-x-2 relative inline-flex items-center px-2 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-400 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-600 active:bg-indigo-600 transition duration-150 ease-in-out">
+            <button type="button" onClick={() => toggleFilterDropdown()} className="btn btn-default mr-3">
+                        <FontAwesomeIcon className="w-3 mr-2" icon={['fas', 'filter']} />
+                        Filter
+                    </button>
+            {/* <button onClick={() => toggleFilterDropdown()} className="text-white space-x-2 relative inline-flex items-center px-2 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-400 focus:outline-none focus:ring-indigo focus:border-indigo-600 active:bg-indigo-600 transition duration-150 ease-in-out">
                 <FontAwesomeIcon className="w-3" icon={['fas', 'filter']} />
                 <span>Filter</span>
-            </button>
+            </button> */}
             {openFilterDropdown && (
                 <div className="origin-top-right absolute right-0 mt-2 w-108 rounded-md shadow-lg">
-                    <div className="w-full rounded-md bg-white shadow-xs">
+                    <div className="w-full rounded-md bg-white ring-1 ring-black ring-opacity-5">
                         <div className="w-full grid grid-cols-4 gap-2 px-2 pt-2">
 
                             <div className="">
                                 <div ref={tagWrapperRef} data-id="tag" className="relative inline-block w-full">
                                     <div>
                                         <span onClick={toggleTagDropdown} className="rounded-md shadow-sm">
-                                            <button type="button" className={`${state.tags.length > 0 ? 'border-indigo-600' : 'border-gray-300'} w-full inline-flex justify-center rounded-md border  px-2 py-2 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150`} id="options-menu" aria-haspopup="true" aria-expanded="true">
+                                            <button type="button" className={`${state.tags.length > 0 ? 'border-indigo-600' : 'border-gray-300'} w-full inline-flex justify-center rounded-md border  px-2 py-2 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:ring-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150`} id="options-menu" aria-haspopup="true" aria-expanded="true">
                                                 <span className="w-full truncate uppercase">
                                                     {state.tags.length > 0 ?
                                                         <>
@@ -207,7 +215,7 @@ const Filter = (props: Props) => {
                                     </div>
                                     {openTagDropdown && (
                                         <div className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg">
-                                            <div className="rounded-md bg-white shadow-xs">
+                                            <div className="rounded-md bg-white ring-1 ring-black ring-opacity-5">
                                                 <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
                                                     {tags?.map((tag, i) => (
                                                         <a key={i} href={void (0)} onClick={() => {
@@ -248,7 +256,7 @@ const Filter = (props: Props) => {
                                     <div>
                                         {status && (
                                             <span onClick={toggleStateDropdown} className="rounded-md shadow-sm">
-                                                <button type="button" className={`${state.states.length > 0 ? 'border-indigo-600' : 'border-gray-300'} w-full inline-flex justify-center rounded-md border  px-2 py-2 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150`} id="options-menu" aria-haspopup="true" aria-expanded="true">
+                                                <button type="button" className={`${state.states.length > 0 ? 'border-indigo-600' : 'border-gray-300'} w-full inline-flex justify-center rounded-md border  px-2 py-2 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:ring-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150`} id="options-menu" aria-haspopup="true" aria-expanded="true">
 
                                                     <span className="w-full truncate uppercase">
                                                         {
@@ -269,7 +277,7 @@ const Filter = (props: Props) => {
                                     </div>
                                     {openStateDropdown && (
                                         <div className="origin-top-left absolute left-0 mt-2 w-56 rounded-md shadow-lg z-20">
-                                            <div className="rounded-md bg-white shadow-xs">
+                                            <div className="rounded-md bg-white ring-1 ring-black ring-opacity-5">
                                                 <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
                                                     {status?.map((status, i) => (
                                                         // <a key={i} href={void (0)} onClick={(e) => selectedState?.name === status.name ? clearState(e) : handleClickMultiDropdown2(status)} className={`${selectedState?.name === status.name ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white'} cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900 uppercase`} role="menuitem">
@@ -315,7 +323,7 @@ const Filter = (props: Props) => {
                                     <div>
                                         {status && (
                                             <span onClick={toggleFeedDropdown} className="rounded-md shadow-sm">
-                                                <button type="button" className={`${state.feed ? 'border-indigo-600' : 'border-gray-300'} w-full inline-flex justify-center rounded-md border  px-2 py-2 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150`} id="options-menu" aria-haspopup="true" aria-expanded="true">
+                                                <button type="button" className={`${state.feed ? 'border-indigo-600' : 'border-gray-300'} w-full inline-flex justify-center rounded-md border  px-2 py-2 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:ring-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150`} id="options-menu" aria-haspopup="true" aria-expanded="true">
 
                                                     <span className="w-full truncate uppercase">
                                                         {
@@ -336,7 +344,7 @@ const Filter = (props: Props) => {
                                     </div>
                                     {openFeedDropdown && (
                                         <div className="origin-top-left absolute left-0 mt-2 w-56 rounded-md shadow-lg z-20">
-                                            <div className="rounded-md bg-white shadow-xs">
+                                            <div className="rounded-md bg-white ring-1 ring-black ring-opacity-5">
                                                 <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
                                                     {feeds?.map((feed, i) => (
                                                         <a key={i} href={void (0)} onClick={() => {
@@ -386,7 +394,7 @@ const Filter = (props: Props) => {
                                     <div>
                                         {(
                                             <span onClick={toggleCateDropdown} className="rounded-md shadow-sm">
-                                                <button type="button" className={`${state.category ? 'border-indigo-600' : 'border-gray-300'} w-full inline-flex justify-center rounded-md border  px-2 py-2 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150 cursor-not-allowed`} id="options-menu" aria-haspopup="true" aria-expanded="true">
+                                                <button type="button" className={`${state.category ? 'border-indigo-600' : 'border-gray-300'} w-full inline-flex justify-center rounded-md border  px-2 py-2 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:ring-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150 cursor-not-allowed`} id="options-menu" aria-haspopup="true" aria-expanded="true">
                                                     <span className="w-full truncate uppercase">
 
                                                         {state.category ?
@@ -402,7 +410,7 @@ const Filter = (props: Props) => {
                                     </div>
                                     {openCategoryDropdown && (
                                         <div className="origin-top-left absolute left-0 mt-2 w-56 rounded-md shadow-lg z-20">
-                                            <div className="rounded-md bg-white shadow-xs">
+                                            <div className="rounded-md bg-white ring-1 ring-black ring-opacity-5">
                                                 <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
                                                     {state.availableCategories?.map((cat, i) => (
                                                         <a key={i} href={void (0)} onClick={() => {
@@ -411,7 +419,8 @@ const Filter = (props: Props) => {
                                                             } else {
                                                                 dispatch({ type: ActionType.SelectCategory, payload: cat.number })
                                                             }
-                                                        }} className={`${state.category === cat.number ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white'} cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900`} role="menuitem">
+                                                        }} className={`${state.category === cat.number ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white'} flex items-center cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900`} role="menuitem">
+                                                            {cat.hex && <FontAwesomeIcon  className="w-4 h-4 fill-current mr-2" icon={['fas', 'circle']} style={{color: getColorCode(cat)}}/>}
                                                             {cat.title}
                                                         </a>
                                                     ))}

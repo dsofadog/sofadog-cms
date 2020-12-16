@@ -1,9 +1,17 @@
 // tailwind.config.js
 const defaultTheme = require('tailwindcss/defaultTheme')
+const colors = require('tailwindcss/colors')
 
 module.exports = {
     theme: {
         extend: {
+            colors: {
+                gray: colors.coolGray,
+                blue: colors.lightBlue,
+                red: colors.rose,
+                pink: colors.fuchsia,
+            },
+            fontWeight: ['hover', 'focus'],
             fontFamily: {
                 sans: ['Inter var', ...defaultTheme.fontFamily.sans],
             },
@@ -50,6 +58,15 @@ module.exports = {
         },
     },
     plugins: [
-        require('@tailwindcss/ui'),
-    ]
+        require('@tailwindcss/forms'),
+        require('@tailwindcss/aspect-ratio'),
+        require('@tailwindcss/typography'),
+    ],
+    variants: {
+        wordBreaks: ['responsive', 'group-hover'],
+        textOverflow: ['responsive', 'group-hover'],
+        extend: {
+            opacity: ['disabled'],
+        }
+    }
 }

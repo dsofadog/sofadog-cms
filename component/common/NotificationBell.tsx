@@ -49,7 +49,7 @@ const NotificationBell = () => {
         }, [ref]);
     }
     function getNotifications() {
-        setLoading(true);
+        // setLoading(true);
         console.log("Start Notification---------- ")
         httpCms.get(`/notifications?token=${appUserInfo?.token}`)
             .then((response) => {
@@ -63,14 +63,14 @@ const NotificationBell = () => {
                 }
             })
             .catch((e) => {
-                setLoading(false);
+                // setLoading(false);
             })
             .finally(() => {
-                setLoading(false);
+                // setLoading(false);
             });
     }
     function readNotification(notification) {
-        setLoading(true);
+        // setLoading(true);
         console.log("Start Notification---------- ", notification.read)
         if (notification.read === false) {
             httpCms.post(`/notifications/${notification?.id}/read?token=${appUserInfo?.token}`)
@@ -85,10 +85,10 @@ const NotificationBell = () => {
                     }
                 })
                 .catch((e) => {
-                    setLoading(false);
+                    // setLoading(false);
                 })
                 .finally(() => {
-                    setLoading(false);
+                    // setLoading(false);
                 });
         }
 
@@ -139,7 +139,7 @@ const NotificationBell = () => {
                 </span>
                 {openBellDropdown && (
                     <div className="origin-top-right absolute right-0 mt-2 w-84 rounded-md shadow-lg">
-                        <div className="h-full rounded-md bg-white shadow-xs">
+                        <div className="h-full rounded-md bg-white ring-1 ring-black ring-opacity-5">
                             <div className="h-96 divide-y overflow-y-auto py-1 text-left" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
                                 {
                                     notifications?.length > 0 ?
