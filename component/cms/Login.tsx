@@ -153,6 +153,9 @@ const Login = () => {
         }
       })
       .catch((e) => {
+        if(e.response.data && e.response.data.error_backtrace){
+          e.response.data.error_backtrace = _.truncate(e.response.data.error_backtrace, {length: 500})
+        }
         notify('danger', JSON.stringify(e.response.data))
         // setLoading(false);
       })
@@ -171,6 +174,9 @@ const Login = () => {
         }
       })
       .catch((e) => {
+        if(e.response.data && e.response.data.error_backtrace){
+          e.response.data.error_backtrace = _.truncate(e.response.data.error_backtrace, {length: 500})
+        }
         notify('danger', JSON.stringify(e.response.data))
         setLoading(false);
       })
