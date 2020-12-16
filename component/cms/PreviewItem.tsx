@@ -506,6 +506,15 @@ const PreviewItem = (props) => {
                                                     </Link>
                                                 </h2>
                                                 <small className="text-gray-400">{`Created date: ${moment.unix(item.created_at).format('lll')}`}{item.due_date ? ` | Due date: ${moment(item.due_date).format('lll')}` : ''} {item.enqueued_at ? ` | Enqueued date: ${moment(item.enqueued_at).format('lll')}` : ''}</small>
+                                                <div className="mt-2 mb-4 mr-2">
+                                                    <div className="w-full space-x-2 flex">
+                                                        {item?.tags.map(tag => (
+                                                            <span key={tag} className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium leading-4 bg-blue-100 text-blue-800">
+                                                                {tag}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                </div>
                                             </div>
                                             {item?.descriptions.length > 0 && (
                                                 <div className="w-full mb-4">
@@ -607,15 +616,6 @@ const PreviewItem = (props) => {
                                                     )
                                                 }
 
-                                            </div>
-                                            <div className="absolute mb-4 mr-4 bottom-0 inset-x-0">
-                                                <div className="w-full space-x-2 flex justify-end">
-                                                    {item?.tags.map(tag => (
-                                                        <span key={tag} className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium leading-4 bg-blue-100 text-blue-800">
-                                                            {tag}
-                                                        </span>
-                                                    ))}
-                                                </div>
                                             </div>
                                         </div>
                                         {/* bg-${categories[item?.category].color} */}
