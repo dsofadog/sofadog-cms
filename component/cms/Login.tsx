@@ -1,6 +1,6 @@
 import Router from "next/router";
 import React, { useContext, useEffect, useState } from "react";
-
+import _ from 'lodash'
 import { resolve6 } from "dns";
 
 import { LayoutContext } from "contexts";
@@ -22,7 +22,8 @@ const Login = () => {
     setSessionStorage,
     getSessionStorage,
     redirectUrl,
-    setRedirectUrl
+    setRedirectUrl,
+    notify
   } = useContext(LayoutContext);
 
   const [userInfo, setUserInfo] = useState(null);
@@ -147,11 +148,12 @@ const Login = () => {
           
           
         } else {
+          notify('danger', 'on_shift not null, line 151')
           alert("Something wrong !!");
         }
       })
       .catch((e) => {
-        
+        notify('danger', JSON.stringify(e.response.data))
         // setLoading(false);
       })
       .finally(() => {
@@ -164,11 +166,12 @@ const Login = () => {
         if (response.data.user.on_shift != null) {         
           //alert("shift api call when first time login");
         } else {
+          notify('danger', 'on_shift not null, line 169')
           alert("Something wrong !!");
         }
       })
       .catch((e) => {
-        
+        notify('danger', JSON.stringify(e.response.data))
         setLoading(false);
       })
       .finally(() => {
