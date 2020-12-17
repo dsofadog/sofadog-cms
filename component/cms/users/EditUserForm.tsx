@@ -24,6 +24,7 @@ import PasswordForm, {
     schema as rawPasswordSchema,
     defaultValues as passwordDefaultValues
 } from './PasswordForm';
+import tokenManager from 'utils/token-manager';
 
 
 const basicInformationSchema = yup.object().shape({
@@ -61,7 +62,7 @@ const EditUserForm = (props: Props) => {
         user
     } = props
 
-    const { appUserInfo, notify } = useContext(LayoutContext);
+    const { notify } = useContext(LayoutContext);
 
     const basicInformationForm = useForm<BasicInformationInputs>({
         resolver: yupResolver(basicInformationSchema),
@@ -95,7 +96,7 @@ const EditUserForm = (props: Props) => {
             const { email } = updatedUser
             const payload = basicInformationSchema.cast(data)
 
-            const res = await httpCms.patch(`admin_user/${email}?token=${appUserInfo?.token}`, payload)
+            const res = await httpCms.patch(tokenManager.attachToken(`admin_user/${email}`), payload)
 
             resetBasicInformationForm(res.data.user)
             setUpdatedUser(res.data.user)
@@ -124,12 +125,12 @@ const EditUserForm = (props: Props) => {
             let res: any
 
             for (const role of missingNewRoles) {
-                const url = `admin_user/${email}/add_role?token=${appUserInfo?.token}`
+                const url = tokenManager.attachToken(`admin_user/${email}/add_role`)
                 const payload = { email: user.email, role }
                 res = await httpCms.patch(url, payload)
             }
             for (const role of missingOldRoles) {
-                const url = `admin_user/${email}/remove_role?token=${appUserInfo?.token}`
+                const url = tokenManager.attachToken(`admin_user/${email}/remove_role`)
                 const payload = { email: user.email, role }
                 res = await httpCms.patch(url, payload)
             }
@@ -158,7 +159,7 @@ const EditUserForm = (props: Props) => {
                 password
             }
 
-            await httpCms.post(`admin_user/${email}/set_password?token=${appUserInfo?.token}`, payload)
+            await httpCms.post(tokenManager.attachToken(`admin_user/${email}/set_password`), payload)
 
             passwordForm.reset(passwordDefaultValues)
 
@@ -179,7 +180,7 @@ const EditUserForm = (props: Props) => {
                 email,
             }
 
-            const res = await httpCms.post(`admin_user/${email}/${action}?token=${appUserInfo?.token}`, payload)
+            const res = await httpCms.post(tokenManager.attachToken(`admin_user/${email}/${action}`), payload)
 
             setUpdatedUser(res.data.user)
 

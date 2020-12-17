@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic'
 
 // import ReactQuill from 'react-quill'
@@ -9,16 +9,10 @@ const QuillNoSSRWrapper = dynamic(import('react-quill'), {
     loading: () => <p>Loading ...</p>,
 })
 
-import { config as f_config, library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { fas } from '@fortawesome/free-solid-svg-icons';
-import { fab } from '@fortawesome/free-brands-svg-icons';
 
-import { LayoutContext } from 'contexts';
-
-
-f_config.autoAddCss = false;
-library.add(fas, fab);
+import { useSelector } from 'react-redux';
+import { RootState } from 'rootReducer';
 
 
 export enum CommentMode {
@@ -45,7 +39,7 @@ const Comment = (props: Props) => {
         onRemove
     } = props
 
-    const { appUserInfo } = useContext(LayoutContext);
+    const {currentUser} = useSelector((state: RootState)=>state.auth)
     const [mode, setMode] = useState<CommentMode>(CommentMode.Add)
     const [comment, setComment] = useState(null);
     const [body, setBody] = useState('');
@@ -110,7 +104,7 @@ const Comment = (props: Props) => {
         <div className="w-full flex">
             <div className="w-auto mt-2 flex z-10">
                 <span className="inline-flex items-center justify-center h-14 w-14 border-4 border-white rounded-full sfd-btn-primary">
-                    <span className="text-lg font-medium leading-none text-white">{mode === 'view' ? comment?.user.first_name.charAt(0) + comment?.user.last_name.charAt(0) : appUserInfo?.displayName}</span>
+                    <span className="text-lg font-medium leading-none text-white">{mode === 'view' ? comment?.user.first_name.charAt(0) + comment?.user.last_name.charAt(0) : currentUser.first_name.charAt(0) + currentUser.last_name.charAt(0)}</span>
                 </span>
             </div>
             <div className="w-full -ml-2 bg-gray-100 px-2 py-0.5 rounded-2xl">
@@ -133,7 +127,7 @@ const Comment = (props: Props) => {
                             <div data-id="action" className="text-sm text-gray-600 flex justify-end space-x-2">
                                 <span><TimeAgo date={comment?.created_at} /></span>
 
-                                {appUserInfo?.user.email === comment?.user.email && (
+                                {currentUser.email === comment?.user.email && (
                                     <>
                                         <span className="inline-flex rounded-md shadow-sm">
                                             <button

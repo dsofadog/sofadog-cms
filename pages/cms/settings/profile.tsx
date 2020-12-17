@@ -1,12 +1,10 @@
 import Settings from "component/common/Settings"
-import { useContext } from "react";
-import { LayoutContext } from "contexts";
+import { useSelector } from "react-redux";
+import { RootState } from "rootReducer";
 
 const Profile = () => {
 
-    const {
-        appUserInfo,
-    } = useContext(LayoutContext);
+    const { currentUser } = useSelector((state: RootState)=>state.auth);
 
     return (
         <Settings>
@@ -25,7 +23,7 @@ const Profile = () => {
                             Full name
                         </dt>
                         <dd className="mt-1 text-sm text-gray-900">
-                            {appUserInfo?.user.first_name} {appUserInfo?.user.last_name}
+                            {currentUser.first_name} {currentUser.last_name}
                         </dd>
                     </div>
                     <div className="sm:col-span-1">
@@ -33,7 +31,7 @@ const Profile = () => {
                             Job title
                         </dt>
                         <dd className="mt-1 text-sm text-gray-900">
-                            {appUserInfo?.user.job_title}
+                            {currentUser.job_title}
                         </dd>
                     </div>
                     <div className="sm:col-span-1">
@@ -41,7 +39,7 @@ const Profile = () => {
                             Email address
                         </dt>
                         <dd className="mt-1 text-sm text-gray-900">
-                            {appUserInfo?.user.email}
+                            {currentUser.email}
                         </dd>
                     </div>
                     <div className="sm:col-span-1">
@@ -49,11 +47,11 @@ const Profile = () => {
                             On shift
                         </dt>
                         <dd className="mt-1 text-sm text-gray-900">
-                            <span className={(appUserInfo?.user.on_shift? 'bg-green-100 text-green-800':'bg-gray-100 text-gray-800') + ' inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium'}>
-                                <svg className={(appUserInfo?.user.on_shift?'text-green-400':' text-gray-400') + ' -ml-1 mr-1.5 h-2 w-2'} fill="currentColor" viewBox="0 0 8 8">
+                            <span className={(currentUser.on_shift ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800') + ' inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium'}>
+                                <svg className={(currentUser.on_shift ? 'text-green-400' : ' text-gray-400') + ' -ml-1 mr-1.5 h-2 w-2'} fill="currentColor" viewBox="0 0 8 8">
                                     <circle cx="4" cy="4" r="3" />
                                 </svg>
-                                {appUserInfo?.user.on_shift?'Yes':'No'}
+                                {currentUser.on_shift ? 'Yes' : 'No'}
                             </span>
                         </dd>
                     </div>
@@ -62,7 +60,7 @@ const Profile = () => {
                             Roles
                         </dt>
                         <dd className="mt-1 text-sm text-gray-900">
-                            {appUserInfo?.user.admin_roles.map(role => (
+                            {currentUser.admin_roles.map(role => (
                                 <span key={role.id} className="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-gray-100 text-gray-800 mr-2">
                                     {role.description}
                                 </span>

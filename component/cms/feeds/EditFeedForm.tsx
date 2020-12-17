@@ -12,6 +12,7 @@ import FeedForm, {
     schema as feedSchema,
     defaultValues as feedDefaultValues
 } from './FeedForm';
+import tokenManager from 'utils/token-manager';
 
 const schema = yup.object().shape({
     name: feedSchema.name,
@@ -27,7 +28,7 @@ const EditFeedForm = (props: Props) => {
 
     const { feed, onUpdated } = props
 
-    const { appUserInfo, notify } = useContext(LayoutContext);
+    const { notify } = useContext(LayoutContext);
     const { register, handleSubmit, errors, reset } = useForm<Inputs>({
         resolver: yupResolver(schema),
         defaultValues: feedDefaultValues,
@@ -47,8 +48,8 @@ const EditFeedForm = (props: Props) => {
             const { id } = updatedFeed
             const payload = schema.cast(data)
 
-            console.log('updatedFeed', updatedFeed, 'payload', payload)
-            const res = await httpCms.post(`feeds?token=${appUserInfo?.token}`, {
+            // console.log('updatedFeed', updatedFeed, 'payload', payload)
+            const res = await httpCms.post(tokenManager.attachToken(`feeds`), {
                 ...payload,
                 id
             })

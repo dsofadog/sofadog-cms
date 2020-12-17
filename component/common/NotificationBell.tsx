@@ -1,25 +1,21 @@
-import { useContext, useEffect, useRef, useState } from "react";
-import Link from "next/link"
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from 'next/router'
 
-import { config as f_config, library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { fas } from '@fortawesome/free-solid-svg-icons';
-import { fab } from '@fortawesome/free-brands-svg-icons';
-import { far } from '@fortawesome/free-regular-svg-icons';
 
-import { LayoutContext } from "contexts";
+
 import httpCms from "utils/http-cms";
 
-f_config.autoAddCss = false;
-library.add(fas, fab, far);
+import tokenManager from 'utils/token-manager'
+
+// f_config.autoAddCss = false;
+// library.add(fas, fab, far);
 
 const NotificationBell = () => {
 
     const bellWrapperRef = useRef(null);
     useOutsideAlerter(bellWrapperRef);
     const [openBellDropdown, setOpenBellDropdown] = useState(false);
-    const { setLoading, appUserInfo, currentUserPermission, logoutUserCheck } = useContext(LayoutContext);
     const toggleBellDropdown = () => { setOpenBellDropdown(!openBellDropdown) };
     const [notifications, setNotificatons] = useState(null);
     const router = useRouter();
@@ -28,7 +24,6 @@ const NotificationBell = () => {
     function useOutsideAlerter(ref) {
         useEffect(() => {
 
-            logoutUserCheck();
             setTimeout(() => {
                 getNotifications();
             }, 2)
@@ -49,9 +44,8 @@ const NotificationBell = () => {
         }, [ref]);
     }
     function getNotifications() {
-        // setLoading(true);
         console.log("Start Notification---------- ")
-        httpCms.get(`/notifications?token=${appUserInfo?.token}`)
+        httpCms.get(tokenManager.attachToken('/notifications'))
             .then((response) => {
                 if (response.data != null) {
                     console.log("notification: ", response.data);
@@ -63,54 +57,44 @@ const NotificationBell = () => {
                 }
             })
             .catch((e) => {
-                // setLoading(false);
             })
             .finally(() => {
-                // setLoading(false);
             });
     }
     function readNotification(notification) {
-        // setLoading(true);
         console.log("Start Notification---------- ", notification.read)
         if (notification.read === false) {
-            httpCms.post(`/notifications/${notification?.id}/read?token=${appUserInfo?.token}`)
+            httpCms.post(tokenManager.attachToken('/notifications/${notification?.id}/read'))
                 .then((response) => {
                     if (response.data != null) {
                         console.log("notification: ", response.data);
                         setNotificatons(response.data.notifications);
-                        setLoading(false);
-
                     } else {
                         alert("Something wrong !!");
                     }
                 })
                 .catch((e) => {
-                    // setLoading(false);
                 })
                 .finally(() => {
-                    // setLoading(false);
                 });
         }
 
     }
 
     function markAllAsRead(){
-        httpCms.post(`/notifications/read?token=${appUserInfo?.token}`)
+        httpCms.post(tokenManager.attachToken('/notifications/read'))
                 .then((response) => {
                     if (response.data != null) {
                         console.log("notification: ", response.data);
                         setNotificatons(response.data.notifications);
-                        setLoading(false);
 
                     } else {
                         alert("Something wrong !!");
                     }
                 })
                 .catch((e) => {
-                    setLoading(false);
                 })
                 .finally(() => {
-                    setLoading(false);
                 });
     }
 
@@ -155,7 +139,7 @@ const NotificationBell = () => {
                                             {
                                                 notifications?.map((notification) => (
 
-                                                    <div className="w-full flex px-4 py-1 text-xs leading-5 text-gray-700 hover:bg-gray-200 hover:text-gray-900 cursor-pointer">
+                                                    <div key={notification.id} className="w-full flex px-4 py-1 text-xs leading-5 text-gray-700 hover:bg-gray-200 hover:text-gray-900 cursor-pointer">
                                                         <div onClick={(e) => notificationAction(notification)} className="w-11/12 flex justify-start">
                                                             <label className="text-sm text-gray-800 cursor-pointer">{notification.title}</label>
                                                         </div>
@@ -165,10 +149,7 @@ const NotificationBell = () => {
                                                     </div>
 
                                                 ))
-
                                             }
-
-
                                         </>
 
                                         :

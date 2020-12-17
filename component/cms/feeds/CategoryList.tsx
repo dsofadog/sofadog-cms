@@ -6,6 +6,7 @@ import Loader from "component/common/Loader";
 import httpCms from "utils/http-cms";
 import { LayoutContext } from "contexts";
 import Category from "./Category";
+import tokenManager from "utils/token-manager";
 
 type Props = {
     categories: any[]
@@ -15,7 +16,7 @@ const CategoryList = (props: Props) => {
 
     const { categories } = props
 
-    const { appUserInfo, notify } = useContext(LayoutContext);
+    const { notify } = useContext(LayoutContext);
     const [loading, setLoading] = useState<boolean>(false)
 
     const [updatedCategories, setUpdatedCategories] = useState(null)
@@ -29,7 +30,7 @@ const CategoryList = (props: Props) => {
         if (confirmation) {
             try {
 
-                const url = `feed/${category.feed}/categories/${category.number}?token=${appUserInfo?.token}`
+                const url = tokenManager.attachToken(`feed/${category.feed}/categories/${category.number}`)
                 const res = await httpCms.delete(url)
 
                  setUpdatedCategories(res.data.feed.categories)

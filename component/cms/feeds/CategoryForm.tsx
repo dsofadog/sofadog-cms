@@ -40,8 +40,6 @@ const CategoryForm = (props: Props) => {
 
     const hex = watch('hex')
 
-    console.log('hex',hex)
-
     const handleChangeComplete = (colour) => {
         setValue('hex', colour.hex)
         setOpenPicker(false)

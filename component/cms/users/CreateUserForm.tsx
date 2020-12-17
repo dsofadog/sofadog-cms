@@ -23,6 +23,7 @@ import PasswordForm, {
 } from './PasswordForm';
 import httpCms from 'utils/http-cms';
 import { LayoutContext } from 'contexts';
+import tokenManager from 'utils/token-manager';
 
 interface Inputs extends BasicInformationInputs, RolesInputs, PasswordInputs { }
 
@@ -46,7 +47,7 @@ const CreateUserForm = (props: Props) => {
 
     const { callback } = props
 
-    const { appUserInfo, notify } = useContext(LayoutContext);
+    const { notify } = useContext(LayoutContext);
     const { register, handleSubmit, errors } = useForm<Inputs>({
         resolver: yupResolver(schema),
         defaultValues,
@@ -60,7 +61,7 @@ const CreateUserForm = (props: Props) => {
 
             setLoading(true);
             
-            await httpCms.post("admin_user?token=" + appUserInfo?.token, payload)
+            await httpCms.post(tokenManager.attachToken(`admin_user`), payload)
 
             notify('success')
             callback(true)

@@ -9,6 +9,9 @@ import { LayoutContext } from "contexts";
 import httpCms from "utils/http-cms";
 import SubmitButton from "component/common/SubmitButton";
 import PasswordForm, { Inputs, schema as passwordSchema } from "component/cms/users/PasswordForm";
+import { useSelector } from "react-redux";
+import { RootState } from "rootReducer";
+import tokenManager from "utils/token-manager";
 
 const schema = yup.object().shape({
     ...passwordSchema
@@ -19,7 +22,8 @@ const ChangePassword = () => {
     const { register, handleSubmit, errors, reset } = useForm<Inputs>({
         resolver: yupResolver(schema)
     })
-    const { appUserInfo, notify } = useContext(LayoutContext);
+    const {currentUser} = useSelector((state:RootState)=>state.auth)
+    const { notify } = useContext(LayoutContext);
     const [loading, setLoading] = useState<boolean>(false)
 
     const changePassword = async function (data: Inputs) {
@@ -28,12 +32,12 @@ const ChangePassword = () => {
             const { password } = schema.cast(data)
 
             let payload = {
-                email: appUserInfo.user.email,
+                email: currentUser.email,
                 password
             };
 
             setLoading(true);
-            const url = `admin_user/${appUserInfo.user.email}/set_password?token=${appUserInfo?.token}`
+            const url = tokenManager.attachToken(`admin_user/${currentUser.email}/set_password`)
             const res = await httpCms.post(url, payload)
 
             notify('success')

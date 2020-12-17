@@ -4,7 +4,7 @@ import httpCms from 'utils/http-cms'
 export interface User {
     admin_roles: {
         id: string;
-        deescription: string;
+        description: string;
     }[],
     disabled: boolean | null;
     email: string;
@@ -15,7 +15,7 @@ export interface User {
 }
 
 export interface LoginRequestPayload {
-    username: string;
+    email: string;
     password: string;
 }
 

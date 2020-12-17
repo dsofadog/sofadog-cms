@@ -9,6 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { LayoutContext } from 'contexts'
 import httpCms from 'utils/http-cms'
 import CategoryForm, {Inputs, schema as rawSchema} from './CategoryForm'
+import tokenManager from 'utils/token-manager'
 
 enum Mode {
     View = 'view',
@@ -35,7 +36,7 @@ const Category = (props: Props) => {
         resolver: yupResolver(schema),
         defaultValues: category,
     })
-    const { appUserInfo, notify } = useContext(LayoutContext);
+    const { notify } = useContext(LayoutContext);
 
     const [mode, setMode] = useState(Mode.View)
     const [removing, setRemoving] = useState<boolean>(false)
@@ -63,7 +64,7 @@ const Category = (props: Props) => {
 
             const payload = schema.cast(data)
 
-            const url = `feed/${category.feed}/categories/${category.number}?token=${appUserInfo?.token}`
+            const url = tokenManager.attachToken(`feed/${category.feed}/categories/${category.number}`)
             const res = await httpCms.post(url, payload)
 
             const { categories } = res.data.feed
@@ -114,7 +115,7 @@ const Category = (props: Props) => {
                         </div>
                         <div className="flex-shrink-0 ml-5">
                             <svg className="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                                <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
                             </svg>
                         </div>
 

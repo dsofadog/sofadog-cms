@@ -1,207 +1,87 @@
-import React, { useState, createContext } from 'react';
-import Router from 'next/router';
+import React, { createContext, useEffect, useState } from 'react';
 
-import { store } from 'react-notifications-component';
+import _ from 'lodash'
 
-import Notification from 'component/common/Notification';
-import ProgressSpinner from 'component/common/ProgressSpinner';
-import CmsConstant from 'utils/cms-constant';
+// import CmsConstant from 'utils/cms-constant';
+import { useSelector } from 'react-redux';
+import { RootState } from 'rootReducer';
+import tokenManager from 'utils/token-manager';
+import { useRouter } from 'next/router';
 
-const LayoutContext = createContext(null);
+enum RouteType {
+  BackOffice = 'back_office',
+  Public = 'public'
+}
 
-function LayoutProvider({ children }) {
-  const actionbyRoles = CmsConstant.actionbyRoles;
-  const stateByRoleOnLoad = CmsConstant.stateByRoleOnLoad;
-  const [sideBarCollapsed, setCollapsed] = useState(false);
-  const [theme, setTheme] = useState('dark');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [successNotification, setSuccessNotification] = useState(false);
-  const [headerComponent, setHeaderComponent] = useState(null);
-  const [appUserInfo, setAppUserInfo] = useState(null);
-  const [notification, setNotification] = useState({ show: false, data: null });
-  const [appAction, setAppAction] = useState(actionbyRoles);
-  const [appState, setAppState] = useState(stateByRoleOnLoad);
-  const [currentUserAction, setCurrentUserAction] = useState([]);
-  const [currentUserState, setCurrentUserState] = useState([]);
-  const [userIsSuperAdmin, setUserIsSuperAdmin] = useState(0);
-  const [redirectUrl, setRedirectUrl] = useState('');
-  const [toggleAppView, setToggleAppView] = useState(false);
+const permissionsByRole = {
+  'journalist': ['new'],
+  'lead_journalist': ['new', 'awaiting_review_by_lead_journalist'],
+  'video_editor': ['awaiting_video_upload'],
+  'lead_video_editor': ['awaiting_video_upload', 'awaiting_review_by_lead_video_editor'],
+  'feed_manager': ['pushed_to_feed', 'ready_for_push', 'decrement_ordinal', 'increment_ordinal', 'removed_from_feed'],
+  'user_manager': [],
+  'super_admin': ['new', 'awaiting_review_by_lead_journalist', 'awaiting_video_upload', 'awaiting_review_by_lead_video_editor', 'ready_for_push', 'pushed_to_feed', 'decrement_ordinal', 'removed_from_feed']
+};
 
-  const currentUserPermission = (permission, user_type) => {
-    // console.log(permission, currentUserAction)
-    // console.log(currentUserAction);
-    let superAdmin = currentUserAction.includes('super_admin');
-    let classValue = '';
-    if (superAdmin) {
-      classValue = "hidden";
-      return true;
-    } else {
-      let info = currentUserAction.includes(permission);
-      //let info  = checkPermission(permission);
-      if (info) {
-        return true;
-      } else {
-        return false;
-      }
-    }
+const AccessControlContext = createContext(null);
 
+function AccessControlProvider({ children }) {
+
+  const router = useRouter()
+
+  const { isAuthenticated, currentUser, token } = useSelector((state: RootState) => state.auth)
+  const [routeType, setRouteType] = useState<RouteType>(null)
+  const [currentToken, setCurrentToken] = useState<string>(null)
+
+  useEffect(()=>{
+    setRouteType(router.pathname.startsWith('/cms')? RouteType.BackOffice : RouteType.Public)
+  }, [router.pathname])
+
+  useEffect(()=>{
+    tokenManager.setToken(token)
+    setCurrentToken(token)
+  }, [token])
+
+
+  // Route restrictions
+
+  if(routeType === RouteType.BackOffice && !isAuthenticated){
+    router.push('/')
   }
 
-  const checkPermission = (permission) => {
-    //  console.log(currentUserAction,"currentUserAction");
-    let status = false;
-    currentUserAction.forEach(function (value) {
-      //console.log(value,permission,"value");  
-      value.forEach(function (data) {
-        //  console.log(data,"data");  
-        if (data == permission) {
-          status = true;
-        }
-      });
-    });
-
-    return status;
-
+  if(routeType === RouteType.Public && isAuthenticated){
+    router.push('/cms')
   }
 
-  const setSessionStorage = (STATE_KEY, value) => {
-    value = JSON.stringify(value);
-    sessionStorage.setItem(STATE_KEY, value);
+  // Roles and permissions functions 
+
+  const hasRole = (role: string) => {
+    return !!currentUser.admin_roles.find(adminRole => adminRole.id === role)
   }
 
-  const getSessionStorage = (STATE_KEY) => {
-    sessionStorage.getItem(STATE_KEY);
-  }
+  const hasPermission = (permission: string) => {
+    let allowedPermissions = []
 
-  const currentUserRoleManagement = async (data) => {
-    await manageuser(data);
+    currentUser.admin_roles.forEach(adminRole=>{
+      allowedPermissions = allowedPermissions.concat(permissionsByRole[adminRole.id])
+    })
 
-  };
-
-  function manageuser(data) {
-    data?.user?.admin_roles.forEach(function (item) {
-      rolesAdded(item.id);
-      //stateAdded(item.id);     
-    });
-  }
-
-  const rolesAdded = (role) => {
-    if (role == "super_admin") {
-      setUserIsSuperAdmin(1);
-    }
-    for (const [key, value] of Object.entries(appAction)) {
-      // console.log(key, value,role);    
-      if (key == role) {
-        appAction[key].forEach(function (value) {
-          setCurrentUserAction(currentUserAction => [...currentUserAction, value]);
-
-        });
-
-      }
-    }
-  };
-
-  const logoutUserCheck = (redirectCallback = false) => {
-
-    if (appUserInfo == null) {
-      let user_info = sessionStorage.getItem("user_info");
-      user_info = JSON.parse(user_info);
-      if (user_info == null || user_info == '') {
-        setLoading(false);
-        clearAPPData();
-        Router.push('/');
-        return false;
-
-      } else {
-        setAppUserInfo(user_info);
-        currentUserRoleManagement(user_info);
-      }
-
-    }
-  }
-
-
-  const notify = (type: 'success' | 'danger', message: string) => {
-
-    store.addNotification({
-      title: type === 'success' ? 'Success!' : 'Error!',
-      message: message || (
-        type === 'success'
-          ? 'Operation succesfully completed.'
-          : 'Operation failed, Please contact support for assistance.'
-      ),
-      type,
-      insert: "top",
-      container: "bottom-right",
-      animationIn: ["animate__animated", "animate__bounceIn"],
-      animationOut: ["animate__animated", "animate__fadeOutDown"],
-      dismiss: {
-        duration: 10000,
-        onScreen: true,
-        pauseOnHover: true
-      },
-    });
-  }
-
-
-
-
-  const clearAPPData = () => {
-    setLoading(false);
-    setAppUserInfo(null);
-    setUserIsSuperAdmin(0);
-    setCurrentUserAction([]);
-    setCurrentUserState([]);
-    setSessionStorage('user_info', '');
+    allowedPermissions = _.uniq(allowedPermissions)
+    
+    return allowedPermissions.includes(permission)
   }
 
   const initialState = {
-    sideBarCollapsed,
-    setCollapsed,
-    theme,
-    setTheme,
-    loading,
-    setLoading,
-    error,
-    setError,
-    successNotification,
-    setSuccessNotification,
-    setHeaderComponent,
-    headerComponent,
-    setAppUserInfo,
-    appUserInfo,
-    setNotification,
-    currentUserAction,
-    setCurrentUserAction,
-    appAction,
-    setAppAction,
-    currentUserPermission,
-    appState,
-    setAppState,
-    currentUserState,
-    setCurrentUserState,
-    clearAPPData,
-    userIsSuperAdmin,
-    setUserIsSuperAdmin,
-    setSessionStorage,
-    getSessionStorage,
-    logoutUserCheck,
-    setRedirectUrl,
-    redirectUrl,
-    toggleAppView,
-    setToggleAppView,
-    notify
+    hasRole,
+    hasPermission,
   };
 
 
   return (
-    <LayoutContext.Provider value={initialState}>
-      <Notification data={notification} />
-      <ProgressSpinner show={loading} />
-      {children}
-    </LayoutContext.Provider>
+    <AccessControlContext.Provider value={initialState}>
+      {(routeType === RouteType.Public || (routeType === RouteType.BackOffice && isAuthenticated && currentToken)) && children}
+    </AccessControlContext.Provider>
   );
 }
 
-export { LayoutContext, LayoutProvider };
+export { AccessControlContext, AccessControlProvider };

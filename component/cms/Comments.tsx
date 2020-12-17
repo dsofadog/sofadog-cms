@@ -1,16 +1,9 @@
-import React, { useState, useContext, useEffect } from 'react';
-
-import { config as f_config, library } from '@fortawesome/fontawesome-svg-core';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { fas } from '@fortawesome/free-solid-svg-icons';
-import { fab } from '@fortawesome/free-brands-svg-icons';
+import React, { useState, useEffect } from 'react';
 
 import Comment, { CommentMode } from './Comment';
-import { LayoutContext } from 'contexts';
 import httpCms from 'utils/http-cms';
 
-f_config.autoAddCss = false;
-library.add(fas, fab);
+import tokenManager from 'utils/token-manager'
 
 type Props = {
     newsItem: any
@@ -20,10 +13,7 @@ const Comments = (props: Props) => {
 
     const { newsItem } = props
 
-
-    const { appUserInfo } = useContext(LayoutContext);
     const [comments, setComments] = useState([])
-
 
     useEffect(() => {
         setComments(newsItem.comments)
@@ -31,7 +21,7 @@ const Comments = (props: Props) => {
 
 
     const add = async function (text: string) {
-        const url = `/news_items/${newsItem.id}/comments?token=${appUserInfo?.token}`
+        const url = tokenManager.attachToken(`/news_items/${newsItem.id}/comments`)
         const payload = { text }
         const res = await httpCms.post(url, payload)
 
@@ -39,7 +29,7 @@ const Comments = (props: Props) => {
     }
 
     const edit = async function (text: string, commentId: string) {
-        const url = `/news_items/${newsItem.id}/comments/${commentId}?token=${appUserInfo?.token}`
+        const url = tokenManager.attachToken(`/news_items/${newsItem.id}/comments/${commentId}`)
         const payload = { text }
         const res = await httpCms.patch(url, payload)
 
@@ -47,7 +37,7 @@ const Comments = (props: Props) => {
     }
 
     const remove = async function (commentId: string) {
-        const url = `/news_items/${newsItem.id}/comments/${commentId}?token=${appUserInfo?.token}`
+        const url = tokenManager.attachToken(`/news_items/${newsItem.id}/comments/${commentId}`)
         const res = await httpCms.delete(url)
         
         setComments(res.data.comments)

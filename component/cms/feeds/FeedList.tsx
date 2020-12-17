@@ -5,6 +5,7 @@ import _ from 'lodash'
 import Loader from "component/common/Loader";
 import httpCms from "utils/http-cms";
 import { LayoutContext } from "contexts";
+import tokenManager from "utils/token-manager";
 
 type Props = {
     onFeedSelect: (feed: any) => void
@@ -14,21 +15,19 @@ const FeedList = (props: Props) => {
 
     const { onFeedSelect } = props
 
-    const { appUserInfo, notify } = useContext(LayoutContext);
+    const { notify } = useContext(LayoutContext);
     const [loading, setLoading] = useState<boolean>(false)
     const [feeds, setFeeds] = useState(null);
 
     useEffect(() => {
-        if (appUserInfo?.token) {
-            refresh();
-        }
-    }, [appUserInfo?.token]);
+        refresh();
+    }, []);
 
     async function refresh() {
         try {
             setLoading(true);
-            
-            let url = "feeds?token=" + appUserInfo?.token;
+
+            let url = tokenManager.attachToken(`feeds`)
             const res = await httpCms.get(url)
 
             setFeeds(_.sortBy(res.data.feeds, (feed) => {

@@ -13,6 +13,7 @@ import CategoryForm, {
 } from './CategoryForm';
 import httpCms from 'utils/http-cms';
 import { LayoutContext } from 'contexts';
+import tokenManager from 'utils/token-manager';
 
 
 const schema = yup.object().shape({
@@ -28,7 +29,7 @@ const CreateCategoryForm = (props: Props) => {
 
     const { onCreated, feed} = props
 
-    const { appUserInfo, notify } = useContext(LayoutContext);
+    const { notify } = useContext(LayoutContext);
     const { register, handleSubmit, errors, setValue, watch } = useForm<Inputs>({
         resolver: yupResolver(schema),
         defaultValues: defaultValues,
@@ -42,7 +43,7 @@ const CreateCategoryForm = (props: Props) => {
 
             setLoading(true);
             
-            const res = await httpCms.post(`feed/${feed.id}/categories?token=${appUserInfo?.token}`, payload)
+            const res = await httpCms.post(tokenManager.attachToken(`feed/${feed.id}/categories`), payload)
 
             notify('success')
             onCreated(res.data.feed)

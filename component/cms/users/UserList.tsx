@@ -1,10 +1,11 @@
 import { useState, useContext, useEffect } from "react";
 import httpCms from "utils/http-cms";
-import { LayoutContext } from "contexts";
 
 import _ from 'lodash'
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import Loader from "component/common/Loader";
+import { LayoutContext } from "contexts";
+import tokenManager from "utils/token-manager";
 
 type Props = {
     onUserSelect: (user: any) => void
@@ -14,22 +15,19 @@ const UserList = (props: Props) => {
 
     const { onUserSelect } = props
 
-    const { appUserInfo, notify } = useContext(LayoutContext);
+    const { notify } = useContext(LayoutContext);
     const [loading, setLoading] = useState<boolean>(false)
     const [users, setUsers] = useState(null);
 
     useEffect(() => {
-        //getUserData(users);
-        if (appUserInfo?.token) {
-            refresh();
-        }
-    }, [appUserInfo?.token]);
+        refresh();
+    }, []);
 
     async function refresh() {
         try {
             setLoading(true);
             
-            let url = "admin_users?token=" + appUserInfo?.token;
+            let url = tokenManager.attachToken(`admin_users`);
             const res = await httpCms.get(url)
 
             setUsers(_.sortBy(res.data.users, (user) => {

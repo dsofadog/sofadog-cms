@@ -5,25 +5,24 @@ import { useDropzone } from 'react-dropzone';
 import _ from 'lodash'
 import moment from 'moment'
 
-import { config as f_config, library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { fas } from '@fortawesome/free-solid-svg-icons';
-import { fab } from '@fortawesome/free-brands-svg-icons';
 
-import { LayoutContext } from 'contexts';
+import { AccessControlContext } from 'contexts';
 import CmsConstant from 'utils/cms-constant';
 import HttpCms from 'utils/http-cms';
 import CreateItem from "./CreateItem";
 import PreviewClip from "./PreviewClip";
 import Comments from "./Comments";
 import Loader from "component/common/Loader";
+import { useSelector } from "react-redux";
+import { RootState } from "rootReducer";
 
-f_config.autoAddCss = false;
-library.add(fas, fab);
+
 //const categories = CmsConstant.Category;
 
 const PreviewItem = (props) => {
-    const { setLoading, appUserInfo, userIsSuperAdmin, currentUserPermission } = useContext(LayoutContext);
+    const {currentUser} = useSelector((state: RootState)=>state.auth)
+    const { hasPermission, hasRole } = useContext(AccessControlContext);
     const [item, setItem] = useState(null);
     const [sentences, setSentences] = useState(null);
     const [creditsData, setCreditsData] = useState(null);
@@ -65,12 +64,13 @@ const PreviewItem = (props) => {
     }, []);
 
     async function refreshData(slowReload) {
+        
         setVideo(null)
         await props.getSigleItem(item.id);
         setLoadingThumbnails(true)
-        setTimeout(()=>{
+        setTimeout(() => {
             setLoadingThumbnails(false)
-        }, slowReload? 5000: 1000)
+        }, slowReload ? 5000 : 1000)
 
 
         // setLoading(true);
@@ -144,7 +144,7 @@ const PreviewItem = (props) => {
         e.preventDefault();
 
         const confirmation = confirm('Are you sure? This action cannot be undone.')
-        if(confirmation){
+        if (confirmation) {
             props.deleteItem(item)
         }
     }
@@ -162,14 +162,14 @@ const PreviewItem = (props) => {
 
     function renderPreviewButton() {
 
-        const canView = currentUserPermission('lead_journalist', "") ||
-            currentUserPermission('video_editor', "") ||
-            currentUserPermission('lead_video_editor', "") ||
-            currentUserPermission('super_admin', "")
+        const canView = hasRole('lead_journalist') ||
+            hasRole('video_editor') ||
+            hasRole('lead_video_editor') ||
+            hasRole('super_admin')
 
         return (canView ? (<button type="button" onClick={(e) => actionPerformed(item, "Preview Clips", e)} className="w-max-content mx-auto px-2 py-0.5 my-1 text-xs leading-5 font-semibold rounded border border-blue-800 bg-blue-100 hover:bg-blue-200 text-blue-800">
-                Preview Clips
-            </button>) : null)
+            Preview Clips
+        </button>) : null)
     }
 
     function actionRender(item) {
@@ -179,23 +179,19 @@ const PreviewItem = (props) => {
             case "new": {
                 return (
                     <div className="grid">
-                        {item?.owners?.new && item?.owners?.new == appUserInfo?.user?.email && (
+                        {item?.owners?.new && item?.owners?.new == currentUser.email && (
                             <p className="text-xs">Claimed by: {item?.owners?.new}</p>
                         )
                         }
 
-                        <button onClick={(e) => actionPerformed(item, "claim", e)} className={`${currentUserPermission('new', "kkkk") && !item?.owners?.new ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
+                        <button onClick={(e) => actionPerformed(item, "claim", e)} className={`${hasPermission('new') && !item?.owners?.new ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
                             Claim
                         </button>
-                        <button onClick={(e) => actionPerformed(item, "unclaim", e)} className={`${currentUserPermission('new', "kkkk") && item?.owners?.new ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
+                        <button onClick={(e) => actionPerformed(item, "unclaim", e)} className={`${hasPermission('new') && item?.owners?.new ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
                             Unclaim
                         </button>
-                        {/* {
-                       JSON.stringify(item?.owners?.new) 
-                       
-                    }  sadasdsada    {appUserInfo.user?.email}      */}
 
-                        <button onClick={(e) => actionPerformed(item, "submit", e)} className={`${currentUserPermission('new', "kkkk") && (item?.owners?.new && item?.owners?.new == appUserInfo?.user?.email) ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
+                        <button onClick={(e) => actionPerformed(item, "submit", e)} className={`${hasPermission('new') && (item?.owners?.new && item?.owners?.new == currentUser.email) ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
                             Submit
                         </button>
                     </div>
@@ -207,18 +203,18 @@ const PreviewItem = (props) => {
                 return (
 
                     <div className="grid">
-                        {item?.owners?.awaiting_review_by_lead_journalist && item?.owners?.awaiting_review_by_lead_journalist == appUserInfo?.user?.email && (
+                        {item?.owners?.awaiting_review_by_lead_journalist && item?.owners?.awaiting_review_by_lead_journalist == currentUser.email && (
                             <p className="text-xs">Claimed by: {item?.owners?.awaiting_review_by_lead_journalist}</p>
                         )
                         }
 
-                        <button onClick={(e) => actionPerformed(item, "claim", e)} className={`${currentUserPermission('awaiting_review_by_lead_journalist', "") && !item?.owners?.awaiting_review_by_lead_journalist ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
+                        <button onClick={(e) => actionPerformed(item, "claim", e)} className={`${hasPermission('awaiting_review_by_lead_journalist') && !item?.owners?.awaiting_review_by_lead_journalist ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
                             Claim
                         </button>
-                        <button onClick={(e) => actionPerformed(item, "unclaim", e)} className={`${currentUserPermission('awaiting_review_by_lead_journalist', "") && item?.owners?.awaiting_review_by_lead_journalist ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
+                        <button onClick={(e) => actionPerformed(item, "unclaim", e)} className={`${hasPermission('awaiting_review_by_lead_journalist') && item?.owners?.awaiting_review_by_lead_journalist ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
                             Unclaim
                         </button>
-                        <div className={`${currentUserPermission('awaiting_review_by_lead_journalist', "") && (item?.owners?.awaiting_review_by_lead_journalist && item?.owners?.awaiting_review_by_lead_journalist == appUserInfo?.user?.email) ? 'flex space-x-2 items-center justify-center' : 'hidden'}`}>
+                        <div className={`${hasPermission('awaiting_review_by_lead_journalist') && (item?.owners?.awaiting_review_by_lead_journalist && item?.owners?.awaiting_review_by_lead_journalist == currentUser.email) ? 'flex space-x-2 items-center justify-center' : 'hidden'}`}>
                             <svg onClick={(e) => actionPerformed(item, "lead_journalist_approve", e)} className="h-8 w-8 text-green-400 hover:text-green-600 cursor-pointer" x-description="Heroicon name: check-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path>
                             </svg>
@@ -232,17 +228,17 @@ const PreviewItem = (props) => {
             case "awaiting_video_upload": {
                 return (
                     <div className="grid w-full">
-                        {item?.owners?.awaiting_video_upload && item?.owners?.awaiting_video_upload == appUserInfo?.user?.email && (
+                        {item?.owners?.awaiting_video_upload && item?.owners?.awaiting_video_upload == currentUser.email && (
                             <p className="text-xs text-center">Claimed by: {item?.owners?.awaiting_video_upload}</p>
                         )
                         }
-                        <button onClick={(e) => actionPerformed(item, "claim", e)} className={`${currentUserPermission('awaiting_video_upload', "") && !item?.owners?.awaiting_video_upload ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
+                        <button onClick={(e) => actionPerformed(item, "claim", e)} className={`${hasPermission('awaiting_video_upload') && !item?.owners?.awaiting_video_upload ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
                             Claim
                         </button>
-                        <button onClick={(e) => actionPerformed(item, "unclaim", e)} className={`${currentUserPermission('awaiting_video_upload', "") && item?.owners?.awaiting_video_upload ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
+                        <button onClick={(e) => actionPerformed(item, "unclaim", e)} className={`${hasPermission('awaiting_video_upload') && item?.owners?.awaiting_video_upload ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
                             Unclaim
                         </button>
-                        <div className={`${currentUserPermission('awaiting_video_upload', "kkkk") && (item?.owners?.awaiting_video_upload && item?.owners?.awaiting_video_upload == appUserInfo?.user?.email) ? 'w-full block text-center justify-center items-center' : 'hidden'}`}>
+                        <div className={`${hasPermission('awaiting_video_upload') && (item?.owners?.awaiting_video_upload && item?.owners?.awaiting_video_upload == currentUser.email) ? 'w-full block text-center justify-center items-center' : 'hidden'}`}>
                             {video != null ? (
                                 <>
                                     <div className="flex justify-center items-center">
@@ -261,7 +257,7 @@ const PreviewItem = (props) => {
                             ) : (
                                     <>
 
-                                        <div className={`${!currentUserPermission('awaiting_video_upload') ? 'hidden' : 'w-full p-2'}`}>
+                                        <div className={`${!hasPermission('awaiting_video_upload') ? 'hidden' : 'w-full p-2'}`}>
                                             <div {...getRootProps()} className="w-full flex justify-center px-6 pt-5 pb-6 border-2 border-gray-100 border-dashed rounded-md">
                                                 <input {...getInputProps()} />
                                                 <div className="cursor-pointer text-center">
@@ -301,23 +297,23 @@ const PreviewItem = (props) => {
             case "awaiting_review_by_lead_video_editor": {
                 return (
                     <div className="grid">
-                        {item?.owners?.awaiting_review_by_lead_video_editor && item?.owners?.awaiting_review_by_lead_video_editor == appUserInfo?.user?.email && (
+                        {item?.owners?.awaiting_review_by_lead_video_editor && item?.owners?.awaiting_review_by_lead_video_editor == currentUser.email && (
                             <p className="text-xs">Claimed by: {item?.owners?.awaiting_review_by_lead_video_editor}</p>
                         )
                         }
                         <a href={'https://cdn.so.fa.dog/sources/' + item.id} className={`w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer'`} >
                             Download
                         </a>
-                        <button onClick={(e) => actionPerformed(item, "claim", e)} className={`${currentUserPermission('awaiting_review_by_lead_video_editor', "") && !item?.owners?.awaiting_review_by_lead_video_editor ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
+                        <button onClick={(e) => actionPerformed(item, "claim", e)} className={`${hasPermission('awaiting_review_by_lead_video_editor') && !item?.owners?.awaiting_review_by_lead_video_editor ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
                             Claim
                         </button>
-                        <button onClick={(e) => actionPerformed(item, "unclaim", e)} className={`${currentUserPermission('awaiting_review_by_lead_video_editor', "") && item?.owners?.awaiting_review_by_lead_video_editor ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
+                        <button onClick={(e) => actionPerformed(item, "unclaim", e)} className={`${hasPermission('awaiting_review_by_lead_video_editor') && item?.owners?.awaiting_review_by_lead_video_editor ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
                             Unclaim
                         </button>
                         {renderPreviewButton()}
-                        <div className={`${currentUserPermission('awaiting_review_by_lead_video_editor', "") && (item?.owners?.awaiting_review_by_lead_video_editor && item?.owners?.awaiting_review_by_lead_video_editor == appUserInfo?.user?.email) ? 'flex space-x-2 items-center justify-center' : 'hidden'}`}>
+                        <div className={`${hasPermission('awaiting_review_by_lead_video_editor') && (item?.owners?.awaiting_review_by_lead_video_editor && item?.owners?.awaiting_review_by_lead_video_editor == currentUser.email) ? 'flex space-x-2 items-center justify-center' : 'hidden'}`}>
 
-                            
+
 
                             <svg onClick={(e) => actionPerformed(item, "lead_video_editor_approve", e)} className="h-8 w-8 text-green-400 hover:text-green-600 cursor-pointer" x-description="Heroicon name: check-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path>
@@ -332,24 +328,24 @@ const PreviewItem = (props) => {
             case "ready_for_push": {
                 return (
                     <div className="grid">
-                        {item?.owners?.ready_for_push && item?.owners?.ready_for_push == appUserInfo?.user?.email && (
+                        {item?.owners?.ready_for_push && item?.owners?.ready_for_push == currentUser.email && (
                             <p className="text-xs">Claimed by: {item?.owners?.ready_for_push}</p>
                         )
                         }
 
-                        <button onClick={(e) => actionPerformed(item, "claim", e)} className={`${currentUserPermission('ready_for_push', "") && !item?.owners?.ready_for_push ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
+                        <button onClick={(e) => actionPerformed(item, "claim", e)} className={`${hasPermission('ready_for_push') && !item?.owners?.ready_for_push ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
                             Claim
                         </button>
-                        <button onClick={(e) => actionPerformed(item, "unclaim", e)} className={`${currentUserPermission('ready_for_push', "") && item?.owners?.ready_for_push ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
+                        <button onClick={(e) => actionPerformed(item, "unclaim", e)} className={`${hasPermission('ready_for_push') && item?.owners?.ready_for_push ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
                             Unclaim
                         </button>
                         {renderPreviewButton()}
                         <div className="w-full flex justify-center">
-                            
+
                             <a href={'https://cdn.so.fa.dog/sources/' + item.id} className={`w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer'`} >
                                 Download
                             </a>
-                            <span onClick={(e) => actionPerformed(item, "push_to_feed", e)} className={`${currentUserPermission('ready_for_push', "") && (item?.owners?.ready_for_push && item?.owners?.ready_for_push == appUserInfo?.user?.email) ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-green-800 bg-green-100 hover:bg-green-200 text-green-800 cursor-pointer' : 'hidden'}`}>
+                            <span onClick={(e) => actionPerformed(item, "push_to_feed", e)} className={`${hasPermission('ready_for_push') && (item?.owners?.ready_for_push && item?.owners?.ready_for_push == currentUser.email) ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-green-800 bg-green-100 hover:bg-green-200 text-green-800 cursor-pointer' : 'hidden'}`}>
                                 Push To Feed
                             </span>
                         </div>
@@ -360,16 +356,16 @@ const PreviewItem = (props) => {
             case "pushed_to_feed": {
                 return (
                     <div className="grid">
-                        {item?.owners?.pushed_to_feed && item?.owners?.pushed_to_feed == appUserInfo?.user?.email && (
+                        {item?.owners?.pushed_to_feed && item?.owners?.pushed_to_feed == currentUser.email && (
                             <>
                                 <p className="text-xs">Claimed by: {item?.owners?.pushed_to_feed}</p>
                             </>
                         )
                         }
-                        <button onClick={(e) => actionPerformed(item, "claim", e)} className={`${currentUserPermission('pushed_to_feed', "") && !item?.owners?.pushed_to_feed ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
+                        <button onClick={(e) => actionPerformed(item, "claim", e)} className={`${hasPermission('pushed_to_feed') && !item?.owners?.pushed_to_feed ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
                             Claim
                         </button>
-                        <button onClick={(e) => actionPerformed(item, "unclaim", e)} className={`${currentUserPermission('pushed_to_feed', "") && item?.owners?.pushed_to_feed ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
+                        <button onClick={(e) => actionPerformed(item, "unclaim", e)} className={`${hasPermission('pushed_to_feed') && item?.owners?.pushed_to_feed ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
                             Unclaim
                         </button>
                         {renderPreviewButton()}
@@ -378,7 +374,7 @@ const PreviewItem = (props) => {
                             <a href={'https://cdn.so.fa.dog/sources/' + item.id} className={`w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer'`} >
                                 Download
                             </a>
-                            <span onClick={(e) => actionPerformed(item, "remove_from_feed", e)} className={`${currentUserPermission('pushed_to_feed', "") && (item?.owners?.pushed_to_feed && item?.owners?.pushed_to_feed == appUserInfo?.user?.email) ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-red-800 bg-red-100 hover:bg-red-200 text-red-800 cursor-pointeren' : 'hidden'}`}>
+                            <span onClick={(e) => actionPerformed(item, "remove_from_feed", e)} className={`${hasPermission('pushed_to_feed') && (item?.owners?.pushed_to_feed && item?.owners?.pushed_to_feed == currentUser.email) ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-red-800 bg-red-100 hover:bg-red-200 text-red-800 cursor-pointeren' : 'hidden'}`}>
                                 Remove From Feed
                             </span>
                         </div>
@@ -388,27 +384,27 @@ const PreviewItem = (props) => {
             case "removed_from_feed": {
                 return (
                     <div className="grid">
-                        {item?.owners?.removed_from_feed && item?.owners?.removed_from_feed == appUserInfo?.user?.email && (
+                        {item?.owners?.removed_from_feed && item?.owners?.removed_from_feed == currentUser.email && (
                             <>
                                 <p className="text-xs">Claimed by: {item?.owners?.removed_from_feed}</p>
                             </>
                         )
                         }
-                        <button onClick={(e) => actionPerformed(item, "claim", e)} className={`${currentUserPermission('removed_from_feed', "") && !item?.owners?.removed_from_feed ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
+                        <button onClick={(e) => actionPerformed(item, "claim", e)} className={`${hasPermission('removed_from_feed') && !item?.owners?.removed_from_feed ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
                             Claim
                         </button>
-                        <button onClick={(e) => actionPerformed(item, "unclaim", e)} className={`${currentUserPermission('removed_from_feed', "") && item?.owners?.removed_from_feed ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
+                        <button onClick={(e) => actionPerformed(item, "unclaim", e)} className={`${hasPermission('removed_from_feed') && item?.owners?.removed_from_feed ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer' : 'hidden'}`} >
                             Unclaim
                         </button>
 
                         {renderPreviewButton()}
 
                         <div className="w-full flex justify-center">
-                            
+
                             <a href={'https://cdn.so.fa.dog/sources/' + item.id} className={`w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-indigo-800 bg-indigo-300 hover:bg-indigo-200 text-indigo-900 cursor-pointer'`} >
                                 Download
                             </a>
-                            <span onClick={(e) => actionPerformed(item, "push_to_feed", e)} className={`${currentUserPermission('removed_from_feed', "") && (item?.owners?.removed_from_feed && item?.owners?.removed_from_feed == appUserInfo?.user?.email) ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-green-800 bg-green-100 hover:bg-green-200 text-green-800 cursor-pointer' : 'hidden'}`}>
+                            <span onClick={(e) => actionPerformed(item, "push_to_feed", e)} className={`${hasPermission('removed_from_feed') && (item?.owners?.removed_from_feed && item?.owners?.removed_from_feed == currentUser.email) ? 'w-max-content mx-auto px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-green-800 bg-green-100 hover:bg-green-200 text-green-800 cursor-pointer' : 'hidden'}`}>
                                 Push To Feed
                             </span>
                         </div>
@@ -502,7 +498,7 @@ const PreviewItem = (props) => {
                                             <div className="mb-4">
                                                 <h2 className="text-base text-gray-800 font-medium mr-auto">
                                                     <Link href={`/cms?id=${item.id}`}>
-                                                        {item?.title}
+                                                        <a>{item?.title}</a>
                                                     </Link>
                                                 </h2>
                                                 <small className="text-gray-400">{`Created date: ${moment.unix(item.created_at).format('lll')}`}{item.due_date ? ` | Due date: ${moment(item.due_date).format('lll')}` : ''} {item.enqueued_at ? ` | Enqueued date: ${moment(item.enqueued_at).format('lll')}` : ''}</small>
@@ -533,7 +529,7 @@ const PreviewItem = (props) => {
                                                                 {sentences?.sentences.map((sentence, i) => (
                                                                     <div key={i} className="flex items-center space-x-3 pl-3 mb-2">
                                                                         <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-indigo-500"></div>
-                                                                        <div className={(!isExpand? '': 'truncate') +' hover:text-gray-600 text-base'}>
+                                                                        <div className={(!isExpand ? '' : 'truncate') + ' hover:text-gray-600 text-base'}>
                                                                             <span>{sentence}</span>
                                                                         </div>
                                                                     </div>
@@ -629,19 +625,19 @@ const PreviewItem = (props) => {
                                                 </div>
                                             </div>
                                             <div className="h-auto w-full flex items-start justify-center">
-                                                {item?.state != "awaiting_video_upload" && item?.state != "transcoding"?
+                                                {item?.state != "awaiting_video_upload" && item?.state != "transcoding" ?
                                                     <>
                                                         {item.thumbnails.length > 0 && (
-                                                             <Loader active={loadingThumbnails} message=''>
-                                                                <img 
-                                                                className={`${isExpand ? 'w-1/2' : 'w-full'} h-auto mx-auto shadow-2xl`}
-                                                                src={item.thumbnails[0].url} 
-                                                                alt="" />
-                                                             </Loader>
-                                                            
+                                                            <Loader active={loadingThumbnails} message=''>
+                                                                <img
+                                                                    className={`${isExpand ? 'w-1/2' : 'w-full'} h-auto mx-auto shadow-2xl`}
+                                                                    src={item.thumbnails[0].url}
+                                                                    alt="" />
+                                                            </Loader>
+
                                                         )}
                                                         {
-                                                           
+
                                                         }
                                                     </>
                                                     : null
@@ -652,9 +648,9 @@ const PreviewItem = (props) => {
                                                 <span onClick={() => refreshData(item.state === 'transcoding')} className="px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-green-800 bg-green-100 hover:bg-green-200 text-green-800 cursor-pointer">
                                                     Refresh
                                                 </span>
-                                                </div>
+                                            </div>
                                             <div className="w-full flex justify-center mt-4 mb-8">
-                                                
+
                                                 {actionRender(item)}
                                             </div>
                                         </div>

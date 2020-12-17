@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, useRef, useCallback } from 'react';
-import Link from "next/link";
-import Router, { useRouter } from 'next/router';
+import { useRouter } from 'next/router';
+import NProgress from "nprogress";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -12,11 +12,11 @@ import _ from 'lodash'
 import CreateItem from 'component/cms/CreateItem';
 import PreviewItem from 'component/cms/PreviewItem';
 import PreviewItemTable from 'component/cms/PreviewItemTable';
-import { LayoutContext } from 'contexts/';
 import CmsConstant from 'utils/cms-constant';
 import HttpCms from 'utils/http-cms';
 import NewsItemsHeader from 'component/cms/NewsItemsHeader';
 import NavHeader from 'component/common/NavHeader';
+import tokenManager from 'utils/token-manager';
 
 type Params = {
     token: string;
@@ -43,13 +43,7 @@ const Demo = () => {
 
     const router = useRouter();
 
-    const {
-        setLoading,
-        appUserInfo,
-        toggleAppView,
-        setToggleAppView,
-    } = useContext(LayoutContext);
-
+    const [toggleAppView, setToggleAppView] = useState(false)
     const [paginationData, setPaginationData] = useState(
         {
             limit: 200,
@@ -66,7 +60,7 @@ const Demo = () => {
 
     const [scrollLoading, setScrollLoading] = useState(false);
     const [params, setParams] = useState<Params>({
-        token: appUserInfo?.token,
+        token: tokenManager.getToken(),
         limit: defaultPagination.limit,
         date: moment.utc().format("YYYY-MM-DD"),
         tags: '',
@@ -82,7 +76,7 @@ const Demo = () => {
             console.log('in onLoadMore')
             setParams({
                 ...params,
-                token: appUserInfo?.token,
+                token: tokenManager.getToken(),
                 date: (params.token ? moment.utc(params.date).subtract(1, 'day') : moment.utc(params.date)).format('YYYY-MM-DD')
             })
         },
@@ -92,8 +86,6 @@ const Demo = () => {
 
     useEffect(() => {
         console.log('router.query', router.query)
-        // console.log(currentUserState, currentUserAction);
-        // logoutUserCheck();
         // fetchItems();
         getFeeds();
         // console.log(momentTimezone())
@@ -170,7 +162,7 @@ const Demo = () => {
 
         let url = returnUrlForNewItems(params);
         // setLoading(true);
-        HttpCms.get(`/news_items/${searchId}?token=${appUserInfo?.token}`)
+        HttpCms.get(tokenManager.attachToken(`/news_items/${searchId}`))
             .then(response => {
                 setNewsItems(response?.data);
                 // setLoading(false);
@@ -183,8 +175,8 @@ const Demo = () => {
 
 
     function deleteItem(item) {
-        setLoading(true);
-        HttpCms.delete("/news_items/" + item.id + "?token=" + appUserInfo?.token)
+        NProgress.start()
+        HttpCms.delete(tokenManager.attachToken(`/news_items/${item.id}`))
             .then((response: any) => {
 
                 if (response.data.success == true) {
@@ -196,7 +188,7 @@ const Demo = () => {
                 console.log(e);
             })
             .finally(() => {
-                setLoading(false);
+                NProgress.done()
             });
     }
 
@@ -229,9 +221,13 @@ const Demo = () => {
             case "overide_index":
                 console.log(newsItems.news_items);
                 console.log(itemValue);
-                old_index = newsItems.news_items.findIndex(item => item.id == itemValue.id);
-                newsItems.news_items[old_index] = itemValue;
-                setNewsItems(newsItems);
+                const clonedNewsItems = [...newsItems.news_items]
+                old_index = clonedNewsItems.findIndex(item => item.id == itemValue.id);
+
+                clonedNewsItems[old_index] = itemValue
+                // newsItems.news_items[old_index] = itemValue;
+                const clonedNewsItemsWrapper = {...newsItems, news_items: clonedNewsItems}
+                setNewsItems(clonedNewsItemsWrapper);
                 break;
             default:
             // code block
@@ -257,8 +253,8 @@ const Demo = () => {
     }
 
     function processedData(data, apiCallEndPoint) {
-        setLoading(true);
-        HttpCms.post("/news_items/" + data.id + "/" + apiCallEndPoint + "?token=" + appUserInfo?.token, {})
+        NProgress.start()
+        HttpCms.post(tokenManager.attachToken(`/news_items/${data.id}/${apiCallEndPoint}`), {})
             .then((response) => {
                 //fetchItems();
                 //  const event = new Event('build');
@@ -270,13 +266,13 @@ const Demo = () => {
                 console.log(e);
             })
             .finally(() => {
-                setLoading(false);
+                NProgress.done()
             });
 
     }
 
     function uplaodVideo(item, apiEndPoint, video) {
-        setLoading(true);
+        NProgress.start()
         const formData = new FormData();
         formData.append("source_file", video.video_file);
         const config = {
@@ -286,7 +282,7 @@ const Demo = () => {
             }
         };
 
-        HttpCms.post("/news_items/" + item.id + "/" + apiEndPoint + "?token=" + appUserInfo?.token, formData, config)
+        HttpCms.post(tokenManager.attachToken(`/news_items/${item.id}/${apiEndPoint}`), formData, config)
             .then((response) => {
 
                 let index = newsItems.news_items.findIndex(x => x.id === item.id);
@@ -299,13 +295,13 @@ const Demo = () => {
                 console.log(e);
             })
             .finally(() => {
-                setLoading(false);
+                NProgress.done()
             });
     }
 
     function decrement_increment_ordinal(item, apiEndPoint) {
-        setLoading(true);
-        HttpCms.post("/news_items/" + item.id + "/" + apiEndPoint + "?token=" + appUserInfo?.token, {})
+        NProgress.start()
+        HttpCms.post(tokenManager.attachToken(`/news_items/${item.id}/${apiEndPoint}`), {})
             .then((response: any) => {
 
                 if (response.data.success == true) {
@@ -317,14 +313,14 @@ const Demo = () => {
                 console.log(e);
             })
             .finally(() => {
-                setLoading(false);
+                NProgress.done()
             });
     }
 
     function createNewItem(newItem) {
 
-        setLoading(true);
-        HttpCms.post("/news_items?token=" + appUserInfo?.token, newItem)
+        NProgress.start()
+        HttpCms.post(tokenManager.attachToken(`/news_items`), newItem)
             .then((response) => {
                 //console.log("add item: ",response.data);
                 const item = { ...newsItems };
@@ -337,13 +333,13 @@ const Demo = () => {
                 console.log(e);
             })
             .finally(() => {
-                setLoading(false);
+                NProgress.done()
             });
     }
 
     function updateItem(id, item, index) {
-        setLoading(true);
-        HttpCms.patch("/news_items/" + id + "?token=" + appUserInfo?.token, item)
+        NProgress.start()
+        HttpCms.patch(tokenManager.attachToken(`/news_items/${id}`), item)
             .then((response) => {
 
                 if (response.status === 200) {
@@ -351,13 +347,12 @@ const Demo = () => {
                     item.news_items[index] = response.data.news_item;
                     setNewsItems(item);
                 }
-                fetchItems();
             })
             .catch((e) => {
                 console.log(e);
             })
             .finally(() => {
-                setLoading(false);
+                NProgress.done()
             });
     }
 
@@ -372,7 +367,7 @@ const Demo = () => {
     function getFeeds() {
 
         //setLoading(true);
-        HttpCms.get("/feeds?token=" + appUserInfo?.token)
+        HttpCms.get(tokenManager.attachToken(`/feeds`))
             .then((response) => {
                 console.log("response: ", response.data);
                 setFeeds(response.data.feeds)
@@ -390,8 +385,9 @@ const Demo = () => {
 
     async function singleItem(item_id) {
         try{
+            NProgress.start()
             // setLoading(true);
-            const res = await HttpCms.get(`/news_items/${item_id}?token=${appUserInfo?.token}`)
+            const res = await HttpCms.get(tokenManager.attachToken(`/news_items/${item_id}`))
             console.log("response.data.news_item: ", res.data.news_items)
             let index = newsItems.news_items.findIndex(x => x.id === item_id);
             const n = { ...newsItems }
@@ -404,6 +400,7 @@ const Demo = () => {
             console.log(err)
         }finally {
             // setLoading(false);
+            NProgress.done()
         }
        
     }

@@ -4,10 +4,8 @@ import moment from 'moment'
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
-import { LayoutContext } from 'contexts';
-
 import Filter from "./Filter"
-
+import tokenManager from "utils/token-manager";
 
 type Props = {
     params: any;
@@ -23,7 +21,6 @@ const NewsItemsHeader = (props: Props) => {
 
     const { params, feeds, onSubmitParams, onRefresh, onNewClicked, viewMode, onViewModeChange } = props
 
-    const { appUserInfo } = useContext(LayoutContext);
 
     const [search, setSearch] = useState("");
     const [searchSubmitted, setSearchSubmitted] = useState(false)
@@ -38,7 +35,7 @@ const NewsItemsHeader = (props: Props) => {
         if (filter !== null) {
             onSubmitParams({
                 ...params,
-                token: appUserInfo?.token,
+                token: tokenManager.getToken(),
                 date: moment.utc().format("YYYY-MM-DD"),
                 tags: filter.tags.join(),
                 category: filter.category,

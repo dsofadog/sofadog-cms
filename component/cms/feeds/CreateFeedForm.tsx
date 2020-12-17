@@ -13,6 +13,7 @@ import FeedForm, {
 } from './FeedForm';
 import httpCms from 'utils/http-cms';
 import { LayoutContext } from 'contexts';
+import tokenManager from 'utils/token-manager';
 
 
 const schema = yup.object().shape({
@@ -27,7 +28,7 @@ const CreateFeedForm = (props: Props) => {
 
     const { callback } = props
 
-    const { appUserInfo, notify } = useContext(LayoutContext);
+    const { notify } = useContext(LayoutContext);
     const { register, handleSubmit, errors } = useForm<FeedInputs>({
         resolver: yupResolver(schema),
         defaultValues: feedDefaultValues,
@@ -41,7 +42,7 @@ const CreateFeedForm = (props: Props) => {
 
             setLoading(true);
             
-            await httpCms.post("feeds?token=" + appUserInfo?.token, payload)
+            await httpCms.post(tokenManager.attachToken(`feeds`), payload)
 
             notify('success')
             callback(true)

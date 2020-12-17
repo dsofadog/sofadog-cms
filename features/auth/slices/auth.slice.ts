@@ -1,6 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { login as loginAPI, LoginResponsePayload, User } from 'features/auth/api/login.api'
+import { toggleShift as toggleShiftAPI, ToggleShiftResponsePayload } from 'features/auth/api/toggle-shift.api'
 import { AppThunk } from 'store'
+import tokenManager from 'utils/token-manager'
 
 interface AuthState {
     isAuthenticated: boolean;
@@ -43,11 +45,24 @@ const auth = createSlice({
             ].includes(action.payload) ? 'Wrong credentials' : 'Something went wrong'
         },
         logout(state: AuthState) {
-            state.isLoading = false
+            state.isAuthenticated = false
             state.currentUser = null
             state.token = ''
             state.isLoading = false
             state.error = null
+        },
+        toggleShiftStart(state: AuthState) {
+            state.isLoading = true
+        },
+        toggleShiftSuccess(state: AuthState, action: PayloadAction<ToggleShiftResponsePayload>) {
+            state.currentUser = action.payload.user
+            state.isLoading = false
+            state.error = null
+        },
+        toggleShiftFailed(state: AuthState) {
+            state.currentUser = state.currentUser
+            state.isLoading = false
+            state.error = 'Something went wrong'
         }
     }
 })
@@ -56,7 +71,10 @@ export const {
     loginStart,
     loginSuccess,
     loginFailed,
-    logout
+    logout,
+    toggleShiftStart,
+    toggleShiftSuccess,
+    toggleShiftFailed
 } = auth.actions
 
 export default auth.reducer
@@ -64,11 +82,32 @@ export default auth.reducer
 export const login = (email: string, password: string): AppThunk => async dispatch => {
     try {
         dispatch(loginStart())
-        const res = await loginAPI(email, password)
-        dispatch(loginSuccess(res))
+        let loginRes = await loginAPI(email, password)
+
+        tokenManager.setToken(loginRes.token)
+
+        if(!loginRes.user.on_shift){
+            const toggleShiftRes = await toggleShiftAPI(email)
+            loginRes.user.on_shift = toggleShiftRes.user.on_shift
+        }
+
+        dispatch(loginSuccess(loginRes))
 
     } catch (err) {
-        console.log(err)
         dispatch(loginFailed(err.response.data.error_message))
+    }
+}
+
+export const toggleShift = (email: string): AppThunk => async dispatch => {
+    try {
+
+        dispatch(toggleShiftStart())
+
+        const toggleShiftRes = await toggleShiftAPI(email)
+
+        dispatch(toggleShiftSuccess(toggleShiftRes))
+
+    } catch (err) {
+        dispatch(toggleShiftFailed())
     }
 }

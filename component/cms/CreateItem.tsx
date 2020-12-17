@@ -1,22 +1,15 @@
 import { useEffect, useState, useContext, useRef } from "react";
 
 import moment from 'moment'
-
-import { config as f_config, library } from '@fortawesome/fontawesome-svg-core';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { fas } from '@fortawesome/free-solid-svg-icons';
-import { fab } from '@fortawesome/free-brands-svg-icons';
-import { far } from '@fortawesome/free-regular-svg-icons';
-
-import { LayoutContext } from 'contexts';
-import CmsConstant from 'utils/cms-constant';
-import HttpCms from 'utils/http-cms';
-import DescriptionInputs from './DescriptionInputs';
-
 import DayPickerInput from 'react-day-picker/DayPickerInput'
 
-f_config.autoAddCss = false;
-library.add(fas, fab, far);
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
+
+import CmsConstant from 'utils/cms-constant';
+import HttpCms from 'utils/http-cms';
+
+import tokenManager from "utils/token-manager";
 
 const CreateItem = (props) => {
 
@@ -31,7 +24,6 @@ const CreateItem = (props) => {
 
     const [openCategoryDropdown, setOpenCategoryDropdown] = useState(false);
     const toggleCateDropdown = () => { setOpenCategoryDropdown(!openCategoryDropdown) };
-    const { setLoading, appUserInfo, currentUserPermission } = useContext(LayoutContext);
     const [item, setItem] = useState(null);
     const [selectedTag, setSelectedTag] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState(null);
@@ -531,7 +523,7 @@ const CreateItem = (props) => {
     function getFeeds() {
 
         //setLoading(true);
-        HttpCms.get("/feeds?token=" + appUserInfo?.token)
+        HttpCms.get(tokenManager.attachToken('/feeds'))
             .then((response) => {
                 console.log("response: ", response.data);
                 setFeeds(response.data.feeds)

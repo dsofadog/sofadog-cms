@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import NavHeader from "component/common/NavHeader"
 import Link from "next/link"
 import { useContext } from "react"
-import { LayoutContext } from "contexts"
+import { AccessControlContext } from "contexts"
 
 
 type Props = {
@@ -27,8 +27,8 @@ const Settings = (props: Props) => {
 
     const router = useRouter()
     const {
-        currentUserPermission,
-    } = useContext(LayoutContext);
+        hasRole,
+    } = useContext(AccessControlContext);
 
     const renderLink = (page: string) => {
         const classes = router.pathname.indexOf(page) > 0
@@ -49,9 +49,9 @@ const Settings = (props: Props) => {
 
     const hasPermission = (page) =>{
         if(page === 'users'){
-            return currentUserPermission("super_admin", "")  || currentUserPermission("user_manager", "") 
+            return hasRole("super_admin")  || hasRole("user_manager") 
         }else if(page === 'feeds'){
-            return currentUserPermission("super_admin", "")  || currentUserPermission("feed_manager", "") 
+            return hasRole("super_admin")  || hasRole("feed_manager") 
         }else{
             return true
         }
