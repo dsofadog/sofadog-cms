@@ -324,7 +324,7 @@ const CreateItem = (props) => {
         setSelectedFeed(null);
     }
 
-    function handleDueDate(date){
+    function handleDueDate(date) {
         console.log(date)
         const formattedDate = moment(date).format('YYYY-MM-DD')
         setItem({
@@ -872,7 +872,18 @@ const CreateItem = (props) => {
                                 <div className="date-picker-wrapper col-span-8 sm:col-span-8 lg:col-span-2">
                                     <label className="block text-sm font-medium leading-5 text-gray-700">Due date</label>
                                     <div className="z-20">
-                                    <DayPickerInput classNames={{overlay: 'override-DayPickerInput-Overlay', overlayWrapper: 'DayPickerInput-OverlayWrapper ',container: ((selectedDueDate === null) && formSubmitted ? 'border-red-500 text-red-600 ' : 'border-transparent ') + 'py-0.5 text-sm form-input block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5'}} format='YYYY-MM-DD' placeholder='YYYY-MM-DD' formatDate={(date)=>moment(date).format('YYYY-MM-DD')} value={selectedDueDate} onDayChange={handleDueDate} />
+                                        <DayPickerInput
+                                            dayPickerProps={{ firstDayOfWeek: 1 }}
+                                            classNames={{
+                                                overlay: 'override-DayPickerInput-Overlay',
+                                                overlayWrapper: 'DayPickerInput-OverlayWrapper ',
+                                                container: ((selectedDueDate === null) && formSubmitted ? 'border-red-500 text-red-600 ' : 'border-transparent ') + 'py-0.5 text-sm form-input block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5'
+                                            }}
+                                            format='YYYY-MM-DD'
+                                            placeholder='YYYY-MM-DD'
+                                            formatDate={(date) => moment(date).format('YYYY-MM-DD')}
+                                            value={selectedDueDate}
+                                            onDayChange={handleDueDate} />
                                     </div>
                                     {/* <input value={selectedDueDate} onChange={handleDueDate} placeholder="Due date" id="due-date" type="date" className={((selectedDueDate === null) && formSubmitted ? 'border-red-500 text-red-600' : 'border-transparent ') + 'py-0.5 text-sm form-input block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5'} /> */}
                                 </div>
