@@ -1,25 +1,31 @@
-import { useEffect, useRef, useState } from "react";
-import { useRouter } from 'next/router'
+import { useEffect, useRef, useState, useContext } from "react";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
+import _ from 'lodash'
 
 import httpCms from "utils/http-cms";
 
+import { LayoutContext } from "contexts";
 import tokenManager from 'utils/token-manager'
 
-// f_config.autoAddCss = false;
-// library.add(fas, fab, far);
+import MiniLoader from "./MiniLoader";
+import Notification from './Notification'
+import useInterval from "component/hooks/useInterval";
 
 const NotificationBell = () => {
 
+    const { notify } = useContext(LayoutContext)
     const bellWrapperRef = useRef(null);
     useOutsideAlerter(bellWrapperRef);
     const [openBellDropdown, setOpenBellDropdown] = useState(false);
     const toggleBellDropdown = () => { setOpenBellDropdown(!openBellDropdown) };
     const [notifications, setNotificatons] = useState(null);
-    const router = useRouter();
+    const [markingAllAsRead, setMarkingAllAsRead] = useState<boolean>(false)
 
+
+    useInterval(() => {
+        refreshNotifications();
+    }, 1000 * 60)
 
     function useOutsideAlerter(ref) {
         useEffect(() => {
@@ -43,70 +49,52 @@ const NotificationBell = () => {
             };
         }, [ref]);
     }
-    function getNotifications() {
-        console.log("Start Notification---------- ")
-        httpCms.get(tokenManager.attachToken('/notifications'))
-            .then((response) => {
-                if (response.data != null) {
-                    console.log("notification: ", response.data);
-                    setNotificatons(response.data.notifications);
-                    let count = response.data.notifications.filter(notification => notification.read.includes(false));
-                    console.log("count", count);
-                } else {
-                    alert("Something wrong !!");
-                }
-            })
-            .catch((e) => {
-            })
-            .finally(() => {
-            });
+
+    function refreshNotifications() {
+        if (!openBellDropdown) {
+            getNotifications()
+        }
     }
-    function readNotification(notification) {
-        console.log("Start Notification---------- ", notification.read)
-        if (notification.read === false) {
-            httpCms.post(tokenManager.attachToken('/notifications/${notification?.id}/read'))
-                .then((response) => {
-                    if (response.data != null) {
-                        console.log("notification: ", response.data);
-                        setNotificatons(response.data.notifications);
-                    } else {
-                        alert("Something wrong !!");
-                    }
-                })
-                .catch((e) => {
-                })
-                .finally(() => {
-                });
+
+
+    async function getNotifications() {
+        try {
+
+            const response = await httpCms.get(tokenManager.attachToken('/notifications'))
+            if (response.data != null) {
+                setNotificatons(response.data.notifications);
+            } else {
+                notify('danger')
+            }
+        } catch (err) {
+            notify('danger')
         }
 
     }
 
-    function markAllAsRead(){
-        httpCms.post(tokenManager.attachToken('/notifications/read'))
-                .then((response) => {
-                    if (response.data != null) {
-                        console.log("notification: ", response.data);
-                        setNotificatons(response.data.notifications);
 
-                    } else {
-                        alert("Something wrong !!");
-                    }
-                })
-                .catch((e) => {
-                })
-                .finally(() => {
-                });
-    }
+    const markAllAsRead = async () => {
+        try {
 
-    function notificationAction(notification) {
-        //readNotification(notification.itemId)
-        if (notification.object_type === 'news_item') {
-            // router.push(
-            //     '/cms/[item_id]',
-            //     '/cms/' + notification.object_id)
-            router.replace('/cms?id=' + notification.object_id)
+            setMarkingAllAsRead(true)
+            const response = await httpCms.post(tokenManager.attachToken('/notifications/read'))
+            if (response.data != null) {
+                console.log("notification: ", response.data);
+                setNotificatons(response.data.notifications);
+
+            } else {
+                notify('danger')
+                alert("Something wrong !!");
+            }
+        } catch (err) {
+            notify('danger')
+        } finally {
+            setMarkingAllAsRead(false)
         }
+
+
     }
+
     return (
         <>
             <div ref={bellWrapperRef} data-id="bell" className="relative inline-block text-center">
@@ -124,44 +112,36 @@ const NotificationBell = () => {
                 {openBellDropdown && (
                     <div className="origin-top-right absolute right-0 mt-2 w-84 rounded-md shadow-lg">
                         <div className="h-full rounded-md bg-white ring-1 ring-black ring-opacity-5">
-                            <div className="h-96 divide-y overflow-y-auto py-1 text-left" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                            <ul className="max-h-96 divide-y overflow-y-auto py-1 text-left border-b" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
                                 {
                                     notifications?.length > 0 ?
                                         <>
-                                            <div className="w-full flex px-4 py-1 text-xs leading-5 text-gray-700 hover:bg-gray-200 hover:text-gray-900 cursor-pointer">
+                                            <li className="w-full flex px-4 py-1 text-xs leading-5 text-gray-700 hover:bg-gray-200 hover:text-gray-900 cursor-pointer">
                                                 <div className="w-11/12 flex justify-start">
                                                     <label className="font-bold text-sm text-gray-800 cursor-pointer"><span>Mark all as read</span></label>
                                                 </div>
                                                 <div className="w-1/12 flex items-center justify-end">
-                                                    <FontAwesomeIcon onClick={() => markAllAsRead()} className="w-5 h-5 cursor-pointer hover:text-white rounded-full bg-gray-300 hover:bg-green-500 p-1" icon={['fas', 'check']} />
+                                                    <MiniLoader active={markingAllAsRead}>
+                                                        <FontAwesomeIcon onClick={() => markAllAsRead()} className="w-5 h-5 cursor-pointer hover:text-white rounded-full bg-gray-300 hover:bg-green-500 p-1" icon={['fas', 'check']} />
+                                                    </MiniLoader>
                                                 </div>
-                                            </div>
+                                            </li>
                                             {
                                                 notifications?.map((notification) => (
-
-                                                    <div key={notification.id} className="w-full flex px-4 py-1 text-xs leading-5 text-gray-700 hover:bg-gray-200 hover:text-gray-900 cursor-pointer">
-                                                        <div onClick={(e) => notificationAction(notification)} className="w-11/12 flex justify-start">
-                                                            <label className="text-sm text-gray-800 cursor-pointer">{notification.title}</label>
-                                                        </div>
-                                                        <div className="w-1/12 flex items-center justify-end">
-                                                            <FontAwesomeIcon onClick={() => readNotification(notification)} className="w-5 h-5 cursor-pointer hover:text-white rounded-full bg-gray-300 hover:bg-green-500 p-1" icon={['fas', 'check']} />
-                                                        </div>
-                                                    </div>
-
+                                                    <Notification key={notification.id} notification={notification} onRead={(notifications) => { setNotificatons(notifications) }} />
                                                 ))
                                             }
                                         </>
-
                                         :
                                         <>
-                                            <div className="w-full flex px-4 py-1 text-xs leading-5 text-gray-700 cursor-pointer">
+                                            <li className="w-full flex px-4 py-1 text-xs leading-5 text-gray-700 cursor-pointer">
                                                 <div className="w-full flex justify-center">
                                                     <label className="text-sm text-gray-800 cursor-pointer">No Notification!</label>
                                                 </div>
-                                            </div>
+                                            </li>
                                         </>
                                 }
-                            </div>
+                            </ul>
                         </div>
                     </div>
                 )}
