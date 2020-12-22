@@ -113,7 +113,7 @@ const PreviewItem = (props) => {
     function actionPerformed(item, apiEndPoint, e) {
         if (apiEndPoint == "Preview Clips") {
             setIsClips(true);
-            setClips({ video: item.clips, thumbnails: item.thumbnails });
+            setClips({ video: [...item.clips], thumbnails: [...item.thumbnails] });
             return false;
         }
         e.preventDefault();
@@ -135,9 +135,9 @@ const PreviewItem = (props) => {
         });
     };
 
-    function uplaodVideo(item, apiEndPoint, e) {
+    function uplaodVideo(item, e) {
         e.preventDefault();
-        props.uplaodVideo(item, apiEndPoint, video);
+        props.uplaodVideo(item, video);
     }
 
     function deleteItem(item, e) {
@@ -245,7 +245,7 @@ const PreviewItem = (props) => {
                                         <video className="w-4/5" controls src={video.video_preview} />
                                     </div>
                                     <div className="flex justify-center space-x-1">
-                                        <span onClick={(e) => uplaodVideo(item, 'upload_video', e)} className="px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-blue-800 bg-blue-100 hover:bg-blue-200 text-blue-800 cursor-pointer">
+                                        <span onClick={(e) => uplaodVideo(item, e)} className="px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-blue-800 bg-blue-100 hover:bg-blue-200 text-blue-800 cursor-pointer">
                                             Upload
 									</span>
                                         <span onClick={() => setVideo(null)} className="px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-blue-800 bg-blue-100 hover:bg-blue-200 text-blue-800 cursor-pointer">
@@ -487,11 +487,11 @@ const PreviewItem = (props) => {
                                                     }
 
                                                     {
-                                                        props.index != props.totalData && (
+                                                        // props.index != props.totalData && (
                                                             <button className="px-2 py-0.5 text-gray-600 text-xs rounded">
                                                                 <FontAwesomeIcon onClick={(e) => moveItem(item, "decrement_ordinal", e)} className="w-5 hover:text-gray-900" icon={['fas', 'arrow-down']} />
                                                             </button>
-                                                        )
+                                                        // )
                                                     }
                                                 </div>
                                             </div>
