@@ -208,10 +208,6 @@ const Demo = () => {
 
     }
 
-
-
-
-
     return (
         <div className="flex flex-col h-full h-screen bg-gray-100">
             <NavHeader />
@@ -260,45 +256,30 @@ const Demo = () => {
 
                         <div className={`${toggleAppView ? 'flex flex-col' : 'hidden'}`}>
                             <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8 mt-5">
-                                <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-                                    <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+                                <div style={{ minHeight: '30rem' }} className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+                                    <div className="shadow border-b border-gray-200 sm:rounded-lg">
                                         <table className="min-w-full divide-y divide-gray-200">
-                                            <thead>
+                                            <thead className="bg-gray-50">
                                                 <tr>
-                                                    <th scope="col" className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                        Ordinal Sr
+                                                    <th scope="col" className="pl-6 pt-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1">
+                                                        Or.
                                                     </th>
-                                                    <th scope="col" className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                        Title
+                                                    <th scope="col" className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-5/12">
+                                                        News
                                                     </th>
-                                                    <th scope="col" className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                        Tag
+                                                    <th scope="col" className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                        Status
                                                     </th>
-                                                    <th scope="col" className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                        state
-                                                    </th>
-                                                    <th scope="col" className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                        Submitted by
-                                                    </th>
-                                                    <th scope="col" className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    <th scope="col" className="pl-3 pr-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                         Action
                                                     </th>
                                                 </tr>
                                             </thead>
-                                            <tbody>
+                                            <tbody className="bg-white divide-y divide-gray-200">
                                                 {newsItems.map((item, i) => (
                                                     <PreviewItemTable
                                                         key={item.id}
-                                                        index={i}
-                                                        showComment={true}
-                                                        item={item}
-                                                        processedData={processedData}
-                                                        uplaodVideo={upload}
-                                                        deleteItem={remove}
-                                                        move={decrement_increment_ordinal}
-                                                        updateItem={update}
-                                                        getSigleItem={refresh}
-                                                        feeds={feeds}
+                                                        newsItem={item}
                                                     />
 
                                                 ))}
@@ -306,6 +287,16 @@ const Demo = () => {
                                             </tbody>
                                         </table>
                                     </div>
+                                    {scrollLoading && (
+
+                                        <div className="box-border p-4">
+                                            <div className="flex flex-row justify-center items-center">
+                                                <FontAwesomeIcon className="w-12 h-12 p-2 rounded-full" icon={['fas', 'spinner']} spin />
+                                                <p>{scrollLoadingMessage}</p>
+                                            </div>
+
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -331,6 +322,16 @@ const Demo = () => {
                                 />
                             </div>
                         ))}
+                        {scrollLoading && (
+
+                            <div className="box-border p-4">
+                                <div className="flex flex-row justify-center items-center">
+                                    <FontAwesomeIcon className="w-12 h-12 p-2 rounded-full" icon={['fas', 'spinner']} spin />
+                                    <p>{scrollLoadingMessage}</p>
+                                </div>
+
+                            </div>
+                        )}
                     </div>
                 </div>
 
@@ -357,17 +358,6 @@ const Demo = () => {
 
                     </div>
                 )}
-                {scrollLoading && (
-
-                    <div className="box-border p-4">
-                        <div className="flex flex-row justify-center items-center">
-                            <FontAwesomeIcon className="w-12 h-12 p-2 rounded-full" icon={['fas', 'spinner']} spin />
-                            <p>{scrollLoadingMessage}</p>
-                        </div>
-
-                    </div>
-                )}
-
             </div>
 
             {

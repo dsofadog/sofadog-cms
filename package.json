@@ -28,6 +28,7 @@
     "@tailwindcss/forms": "^0.2.1",
     "@tailwindcss/typography": "^0.3.1",
     "@tailwindcss/ui": "^0.5.0",
+    "@tippyjs/react": "^4.2.0",
     "@types/react-timeago": "^4.1.1",
     "animate.css": "^4.1.1",
     "autoprefixer": "^9.8.6",

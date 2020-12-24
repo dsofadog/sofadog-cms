@@ -16,6 +16,7 @@ import Comments from "./Comments";
 import Loader from "component/common/Loader";
 import { useSelector } from "react-redux";
 import { RootState } from "rootReducer";
+import NewsItemHeaderSection from "component/common/NewsItemHeaderSection";
 
 
 //const categories = CmsConstant.Category;
@@ -44,23 +45,24 @@ const PreviewItem = (props) => {
         if (props.item) {
             setItem(props.item);
             setFeeds(props.feeds);
+            console.log('props.feeds',props.feeds)
         }
 
     }, [props]);
 
     useEffect(() => {
         //fetchComment(props.item.id);
-        if (item) {
+        if (item && feeds) {
             showSentences(0);
             getFeedCategories();
             showCredits('news_credits', item.news_credits);
         }
-    }, [item]);
+    }, [item, feeds]);
 
 
     useEffect(() => {
         //fetchComment(props.item.id);
-
+        console.log('initiated')
     }, []);
 
     async function refreshData(slowReload) {
@@ -451,7 +453,7 @@ const PreviewItem = (props) => {
         <>
             {!isEdit ?
                 <>
-                    {categories && item ? (
+                    {item ? (
                         <div className="w-full mx-auto h-auto">
                             <div className="flex flex-nowrap justify-center">
                                 <div className="w-1/12 mx-auto flex-none float-left">
@@ -495,23 +497,7 @@ const PreviewItem = (props) => {
                                                     }
                                                 </div>
                                             </div>
-                                            <div className="mb-4">
-                                                <h2 className="text-base text-gray-800 font-medium mr-auto">
-                                                    <Link href={`/cms?id=${item.id}`}>
-                                                        <a>{item?.title}</a>
-                                                    </Link>
-                                                </h2>
-                                                <small className="text-gray-400">{`Created date: ${moment.unix(item.created_at).format('lll')}`}{item.due_date ? ` | Due date: ${moment(item.due_date).format('lll')}` : ''} {item.enqueued_at ? ` | Enqueued date: ${moment(item.enqueued_at).format('lll')}` : ''}</small>
-                                                {item?.tags.length > 0 && <div className="mt-2 mb-4 mr-2">
-                                                    <div className="w-full space-x-2 flex">
-                                                        {item?.tags.map(tag => (
-                                                            <span key={tag} className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium leading-4 bg-blue-100 text-blue-800">
-                                                                {tag}
-                                                            </span>
-                                                        ))}
-                                                    </div>
-                                                </div>}
-                                            </div>
+                                            <NewsItemHeaderSection newsItem={item}/>
                                             {item?.descriptions.length > 0 && (
                                                 <div className="w-full mb-4">
                                                     <div className="p-4 shadow rounded border border-gray-300">

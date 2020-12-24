@@ -50,6 +50,14 @@ const newsItem = createSlice({
             state.scrollLoading = false
             state.scrollLoadingMessage = null
         },
+        newsItemLoadingStart(state: NewsItemState, action: PayloadAction<string>) {
+            const newsItem = state.newsItems.find(newsItem => newsItem.id === action.payload)
+            newsItem.loading = true
+        },
+        newsItemLoadingEnd(state: NewsItemState, action: PayloadAction<string>) {
+            const newsItem = state.newsItems.find(newsItem => newsItem.id === action.payload)
+            delete newsItem.loading
+        },
         showCreateForm(state: NewsItemState) {
             state.createFormIsVisible = true
         },
@@ -58,25 +66,25 @@ const newsItem = createSlice({
         },
         swapNewsItem(state: NewsItemState, action: PayloadAction<{ id: string, direction: string }>) {
             const { id, direction } = action.payload
-            
+
             const aIndex = state.newsItems.findIndex(newsItem => newsItem.id === id)
             let bIndex = direction === 'decrement_ordinal'
                 ? aIndex + 1
                 : aIndex - 1
 
-            if(state.newsItems[aIndex] && state.newsItems[bIndex]){
+            if (state.newsItems[aIndex] && state.newsItems[bIndex]) {
                 const newsItemA = state.newsItems[aIndex]
                 const newsItemB = state.newsItems[bIndex]
-    
+
                 state.newsItems[aIndex] = newsItemB
                 state.newsItems[bIndex] = newsItemA
             }
-            
+
         },
         addNewsItem(state: NewsItemState, action: PayloadAction<any>) {
             state.newsItems = [action.payload, ...state.newsItems]
         },
-        setNewsItems(state: NewsItemState, action: PayloadAction<any>){
+        setNewsItems(state: NewsItemState, action: PayloadAction<any>) {
             state.newsItems = [...action.payload]
         },
         concatNewsItems(state: NewsItemState, action: PayloadAction<any>) {
@@ -112,6 +120,8 @@ export const {
     progressBarLoadingEnd,
     scrollLoadingStart,
     scrollLoadingEnd,
+    newsItemLoadingStart,
+    newsItemLoadingEnd,
     showCreateForm,
     hideCreateForm,
     swapNewsItem,
@@ -128,32 +138,32 @@ export default newsItem.reducer
 
 export const changeOrder = (id: string, direction: string): AppThunk => async dispatch => {
     try {
-        dispatch(progressBarLoadingStart())
-        
+        dispatch(newsItemLoadingStart(id))
+
         await changeOrderAPI(id, direction)
 
         dispatch(swapNewsItem({ id, direction }))
 
-        dispatch(progressBarLoadingEnd())
-
     } catch (err) {
         dispatch(requestFailed())
+    } finally {
+        dispatch(newsItemLoadingEnd(id))
     }
 }
 
 export const changeStatus = (id: string, action: string): AppThunk => async dispatch => {
     try {
 
-        dispatch(progressBarLoadingStart())
+        dispatch(newsItemLoadingStart(id))
 
         const changeStatusRes = await changeStatusAPI(id, action)
 
         dispatch(updateNewsItem(changeStatusRes.news_item))
 
-        dispatch(progressBarLoadingEnd())
-
     } catch (err) {
         dispatch(requestFailed())
+    } finally {
+        dispatch(newsItemLoadingEnd(id))
     }
 }
 
@@ -167,7 +177,7 @@ export const create = (newsItem: any): AppThunk => async dispatch => {
         dispatch(addNewsItem(createRes.news_item))
 
         dispatch(hideCreateForm())
-        
+
         dispatch(progressBarLoadingEnd())
 
     } catch (err) {
@@ -216,16 +226,16 @@ export const query = (params: any): AppThunk => async dispatch => {
 export const remove = (id: any): AppThunk => async dispatch => {
     try {
 
-        dispatch(progressBarLoadingStart())
+        dispatch(newsItemLoadingStart(id))
 
         const deleteRes = await removeAPI(id)
 
         dispatch(removeNewsItem(deleteRes.news_item))
 
-        dispatch(progressBarLoadingEnd())
-
     } catch (err) {
         dispatch(requestFailed())
+    } finally {
+        dispatch(newsItemLoadingEnd(id))
     }
 }
 
@@ -248,31 +258,31 @@ export const update = (id: string, newsItem: any): AppThunk => async dispatch =>
 export const uploadVideo = (id: string, video: any): AppThunk => async dispatch => {
     try {
 
-        dispatch(progressBarLoadingStart())
+        dispatch(newsItemLoadingStart(id))
 
         const uploadVideoRes = await uploadVideoAPI(id, video)
 
         dispatch(updateNewsItem(uploadVideoRes.news_item))
 
-        dispatch(progressBarLoadingEnd())
-
     } catch (err) {
         dispatch(requestFailed())
+    } finally {
+        dispatch(newsItemLoadingEnd(id))
     }
 }
 
 export const refresh = (id: string): AppThunk => async dispatch => {
     try {
 
-        dispatch(progressBarLoadingStart())
+        dispatch(newsItemLoadingStart(id))
 
         const readRes = await readAPI(id)
 
         dispatch(updateNewsItem(readRes.news_items[0]))
 
-        dispatch(progressBarLoadingEnd())
-
     } catch (err) {
         dispatch(requestFailed())
+    } finally {
+        dispatch(newsItemLoadingEnd(id))
     }
 }

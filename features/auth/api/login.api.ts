@@ -37,7 +37,7 @@ export async function login(
         }
 
         const {data} = await httpCms.post<LoginResponsePayload>(url, payload)
-
+        
         return data
 
     }catch(err){

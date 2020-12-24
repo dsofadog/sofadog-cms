@@ -402,10 +402,7 @@ const Demo = () => {
             // setLoading(false);
             NProgress.done()
         }
-       
     }
-
-
 
 
     return (
