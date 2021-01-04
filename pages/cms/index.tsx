@@ -34,6 +34,8 @@ import {
     showCreateForm,
     hideCreateForm
 } from 'features/news-item/slices/news-item.slice'
+import NewsItemDialogForm from 'component/cms/NewsItemDialogForm';
+import notify from 'utils/notify';
 
 type Params = {
     token: string;
@@ -56,7 +58,8 @@ const Demo = () => {
 
 
     const {
-        error,
+        notificationErrorMessage,
+        fetchErrorMessage,
         progressBarLoading,
         scrollLoading,
         scrollLoadingMessage,
@@ -140,15 +143,20 @@ const Demo = () => {
         }
     }, [router.query.id])
 
+    useEffect(()=>{
+        if(notificationErrorMessage){
+            notify('danger', notificationErrorMessage)
+        }
+    }, [notificationErrorMessage])
 
     const fetchItems = async () => {
-        if (!error) {
+        if (!fetchErrorMessage) {
             dispatch(queryNewsItems(params))
         }
     }
 
     const fetchItem = async () => {
-        if (!error) {
+        if (!fetchErrorMessage) {
             dispatch(readNewsItem(searchId))
         }
     }
@@ -209,6 +217,7 @@ const Demo = () => {
     }
 
     return (
+        <>
         <div className="flex flex-col h-full h-screen bg-gray-100">
             <NavHeader />
             <NewsItemsHeader
@@ -243,6 +252,8 @@ const Demo = () => {
             />
 
             <div className="flex-1 overflow-y-auto">
+        {/* <NewsItemDialogForm /> */}
+
                 <div ref={infiniteRef as React.RefObject<HTMLDivElement>} className="max-w-7xl mx-auto">
                     <>
                         <div className="sfd-top invisible"></div>
@@ -335,11 +346,11 @@ const Demo = () => {
                     </div>
                 </div>
 
-                {error && (
+                {fetchErrorMessage && (
                     <div className="box-border p-4">
                         <div className="flex flex-row justify-center items-center">
                             <FontAwesomeIcon className="w-12 h-12 p-2 rounded-full" icon={['fas', 'exclamation-circle']} />
-                            <p>Something went wrong</p>
+                            <p>{fetchErrorMessage}</p>
                         </div>
                         <div className="flex flex-row justify-center items-center">
                             <button type="button" onClick={() => {
@@ -371,6 +382,7 @@ const Demo = () => {
 
 
         </div >
+        </>
     )
 }
 

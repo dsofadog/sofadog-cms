@@ -10,25 +10,28 @@ import { uploadVideo as uploadVideoAPI } from 'features/news-item/api/upload-vid
 import { AppThunk } from 'store'
 import _ from 'lodash'
 import moment from 'moment'
+import NProgress from "nprogress";
 
 interface NewsItemState {
     createFormIsVisible: boolean;
     newsItems: any[];
     editingNewsItemId: string | null
-    error: string | null;
     progressBarLoading: boolean;
     scrollLoading: boolean;
     scrollLoadingMessage: string | null;
+    fetchErrorMessage: string | null;
+    notificationErrorMessage: string | null;
 }
 
 const initialState: NewsItemState = {
     createFormIsVisible: false,
     newsItems: [],
     editingNewsItemId: null,
-    error: null,
     progressBarLoading: false,
     scrollLoading: false,
-    scrollLoadingMessage: null
+    scrollLoadingMessage: null,
+    fetchErrorMessage: null,
+    notificationErrorMessage: null
 }
 
 const newsItem = createSlice({
@@ -42,9 +45,10 @@ const newsItem = createSlice({
             state.progressBarLoading = false
         },
         scrollLoadingStart(state: NewsItemState, action: PayloadAction<string>) {
-            state.error = null
             state.scrollLoading = true
             state.scrollLoadingMessage = action.payload
+            state.fetchErrorMessage = null
+            state.notificationErrorMessage = null
         },
         scrollLoadingEnd(state: NewsItemState, action: PayloadAction<string>) {
             state.scrollLoading = false
@@ -91,26 +95,28 @@ const newsItem = createSlice({
             state.newsItems = [...state.newsItems, ...action.payload]
         },
         updateNewsItem(state: NewsItemState, action: PayloadAction<any>) {
-            console.log('action', action)
             const matchedNewsItem = state.newsItems.find(newsItem => newsItem.id === action.payload.id)
             _.assignIn(matchedNewsItem, action.payload)
         },
         removeNewsItem(state: NewsItemState, action: PayloadAction<any>) {
             state.newsItems = state.newsItems.filter(newsItem => newsItem.id !== action.payload.id)
         },
-        requestFailed(state: NewsItemState) {
+        requestFailed(state: NewsItemState, action: PayloadAction<any>) {
+            const { error, type } = action.payload
             state.progressBarLoading = false
             state.scrollLoading = false
             state.scrollLoadingMessage = null
-            state.error = 'Something went wrong'
+            state.fetchErrorMessage = type === 'fetch' ? 'Something went wrong' : null
+            state.notificationErrorMessage = type === 'notification' ? (error.response?.data?.message || 'Something went wrong') : null
         },
         reset(state: NewsItemState) {
             state.newsItems = []
             state.editingNewsItemId = null
-            state.error = null
             state.progressBarLoading = false
             state.scrollLoading = false
             state.scrollLoadingMessage = null
+            state.fetchErrorMessage = null
+            state.notificationErrorMessage = null
         }
     }
 })
@@ -144,8 +150,8 @@ export const changeOrder = (id: string, direction: string): AppThunk => async di
 
         dispatch(swapNewsItem({ id, direction }))
 
-    } catch (err) {
-        dispatch(requestFailed())
+    } catch (error) {
+        dispatch(requestFailed({ type: 'notification', error }))
     } finally {
         dispatch(newsItemLoadingEnd(id))
     }
@@ -160,8 +166,8 @@ export const changeStatus = (id: string, action: string): AppThunk => async disp
 
         dispatch(updateNewsItem(changeStatusRes.news_item))
 
-    } catch (err) {
-        dispatch(requestFailed())
+    } catch (error) {
+        dispatch(requestFailed({ type: 'notification', error }))
     } finally {
         dispatch(newsItemLoadingEnd(id))
     }
@@ -180,8 +186,8 @@ export const create = (newsItem: any): AppThunk => async dispatch => {
 
         dispatch(progressBarLoadingEnd())
 
-    } catch (err) {
-        dispatch(requestFailed())
+    } catch (error) {
+        dispatch(requestFailed({ type: 'notification', error }))
     }
 }
 
@@ -200,8 +206,8 @@ export const read = (params: any): AppThunk => async dispatch => {
 
         dispatch(scrollLoadingEnd())
 
-    } catch (err) {
-        dispatch(requestFailed())
+    } catch (error) {
+        dispatch(requestFailed({ type: 'fetch', error }))
     }
 }
 
@@ -218,8 +224,8 @@ export const query = (params: any): AppThunk => async dispatch => {
 
         dispatch(scrollLoadingEnd())
 
-    } catch (err) {
-        dispatch(requestFailed())
+    } catch (error) {
+        dispatch(requestFailed({ type: 'fetch', error }))
     }
 }
 
@@ -232,8 +238,8 @@ export const remove = (id: any): AppThunk => async dispatch => {
 
         dispatch(removeNewsItem(deleteRes.news_item))
 
-    } catch (err) {
-        dispatch(requestFailed())
+    } catch (error) {
+        dispatch(requestFailed({ type: 'notification', error }))
     } finally {
         dispatch(newsItemLoadingEnd(id))
     }
@@ -250,13 +256,15 @@ export const update = (id: string, newsItem: any): AppThunk => async dispatch =>
 
         dispatch(progressBarLoadingEnd())
 
-    } catch (err) {
-        dispatch(requestFailed())
+    } catch (error) {
+        dispatch(requestFailed({ type: 'notification', error }))
     }
 }
 
 export const uploadVideo = (id: string, video: any): AppThunk => async dispatch => {
     try {
+
+        NProgress.start()
 
         dispatch(newsItemLoadingStart(id))
 
@@ -264,10 +272,11 @@ export const uploadVideo = (id: string, video: any): AppThunk => async dispatch 
 
         dispatch(updateNewsItem(uploadVideoRes.news_item))
 
-    } catch (err) {
-        dispatch(requestFailed())
+    } catch (error) {
+        dispatch(requestFailed({ type: 'notification', error }))
     } finally {
         dispatch(newsItemLoadingEnd(id))
+        NProgress.done()
     }
 }
 
@@ -280,8 +289,8 @@ export const refresh = (id: string): AppThunk => async dispatch => {
 
         dispatch(updateNewsItem(readRes.news_items[0]))
 
-    } catch (err) {
-        dispatch(requestFailed())
+    } catch (error) {
+        dispatch(requestFailed({ type: 'notification', error }))
     } finally {
         dispatch(newsItemLoadingEnd(id))
     }
