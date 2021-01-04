@@ -34,7 +34,7 @@ import {
     showCreateForm,
     hideCreateForm
 } from 'features/news-item/slices/news-item.slice'
-import NewsItemDialogForm from 'component/cms/NewsItemDialogForm';
+// import NewsItemDialogForm from 'component/cms/NewsItemDialogForm';
 import notify from 'utils/notify';
 
 type Params = {
