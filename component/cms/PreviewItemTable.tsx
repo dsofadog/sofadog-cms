@@ -6,12 +6,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useTimeout } from 'rooks'
 
 type Props = {
-  newsItem: any
+  newsItem: any;
+  onEdit: ()=>void
 }
 
 const PreviewItemTable = (props: Props) => {
 
-  const {newsItem} = props
+  const {newsItem, onEdit} = props
 
   const [loadingThumbnails, setLoadingThumbnails] = useState<boolean>(false)
   const { start: fastStopLoadingThumbnails } = useTimeout(() => setLoadingThumbnails(false), 1000)
@@ -56,7 +57,7 @@ const PreviewItemTable = (props: Props) => {
         <td className="pl-3 pr-6 py-4 whitespace-nowrap text-sm text-gray-500">
           <span className="flex">
             <span className="flex-1">
-              <Actions newsItem={newsItem} />
+              <Actions onEdit={onEdit} newsItem={newsItem} />
             </span>
           </span>
         </td>

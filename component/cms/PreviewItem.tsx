@@ -1,16 +1,11 @@
 import { useCallback, useEffect, useState, useContext } from "react";
-import Link from "next/link";
-
 import { useDropzone } from 'react-dropzone';
 import _ from 'lodash'
-import moment from 'moment'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { AccessControlContext } from 'contexts';
 import CmsConstant from 'utils/cms-constant';
-import HttpCms from 'utils/http-cms';
-import CreateItem from "./CreateItem";
 import PreviewClip from "./PreviewClip";
 import Comments from "./Comments";
 import Loader from "component/common/Loader";
@@ -22,7 +17,7 @@ import NewsItemHeaderSection from "component/common/NewsItemHeaderSection";
 //const categories = CmsConstant.Category;
 
 const PreviewItem = (props) => {
-    const {currentUser} = useSelector((state: RootState)=>state.auth)
+    const { currentUser } = useSelector((state: RootState) => state.auth)
     const { hasPermission, hasRole } = useContext(AccessControlContext);
     const [item, setItem] = useState(null);
     const [sentences, setSentences] = useState(null);
@@ -45,7 +40,7 @@ const PreviewItem = (props) => {
         if (props.item) {
             setItem(props.item);
             setFeeds(props.feeds);
-            console.log('props.feeds',props.feeds)
+            console.log('props.feeds', props.feeds)
         }
 
     }, [props]);
@@ -66,7 +61,7 @@ const PreviewItem = (props) => {
     }, []);
 
     async function refreshData(slowReload) {
-        
+
         setVideo(null)
         await props.getSigleItem(item.id);
         setLoadingThumbnails(true)
@@ -451,249 +446,250 @@ const PreviewItem = (props) => {
     }
     return (
         <>
-            {!isEdit ?
-                <>
-                    {item ? (
-                        <div className="w-full mx-auto h-auto">
-                            <div className="flex flex-nowrap justify-center">
-                                <div className="w-1/12 mx-auto flex-none float-left">
-                                    <div className="bg-gray-300 p-1 h-32 w-1 mx-auto"></div>
-                                </div>
-                            </div>
-                            <div className="flex flex-nowrap justify-center">
-                                <div className="w-11/12 mx-auto flex-none float-left">
-                                    <div className="md:flex shadow-lg mx-6 md:mx-auto w-full h-full">
-                                        {/* border-${categories[item?.category].color} */}
-                                        <div style={{ borderColor: getColorCode() }} className={`relative w-full h-full md:w-4/5 px-4 py-2 bg-white rounded-l-lg border-l-8`}>
-                                            <div className="mb-4 grid grid-cols-2">
-                                                <div className="left-0 flex justify-start">
-                                                    {isExpand ?
-                                                        <FontAwesomeIcon onClick={() => setIsExpand(false)} className="w-5 h-5 hover:text-gray-900 cursor-pointer" icon={['fas', 'chevron-down']} />
-                                                        :
-                                                        <FontAwesomeIcon onClick={() => setIsExpand(true)} className="w-5 h-5 hover:text-gray-900 cursor-pointer" icon={['fas', 'chevron-up']} />
-                                                    }
+            {item ? (
+                <div className="w-full mx-auto h-auto">
+                    <div className="flex flex-nowrap justify-center">
+                        <div className="w-1/12 mx-auto flex-none float-left">
+                            <div className="bg-gray-300 p-1 h-32 w-1 mx-auto"></div>
+                        </div>
+                    </div>
+                    <div className="flex flex-nowrap justify-center">
+                        <div className="w-11/12 mx-auto flex-none float-left">
+                            <div className="md:flex shadow-lg mx-6 md:mx-auto w-full h-full">
+                                {/* border-${categories[item?.category].color} */}
+                                <div style={{ borderColor: getColorCode() }} className={`relative w-full h-full md:w-4/5 px-4 py-2 bg-white rounded-l-lg border-l-8`}>
+                                    <div className="mb-4 grid grid-cols-2">
+                                        <div className="left-0 flex justify-start">
+                                            {isExpand ?
+                                                <FontAwesomeIcon onClick={() => setIsExpand(false)} className="w-5 h-5 hover:text-gray-900 cursor-pointer" icon={['fas', 'chevron-down']} />
+                                                :
+                                                <FontAwesomeIcon onClick={() => setIsExpand(true)} className="w-5 h-5 hover:text-gray-900 cursor-pointer" icon={['fas', 'chevron-up']} />
+                                            }
 
-                                                </div>
-                                                <div className="right-0 flex justify-end space-x-2">
-                                                    <button onClick={() => openCreateBox(true)} className="px-2 py-1 bg-white hover:bg-grey-50 text-black rounded text-xs cursor-pointer flex items-center">
-                                                        <FontAwesomeIcon className="w-4 mr-1 cursor-pointer" icon={['fas', 'edit']} />
+                                        </div>
+                                        <div className="right-0 flex justify-end space-x-2">
+                                            <button onClick={() => props.onEdit()} className="px-2 py-1 bg-white hover:bg-grey-50 text-black rounded text-xs cursor-pointer flex items-center">
+                                                <FontAwesomeIcon className="w-4 mr-1 cursor-pointer" icon={['fas', 'edit']} />
                                                         Edit
                                                     </button>
-                                                    <button onClick={(e) => deleteItem(item, e)} className="px-2 py-1 bg-red-500 hover:bg-red-700 text-white rounded text-xs cursor-pointer">Delete</button>
-                                                    {
-                                                        props.index != 0 && (
-                                                            <button className="px-2 py-0.5 text-gray-600 text-xs rounded">
-                                                                <FontAwesomeIcon onClick={(e) => moveItem(item, "increment_ordinal", e)} className="w-5 hover:text-gray-900" icon={['fas', 'arrow-up']} />
-                                                            </button>
-                                                        )
-                                                    }
+                                            <button onClick={(e) => deleteItem(item, e)} className="px-2 py-1 bg-red-500 hover:bg-red-700 text-white rounded text-xs cursor-pointer">Delete</button>
+                                            {
+                                                props.index != 0 && (
+                                                    <button className="px-2 py-0.5 text-gray-600 text-xs rounded">
+                                                        <FontAwesomeIcon onClick={(e) => moveItem(item, "increment_ordinal", e)} className="w-5 hover:text-gray-900" icon={['fas', 'arrow-up']} />
+                                                    </button>
+                                                )
+                                            }
 
-                                                    {
-                                                        // props.index != props.totalData && (
-                                                            <button className="px-2 py-0.5 text-gray-600 text-xs rounded">
-                                                                <FontAwesomeIcon onClick={(e) => moveItem(item, "decrement_ordinal", e)} className="w-5 hover:text-gray-900" icon={['fas', 'arrow-down']} />
-                                                            </button>
-                                                        // )
-                                                    }
-                                                </div>
-                                            </div>
-                                            <NewsItemHeaderSection newsItem={item}/>
-                                            {item?.descriptions.length > 0 && (
-                                                <div className="w-full mb-4">
-                                                    <div className="p-4 shadow rounded border border-gray-300">
-                                                        <div className="block">
-                                                            <div className="border-b border-gray-200">
-                                                                <nav className="flex -mb-px">
-                                                                    {item?.descriptions.map((lang, i) => (
-                                                                        <a key={i} href={void (0)} onClick={() => showSentences(i)} className={`${activeLang === i ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} cursor-pointer ml-8 group inline-flex items-center py-2 px-1 border-b-2 font-medium text-sm leading-5 focus:outline-none focus:text-indigo-800 focus:border-indigo-700 capitalize`} aria-current="page">
-                                                                            <span>{lang.language}</span>
-                                                                        </a>
-                                                                    ))}
-                                                                </nav>
-                                                            </div>
-                                                            <div className="mt-4" role="group" aria-labelledby="teams-headline">
-                                                                {sentences?.sentences.map((sentence, i) => (
-                                                                    <div key={i} className="flex items-center space-x-3 pl-3 mb-2">
-                                                                        <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-indigo-500"></div>
-                                                                        <div className={(!isExpand ? '' : 'truncate') + ' hover:text-gray-600 text-base'}>
-                                                                            <span>{sentence}</span>
+                                            {
+                                                // props.index != props.totalData && (
+                                                <button className="px-2 py-0.5 text-gray-600 text-xs rounded">
+                                                    <FontAwesomeIcon onClick={(e) => moveItem(item, "decrement_ordinal", e)} className="w-5 hover:text-gray-900" icon={['fas', 'arrow-down']} />
+                                                </button>
+                                                // )
+                                            }
+                                        </div>
+                                    </div>
+                                    <NewsItemHeaderSection newsItem={item} />
+                                    {item?.descriptions.length > 0 && (
+                                        <div className="w-full mb-4">
+                                            <div className="p-4 shadow rounded border border-gray-300">
+                                                <div className="block">
+                                                    <div className="border-b border-gray-200">
+                                                        <nav className="flex -mb-px">
+                                                            {item?.descriptions.map((lang, i) => (
+                                                                <a key={i} href={void (0)} onClick={() => showSentences(i)} className={`${activeLang === i ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} cursor-pointer ml-8 group inline-flex items-center py-2 px-1 border-b-2 font-medium text-sm leading-5 focus:outline-none focus:text-indigo-800 focus:border-indigo-700 capitalize`} aria-current="page">
+                                                                    <span>{lang.language}</span>
+                                                                </a>
+                                                            ))}
+                                                        </nav>
+                                                    </div>
+                                                    <div className="mt-4" role="group" aria-labelledby="teams-headline">
+                                                        {sentences?.sentences.map((sentence, i) => (
+                                                            <div key={i} className="flex items-center space-x-3 pl-3 mb-2">
+                                                                {/* <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-indigo-500"></div> */}
+                                                                <div className={(!isExpand ? '' : 'truncate') + ' hover:text-gray-600 text-base'}>
+                                                                    {/* <span>{sentence}</span> */}
+                                                                    <div className="wysiwyg w-full space-y-1 px-2 pr-5 pb-4">
+                                                                        <div>
+                                                                            <span style={{
+                                                                                overflowWrap: 'break-word', 
+                                                                                wordWrap: 'break-word',
+                                                                                hyphens: 'auto'
+                                                                            }} className="text-base text-gray-600" dangerouslySetInnerHTML={{ __html: sentence}} ></span>
                                                                         </div>
                                                                     </div>
-                                                                ))}
+                                                                </div>
                                                             </div>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    <div className="w-full mb-6">
+                                        {!isExpand && (
+                                            <>
+                                                <div className="p-4 shadow rounded border border-gray-300 mb-6">
+                                                    <div className="block">
+                                                        <div className="border-b border-gray-200">
+                                                            <nav className="flex -mb-px">
+                                                                <a href={void (0)} onClick={() => showCredits('news_credits', item?.news_credits)} className={`${creditsData?.title === 'news_credits' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} cursor-pointer ml-8 group inline-flex items-center py-2 px-1 border-b-2 font-medium text-sm leading-5  focus:outline-none focus:text-indigo-800 focus:border-indigo-700`} aria-current="page">
+                                                                    <span>News Credits</span>
+                                                                </a>
+                                                                <a href={void (0)} onClick={() => showCredits('visual_credits', item?.visual_credits)} className={`${creditsData?.title === 'visual_credits' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} cursor-pointer ml-8 group inline-flex items-center py-2 px-1 border-b-2 font-medium text-sm leading-5 focus:outline-none focus:text-gray-700 focus:border-gray-300`}>
+                                                                    <span>Visual Credits</span>
+                                                                </a>
+                                                            </nav>
+                                                        </div>
+                                                        <div className="mt-4 max-h-24 overflow-y-scroll" role="group" aria-labelledby="teams-headline">
+                                                            {creditsData?.data.map((credit, i) => (
+                                                                <div key={i} className="flex items-center space-x-3 pl-3">
+                                                                    <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-indigo-500"></div>
+                                                                    <div className="truncate hover:text-gray-600 text-base">
+                                                                        <a href={credit.url} target="_blank">{credit.link_text}</a>
+                                                                    </div>
+                                                                </div>
+                                                            ))}
                                                         </div>
                                                     </div>
                                                 </div>
-                                            )}
+                                                <div className="p-4 shadow rounded border border-gray-300">
+                                                    <div className="block">
+                                                        <div className="border-b border-gray-200">
 
-                                            <div className="w-full mb-6">
-                                                {!isExpand && (
-                                                    <>
-                                                        <div className="p-4 shadow rounded border border-gray-300 mb-6">
-                                                            <div className="block">
-                                                                <div className="border-b border-gray-200">
-                                                                    <nav className="flex -mb-px">
-                                                                        <a href={void (0)} onClick={() => showCredits('news_credits', item?.news_credits)} className={`${creditsData?.title === 'news_credits' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} cursor-pointer ml-8 group inline-flex items-center py-2 px-1 border-b-2 font-medium text-sm leading-5  focus:outline-none focus:text-indigo-800 focus:border-indigo-700`} aria-current="page">
-                                                                            <span>News Credits</span>
-                                                                        </a>
-                                                                        <a href={void (0)} onClick={() => showCredits('visual_credits', item?.visual_credits)} className={`${creditsData?.title === 'visual_credits' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} cursor-pointer ml-8 group inline-flex items-center py-2 px-1 border-b-2 font-medium text-sm leading-5 focus:outline-none focus:text-gray-700 focus:border-gray-300`}>
-                                                                            <span>Visual Credits</span>
-                                                                        </a>
-                                                                    </nav>
-                                                                </div>
-                                                                <div className="mt-4 max-h-24 overflow-y-scroll" role="group" aria-labelledby="teams-headline">
-                                                                    {creditsData?.data.map((credit, i) => (
-                                                                        <div key={i} className="flex items-center space-x-3 pl-3">
-                                                                            <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-indigo-500"></div>
-                                                                            <div className="truncate hover:text-gray-600 text-base">
-                                                                                <a href={credit.url} target="_blank">{credit.link_text}</a>
-                                                                            </div>
-                                                                        </div>
-                                                                    ))}
-                                                                </div>
-                                                            </div>
+                                                            <a href={void (0)} className={`border-indigo-500 text-indigo-600 cursor-pointer ml-8 group inline-flex items-center py-2 px-1 border-b-2 font-medium text-sm leading-5  focus:outline-none focus:text-indigo-800 focus:border-indigo-700`} aria-current="page">
+                                                                <span>Owners</span>
+                                                            </a>
                                                         </div>
-                                                        <div className="p-4 shadow rounded border border-gray-300">
-                                                            <div className="block">
-                                                                <div className="border-b border-gray-200">
+                                                        <div className="mt-4" role="group" aria-labelledby="teams-headline">
+                                                            {Object.keys(item?.owners).reverse().map(key => (
+                                                                <div key={key} className="flex items-center space-x-3 pl-3">
+                                                                    <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-indigo-500"></div>
+                                                                    <div className="truncate hover:text-gray-600 text-base">
+                                                                        <p>{_.upperFirst(key.replace(/_/g, ' '))}: {item?.owners[key]}</p>
+                                                                    </div>
+                                                                </div>
+                                                            ))}
+                                                            {Object.keys(item?.owners).length === 0 && (
+                                                                <div className="flex items-center space-x-3 pl-3">
+                                                                    <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-indigo-500"></div>
+                                                                    <div className="truncate hover:text-gray-600 text-xs">
+                                                                        <p>None</p>
+                                                                    </div>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </>
+                                        )}
+                                        {
+                                            props.showComment && (
+                                                <div className="w-full py-4">
+                                                    <div className="w-full flex text-center justify-end space-x-2">
+                                                        <span className="text-white w-6 h-6 rounded-full p-3 bg-blue-600 text-xs flex items-center justify-center">{item?.comments.length}</span>
+                                                        <label
+                                                            onClick={() => setCommentVisibility(!commentVisibility)}
+                                                            className="text-sm font-bold text-gray-800 cursor-pointer hover:underline"
+                                                        >Comments</label>
+                                                    </div>
+                                                    {commentVisibility && <Comments newsItem={item} />}
+                                                </div>
+                                            )
+                                        }
 
-                                                                    <a href={void (0)} className={`border-indigo-500 text-indigo-600 cursor-pointer ml-8 group inline-flex items-center py-2 px-1 border-b-2 font-medium text-sm leading-5  focus:outline-none focus:text-indigo-800 focus:border-indigo-700`} aria-current="page">
-                                                                        <span>Owners</span>
-                                                                    </a>
-                                                                </div>
-                                                                <div className="mt-4" role="group" aria-labelledby="teams-headline">
-                                                                    {Object.keys(item?.owners).reverse().map(key => (
-                                                                        <div key={key} className="flex items-center space-x-3 pl-3">
-                                                                            <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-indigo-500"></div>
-                                                                            <div className="truncate hover:text-gray-600 text-base">
-                                                                                <p>{_.upperFirst(key.replace(/_/g, ' '))}: {item?.owners[key]}</p>
-                                                                            </div>
-                                                                        </div>
-                                                                    ))}
-                                                                    {Object.keys(item?.owners).length === 0 && (
-                                                                        <div className="flex items-center space-x-3 pl-3">
-                                                                            <div className="flex-shrink-0 w-2.5 h-2.5 rounded-full bg-indigo-500"></div>
-                                                                            <div className="truncate hover:text-gray-600 text-xs">
-                                                                                <p>None</p>
-                                                                            </div>
-                                                                        </div>
-                                                                    )}
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </>
+                                    </div>
+                                </div>
+                                {/* bg-${categories[item?.category].color} */}
+                                <div style={{ backgroundColor: getColorCode() }} className={` w-full md:w-1/5 relative rounded-lg rounded-l-none`}>
+                                    <div className="inset-x-0 top-0 transform">
+                                        <div className="flex justify-center transform">
+                                            {/* bg-${categories[item?.category].color} */}
+                                            <span style={{ backgroundColor: getColorCode() }} className={` shadow inline-flex w-full h-10 flex items-center justify-center text-center px-4 py-1 text-sm leading-5 font-semibold tracking-wider uppercase text-white`}>
+                                                {showStatus(item?.state)}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div className="h-auto w-full flex items-start justify-center">
+                                        {item?.state != "awaiting_video_upload" && item?.state != "transcoding" ?
+                                            <>
+                                                {item.thumbnails.length > 0 && (
+                                                    <Loader active={loadingThumbnails} message=''>
+                                                        <img
+                                                            className={`${isExpand ? 'w-1/2' : 'w-full'} h-auto mx-auto shadow-2xl`}
+                                                            src={item.thumbnails[0].url}
+                                                            alt="" />
+                                                    </Loader>
+
                                                 )}
                                                 {
-                                                    props.showComment && (
-                                                        <div className="w-full py-4">
-                                                            <div className="w-full flex text-center justify-end space-x-2">
-                                                                <span className="text-white w-6 h-6 rounded-full p-3 bg-blue-600 text-xs flex items-center justify-center">{item?.comments.length}</span>
-                                                                <label
-                                                                    onClick={() => setCommentVisibility(!commentVisibility)}
-                                                                    className="text-sm font-bold text-gray-800 cursor-pointer hover:underline"
-                                                                >Comments</label>
-                                                            </div>
-                                                            {commentVisibility && <Comments newsItem={item} />}
-                                                        </div>
-                                                    )
+
                                                 }
+                                            </>
+                                            : null
+                                        }
 
-                                            </div>
-                                        </div>
-                                        {/* bg-${categories[item?.category].color} */}
-                                        <div style={{ backgroundColor: getColorCode() }} className={` w-full md:w-1/5 relative rounded-lg rounded-l-none`}>
-                                            <div className="inset-x-0 top-0 transform">
-                                                <div className="flex justify-center transform">
-                                                    {/* bg-${categories[item?.category].color} */}
-                                                    <span style={{ backgroundColor: getColorCode() }} className={` shadow inline-flex w-full h-10 flex items-center justify-center text-center px-4 py-1 text-sm leading-5 font-semibold tracking-wider uppercase text-white`}>
-                                                        {showStatus(item?.state)}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div className="h-auto w-full flex items-start justify-center">
-                                                {item?.state != "awaiting_video_upload" && item?.state != "transcoding" ?
-                                                    <>
-                                                        {item.thumbnails.length > 0 && (
-                                                            <Loader active={loadingThumbnails} message=''>
-                                                                <img
-                                                                    className={`${isExpand ? 'w-1/2' : 'w-full'} h-auto mx-auto shadow-2xl`}
-                                                                    src={item.thumbnails[0].url}
-                                                                    alt="" />
-                                                            </Loader>
-
-                                                        )}
-                                                        {
-
-                                                        }
-                                                    </>
-                                                    : null
-                                                }
-
-                                            </div>
-                                            <div className="w-full flex justify-center mt-4 mb-2">
-                                                <span onClick={() => refreshData(item.state === 'transcoding')} className="px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-green-800 bg-green-100 hover:bg-green-200 text-green-800 cursor-pointer">
-                                                    Refresh
+                                    </div>
+                                    <div className="w-full flex justify-center mt-4 mb-2">
+                                        <span onClick={() => refreshData(item.state === 'transcoding')} className="px-2 py-0.5 my-1 inline-flex text-xs leading-5 font-semibold rounded border border-green-800 bg-green-100 hover:bg-green-200 text-green-800 cursor-pointer">
+                                            Refresh
                                                 </span>
-                                            </div>
-                                            <div className="w-full flex justify-center mt-4 mb-8">
+                                    </div>
+                                    <div className="w-full flex justify-center mt-4 mb-8">
 
-                                                {actionRender(item)}
-                                            </div>
-                                        </div>
+                                        {actionRender(item)}
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    ) : null}
+                    </div>
+                </div>
+            ) : null}
 
-                    {isClips && (
-                        <div className="fixed z-30 inset-0 overflow-y-auto">
-                            <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                                <div className="fixed inset-0 transition-opacity">
-                                    <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
-                                </div>
-                                <span className="hidden sm:inline-block sm:align-middle sm:h-screen"></span>&#8203;
+            {isClips && (
+                <div className="fixed z-30 inset-0 overflow-y-auto">
+                    <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                        <div className="fixed inset-0 transition-opacity">
+                            <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+                        </div>
+                        <span className="hidden sm:inline-block sm:align-middle sm:h-screen"></span>&#8203;
 						<div className="w-full h-screen overflow-y-auto inline-block align-bottom bg-white rounded-lg px-4 pb-4 text-left overflow-hidden shadow-xl transform transition-all md:align-middle md:max-w-6xl" role="dialog" aria-modal="true" aria-labelledby="modal-headline">
-                                    <div>
-                                        <div className="flex py-4 top-0 sticky bg-white z-10">
-                                            <div className="w-1/2 px-4 sm:px-6 flex justify-start">
-                                                <h2 className="text-gray-500 text-base font-bold uppercase tracking-wide">Clips</h2>
-                                            </div>
-                                            <div className="w-1/2 flex justify-end">
-                                                <FontAwesomeIcon onClick={() => setIsClips(false)} className="w-4 h-4 text-gray-400 hover:text-indigo-600 cursor-pointer" icon={['fas', 'times']} />
-                                            </div>
-                                        </div>
-                                        <div className="mt-2">
+                            <div>
+                                <div className="flex py-4 top-0 sticky bg-white z-10">
+                                    <div className="w-1/2 px-4 sm:px-6 flex justify-start">
+                                        <h2 className="text-gray-500 text-base font-bold uppercase tracking-wide">Clips</h2>
+                                    </div>
+                                    <div className="w-1/2 flex justify-end">
+                                        <FontAwesomeIcon onClick={() => setIsClips(false)} className="w-4 h-4 text-gray-400 hover:text-indigo-600 cursor-pointer" icon={['fas', 'times']} />
+                                    </div>
+                                </div>
+                                <div className="mt-2">
 
-                                            <div className="h-full overflow-y-auto align-middle md:flex flex-wrap min-w-full px-4 sm:px-6 md:px-6 py-4">
-                                                {clips?.video.sort((a, b) => a.aspect_ratio - b.aspect_ratio)
-                                                    .map((clip, i) => (
-                                                        <div key={i} className="mx-auto sm:mx-0 w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5 h-82 sm:pr-4 mb-4">
-                                                            <div className="w-full text-sm text-center">Aspect Ratio: {clip.aspect_ratio}</div>
-                                                            <PreviewClip videoUrl={clip.url} />
-                                                        </div>
-                                                    ))}
-                                                {/* {clips?.video.map((clip, i) => (
+                                    <div className="h-full overflow-y-auto align-middle md:flex flex-wrap min-w-full px-4 sm:px-6 md:px-6 py-4">
+                                        {clips?.video.sort((a, b) => a.aspect_ratio - b.aspect_ratio)
+                                            .map((clip, i) => (
+                                                <div key={i} className="mx-auto sm:mx-0 w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5 h-82 sm:pr-4 mb-4">
+                                                    <div className="w-full text-sm text-center">Aspect Ratio: {clip.aspect_ratio}</div>
+                                                    <PreviewClip videoUrl={clip.url} />
+                                                </div>
+                                            ))}
+                                        {/* {clips?.video.map((clip, i) => (
                                             <div key={i} className="mx-auto sm:mx-0 w-full md:w-1/4 lg:w-1/5 h-82 sm:pr-4 mb-4">
                                                 <div className="w-full text-sm text-center">Aspect Ratio: {clip.aspect_ratio}</div>
                                                 <PreviewClip videoUrl={clip.url} image={clips.thumbnails[i].url} />
                                             </div>
                                         ))} */}
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    )}
-                </>
-                :
-                <>
-                    <CreateItem state="edit" close={openCreateBox} update={updateNewsItem} data={props.item} />
-                </>
-            }
-
+                    </div>
+                </div>
+            )}
         </>
+
     )
 }
 

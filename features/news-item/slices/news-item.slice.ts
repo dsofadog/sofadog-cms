@@ -13,23 +13,25 @@ import moment from 'moment'
 import NProgress from "nprogress";
 
 interface NewsItemState {
-    createFormIsVisible: boolean;
+    newsItemFormIsVisible: boolean;
     newsItems: any[];
     editingNewsItemId: string | null
     progressBarLoading: boolean;
     scrollLoading: boolean;
     scrollLoadingMessage: string | null;
+    // createLoading: boolean;
     fetchErrorMessage: string | null;
     notificationErrorMessage: string | null;
 }
 
 const initialState: NewsItemState = {
-    createFormIsVisible: false,
+    newsItemFormIsVisible: false,
     newsItems: [],
     editingNewsItemId: null,
     progressBarLoading: false,
     scrollLoading: false,
     scrollLoadingMessage: null,
+    // createLoading: false,
     fetchErrorMessage: null,
     notificationErrorMessage: null
 }
@@ -54,6 +56,12 @@ const newsItem = createSlice({
             state.scrollLoading = false
             state.scrollLoadingMessage = null
         },
+        // createLoadingStart(state: NewsItemState){
+        //     state.createLoading = true
+        // },
+        // createLoadingEnd(state: NewsItemState){
+        //     state.createLoading = false
+        // },
         newsItemLoadingStart(state: NewsItemState, action: PayloadAction<string>) {
             const newsItem = state.newsItems.find(newsItem => newsItem.id === action.payload)
             newsItem.loading = true
@@ -62,11 +70,11 @@ const newsItem = createSlice({
             const newsItem = state.newsItems.find(newsItem => newsItem.id === action.payload)
             delete newsItem.loading
         },
-        showCreateForm(state: NewsItemState) {
-            state.createFormIsVisible = true
+        showNewsItemForm(state: NewsItemState) {
+            state.newsItemFormIsVisible = true
         },
-        hideCreateForm(state: NewsItemState) {
-            state.createFormIsVisible = false
+        hideNewsItemForm(state: NewsItemState) {
+            state.newsItemFormIsVisible = false
         },
         swapNewsItem(state: NewsItemState, action: PayloadAction<{ id: string, direction: string }>) {
             const { id, direction } = action.payload
@@ -128,8 +136,8 @@ export const {
     scrollLoadingEnd,
     newsItemLoadingStart,
     newsItemLoadingEnd,
-    showCreateForm,
-    hideCreateForm,
+    showNewsItemForm,
+    hideNewsItemForm,
     swapNewsItem,
     addNewsItem,
     setNewsItems,
@@ -182,7 +190,7 @@ export const create = (newsItem: any): AppThunk => async dispatch => {
 
         dispatch(addNewsItem(createRes.news_item))
 
-        dispatch(hideCreateForm())
+        dispatch(hideNewsItemForm())
 
         dispatch(progressBarLoadingEnd())
 
@@ -254,6 +262,8 @@ export const update = (id: string, newsItem: any): AppThunk => async dispatch =>
 
         dispatch(updateNewsItem(updateRes.news_item))
 
+        dispatch(hideNewsItemForm())
+        
         dispatch(progressBarLoadingEnd())
 
     } catch (error) {

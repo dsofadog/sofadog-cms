@@ -9,7 +9,6 @@ import useInfiniteScroll from 'react-infinite-scroll-hook';
 import moment from 'moment'
 import _ from 'lodash'
 
-import CreateItem from 'component/cms/CreateItem';
 import PreviewItem from 'component/cms/PreviewItem';
 import PreviewItemTable from 'component/cms/PreviewItemTable';
 import CmsConstant from 'utils/cms-constant';
@@ -25,16 +24,15 @@ import {
     query as queryNewsItems,
     changeOrder,
     changeStatus,
-    create as createNewsItem,
     reset as resetNewsItems,
     update as updateNewsItem,
     remove as removeNewsItem,
     uploadVideo,
     refresh as refreshNewsItem,
-    showCreateForm,
-    hideCreateForm
+    showNewsItemForm,
+    setNewsItems,
 } from 'features/news-item/slices/news-item.slice'
-// import NewsItemDialogForm from 'component/cms/NewsItemDialogForm';
+import NewsItemDialogForm from 'component/cms/NewsItemDialogForm';
 import notify from 'utils/notify';
 
 type Params = {
@@ -64,7 +62,7 @@ const Demo = () => {
         scrollLoading,
         scrollLoadingMessage,
         newsItems,
-        createFormIsVisible
+        newsItemFormIsVisible: _newsItemFormIsVisible
     } = useSelector((state: RootState) => state.newsItem)
 
 
@@ -77,6 +75,8 @@ const Demo = () => {
 
     const [toggleAppView, setToggleAppView] = useState(false)
 
+    const [newsItemFormIsVisible,setNewsItemFormIsVisible] = useState<boolean>(false)
+    const [selectedNewsItem, selectNewsItem] = useState<any>()
     const [searchId, setSearchId] = useState(router.query?.id)
     const [feeds, setFeeds] = useState(null);
 
@@ -114,6 +114,16 @@ const Demo = () => {
         // console.log(momentTimezone())
     }, []);
 
+    useEffect(() => {
+        if (!_newsItemFormIsVisible) {
+            setTimeout(()=>{
+                selectNewsItem(null)
+                setNewsItemFormIsVisible(false)
+            }, 500)
+        }else{
+            setNewsItemFormIsVisible(true)
+        }
+    }, [_newsItemFormIsVisible])
 
     useEffect(() => {
         if (progressBarLoading) {
@@ -143,8 +153,8 @@ const Demo = () => {
         }
     }, [router.query.id])
 
-    useEffect(()=>{
-        if(notificationErrorMessage){
+    useEffect(() => {
+        if (notificationErrorMessage) {
             notify('danger', notificationErrorMessage)
         }
     }, [notificationErrorMessage])
@@ -178,11 +188,7 @@ const Demo = () => {
         dispatch(changeOrder(item.id, direction))
     }
 
-    function create(newItem) {
-        dispatch(createNewsItem(newItem))
-    }
-
-    function update(id, item, index) {
+    function update(id, item) {
         dispatch(updateNewsItem(id, item))
     }
 
@@ -218,53 +224,46 @@ const Demo = () => {
 
     return (
         <>
-        <div className="flex flex-col h-full h-screen bg-gray-100">
-            <NavHeader />
-            <NewsItemsHeader
-                params={params}
-                feeds={feeds}
-                onSubmitParams={(newParams) => {
-                    setSearchId(null)
-                    dispatch(resetNewsItems())
-                    console.log('onSubmitParams', newParams)
-                    setParams(newParams)
-                }}
-                onRefresh={(title) => {
-                    dispatch(resetNewsItems())
-                    if (searchId) {
-                        fetchItem()
-                    } else {
-                        setParams({
-                            ...params,
-                            title,
-                            date: moment.utc().format("YYYY-MM-DD")
-                        })
-                    }
-                }}
-                onNewClicked={() => {
-                    dispatch(showCreateForm())
-                    scrollToSection();
-                }}
-                viewMode={toggleAppView ? 'table' : 'list'}
-                onViewModeChange={(viewMode) => {
-                    setToggleAppView(viewMode === 'table')
-                }}
-            />
+            <div className="flex flex-col h-full h-screen bg-gray-100">
+                <NavHeader />
+                <NewsItemsHeader
+                    params={params}
+                    feeds={feeds}
+                    onSubmitParams={(newParams) => {
+                        setSearchId(null)
+                        dispatch(resetNewsItems())
+                        console.log('onSubmitParams', newParams)
+                        setParams(newParams)
+                    }}
+                    onRefresh={(title) => {
+                        dispatch(resetNewsItems())
+                        if (searchId) {
+                            fetchItem()
+                        } else {
+                            setParams({
+                                ...params,
+                                title,
+                                date: moment.utc().format("YYYY-MM-DD")
+                            })
+                        }
+                    }}
+                    onNewClicked={() => {
+                        dispatch(showNewsItemForm())
+                        scrollToSection();
+                    }}
+                    viewMode={toggleAppView ? 'table' : 'list'}
+                    onViewModeChange={(viewMode) => {
+                        setToggleAppView(viewMode === 'table')
+                    }}
+                />
 
-            <div className="flex-1 overflow-y-auto">
-        {/* <NewsItemDialogForm /> */}
+                <div className="flex-1 overflow-y-auto">
+                    {newsItemFormIsVisible && feeds && (
+                        <NewsItemDialogForm feeds={feeds} newsItem={selectedNewsItem} />
+                    )}
 
-                <div ref={infiniteRef as React.RefObject<HTMLDivElement>} className="max-w-7xl mx-auto">
-                    <>
+                    <div ref={infiniteRef as React.RefObject<HTMLDivElement>} className="max-w-7xl mx-auto">
                         <div className="sfd-top invisible"></div>
-                    </>
-                    <>
-                        {createFormIsVisible && (
-                            <CreateItem state="new" close={() => dispatch(hideCreateForm())} create={create} />
-                        )}
-                    </>
-                    <>
-
                         <div className={`${toggleAppView ? 'flex flex-col' : 'hidden'}`}>
                             <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8 mt-5">
                                 <div style={{ minHeight: '30rem' }} className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
@@ -289,6 +288,10 @@ const Demo = () => {
                                             <tbody className="bg-white divide-y divide-gray-200">
                                                 {newsItems.map((item, i) => (
                                                     <PreviewItemTable
+                                                        onEdit={()=>{
+                                                            selectNewsItem(item)
+                                                            dispatch(showNewsItemForm())
+                                                        }}
                                                         key={item.id}
                                                         newsItem={item}
                                                     />
@@ -312,76 +315,79 @@ const Demo = () => {
                             </div>
                         </div>
 
-                    </>
 
 
-                    <div className={`${!toggleAppView ? 'flex flex-col' : 'hidden'}`}>
-                        {newsItems?.map((item, i) => (
-                            <div key={i}>
-                                <PreviewItem
-                                    key={item.id}
-                                    index={i}
-                                    showComment={true}
-                                    item={item}
-                                    processedData={processedData}
-                                    uplaodVideo={upload}
-                                    deleteItem={remove}
-                                    move={decrement_increment_ordinal}
-                                    updateItem={update}
-                                    getSigleItem={refresh}
-                                    feeds={feeds}
-                                />
-                            </div>
-                        ))}
-                        {scrollLoading && (
-
-                            <div className="box-border p-4">
-                                <div className="flex flex-row justify-center items-center">
-                                    <FontAwesomeIcon className="w-12 h-12 p-2 rounded-full" icon={['fas', 'spinner']} spin />
-                                    <p>{scrollLoadingMessage}</p>
+                        <div className={`${!toggleAppView ? 'flex flex-col' : 'hidden'}`}>
+                            {newsItems?.map((item, i) => (
+                                <div key={i}>
+                                    <PreviewItem
+                                        onEdit={() => {
+                                            selectNewsItem(item)
+                                            dispatch(showNewsItemForm())
+                                        }}
+                                        key={item.id}
+                                        index={i}
+                                        showComment={true}
+                                        item={item}
+                                        processedData={processedData}
+                                        uplaodVideo={upload}
+                                        deleteItem={remove}
+                                        move={decrement_increment_ordinal}
+                                        updateItem={update}
+                                        getSigleItem={refresh}
+                                        feeds={feeds}
+                                    />
                                 </div>
+                            ))}
+                            {scrollLoading && (
 
-                            </div>
-                        )}
+                                <div className="box-border p-4">
+                                    <div className="flex flex-row justify-center items-center">
+                                        <FontAwesomeIcon className="w-12 h-12 p-2 rounded-full" icon={['fas', 'spinner']} spin />
+                                        <p>{scrollLoadingMessage}</p>
+                                    </div>
+
+                                </div>
+                            )}
+                        </div>
                     </div>
+
+                    {fetchErrorMessage && (
+                        <div className="box-border p-4">
+                            <div className="flex flex-row justify-center items-center">
+                                <FontAwesomeIcon className="w-12 h-12 p-2 rounded-full" icon={['fas', 'exclamation-circle']} />
+                                <p>{fetchErrorMessage}</p>
+                            </div>
+                            <div className="flex flex-row justify-center items-center">
+                                <button type="button" onClick={() => {
+                                    dispatch(resetNewsItems())
+                                    if (searchId) {
+                                        dispatch(readNewsItem(searchId))
+                                    } else {
+                                        setParams({
+                                            ...params,
+                                            date: moment.utc().format("YYYY-MM-DD")
+                                        })
+                                    }
+                                }} className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Retry</button>
+                            </div>
+
+
+                        </div>
+                    )}
                 </div>
 
-                {fetchErrorMessage && (
-                    <div className="box-border p-4">
-                        <div className="flex flex-row justify-center items-center">
-                            <FontAwesomeIcon className="w-12 h-12 p-2 rounded-full" icon={['fas', 'exclamation-circle']} />
-                            <p>{fetchErrorMessage}</p>
+                {
+                    !scrollLoading && newsItems && (
+                        <div className="fixed bottom-0 right-0 mb-4 mr-4 z-50 cursor-pointer">
+                            <FontAwesomeIcon onClick={(e) => scrollToSection()} className="w-12 h-12 p-2 rounded-full cursor-pointer text-white bg-blue-500 hover:bg-blue-600" icon={['fas', 'arrow-up']} />
                         </div>
-                        <div className="flex flex-row justify-center items-center">
-                            <button type="button" onClick={() => {
-                                dispatch(resetNewsItems())
-                                if (searchId) {
-                                    dispatch(readNewsItem(searchId))
-                                } else {
-                                    setParams({
-                                        ...params,
-                                        date: moment.utc().format("YYYY-MM-DD")
-                                    })
-                                }
-                            }} className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Retry</button>
-                        </div>
-
-
-                    </div>
-                )}
-            </div>
-
-            {
-                !scrollLoading && newsItems && (
-                    <div className="fixed bottom-0 right-0 mb-4 mr-4 z-50 cursor-pointer">
-                        <FontAwesomeIcon onClick={(e) => scrollToSection()} className="w-12 h-12 p-2 rounded-full cursor-pointer text-white bg-blue-500 hover:bg-blue-600" icon={['fas', 'arrow-up']} />
-                    </div>
-                )
-            }
+                    )
+                }
 
 
 
-        </div >
+            </div >
         </>
     )
 }
