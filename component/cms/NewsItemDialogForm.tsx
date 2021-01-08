@@ -8,9 +8,6 @@ import _ from 'lodash'
 import { useState, useEffect } from 'react';
 import Editor from 'component/common/Editor';
 import MultiSelect from 'component/common/MultiSelect';
-import httpCms from 'utils/http-cms';
-import tokenManager from 'utils/token-manager';
-import { usePrevious } from 'rooks';
 import CmsConstant from 'utils/cms-constant';
 
 import moment from 'moment'
@@ -123,28 +120,7 @@ const NewsItemDialogForm = (props: Props) => {
     // const previousFeed = usePrevious(values.feed);
 
     useEffect(() => {
-        register('englishDescriptions')
-        register('estonianDescriptions')
-        register('newsCredits')
-        register('visualCredits')
         register('dueDate')
-
-        // httpCms.get(tokenManager.attachToken('/feeds'))
-        //     .then((response) => {
-        //         console.log("response: ", response.data);
-        //         setFeeds(response.data.feeds)
-
-        //         const _categories = response.data.feeds.find(_feed => _feed.id === values.feed[0]).categories
-        //         console.log('_categories', _categories)
-        //         setCategories(_categories)
-        //     })
-        //     .catch((e) => {
-        //         console.log(e);
-        //     })
-        //     .finally(() => {
-        //         // setLoading(false);
-        //     });
-
     }, [])
 
     useEffect(() => {
@@ -343,7 +319,7 @@ const NewsItemDialogForm = (props: Props) => {
                             <div className="w-full grid grid-cols-2 gap-3">
                                 <div className="col-span-1 bg-white rounded">
                                     <input
-                                        ref={register}
+                                        ref={register()}
                                         defaultValue={item.title}
                                         type="text"
                                         placeholder='Title'
@@ -355,7 +331,7 @@ const NewsItemDialogForm = (props: Props) => {
                                 </div>
                                 <div className="col-span-1  bg-white rounded">
                                     <input
-                                        ref={register}
+                                        ref={register()}
                                         defaultValue={item.url}
                                         type="text"
                                         placeholder='Url'

@@ -260,7 +260,7 @@ const Demo = () => {
                 <div className="flex-1 overflow-y-auto">
                     {newsItemFormIsVisible && feeds && (
                         <NewsItemDialogForm feeds={feeds} newsItem={selectedNewsItem} />
-                    )}
+                    )} 
 
                     <div ref={infiniteRef as React.RefObject<HTMLDivElement>} className="max-w-7xl mx-auto">
                         <div className="sfd-top invisible"></div>

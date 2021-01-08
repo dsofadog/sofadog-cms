@@ -19,7 +19,7 @@ const Editor = (props: Props)=>{
     return (
         <>
             <input 
-            ref={register}
+            ref={register()}
             name={name}
             type="text" 
             defaultValue={defaultValue}
