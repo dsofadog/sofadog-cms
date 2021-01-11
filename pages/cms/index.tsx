@@ -75,7 +75,7 @@ const Demo = () => {
 
     const [toggleAppView, setToggleAppView] = useState(false)
 
-    const [newsItemFormIsVisible,setNewsItemFormIsVisible] = useState<boolean>(false)
+    const [newsItemFormIsVisible, setNewsItemFormIsVisible] = useState<boolean>(false)
     const [selectedNewsItem, selectNewsItem] = useState<any>()
     const [searchId, setSearchId] = useState(router.query?.id)
     const [feeds, setFeeds] = useState(null);
@@ -116,11 +116,11 @@ const Demo = () => {
 
     useEffect(() => {
         if (!_newsItemFormIsVisible) {
-            setTimeout(()=>{
+            setTimeout(() => {
                 selectNewsItem(null)
                 setNewsItemFormIsVisible(false)
             }, 500)
-        }else{
+        } else {
             setNewsItemFormIsVisible(true)
         }
     }, [_newsItemFormIsVisible])
@@ -260,7 +260,7 @@ const Demo = () => {
                 <div className="flex-1 overflow-y-auto">
                     {newsItemFormIsVisible && feeds && (
                         <NewsItemDialogForm feeds={feeds} newsItem={selectedNewsItem} />
-                    )} 
+                    )}
 
                     <div ref={infiniteRef as React.RefObject<HTMLDivElement>} className="max-w-7xl mx-auto">
                         <div className="sfd-top invisible"></div>
@@ -288,7 +288,7 @@ const Demo = () => {
                                             <tbody className="bg-white divide-y divide-gray-200">
                                                 {newsItems.map((item, i) => (
                                                     <PreviewItemTable
-                                                        onEdit={()=>{
+                                                        onEdit={() => {
                                                             selectNewsItem(item)
                                                             dispatch(showNewsItemForm())
                                                         }}
@@ -317,16 +317,16 @@ const Demo = () => {
 
 
 
-                        <div className={`${!toggleAppView ? 'flex flex-col' : 'hidden'}`}>
+                        {feeds && <div className={`${!toggleAppView ? 'flex flex-col' : 'hidden'}`}>
                             {newsItems?.map((item, i) => (
                                 <div key={i}>
                                     <PreviewItem
-                                    feeds={feeds}
-                                    newsItem={item}
-                                    onEdit={()=>{
-                                        selectNewsItem(item)
-                                        dispatch(showNewsItemForm())
-                                    }}
+                                        feeds={feeds}
+                                        newsItem={item}
+                                        onEdit={() => {
+                                            selectNewsItem(item)
+                                            dispatch(showNewsItemForm())
+                                        }}
                                     />
                                     {/* <PreviewItem
                                         onEdit={() => {
@@ -358,6 +358,7 @@ const Demo = () => {
                                 </div>
                             )}
                         </div>
+                        }
                     </div>
 
                     {fetchErrorMessage && (
