@@ -81,7 +81,7 @@ const PreviewItem2 = (props) => {
                 </div>
             </div>
 
-            <div className="col-span-10 bg-white overflow-hidden shadow rounded-lg border-l-8 divide-y divide-gray-200">
+            <div className="col-span-10 bg-white shadow rounded-lg border-l-8 divide-y divide-gray-200">
                 <div className="grid grid-cols-3 gap-4 p-3">
 
                     <div className="md:col-span-1 sm:col-span-3 flex items-center">
