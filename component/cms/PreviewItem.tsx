@@ -82,9 +82,9 @@ const PreviewItem2 = (props) => {
             </div>
 
             <div className="col-span-10 bg-white shadow rounded-lg border-l-8 divide-y divide-gray-200">
-                <div className="grid grid-cols-3 gap-4 p-3">
+                <div className="grid grid-cols-7 gap-4 p-3">
 
-                    <div className="md:col-span-1 sm:col-span-3 flex items-center">
+                    <div className="md:col-span-2 sm:col-span-7 flex items-center">
                         <button type="button" onClick={() => setSummary(!summary)} className="btn btn-default mr-5">
                             <FontAwesomeIcon className="w-3 h-3 mr-2" icon={['fas', summary ? 'caret-down' : 'caret-up']} />
                             {summary ? 'Expand' : 'Collapse'}
@@ -107,10 +107,10 @@ const PreviewItem2 = (props) => {
                             </nav>
                         </div>
                     </div>
-                    <div className="md:col-span-1 sm:col-span-3">
+                    <div className="md:col-span-3 sm:col-span-7">
                         <Owners newsItem={newsItem} />
                     </div>
-                    <div className="md:col-span-1 sm:col-span-3">
+                    <div className="md:col-span-2 sm:col-span-7">
                         <Actions newsItem={newsItem} onEdit={onEdit} />
                     </div>
                 </div>
