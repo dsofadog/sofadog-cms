@@ -2,10 +2,11 @@ import Actions from "component/common/Actions"
 import Owners from "component/common/Owners"
 import NewsItemHeaderSection from "component/common/NewsItemHeaderSection"
 import Comments from "./Comments"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 import _ from 'lodash'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { useTimeout } from "rooks"
 
 enum Language {
     English = 'english',
@@ -17,9 +18,25 @@ const PreviewItem2 = (props) => {
 
     const { newsItem, onEdit } = props
 
+    const [loadingThumbnails, setLoadingThumbnails] = useState<boolean>(false)
+    const { start: fastStopLoadingThumbnails } = useTimeout(() => setLoadingThumbnails(false), 1000)
+    const { start: slowStopLoadingThumbnails } = useTimeout(() => setLoadingThumbnails(false), 4000)
+
     const [activeLanguage, setActiveLanguage] = useState<Language>(Language.English)
     const [commentVisibility, setCommentVisibility] = useState(false)
     const [summary, setSummary] = useState<boolean>(true)
+
+    useEffect(() => {
+        if (newsItem?.loading) {
+            setLoadingThumbnails(true)
+        }
+        if (!newsItem?.loading && newsItem?.state === 'transcoding') {
+            slowStopLoadingThumbnails()
+        } else if (!newsItem?.loading && newsItem?.state !== 'transcoding') {
+            fastStopLoadingThumbnails()
+        }
+    }, [newsItem?.loading])
+
 
     return (<>
         {/* <div className="relative">
@@ -34,24 +51,33 @@ const PreviewItem2 = (props) => {
 
         </div> */}
         <div className="flex flex-nowrap justify-center">
-                        <div className="w-1/12 mx-auto flex-none float-left">
-                            <div className="bg-gray-300 p-1 h-32 w-1 mx-auto"></div>
-                        </div>
-                    </div>
+            <div className="w-1/12 mx-auto flex-none float-left">
+                <div className="bg-gray-300 p-1 h-32 w-1 mx-auto"></div>
+            </div>
+        </div>
         <div className="relative grid grid-cols-12">
             <div
                 style={{ paddingTop: '4rem', paddingBottom: '1rem' }}
                 className="col-span-2">
                 <div>
-                    {newsItem?.thumbnails[0] && <img
-                        src={newsItem?.thumbnails[0].url}
-                        className="rounded-l-lg shadow-xl"
-                    />}
-                    {!newsItem?.thumbnails[0] && <span className="w-full inline-flex items-center justify-center sfd-btn-primary-static rounded-l-lg shadow-xl">
-                        <span style={{ paddingTop: '133%' }}></span>
-                        <FontAwesomeIcon className="w-16 h-16 text-white" icon={['fas', 'image']} />
-                        {/* <span className="text-lg font-medium leading-none text-white">N</span> */}
-                    </span>}
+                    {loadingThumbnails && 
+                    
+                    <span className="w-full inline-flex items-center justify-center sfd-btn-primary-static rounded-l-lg shadow-xl">
+                            <span style={{ paddingTop: '133%' }}></span>
+                            <FontAwesomeIcon className="w-16 h-16 p-2 rounded-full text-gray-200" icon={['fas', 'spinner']} spin />
+                        </span>
+                    }
+
+                    {!loadingThumbnails && (newsItem?.thumbnails[0] && newsItem?.thumbnails[0].url
+                        ? <img
+                            src={newsItem?.thumbnails[0].url}
+                            className="rounded-l-lg shadow-xl"
+                        />
+                        : <span className="w-full inline-flex items-center justify-center sfd-btn-primary-static rounded-l-lg shadow-xl">
+                            <span style={{ paddingTop: '133%' }}></span>
+                            <FontAwesomeIcon className="w-16 h-16 text-white" icon={['fas', 'image']} />
+                            {/* <span className="text-lg font-medium leading-none text-white">N</span> */}
+                        </span>)}
                 </div>
             </div>
 
@@ -92,9 +118,9 @@ const PreviewItem2 = (props) => {
                     <NewsItemHeaderSection newsItem={newsItem} />
 
                     <div className={(summary ? 'max-h-36 overflow-hidden relative' : '')}>
-                        {summary && <div  onClick={()=>setSummary(false)} className="fade absolute w-full h-20 bottom-0 cursor-pointer flex justify-center items-end">
-                            <FontAwesomeIcon className='w-6 h-6 text-gray-300' icon={['fas', 'angle-double-down']}/>
-                            </div>}
+                        {summary && <div onClick={() => setSummary(false)} className="fade absolute w-full h-20 bottom-0 cursor-pointer flex justify-center items-end">
+                            <FontAwesomeIcon className='w-6 h-6 text-gray-300' icon={['fas', 'angle-double-down']} />
+                        </div>}
                         <div className={activeLanguage !== Language.English ? 'hidden' : ''}>
                             {newsItem.descriptions.find(d => d.language === Language.English)?.sentences.map((sentence, index) => {
                                 return (
