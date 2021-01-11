@@ -303,7 +303,7 @@ const Actions = (props: ActionsProps) => {
                         From: "opacity-100"
                         To: "opacity-0"
                     */}
-                    <div className={(dropdownIsActive ? 'opacity-100' : 'transition ease-in duration-100 opacity-0') + ' absolute z-20 mt-1 w-full rounded-md bg-white shadow-lg'}>
+                    <div className={(dropdownIsActive ? 'opacity-100' : 'transition ease-in duration-100 opacity-0') + ' absolute z-20 mt-1 w-full rounded-md bg-white shadow-lg always-show-scroll'}>
                         {dropdownIsActive && <ul
                             tabIndex={-1}
                             role="listbox"
