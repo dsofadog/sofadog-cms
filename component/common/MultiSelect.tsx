@@ -78,7 +78,7 @@ const MultiSelect = (props: Props) => {
 
     const remove = (selectedList, removedItem) => {
         const list = _.reject(selectedList, { [keyField]: removedItem[keyField] })
-        
+
         updateValue(_.map(list, keyField))
     }
 
@@ -92,49 +92,52 @@ const MultiSelect = (props: Props) => {
     }
 
     return (
-        <> 
-            <MultiSelectLib
-                avoidHighlightFirstOption={true}
-                placeholder={placeholder}
-                singleSelect={!!singleSelect}
-                options={options} // Options to display in the dropdown
-                selectedValues={selectedValues} // Preselected value to persist in dropdown
-                onSelect={select} // Function will trigger on select event
-                onRemove={remove} // Function will trigger on remove event
-                displayValue={displayValue || 'name'} // Property name to display in the dropdown options
-                closeIcon="cancel"
-                style={{
-                    searchBox: { // To change search box element look
-                        'borderColor': errors[name]? 'rgba(244, 63, 94)':'rgba(209, 213, 219)',
-                        'borderRadius': '7px',
-                        'fontSize': '0.875rem',
-                        'minHeight': '38px',
-                        'paddingTop': '1px',
-                        'paddingLeft': '0px',
-                        'paddingBottom': '0px',
-                    },
-                    inputField: { // To change input field position or margin
-                        'fontSize': '0.875rem',
-                        'margin': '0px',
-                        'paddingTop': '0.3rem',
-                        'paddingBottom': '0.3rem',
-                        'paddingLeft': '0.65rem',
-                        'paddingRight': '0.65rem',
-                    },
-                    optionContainer: {
-                        'zIndex': '2',
-                        'maxHeight': '150px'
-                    },
-                    option: {
-                        'fontSize': '0.875rem',
-                        'padding': '5px 10px'
-                    },
-                    chips: {
-                        'margin': '4px',
-                    }
-                }}
-            />
-            {errors[name] && <p className="mt-1 text-sm text-red-500">{errors[name].message}</p>}
+        <>
+            <div className={singleSelect ? 'single-select' : 'multi-select'}>
+                <MultiSelectLib
+                    avoidHighlightFirstOption={true}
+                    placeholder={placeholder}
+                    singleSelect={!!singleSelect}
+                    options={options} // Options to display in the dropdown
+                    selectedValues={selectedValues} // Preselected value to persist in dropdown
+                    onSelect={select} // Function will trigger on select event
+                    onRemove={remove} // Function will trigger on remove event
+                    displayValue={displayValue || 'name'} // Property name to display in the dropdown options
+                    closeIcon="cancel"
+                    style={{
+                        searchBox: { // To change search box element look
+                            'borderColor': errors[name] ? 'rgba(244, 63, 94)' : 'rgba(209, 213, 219)',
+                            'borderRadius': '7px',
+                            'fontSize': '0.875rem',
+                            'minHeight': '38px',
+                            'paddingTop': '1px',
+                            'paddingLeft': '0px',
+                            'paddingBottom': '0px',
+                        },
+                        inputField: { // To change input field position or margin
+                            'fontSize': '0.875rem',
+                            'margin': '0px',
+                            'paddingTop': '0.3rem',
+                            'paddingBottom': '0.3rem',
+                            'paddingLeft': '0.65rem',
+                            'paddingRight': '0.65rem',
+                        },
+                        optionContainer: {
+                            'zIndex': '2',
+                            'maxHeight': '150px'
+                        },
+                        option: {
+                            'fontSize': '0.875rem',
+                            'padding': '5px 10px'
+                        },
+                        chips: {
+                            'margin': '4px',
+                        }
+                    }}
+                />
+                {errors[name] && <p className="mt-1 text-sm text-red-500">{errors[name].message}</p>}
+            </div>
+
         </>
     )
 }
