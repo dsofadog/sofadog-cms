@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useRef, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import NProgress from "nprogress";
 
@@ -22,15 +22,15 @@ import { RootState } from 'rootReducer';
 import {
     read as readNewsItem,
     query as queryNewsItems,
-    changeOrder,
-    changeStatus,
+    // changeOrder,
+    // changeStatus,
     reset as resetNewsItems,
-    update as updateNewsItem,
-    remove as removeNewsItem,
-    uploadVideo,
-    refresh as refreshNewsItem,
+    // update as updateNewsItem,
+    // remove as removeNewsItem,
+    // uploadVideo,
+    // refresh as refreshNewsItem,
     showNewsItemForm,
-    setNewsItems,
+    // setNewsItems,
 } from 'features/news-item/slices/news-item.slice'
 import NewsItemDialogForm from 'component/cms/NewsItemDialogForm';
 import notify from 'utils/notify';
@@ -172,25 +172,25 @@ const Demo = () => {
     }
 
 
-    function remove(item) {
-        dispatch(removeNewsItem(item.id))
-    }
+    // function remove(item) {
+    //     dispatch(removeNewsItem(item.id))
+    // }
 
-    function processedData(item: any, action: string) {
-        dispatch(changeStatus(item.id, action))
-    }
+    // function processedData(item: any, action: string) {
+    //     dispatch(changeStatus(item.id, action))
+    // }
 
-    function upload(item, video: any) {
-        dispatch(uploadVideo(item.id, video.video_file))
-    }
+    // function upload(item, video: any) {
+    //     dispatch(uploadVideo(item.id, video.video_file))
+    // }
 
-    function decrement_increment_ordinal(item, direction) {
-        dispatch(changeOrder(item.id, direction))
-    }
+    // function decrement_increment_ordinal(item, direction) {
+    //     dispatch(changeOrder(item.id, direction))
+    // }
 
-    function update(id, item) {
-        dispatch(updateNewsItem(id, item))
-    }
+    // function update(id, item) {
+    //     dispatch(updateNewsItem(id, item))
+    // }
 
     const scrollToSection = () => {
         scroller.scrollTo("sfd-top", {
@@ -200,9 +200,9 @@ const Demo = () => {
         });
     };
 
-    async function refresh(item_id) {
-        dispatch(refreshNewsItem(item_id))
-    }
+    // async function refresh(item_id) {
+    //     dispatch(refreshNewsItem(item_id))
+    // }
 
 
     function getFeeds() {
@@ -224,7 +224,7 @@ const Demo = () => {
 
     return (
         <>
-            <div className="flex flex-col h-full h-screen bg-gray-100">
+            <div className="flex flex-col h-full h-screen bg-gray-50">
                 <NavHeader />
                 <NewsItemsHeader
                     params={params}
@@ -321,6 +321,13 @@ const Demo = () => {
                             {newsItems?.map((item, i) => (
                                 <div key={i}>
                                     <PreviewItem
+                                    newsItem={item}
+                                    onEdit={()=>{
+                                        selectNewsItem(item)
+                                        dispatch(showNewsItemForm())
+                                    }}
+                                    />
+                                    {/* <PreviewItem
                                         onEdit={() => {
                                             selectNewsItem(item)
                                             dispatch(showNewsItemForm())
@@ -336,7 +343,7 @@ const Demo = () => {
                                         updateItem={update}
                                         getSigleItem={refresh}
                                         feeds={feeds}
-                                    />
+                                    /> */}
                                 </div>
                             ))}
                             {scrollLoading && (

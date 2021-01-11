@@ -3,33 +3,50 @@ import Tippy from '@tippyjs/react';
 import moment from 'moment'
 
 type Props = {
-    newsItem: any
+    newsItem: any;
+    compressed?: boolean;
 }
 
 const NewsItemHeaderSection = (props: Props) => {
-    const { newsItem } = props
+    const { newsItem, compressed } = props
     return (
         <div>
-            <h2 className="text-sm text-gray-800 font-medium mr-auto">
+            {compressed && <h2 className="text-sm text-gray-800 font-medium mr-auto">
                 <Link href={`/cms?id=${newsItem?.id}`}>
                     <a>{newsItem?.title}</a>
                 </Link>
+            </h2>}
+
+
+            {!compressed && <h2>
+                <Link href={`/cms?id=${newsItem?.id}`}>
+                    <a className="mt-2 block text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+                        {newsItem?.title}
+                    </a>
+                </Link>
             </h2>
+            }
+
             <small className="text-gray-400">
                 <span className="mr-1">
-                    <Tippy content="Created at">
+                    {compressed ? <Tippy content="Created date">
                         <abbr title="">C</abbr>
-                    </Tippy>: {moment.unix(newsItem?.created_at).format('lll')}
+                    </Tippy> : 'Created date'}
+                    : {moment.unix(newsItem?.created_at).format('lll')}
                 </span>
+                {newsItem?.due_date && <span>| </span>}
                 {newsItem?.due_date && (<span className="mr-1">
-                    <Tippy content="Due date">
+                    {compressed ? <Tippy content="Due date">
                         <abbr title="">D</abbr>
-                    </Tippy>: {moment(newsItem?.due_date).format('lll')}
+                    </Tippy> : 'Due date'}
+                    : {moment(newsItem?.due_date).format('lll')}
                 </span>)}
+                {newsItem?.enqueued_at && <span>| </span>}
                 {newsItem?.enqueued_at && (<span className="mr-1">
-                    <Tippy content="Enqueued date">
+                    {compressed ? <Tippy content="Enqueued date">
                         <abbr title="">E</abbr>
-                    </Tippy>: {moment(newsItem?.enqueued_at).format('lll')}
+                    </Tippy> : 'Enqueued date'}
+                    : {moment(newsItem?.enqueued_at).format('lll')}
                 </span>)}
             </small>
             {newsItem?.tags.length > 0 && <div className="mt-1 mr-2">

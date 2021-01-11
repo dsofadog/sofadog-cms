@@ -47,7 +47,7 @@ const PreviewItemTable = (props: Props) => {
                 </span>)}
             </div>
             <div className="ml-4">
-              <NewsItemHeaderSection newsItem={newsItem} />
+              <NewsItemHeaderSection compressed={true} newsItem={newsItem} />
             </div>
           </div>
         </td>
