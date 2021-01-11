@@ -27,7 +27,7 @@ const PreviewItem = (props) => {
     const [commentVisibility, setCommentVisibility] = useState(false)
     const [summary, setSummary] = useState<boolean>(true)
 
-    useEffect(()=>{
+    useEffect(() => {
         getFeedCategories()
     }, [])
 
@@ -62,50 +62,15 @@ const PreviewItem = (props) => {
     }
 
     return (<>
-        {/* <div className="relative">
-
-            <div className="absolute inset-0 py-10">
-                <div className="relative h-96">
-                    <div className="absolute w-full bg-gray-200 h-80 rounded-3xl"></div>
-                    <div className="absolute w-full bg-red-500 h-80 rounded-3xl transform -rotate-1 sm:-rotate-2"></div>
-                </div>
-            </div>
-            
-
-        </div> */}
         <div className="flex flex-nowrap justify-center">
             <div className="w-1/12 mx-auto flex-none float-left">
                 <div className="bg-gray-300 p-1 h-32 w-1 mx-auto"></div>
             </div>
         </div>
-        <div className="relative grid grid-cols-12">
-            <div
-                style={{ paddingTop: '4rem', paddingBottom: '1rem' }}
-                className="col-span-2">
-                <div>
-                    {loadingThumbnails && 
-                    
-                    <span className="w-full inline-flex items-center justify-center sfd-btn-primary-static rounded-l-lg shadow-xl">
-                            <span style={{ paddingTop: '133%' }}></span>
-                            <FontAwesomeIcon className="w-16 h-16 p-2 rounded-full text-gray-200" icon={['fas', 'spinner']} spin />
-                        </span>
-                    }
-
-                    {!loadingThumbnails && (newsItem?.thumbnails[0] && newsItem?.thumbnails[0].url
-                        ? <img
-                            src={newsItem?.thumbnails[0].url}
-                            className="rounded-l-lg shadow-xl"
-                        />
-                        : <span className="w-full inline-flex items-center justify-center sfd-btn-primary-static rounded-l-lg shadow-xl">
-                            <span style={{ paddingTop: '133%' }}></span>
-                            <FontAwesomeIcon className="w-16 h-16 text-white" icon={['fas', 'image']} />
-                            {/* <span className="text-lg font-medium leading-none text-white">N</span> */}
-                        </span>)}
-                </div>
-            </div>
-
-            <div className="col-span-10 bg-white shadow rounded-lg border-t-8 divide-y divide-gray-200" style={{borderColor: getColorCode()}}>
-                <div className="grid grid-cols-7 gap-4 p-3">
+        <div className="grid grid-cols-12">
+            <div className="col-span-2"></div>
+            <div className="col-span-10 bg-white shadow rounded-t-lg border-t-8" style={{ borderColor: getColorCode() }}>
+                <div className="grid grid-cols-7 gap-4 flex items-center px-3" style={{ minHeight: '60px' }}>
 
                     <div className="md:col-span-2 sm:col-span-7 flex items-center">
                         <button type="button" onClick={() => setSummary(!summary)} className="btn btn-default mr-5">
@@ -123,10 +88,10 @@ const PreviewItem = (props) => {
                             <nav className="flex space-x-4" aria-label="Tabs">
                                 <a onClick={() => setActiveLanguage(Language.English)} className={(activeLanguage === Language.English ? 'bg-gray-100 text-gray-700' : 'text-gray-500 hover:text-gray-700') + ' inline-flex items-center cursor-pointer px-3 py-2 font-medium text-sm rounded-md'}>
                                     English
-                                                                            </a>
+                                                        </a>
                                 <a onClick={() => setActiveLanguage(Language.Estonian)} className={(activeLanguage === Language.Estonian ? 'bg-gray-100 text-gray-700' : 'text-gray-500 hover:text-gray-700') + ' inline-flex items-center cursor-pointer px-3 py-2 font-medium text-sm rounded-md'}>
                                     Estonian
-                                                                            </a>
+                                                        </a>
                             </nav>
                         </div>
                     </div>
@@ -137,10 +102,44 @@ const PreviewItem = (props) => {
                         <Actions newsItem={newsItem} onEdit={onEdit} />
                     </div>
                 </div>
+            </div>
+
+
+
+
+
+
+            <div
+                className="col-span-2">
+                    {loadingThumbnails &&
+
+                        <span className="w-full inline-flex items-center justify-center sfd-btn-primary-static rounded-l-lg shadow-xl">
+                            {/* <span style={{ paddingTop: '132%' }}></span> */}
+                            <FontAwesomeIcon className="w-16 h-16 p-2 rounded-full text-gray-200" icon={['fas', 'spinner']} spin />
+                        </span>
+                    }
+
+                    {!loadingThumbnails && (newsItem?.thumbnails[0] && newsItem?.thumbnails[0].url
+                        ? <img
+                            src={newsItem?.thumbnails[0].url}
+                            className="rounded-l-lg shadow-xl"
+                        />
+                        : <span className="w-full flex items-center justify-center sfd-btn-primary-static rounded-l-lg shadow-xl">
+                            <span style={{ paddingTop: '133%' }}></span>
+                            <FontAwesomeIcon className="w-16 h-16 text-white" icon={['fas', 'image']} />
+                            {/* <span className="text-lg font-medium leading-none text-white">N</span> */}
+                        </span>)}
+            </div>
+
+
+
+
+            <div className="col-span-10 bg-white shadow border-t border-b">
+             
                 <div className="px-6 py-6">
                     <NewsItemHeaderSection newsItem={newsItem} />
 
-                    <div className={(summary ? 'max-h-36 overflow-hidden relative' : '')}>
+                    <div className={(summary ? 'max-h-32 overflow-hidden relative' : '')}>
                         {summary && <div onClick={() => setSummary(false)} className="fade absolute w-full h-20 bottom-0 cursor-pointer flex justify-center items-end">
                             <FontAwesomeIcon className='w-6 h-6 text-gray-300' icon={['fas', 'angle-double-down']} />
                         </div>}
@@ -251,11 +250,10 @@ const PreviewItem = (props) => {
 
                         </div>
                     </div>
-
-
-
-
                 </div>
+            </div>
+            <div className="col-span-2"></div>
+            <div className="col-span-10 bg-white shadow rounded-b-lg">
                 <div className="px-6 py-6">
                     <div className="w-full">
                         <div className="w-full flex text-center justify-end space-x-2">
@@ -269,6 +267,7 @@ const PreviewItem = (props) => {
                     </div>
                 </div>
             </div>
+
         </div>
 
 
