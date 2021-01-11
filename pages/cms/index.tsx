@@ -321,6 +321,7 @@ const Demo = () => {
                             {newsItems?.map((item, i) => (
                                 <div key={i}>
                                     <PreviewItem
+                                    feeds={feeds}
                                     newsItem={item}
                                     onEdit={()=>{
                                         selectNewsItem(item)

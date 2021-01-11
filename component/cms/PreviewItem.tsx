@@ -14,17 +14,22 @@ enum Language {
 }
 
 
-const PreviewItem2 = (props) => {
+const PreviewItem = (props) => {
 
-    const { newsItem, onEdit } = props
+    const { feeds, newsItem, onEdit } = props
 
     const [loadingThumbnails, setLoadingThumbnails] = useState<boolean>(false)
     const { start: fastStopLoadingThumbnails } = useTimeout(() => setLoadingThumbnails(false), 1000)
     const { start: slowStopLoadingThumbnails } = useTimeout(() => setLoadingThumbnails(false), 4000)
 
+    const [category, setCategory] = useState<any>()
     const [activeLanguage, setActiveLanguage] = useState<Language>(Language.English)
     const [commentVisibility, setCommentVisibility] = useState(false)
     const [summary, setSummary] = useState<boolean>(true)
+
+    useEffect(()=>{
+        getFeedCategories()
+    }, [])
 
     useEffect(() => {
         if (newsItem?.loading) {
@@ -37,6 +42,24 @@ const PreviewItem2 = (props) => {
         }
     }, [newsItem?.loading])
 
+    function getColorCode() {
+
+        if (category != null) {
+            return category?.hex ? category?.hex : '#e5e7eb';
+
+        } else {
+            return '#e5e7eb';
+        }
+
+    }
+
+    function getFeedCategories() {
+        let f = feeds?.findIndex(x => x.id === newsItem.feed_id);
+        console.log("categories ", feeds[f]);
+        let c = feeds[f]?.categories.findIndex(x => x.number === newsItem.category);
+        console.log("feeds[f]?.categories[c] ", feeds[f]?.categories[c]);
+        setCategory(feeds[f]?.categories[c]);
+    }
 
     return (<>
         {/* <div className="relative">
@@ -81,7 +104,7 @@ const PreviewItem2 = (props) => {
                 </div>
             </div>
 
-            <div className="col-span-10 bg-white shadow rounded-lg border-l-8 divide-y divide-gray-200">
+            <div className="col-span-10 bg-white shadow rounded-lg border-t-8 divide-y divide-gray-200" style={{borderColor: getColorCode()}}>
                 <div className="grid grid-cols-7 gap-4 p-3">
 
                     <div className="md:col-span-2 sm:col-span-7 flex items-center">
@@ -252,4 +275,4 @@ const PreviewItem2 = (props) => {
     </>)
 }
 
-export default PreviewItem2
+export default PreviewItem
