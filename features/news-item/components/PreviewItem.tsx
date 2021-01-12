@@ -50,6 +50,23 @@ const PreviewItem = (props) => {
         }
     }, [newsItem?.loading])
 
+    useEffect(()=>{
+        if(newsItem){
+            const englishDescription = newsItem.descriptions.find(d=>d.language === Language.English)
+            const estonianDescription = newsItem.descriptions.find(d=>d.language === Language.Estonian)
+
+            if(
+                englishDescription && englishDescription.sentences.length === 0 && 
+                estonianDescription && estonianDescription.sentences.length !== 0
+                ){
+                setActiveLanguage(Language.Estonian)
+            }else{
+                setActiveLanguage(Language.English)
+
+            }
+        }
+    }, [newsItem])
+
     function getColorCode() {
 
         if (category != null) {
