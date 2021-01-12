@@ -3,10 +3,11 @@ import React, { createContext, useEffect, useState } from 'react';
 import _ from 'lodash'
 
 // import CmsConstant from 'utils/cms-constant';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from 'rootReducer';
-import tokenManager from 'utils/token-manager';
+// import tokenManager from 'utils/token-manager';
 import { useRouter } from 'next/router';
+import { query as queryFeeds } from 'features/feed/slices/feed.slice';
 
 enum RouteType {
   BackOffice = 'back_office',
@@ -29,27 +30,34 @@ function AccessControlProvider({ children }) {
 
   const router = useRouter()
 
+  const dispatch = useDispatch()
   const { isAuthenticated, currentUser, token } = useSelector((state: RootState) => state.auth)
+  const { feeds } = useSelector((state: RootState) => state.feed)
   const [routeType, setRouteType] = useState<RouteType>(null)
-  const [currentToken, setCurrentToken] = useState<string>(null)
+  // const [currentToken, setCurrentToken] = useState<string>(null)
 
-  useEffect(()=>{
-    setRouteType(router.pathname.startsWith('/cms')? RouteType.BackOffice : RouteType.Public)
+  useEffect(() => {
+    setRouteType(router.pathname.startsWith('/cms') ? RouteType.BackOffice : RouteType.Public)
   }, [router.pathname])
 
-  useEffect(()=>{
-    tokenManager.setToken(token)
-    setCurrentToken(token)
-  }, [token])
+  // useEffect(() => {
+  //   tokenManager.setToken(token)
+  //   setCurrentToken(token)
+  // }, [token])
 
+    useEffect(()=>{
+      if(isAuthenticated){
+        dispatch(queryFeeds())
+      }
+    }, [isAuthenticated])
 
   // Route restrictions
 
-  if(routeType === RouteType.BackOffice && !isAuthenticated){
+  if (routeType === RouteType.BackOffice && !isAuthenticated) {
     router.push('/')
   }
 
-  if(routeType === RouteType.Public && isAuthenticated){
+  if (routeType === RouteType.Public && isAuthenticated) {
     router.push('/cms')
   }
 
@@ -62,12 +70,12 @@ function AccessControlProvider({ children }) {
   const hasPermission = (permission: string) => {
     let allowedPermissions = []
 
-    currentUser.admin_roles.forEach(adminRole=>{
+    currentUser.admin_roles.forEach(adminRole => {
       allowedPermissions = allowedPermissions.concat(permissionsByRole[adminRole.id])
     })
 
     allowedPermissions = _.uniq(allowedPermissions)
-    
+
     return allowedPermissions.includes(permission)
   }
 
@@ -79,7 +87,7 @@ function AccessControlProvider({ children }) {
 
   return (
     <AccessControlContext.Provider value={initialState}>
-      {(routeType === RouteType.Public || (routeType === RouteType.BackOffice && isAuthenticated && currentToken)) && children}
+      {(routeType === RouteType.Public || (routeType === RouteType.BackOffice && isAuthenticated && token && feeds.length > 0)) && children}
     </AccessControlContext.Provider>
   );
 }

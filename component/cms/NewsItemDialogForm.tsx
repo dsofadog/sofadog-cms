@@ -72,15 +72,15 @@ const schema = yup.object().shape({
 const defaultValues = schema.cast({})
 
 type Props = {
-    feeds: any[];
     newsItem?: any;
 }
 
 const NewsItemDialogForm = (props: Props) => {
 
-    const { feeds, newsItem } = props
+    const { newsItem } = props
     const {newsItemFormIsVisible} = useSelector((state: RootState)=>state.newsItem)
-
+    const {feeds} = useSelector((state: RootState)=> state.feed)
+ 
     const tags = CmsConstant.Tags
     const methods = useForm<Inputs>({
         resolver: yupResolver(schema),
@@ -114,10 +114,7 @@ const NewsItemDialogForm = (props: Props) => {
     const [activeLanguage, setActiveLanguage] = useState<Language>(Language.English)
     const [activeCreditType, setActiveCreditType] = useState<CreditType>(CreditType.NewsCredits)
 
-    // const [feeds, setFeeds] = useState([])
     const [categories, setCategories] = useState([])
-
-    // const previousFeed = usePrevious(values.feed);
 
     useEffect(() => {
         register('dueDate')

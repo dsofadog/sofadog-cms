@@ -7,6 +7,8 @@ import { useState, useEffect } from "react"
 import _ from 'lodash'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useTimeout } from "rooks"
+import { RootState } from "rootReducer"
+import { useSelector } from "react-redux"
 
 enum Language {
     English = 'english',
@@ -16,7 +18,9 @@ enum Language {
 
 const PreviewItem = (props) => {
 
-    const { feeds, newsItem, onEdit } = props
+    const { newsItem, onEdit } = props
+
+    const {feeds} = useSelector((state: RootState)=>state.feed)
 
     const [loadingThumbnails, setLoadingThumbnails] = useState<boolean>(false)
     const { start: fastStopLoadingThumbnails } = useTimeout(() => setLoadingThumbnails(false), 1000)
@@ -28,8 +32,12 @@ const PreviewItem = (props) => {
     const [summary, setSummary] = useState<boolean>(true)
 
     useEffect(() => {
-        getFeedCategories()
-    }, [])
+        if(feeds.length > 0 && newsItem){
+            let feedIndex = feeds?.findIndex(feed => feed.id === newsItem.feed_id);
+            let categoryIndex = feeds[feedIndex]?.categories.findIndex(category => category.number === newsItem.category);
+            setCategory(feeds[feedIndex]?.categories[categoryIndex]);
+        }
+    }, [feeds, newsItem])
 
     useEffect(() => {
         if (newsItem?.loading) {
@@ -51,14 +59,6 @@ const PreviewItem = (props) => {
             return '#e5e7eb';
         }
 
-    }
-
-    function getFeedCategories() {
-        let f = feeds?.findIndex(x => x.id === newsItem.feed_id);
-        console.log("categories ", feeds[f]);
-        let c = feeds[f]?.categories.findIndex(x => x.number === newsItem.category);
-        console.log("feeds[f]?.categories[c] ", feeds[f]?.categories[c]);
-        setCategory(feeds[f]?.categories[c]);
     }
 
     return (<>
@@ -144,40 +144,36 @@ const PreviewItem = (props) => {
                             <FontAwesomeIcon className='w-6 h-6 text-gray-300' icon={['fas', 'angle-double-down']} />
                         </div>}
                         <div className={activeLanguage !== Language.English ? 'hidden' : ''}>
-                            {newsItem.descriptions.find(d => d.language === Language.English)?.sentences.map((sentence, index) => {
+                            {newsItem.descriptions.find(d => d.language === Language.English)?.sentences.map((sentence, key) => {
                                 return (
-                                    <>
-                                        <div className={' hover:text-gray-600 text-base'}>
-                                            <div className="wysiwyg w-full space-y-1 px-2 pr-5 pb-4 pt-4">
-                                                <div>
-                                                    <span style={{
-                                                        overflowWrap: 'break-word',
-                                                        wordWrap: 'break-word',
-                                                        hyphens: 'auto'
-                                                    }} className={'text-base text-gray-600'} dangerouslySetInnerHTML={{ __html: sentence }} ></span>
-                                                </div>
+                                    <div key={key} className={' hover:text-gray-600 text-base'}>
+                                        <div className="wysiwyg w-full space-y-1 px-2 pr-5 pb-4 pt-4">
+                                            <div>
+                                                <span style={{
+                                                    overflowWrap: 'break-word',
+                                                    wordWrap: 'break-word',
+                                                    hyphens: 'auto'
+                                                }} className={'text-base text-gray-600'} dangerouslySetInnerHTML={{ __html: sentence }} ></span>
                                             </div>
                                         </div>
-                                    </>
+                                    </div>
                                 )
                             })}
                         </div>
                         <div className={activeLanguage !== Language.Estonian ? 'hidden' : ''}>
-                            {newsItem.descriptions.find(d => d.language === Language.Estonian)?.sentences.map(sentence => {
+                            {newsItem.descriptions.find(d => d.language === Language.Estonian)?.sentences.map((sentence, key) => {
                                 return (
-                                    <>
-                                        <div className={(!false ? '' : 'truncate') + ' hover:text-gray-600 text-base'}>
-                                            <div className="wysiwyg w-full space-y-1 px-2 pr-5 pb-4 pt-4">
-                                                <div>
-                                                    <span style={{
-                                                        overflowWrap: 'break-word',
-                                                        wordWrap: 'break-word',
-                                                        hyphens: 'auto'
-                                                    }} className="text-base text-gray-600" dangerouslySetInnerHTML={{ __html: sentence }} ></span>
-                                                </div>
+                                    <div key={key} className={(!false ? '' : 'truncate') + ' hover:text-gray-600 text-base'}>
+                                        <div className="wysiwyg w-full space-y-1 px-2 pr-5 pb-4 pt-4">
+                                            <div>
+                                                <span style={{
+                                                    overflowWrap: 'break-word',
+                                                    wordWrap: 'break-word',
+                                                    hyphens: 'auto'
+                                                }} className="text-base text-gray-600" dangerouslySetInnerHTML={{ __html: sentence }} ></span>
                                             </div>
                                         </div>
-                                    </>
+                                    </div>
                                 )
                             })}
                         </div>
@@ -191,22 +187,20 @@ const PreviewItem = (props) => {
                                 </dt>
                                     <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                                         <ul className="border border-gray-200 rounded-md divide-y divide-gray-200">
-                                            {newsItem.news_credits.map(newsCredit => {
+                                            {newsItem.news_credits.map((newsCredit, key) => {
                                                 return (
-                                                    <>
-                                                        <li className="pl-3 pr-4 py-3 flex items-center justify-between text-sm">
-                                                            <div className="w-0 flex-1 flex items-center">
-                                                                <span className="ml-2 flex-1 w-0 truncate">
-                                                                    {newsCredit.link_text}
-                                                                </span>
-                                                            </div>
-                                                            <div className="ml-4 flex-shrink-0">
-                                                                <a href={newsCredit.url} target="_blank" className="font-medium text-indigo-600 hover:text-indigo-500">
-                                                                    Link
-                                                                </a>
-                                                            </div>
-                                                        </li>
-                                                    </>
+                                                    <li key={key} className="pl-3 pr-4 py-3 flex items-center justify-between text-sm">
+                                                        <div className="w-0 flex-1 flex items-center">
+                                                            <span className="ml-2 flex-1 w-0 truncate">
+                                                                {newsCredit.link_text}
+                                                            </span>
+                                                        </div>
+                                                        <div className="ml-4 flex-shrink-0">
+                                                            <a href={newsCredit.url} target="_blank" className="font-medium text-indigo-600 hover:text-indigo-500">
+                                                                Link
+                                                            </a>
+                                                        </div>
+                                                    </li>
                                                 )
                                             })}
 
@@ -223,22 +217,20 @@ const PreviewItem = (props) => {
                                 </dt>
                                     <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                                         <ul className="border border-gray-200 rounded-md divide-y divide-gray-200">
-                                            {newsItem.visual_credits.map(newsCredit => {
+                                            {newsItem.visual_credits.map((newsCredit, key) => {
                                                 return (
-                                                    <>
-                                                        <li className="pl-3 pr-4 py-3 flex items-center justify-between text-sm">
-                                                            <div className="w-0 flex-1 flex items-center">
-                                                                <span className="ml-2 flex-1 w-0 truncate">
-                                                                    {newsCredit.link_text}
-                                                                </span>
-                                                            </div>
-                                                            <div className="ml-4 flex-shrink-0">
-                                                                <a href={newsCredit.url} target="_blank" className="font-medium text-indigo-600 hover:text-indigo-500">
-                                                                    Link
-                                                                </a>
-                                                            </div>
-                                                        </li>
-                                                    </>
+                                                    <li key={key} className="pl-3 pr-4 py-3 flex items-center justify-between text-sm">
+                                                        <div className="w-0 flex-1 flex items-center">
+                                                            <span className="ml-2 flex-1 w-0 truncate">
+                                                                {newsCredit.link_text}
+                                                            </span>
+                                                        </div>
+                                                        <div className="ml-4 flex-shrink-0">
+                                                            <a href={newsCredit.url} target="_blank" className="font-medium text-indigo-600 hover:text-indigo-500">
+                                                                Link
+                                                            </a>
+                                                        </div>
+                                                    </li>
                                                 )
                                             })}
 

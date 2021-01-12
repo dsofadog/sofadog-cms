@@ -22,15 +22,8 @@ import { RootState } from 'rootReducer';
 import {
     read as readNewsItem,
     query as queryNewsItems,
-    // changeOrder,
-    // changeStatus,
     reset as resetNewsItems,
-    // update as updateNewsItem,
-    // remove as removeNewsItem,
-    // uploadVideo,
-    // refresh as refreshNewsItem,
-    showNewsItemForm,
-    // setNewsItems,
+    showNewsItemForm
 } from 'features/news-item/slices/news-item.slice'
 import NewsItemDialogForm from 'component/cms/NewsItemDialogForm';
 import notify from 'utils/notify';
@@ -65,8 +58,8 @@ const Demo = () => {
         newsItemFormIsVisible: _newsItemFormIsVisible
     } = useSelector((state: RootState) => state.newsItem)
 
+    const {feeds} = useSelector((state: RootState)=>state.feed)
 
-    //const categories = CmsConstant.Category; 
     const tags = CmsConstant.Tags;
     const status = CmsConstant.Status;
 
@@ -78,8 +71,6 @@ const Demo = () => {
     const [newsItemFormIsVisible, setNewsItemFormIsVisible] = useState<boolean>(false)
     const [selectedNewsItem, selectNewsItem] = useState<any>()
     const [searchId, setSearchId] = useState(router.query?.id)
-    const [feeds, setFeeds] = useState(null);
-
 
     const [params, setParams] = useState<Params>({
         token: tokenManager.getToken(),
@@ -110,7 +101,7 @@ const Demo = () => {
         dispatch(resetNewsItems())
         console.log('router.query', router.query)
         // fetchItems();
-        getFeeds();
+        // getFeeds();
         // console.log(momentTimezone())
     }, []);
 
@@ -171,27 +162,6 @@ const Demo = () => {
         }
     }
 
-
-    // function remove(item) {
-    //     dispatch(removeNewsItem(item.id))
-    // }
-
-    // function processedData(item: any, action: string) {
-    //     dispatch(changeStatus(item.id, action))
-    // }
-
-    // function upload(item, video: any) {
-    //     dispatch(uploadVideo(item.id, video.video_file))
-    // }
-
-    // function decrement_increment_ordinal(item, direction) {
-    //     dispatch(changeOrder(item.id, direction))
-    // }
-
-    // function update(id, item) {
-    //     dispatch(updateNewsItem(id, item))
-    // }
-
     const scrollToSection = () => {
         scroller.scrollTo("sfd-top", {
             duration: 800,
@@ -200,35 +170,12 @@ const Demo = () => {
         });
     };
 
-    // async function refresh(item_id) {
-    //     dispatch(refreshNewsItem(item_id))
-    // }
-
-
-    function getFeeds() {
-
-        //setLoading(true);
-        HttpCms.get(tokenManager.attachToken(`/feeds`))
-            .then((response) => {
-                console.log("response: ", response.data);
-                setFeeds(response.data.feeds)
-            })
-            .catch((e) => {
-                console.log(e);
-            })
-            .finally(() => {
-                // setLoading(false);
-            });
-
-    }
-
     return (
         <>
             <div className="flex flex-col h-full h-screen bg-gray-50">
                 <NavHeader />
                 <NewsItemsHeader
                     params={params}
-                    feeds={feeds}
                     onSubmitParams={(newParams) => {
                         setSearchId(null)
                         dispatch(resetNewsItems())
@@ -258,8 +205,8 @@ const Demo = () => {
                 />
 
                 <div className="flex-1 overflow-y-auto">
-                    {newsItemFormIsVisible && feeds && (
-                        <NewsItemDialogForm feeds={feeds} newsItem={selectedNewsItem} />
+                    {newsItemFormIsVisible && (
+                        <NewsItemDialogForm newsItem={selectedNewsItem} />
                     )}
 
                     <div ref={infiniteRef as React.RefObject<HTMLDivElement>} className="max-w-7xl mx-auto">
@@ -317,34 +264,16 @@ const Demo = () => {
 
 
 
-                        {feeds && <div className={`${!toggleAppView ? 'flex flex-col' : 'hidden'}`}>
+                        <div className={`${!toggleAppView ? 'flex flex-col' : 'hidden'}`}>
                             {newsItems?.map((item, i) => (
                                 <div key={i}>
                                     <PreviewItem
-                                        feeds={feeds}
                                         newsItem={item}
                                         onEdit={() => {
                                             selectNewsItem(item)
                                             dispatch(showNewsItemForm())
                                         }}
                                     />
-                                    {/* <PreviewItem
-                                        onEdit={() => {
-                                            selectNewsItem(item)
-                                            dispatch(showNewsItemForm())
-                                        }}
-                                        key={item.id}
-                                        index={i}
-                                        showComment={true}
-                                        item={item}
-                                        processedData={processedData}
-                                        uplaodVideo={upload}
-                                        deleteItem={remove}
-                                        move={decrement_increment_ordinal}
-                                        updateItem={update}
-                                        getSigleItem={refresh}
-                                        feeds={feeds}
-                                    /> */}
                                 </div>
                             ))}
                             {scrollLoading && (
@@ -358,7 +287,6 @@ const Demo = () => {
                                 </div>
                             )}
                         </div>
-                        }
                     </div>
 
                     {fetchErrorMessage && (

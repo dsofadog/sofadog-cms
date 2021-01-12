@@ -5,13 +5,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import CmsConstant from 'utils/cms-constant';
-import Category from './feeds/Category';
+import { useSelector } from 'react-redux';
+import { RootState } from 'rootReducer';
 
 f_config.autoAddCss = false;
 library.add(fas, fab);
 
 type Props = {
-    feeds: any[],
     onSubmit: (filter: State) => void
 }
 
@@ -90,7 +90,8 @@ function reducer(state: State, action: any) {
 
 const Filter = (props: Props) => {
 
-    const { feeds, onSubmit } = props
+    const { onSubmit } = props
+    const {feeds} = useSelector((state: RootState)=>state.feed)
 
     const tags = CmsConstant.Tags;
     const status = CmsConstant.Status;

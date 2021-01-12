@@ -3,6 +3,8 @@ import { login as loginAPI, LoginResponsePayload, User } from 'features/auth/api
 import { toggleShift as toggleShiftAPI, ToggleShiftResponsePayload } from 'features/auth/api/toggle-shift.api'
 import { AppThunk } from 'store'
 import tokenManager from 'utils/token-manager'
+import { query as queryFeeds } from 'features/feed/slices/feed.slice'
+import { REHYDRATE } from 'redux-persist'
 
 interface AuthState {
     isAuthenticated: boolean;
@@ -64,6 +66,13 @@ const auth = createSlice({
             state.isLoading = false
             state.error = 'Something went wrong'
         }
+    },
+    extraReducers: (builder)=>{
+        builder.addCase(REHYDRATE, (state: any, action: any)=>{
+            if(action.payload?.auth.isAuthenticated){
+                tokenManager.setToken(action.payload.auth.token)
+            }
+        })
     }
 })
 
