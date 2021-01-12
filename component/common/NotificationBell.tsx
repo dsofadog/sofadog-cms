@@ -1,12 +1,12 @@
-import { useEffect, useRef, useState, useContext } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import _ from 'lodash'
 
 import httpCms from "utils/http-cms";
 
-import { LayoutContext } from "contexts";
 import tokenManager from 'utils/token-manager'
+import notify from 'utils/notify'
 
 import MiniLoader from "./MiniLoader";
 import Notification from './Notification'
@@ -14,7 +14,6 @@ import useInterval from "component/hooks/useInterval";
 
 const NotificationBell = () => {
 
-    const { notify } = useContext(LayoutContext)
     const bellWrapperRef = useRef(null);
     useOutsideAlerter(bellWrapperRef);
     const [openBellDropdown, setOpenBellDropdown] = useState(false);

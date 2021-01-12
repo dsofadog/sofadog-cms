@@ -1,6 +1,6 @@
 import { store } from 'react-notifications-component';
 
-const notify = (type: 'success' | 'danger', message: string) => {
+const notify = (type: 'success' | 'danger', message?: string) => {
 
     store.addNotification({
       title: type === 'success' ? 'Success!' : 'Error!',

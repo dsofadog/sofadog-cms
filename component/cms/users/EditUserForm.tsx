@@ -1,11 +1,10 @@
-import { useState, useContext, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from 'yup'
 import _ from 'lodash'
 
-import { LayoutContext } from 'contexts';
 import ProcessingButton from 'component/common/ProcessingButton';
 import SubmitButton from "component/common/SubmitButton";
 import httpCms from 'utils/http-cms';
@@ -25,6 +24,7 @@ import PasswordForm, {
     defaultValues as passwordDefaultValues
 } from './PasswordForm';
 import tokenManager from 'utils/token-manager';
+import notify from 'utils/notify';
 
 
 const basicInformationSchema = yup.object().shape({
@@ -61,8 +61,6 @@ const EditUserForm = (props: Props) => {
     const {
         user
     } = props
-
-    const { notify } = useContext(LayoutContext);
 
     const basicInformationForm = useForm<BasicInformationInputs>({
         resolver: yupResolver(basicInformationSchema),

@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState } from 'react';
 
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -22,8 +22,8 @@ import PasswordForm, {
     defaultValues as passwordDefaultValues
 } from './PasswordForm';
 import httpCms from 'utils/http-cms';
-import { LayoutContext } from 'contexts';
 import tokenManager from 'utils/token-manager';
+import notify from 'utils/notify';
 
 interface Inputs extends BasicInformationInputs, RolesInputs, PasswordInputs { }
 
@@ -47,7 +47,6 @@ const CreateUserForm = (props: Props) => {
 
     const { callback } = props
 
-    const { notify } = useContext(LayoutContext);
     const { register, handleSubmit, errors } = useForm<Inputs>({
         resolver: yupResolver(schema),
         defaultValues,

@@ -1,17 +1,17 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 
 import Settings from "component/common/Settings"
-import { LayoutContext } from "contexts";
 import httpCms from "utils/http-cms";
 import SubmitButton from "component/common/SubmitButton";
 import PasswordForm, { Inputs, schema as passwordSchema } from "component/cms/users/PasswordForm";
 import { useSelector } from "react-redux";
 import { RootState } from "rootReducer";
 import tokenManager from "utils/token-manager";
+import notify from "utils/notify";
 
 const schema = yup.object().shape({
     ...passwordSchema
@@ -23,7 +23,6 @@ const ChangePassword = () => {
         resolver: yupResolver(schema)
     })
     const {currentUser} = useSelector((state:RootState)=>state.auth)
-    const { notify } = useContext(LayoutContext);
     const [loading, setLoading] = useState<boolean>(false)
 
     const changePassword = async function (data: Inputs) {

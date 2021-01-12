@@ -1,11 +1,11 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useEffect } from "react";
 import httpCms from "utils/http-cms";
 
 import _ from 'lodash'
 
 import Loader from "component/common/Loader";
-import { LayoutContext } from "contexts";
 import tokenManager from "utils/token-manager";
+import notify from "utils/notify";
 
 type Props = {
     onUserSelect: (user: any) => void
@@ -15,7 +15,6 @@ const UserList = (props: Props) => {
 
     const { onUserSelect } = props
 
-    const { notify } = useContext(LayoutContext);
     const [loading, setLoading] = useState<boolean>(false)
     const [users, setUsers] = useState(null);
 

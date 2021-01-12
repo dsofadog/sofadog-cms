@@ -1,15 +1,15 @@
 import _ from 'lodash'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { useState, useContext, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import * as yup from 'yup'
 import ProcessingButton from 'component/common/ProcessingButton'
 import SubmitButton from 'component/common/SubmitButton'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { LayoutContext } from 'contexts'
 import httpCms from 'utils/http-cms'
 import CategoryForm, {Inputs, schema as rawSchema} from './CategoryForm'
 import tokenManager from 'utils/token-manager'
+import notify from 'utils/notify'
 
 enum Mode {
     View = 'view',
@@ -36,7 +36,6 @@ const Category = (props: Props) => {
         resolver: yupResolver(schema),
         defaultValues: category,
     })
-    const { notify } = useContext(LayoutContext);
 
     const [mode, setMode] = useState(Mode.View)
     const [removing, setRemoving] = useState<boolean>(false)

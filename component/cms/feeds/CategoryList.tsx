@@ -1,12 +1,12 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 import _ from 'lodash';
 
 import Loader from "component/common/Loader";
 import httpCms from "utils/http-cms";
-import { LayoutContext } from "contexts";
 import Category from "./Category";
 import tokenManager from "utils/token-manager";
+import notify from 'utils/notify'
 
 type Props = {
     categories: any[]
@@ -16,7 +16,6 @@ const CategoryList = (props: Props) => {
 
     const { categories } = props
 
-    const { notify } = useContext(LayoutContext);
     const [loading, setLoading] = useState<boolean>(false)
 
     const [updatedCategories, setUpdatedCategories] = useState(null)

@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState } from 'react';
 
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -12,8 +12,8 @@ import CategoryForm, {
     defaultValues
 } from './CategoryForm';
 import httpCms from 'utils/http-cms';
-import { LayoutContext } from 'contexts';
 import tokenManager from 'utils/token-manager';
+import notify from 'utils/notify'
 
 
 const schema = yup.object().shape({
@@ -29,7 +29,6 @@ const CreateCategoryForm = (props: Props) => {
 
     const { onCreated, feed} = props
 
-    const { notify } = useContext(LayoutContext);
     const { register, handleSubmit, errors, setValue, watch } = useForm<Inputs>({
         resolver: yupResolver(schema),
         defaultValues: defaultValues,

@@ -2,11 +2,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useRouter } from "next/router";
 
 import _ from 'lodash'
-import tokenManager from "utils/token-manager";
 import httpCms from "utils/http-cms";
-import { useContext, useState } from "react";
-import { LayoutContext } from "contexts";
+import { useState } from "react";
 import MiniLoader from './MiniLoader'
+import tokenManager from "utils/token-manager";
+import notify from "utils/notify";
+
 
 type Props = {
     notification: any;
@@ -16,8 +17,6 @@ type Props = {
 const Notification = (props: Props) => {
 
     const { notification, onRead } = props
-
-    const { notify } = useContext(LayoutContext)
 
     const router = useRouter();
     const [isLoading, setLoading] = useState<boolean>(false)

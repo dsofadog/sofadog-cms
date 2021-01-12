@@ -1,11 +1,11 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 import _ from 'lodash'
 
 import Loader from "component/common/Loader";
 import httpCms from "utils/http-cms";
-import { LayoutContext } from "contexts";
 import tokenManager from "utils/token-manager";
+import notify from "utils/notify";
 
 type Props = {
     onFeedSelect: (feed: any) => void
@@ -15,7 +15,6 @@ const FeedList = (props: Props) => {
 
     const { onFeedSelect } = props
 
-    const { notify } = useContext(LayoutContext);
     const [loading, setLoading] = useState<boolean>(false)
     const [feeds, setFeeds] = useState(null);
 

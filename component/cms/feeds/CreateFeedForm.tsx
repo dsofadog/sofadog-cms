@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState } from 'react';
 
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -12,8 +12,8 @@ import FeedForm, {
     defaultValues as feedDefaultValues
 } from './FeedForm';
 import httpCms from 'utils/http-cms';
-import { LayoutContext } from 'contexts';
 import tokenManager from 'utils/token-manager';
+import notify from 'utils/notify';
 
 
 const schema = yup.object().shape({
@@ -28,7 +28,6 @@ const CreateFeedForm = (props: Props) => {
 
     const { callback } = props
 
-    const { notify } = useContext(LayoutContext);
     const { register, handleSubmit, errors } = useForm<FeedInputs>({
         resolver: yupResolver(schema),
         defaultValues: feedDefaultValues,
