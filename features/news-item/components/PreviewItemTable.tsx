@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import Actions from "component/common/Actions";
-import Owners from "component/common/Owners";
-import NewsItemHeaderSection from "component/common/NewsItemHeaderSection";
+import Actions from "features/news-item/components/Actions";
+import Owners from "features/news-item/components/Owners";
+import NewsItemHeaderSection from "features/news-item/components/NewsItemHeaderSection";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useTimeout } from 'rooks'
 

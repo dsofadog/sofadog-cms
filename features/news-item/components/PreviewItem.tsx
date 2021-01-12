@@ -1,6 +1,6 @@
-import Actions from "component/common/Actions"
-import Owners from "component/common/Owners"
-import NewsItemHeaderSection from "component/common/NewsItemHeaderSection"
+import Actions from "features/news-item/components/Actions"
+import Owners from "features/news-item/components/Owners"
+import NewsItemHeaderSection from "features/news-item/components/NewsItemHeaderSection"
 import Comments from "./Comments"
 import { useState, useEffect } from "react"
 
@@ -113,8 +113,8 @@ const PreviewItem = (props) => {
                 className="col-span-2">
                     {loadingThumbnails &&
 
-                        <span className="w-full inline-flex items-center justify-center sfd-btn-primary-static rounded-l-lg shadow-xl">
-                            {/* <span style={{ paddingTop: '132%' }}></span> */}
+                        <span className="w-full flex items-center justify-center sfd-btn-primary-static rounded-l-lg shadow-xl">
+                            <span style={{ paddingTop: '133%' }}></span>
                             <FontAwesomeIcon className="w-16 h-16 p-2 rounded-full text-gray-200" icon={['fas', 'spinner']} spin />
                         </span>
                     }

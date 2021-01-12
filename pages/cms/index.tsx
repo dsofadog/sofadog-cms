@@ -9,11 +9,12 @@ import useInfiniteScroll from 'react-infinite-scroll-hook';
 import moment from 'moment'
 import _ from 'lodash'
 
-import PreviewItem from 'component/cms/PreviewItem';
-import PreviewItemTable from 'component/cms/PreviewItemTable';
+import PreviewItem from 'features/news-item/components/PreviewItem';
+import PreviewItemTable from 'features/news-item/components/PreviewItemTable';
 import CmsConstant from 'utils/cms-constant';
-import HttpCms from 'utils/http-cms';
-import NewsItemsHeader from 'component/cms/NewsItemsHeader';
+import NewsItemsHeader from 'features/news-item/components/NewsItemsHeader';
+import NewsItemDialogForm from 'features/news-item/components/NewsItemDialogForm';
+
 import NavHeader from 'component/common/NavHeader';
 import tokenManager from 'utils/token-manager';
 import { useSelector, useDispatch } from 'react-redux';
@@ -25,7 +26,6 @@ import {
     reset as resetNewsItems,
     showNewsItemForm
 } from 'features/news-item/slices/news-item.slice'
-import NewsItemDialogForm from 'component/cms/NewsItemDialogForm';
 import notify from 'utils/notify';
 
 type Params = {

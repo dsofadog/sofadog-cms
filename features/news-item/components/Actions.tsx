@@ -14,7 +14,7 @@ import {
     uploadVideo,
     remove
 } from 'features/news-item/slices/news-item.slice'
-import PreviewClip from "component/cms/PreviewClip";
+import PreviewClip from "features/news-item/components/PreviewClip";
 import { IconName } from "@fortawesome/fontawesome-svg-core";
 
 type ActionProps = {
