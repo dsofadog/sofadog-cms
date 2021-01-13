@@ -56,8 +56,11 @@ const PreviewItem = (props) => {
             const estonianDescription = newsItem.descriptions.find(d=>d.language === Language.Estonian)
 
             if(
-                englishDescription && englishDescription.sentences.length === 0 && 
-                estonianDescription && estonianDescription.sentences.length !== 0
+                (!englishDescription && estonianDescription) || 
+                (
+                    englishDescription && englishDescription.sentences.length === 0 && 
+                    estonianDescription && estonianDescription.sentences.length !== 0
+                )
                 ){
                 setActiveLanguage(Language.Estonian)
             }else{
