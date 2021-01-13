@@ -20,8 +20,9 @@ import { far } from '@fortawesome/free-regular-svg-icons';
 
 import store, { persistor } from 'store'
 
-import { 
-  AccessControlProvider
+import {
+  AccessControlProvider,
+  ConfirmationProvider
 } from 'contexts';
 
 
@@ -40,11 +41,14 @@ function MyApp({ Component, pageProps }) {
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <AccessControlProvider>
+        <ConfirmationProvider >
+          <AccessControlProvider>
             <TopProgressBar />
             <ReactNotification />
             <Component {...pageProps} />
-        </AccessControlProvider>
+          </AccessControlProvider>
+        </ConfirmationProvider>
+
       </PersistGate>
     </Provider>
 

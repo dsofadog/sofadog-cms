@@ -68,7 +68,9 @@ const newsItem = createSlice({
         },
         newsItemLoadingEnd(state: NewsItemState, action: PayloadAction<string>) {
             const newsItem = state.newsItems.find(newsItem => newsItem.id === action.payload)
-            delete newsItem.loading
+            if(newsItem){
+                delete newsItem.loading
+            }
         },
         showNewsItemForm(state: NewsItemState) {
             state.newsItemFormIsVisible = true

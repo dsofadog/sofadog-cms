@@ -1,7 +1,7 @@
 import { useState, useContext, useCallback, useEffect } from "react"
 
 import { useOutsideClickRef } from 'rooks'
-import { AccessControlContext } from "contexts";
+import { AccessControlContext, ConfirmationContext } from "contexts";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "rootReducer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -59,6 +59,7 @@ const Actions = (props: ActionsProps) => {
     const dispatch = useDispatch()
     const { currentUser } = useSelector((state: RootState) => state.auth)
     const { hasRole, hasPermission } = useContext(AccessControlContext)
+    const confirm = useContext(ConfirmationContext)
 
 
 
@@ -240,10 +241,11 @@ const Actions = (props: ActionsProps) => {
                             <button
                                 disabled={newsItem?.loading}
                                 onClick={() => {
-                                    const confirmation = confirm('Are you sure? This action cannot be undone.')
-                                    if (confirmation) {
+                                    confirm({
+                                        variant: 'danger'
+                                    }).then(()=>{
                                         dispatch(remove(newsItem?.id))
-                                    }
+                                    })
                                 }}
                                 type="button"
                                 className={(newsItem?.loading ? 'cursor-not-allowed disabled:opacity-50 ' : '') + '-ml-px relative inline-flex items-center px-2 py-2 border border-gray-300 bg-white text-gray-500 hover:bg-gray-50 focus:z-10 focus:outline-none'}

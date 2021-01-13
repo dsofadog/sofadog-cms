@@ -233,7 +233,7 @@ const Demo = () => {
                                                 </tr>
                                             </thead>
                                             <tbody className="bg-white divide-y divide-gray-200">
-                                                {newsItems.map((item, i) => (
+                                                {newsItems.map(item => (
                                                     <PreviewItemTable
                                                         onEdit={() => {
                                                             selectNewsItem(item)
@@ -265,8 +265,8 @@ const Demo = () => {
 
 
                         <div className={`${!toggleAppView ? 'flex flex-col' : 'hidden'}`}>
-                            {newsItems?.map((item, i) => (
-                                <div key={i}>
+                            {newsItems?.map(item => (
+                                <div key={item.id}>
                                     <PreviewItem
                                         newsItem={item}
                                         onEdit={() => {
