@@ -89,8 +89,7 @@ const Actions = (props: ActionsProps) => {
     }
 
     const canViewUnclaimButton = () => {
-        return hasPermission(newsItem?.state) &&
-            isStateOwner()
+        return hasPermission(newsItem?.state) && newsItem?.owners[newsItem?.state]
     }
 
     const canViewSubmitNewButton = () => {
