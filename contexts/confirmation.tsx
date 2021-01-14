@@ -1,6 +1,8 @@
 import * as React from "react";
 import ConfirmationDialog, { ConfirmationOptions } from "component/common/ConfirmationDialog";
 
+// https://dev.to/dmtrkovalenko/the-neatest-way-to-handle-alert-dialogs-in-react-1aoe
+
 const ConfirmationContext = React.createContext<
     (options: ConfirmationOptions) => Promise<void>
 >(Promise.reject);

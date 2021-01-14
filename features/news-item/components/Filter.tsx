@@ -1,467 +1,251 @@
-import { useState, useRef, useEffect, useReducer } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
-import { config as f_config, library } from '@fortawesome/fontawesome-svg-core';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { fas } from '@fortawesome/free-solid-svg-icons';
-import { fab } from '@fortawesome/free-brands-svg-icons';
 import CmsConstant from 'utils/cms-constant';
 import { useSelector } from 'react-redux';
 import { RootState } from 'rootReducer';
-
-f_config.autoAddCss = false;
-library.add(fas, fab);
+import { useForm, FormProvider } from 'react-hook-form'
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from 'yup'
+import SubmitButton from 'component/common/SubmitButton';
+import moment from 'moment';
+import DayPickerInput from 'react-day-picker/DayPickerInput'
 
 type Props = {
-    onSubmit: (filter: State) => void
+    onSubmit: (filter: Inputs) => void
 }
 
-enum ActionType {
-    SelectCategory = 'select_category',
-    DeselectCategory = 'deselect_category',
-
-    SetAvailableCategories = 'set_available_categories',
-
-    SelectTag = 'select_tag',
-    DeselectTag = 'deselect_tag',
-    ResetTags = 'reset_tags',
-
-    SelectState = 'select_state',
-    DeselectState = 'deselect_state',
-    ResetStates = 'reset_states',
-
-    SelectFeed = 'select_feed',
-    DeselectFeed = 'deselect_feed',
-
-    ResetAll = 'reset_all'
-}
-
-type State = {
-    category: string | null;
-    availableCategories: string[];
+type Inputs = {
+    category?: number | null;
     tags: string[];
     states: string[];
     feed: string;
+    date?: string | null;
 }
 
-const initialState = {
-    category: null,
-    availableCategories: [],
-    tags: [],
-    states: [],
-    feed: null
-}
+const schema = yup.object().shape({
+    category: yup.number().label('Category'),
+    tags: yup.array(yup.string()).label('Tags').default([]),
+    states: yup.array(yup.string()).label('States').default([]),
+    feed: yup.string().label('Feed').default(''),
+    date: yup.string().label('Date'),
+})
 
-// TODO use redux-persist later
-
-function reducer(state: State, action: any) {
-    switch (action.type) {
-        case ActionType.SelectCategory:
-            return { ...state, category: action.payload }
-        case ActionType.DeselectCategory:
-            return { ...state, category: null }
-
-        case ActionType.SetAvailableCategories:
-            return { ...state, availableCategories: action.payload }
-
-        case ActionType.SelectTag:
-            return { ...state, tags: [...state.tags, action.payload] }
-        case ActionType.DeselectTag:
-            return { ...state, tags: state.tags.filter(tag => tag !== action.payload) }
-        case ActionType.ResetTags:
-            return { ...state, tags: [] }
-
-        case ActionType.SelectState:
-            return { ...state, states: [...state.states, action.payload] }
-        case ActionType.DeselectState:
-            console.log(action.payload)
-            return { ...state, states: state.states.filter(itemState => itemState !== action.payload) }
-        case ActionType.ResetStates:
-            return { ...state, states: [] }
-
-        case ActionType.SelectFeed:
-            return { ...state, feed: action.payload }
-        case ActionType.DeselectFeed:
-            return { ...state, feed: null }
-
-        case ActionType.ResetAll:
-            return { ...initialState }
-    }
-}
+const defaultValues = schema.cast({})
 
 const Filter = (props: Props) => {
 
     const { onSubmit } = props
-    const {feeds} = useSelector((state: RootState)=>state.feed)
+    const { feeds } = useSelector((state: RootState) => state.feed)
+
+    const methods = useForm<Inputs>({
+        resolver: yupResolver(schema),
+        defaultValues,
+    })
+    const { register, handleSubmit, errors, watch, setValue, setError, clearErrors, reset } = methods
 
     const tags = CmsConstant.Tags;
     const status = CmsConstant.Status;
 
-    const [state, dispatch] = useReducer(reducer, initialState)
+    const [availableCategories, setAvailableCategories] = useState([])
 
-    const catWrapperRef = useRef(null);
-    const tagWrapperRef = useRef(null);
-    const stateWrapperRef = useRef(null);
-    const filterWrapperRef = useRef(null);
-    const feedWrapperRef = useRef(null);
+    const values = watch()
 
-    useOutsideAlerter(catWrapperRef);
-    useOutsideAlerter(tagWrapperRef);
-    useOutsideAlerter(stateWrapperRef);
-    useOutsideAlerter(filterWrapperRef);
-    useOutsideAlerter(feedWrapperRef);
 
-    const [openCategoryDropdown, setOpenCategoryDropdown] = useState(false);
-    const toggleCateDropdown = () => { 
-        if(state.availableCategories.length > 0){
-            setOpenCategoryDropdown(!openCategoryDropdown)
-        }
-     };
-    const [openTagDropdown, setOpenTagDropdown] = useState(false);
-    const toggleTagDropdown = () => { setOpenTagDropdown(!openTagDropdown) };
-    const [openStateDropdown, setOpenStateDropdown] = useState(false);
-    const toggleStateDropdown = () => { setOpenStateDropdown(!openStateDropdown) };
-    const [openFilterDropdown, setOpenFilterDropdown] = useState(false);
-    const toggleFilterDropdown = () => { setOpenFilterDropdown(!openFilterDropdown) };
-    const [openFeedDropdown, setOpenFeedDropdown] = useState(false);
-    const toggleFeedDropdown = () => { setOpenFeedDropdown(!openFeedDropdown) };
+    useEffect(() => {
+        register('date')
+    }, [])
 
-    function clearAll() {
-        dispatch({ type: ActionType.ResetAll })
-    }
+    useEffect(() => {
+        if (values.feed) {
+            const matchedFeed = feeds.find(feed => feed.id === values.feed)
+            console.log(matchedFeed)
+            setAvailableCategories(matchedFeed.categories)
 
-    function getFeedName() {
-        let i = feeds.findIndex(x => x.id === state.feed);
-        if (i >= 0) {
-            return feeds[i].name ? feeds[i].name : feeds[i].id;
-        }
-    }
-
-    function getCategoryTitle() {
-        let i = state.availableCategories.findIndex(x => x.number === state.category);
-        if (i >= 0) {
-            return state.availableCategories[i].title;
-        }
-    }
-
-    function useOutsideAlerter(ref) {
-        useEffect(() => {
-            function handleClickOutside(event) {
-
-                if (ref.current && !ref.current.contains(event.target)) {
-                    if (ref.current.dataset.id === "tag") {
-                        setOpenTagDropdown(false);
-                    }
-                    if (ref.current.dataset.id === "category") {
-                        setOpenCategoryDropdown(false);
-                    }
-                    if (ref.current.dataset.id === "state") {
-                        setOpenStateDropdown(false);
-                    }
-                    if (ref.current.dataset.id === "filter") {
-                        setOpenFilterDropdown(false);
-                    }
-                    if (ref.current.dataset.id === "feed") {
-                        setOpenFeedDropdown(false);
-                    }
-                }
+            if (
+                !matchedFeed ||
+                (matchedFeed && !matchedFeed.categories.map(category => category.number).includes(values.category))) {
+                setValue('category', '')
             }
+        } else {
+            setAvailableCategories([])
+            setValue('category', '')
+        }
 
-            // Bind the event listener
-            document.addEventListener("mousedown", handleClickOutside);
-            return () => {
-                // Unbind the event listener on clean up
-                document.removeEventListener("mousedown", handleClickOutside);
-            };
-        }, [ref]);
+    }, [values.feed])
+
+    function pickTextColorBasedOnBgColorSimple(bgColor, lightColor, darkColor) {
+        if (!bgColor) return lightColor
+
+        var color = (bgColor.charAt(0) === '#') ? bgColor.substring(1, 7) : bgColor;
+        var r = parseInt(color.substring(0, 2), 16); // hexToR
+        var g = parseInt(color.substring(2, 4), 16); // hexToG
+        var b = parseInt(color.substring(4, 6), 16); // hexToB
+        return (((r * 0.299) + (g * 0.587) + (b * 0.114)) > 186) ?
+            darkColor : lightColor;
     }
 
     function getColorCode(category) {
         return category?.hex ? category?.hex : '#e5e7eb';
     }
 
+    const submit = (data: Inputs) => {
+        console.log('data', data)
+        onSubmit(data)
+    }
+
     return (
-        <div ref={filterWrapperRef} data-id="filter" className="relative inline-block text-left">
-            <button type="button" onClick={() => toggleFilterDropdown()} className="btn btn-default mr-3">
-                        <FontAwesomeIcon className="w-3 mr-2" icon={['fas', 'filter']} />
-                        Filter
-                    </button>
-            {/* <button onClick={() => toggleFilterDropdown()} className="text-white space-x-2 relative inline-flex items-center px-2 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-400 focus:outline-none focus:ring-indigo focus:border-indigo-600 active:bg-indigo-600 transition duration-150 ease-in-out">
-                <FontAwesomeIcon className="w-3" icon={['fas', 'filter']} />
-                <span>Filter</span>
-            </button> */}
-            {openFilterDropdown && (
-                <div className="origin-top-right absolute right-0 mt-2 w-108 rounded-md shadow-lg">
-                    <div className="w-full rounded-md bg-white ring-1 ring-black ring-opacity-5">
-                        <div className="w-full grid grid-cols-4 gap-2 px-2 pt-2">
+        <div data-id="filter" className="relative text-left ">
+            <FormProvider {...methods}>
+                <form onSubmit={handleSubmit(submit)}>
 
-                            <div className="">
-                                <div ref={tagWrapperRef} data-id="tag" className="relative inline-block w-full">
-                                    <div>
-                                        <span onClick={toggleTagDropdown} className="rounded-md shadow-sm">
-                                            <button type="button" className={`${state.tags.length > 0 ? 'border-indigo-600' : 'border-gray-300'} w-full inline-flex justify-center rounded-md border  px-2 py-2 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:ring-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150`} id="options-menu" aria-haspopup="true" aria-expanded="true">
-                                                <span className="w-full truncate uppercase">
-                                                    {state.tags.length > 0 ?
-                                                        <>
-                                                            {state.tags.join()}
-                                                        </>
-                                                        :
-                                                        'Tags'
-                                                    }
-                                                </span>
-                                                <svg className="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                                    <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                                                </svg>
-                                            </button>
-                                        </span>
-                                    </div>
-                                    {openTagDropdown && (
-                                        <div className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg">
-                                            <div className="rounded-md bg-white ring-1 ring-black ring-opacity-5">
-                                                <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                                                    {tags?.map((tag, i) => (
-                                                        <a key={i} href={void (0)} onClick={() => {
-                                                            if (!state.tags.includes(tag.value)) {
-                                                                dispatch({ type: ActionType.SelectTag, payload: tag.value })
-                                                            } else {
-                                                                dispatch({ type: ActionType.DeselectTag, payload: tag.value })
-                                                            }
-                                                        }} className={`${state.tags.includes(tag.value) ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white'} cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900`} role="menuitem">
-                                                            {tag.name}
-                                                        </a>
-                                                    ))}
-                                                    <>
-                                                        {(
-                                                            <div className="w-full mt-2 flex justify-center">
-                                                                {state.tags.length > 0 &&
-                                                                    <span className="hidden sm:block mr-3">
-                                                                        <button onClick={(e) => {
-                                                                            dispatch({ type: ActionType.ResetTags })
-                                                                        }} className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Clear</button>
-                                                                    </span>}
-                                                                <span className="hidden sm:block">
-                                                                    <button onClick={(e) => {
-                                                                        toggleTagDropdown()
-                                                                    }} className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Close</button>
-                                                                </span>
-                                                            </div>
-                                                        )}
-                                                    </>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
+                    <div className="mt-4 pb-8 w-full grid grid-cols-4 gap-2 px-4 sm:px-6 lg:px-8 pt-2 max-w-7xl mx-auto">
+
+                        <div>
+                            <div>
+                                <h3 className="text-sm font-medium tracking-wide text-gray-500 uppercase">
+                                    Tags
+                                </h3>
                             </div>
-                            <div className="">
-                                <div ref={stateWrapperRef} data-id="state" className="w-full relative inline-block text-left">
-                                    <div>
-                                        {status && (
-                                            <span onClick={toggleStateDropdown} className="rounded-md shadow-sm">
-                                                <button type="button" className={`${state.states.length > 0 ? 'border-indigo-600' : 'border-gray-300'} w-full inline-flex justify-center rounded-md border  px-2 py-2 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:ring-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150`} id="options-menu" aria-haspopup="true" aria-expanded="true">
-
-                                                    <span className="w-full truncate uppercase">
-                                                        {
-                                                            state.states.length > 0 ?
-                                                                <>
-                                                                    {state.states.join()}
-                                                                </>
-                                                                :
-                                                                'State'
-                                                        }
-                                                    </span>
-                                                    <svg className="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                                        <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                                                    </svg>
-                                                </button>
-                                            </span>
-                                        )}
-                                    </div>
-                                    {openStateDropdown && (
-                                        <div className="origin-top-left absolute left-0 mt-2 w-56 rounded-md shadow-lg z-20">
-                                            <div className="rounded-md bg-white ring-1 ring-black ring-opacity-5">
-                                                <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                                                    {status?.map((status, i) => (
-                                                        // <a key={i} href={void (0)} onClick={(e) => selectedState?.name === status.name ? clearState(e) : handleClickMultiDropdown2(status)} className={`${selectedState?.name === status.name ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white'} cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900 uppercase`} role="menuitem">
-                                                        //     {status.value}
-                                                        // </a>
-                                                        <a key={i} href={void (0)} onClick={() => {
-                                                            if (state.states.includes(status.name)) {
-                                                                dispatch({ type: ActionType.DeselectState, payload: status.name })
-                                                            } else {
-                                                                dispatch({ type: ActionType.SelectState, payload: status.name })
-                                                            }
-                                                        }} className={`${state.states.includes(status.name) ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white'} cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900`} role="menuitem">
-                                                            {status.value}
-                                                        </a>
-                                                    ))}
-                                                    <>
-
-                                                        {(
-                                                            <div className="w-full mt-2 flex justify-center">
-                                                                {state.states.length > 0 &&
-                                                                    <span className="hidden sm:block mr-3">
-                                                                        <button onClick={(e) => {
-                                                                            dispatch({ type: ActionType.ResetStates })
-                                                                        }} className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Clear</button>
-                                                                    </span>}
-                                                                <span className="hidden sm:block">
-                                                                    <button onClick={(e) => {
-                                                                        toggleStateDropdown()
-                                                                    }} className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Close</button>
-                                                                </span>
-                                                            </div>
-                                                        )}
-
-                                                    </>
-                                                </div>
+                            <div className="max-w-lg">
+                                <div className="mt-4 space-y-4">
+                                    {tags.map(tag => {
+                                        return (
+                                            <div key={tag.value} className="flex items-center h-5">
+                                                <input ref={register} id={'tag-' + tag.value} value={tag.value} defaultChecked={values.states.includes(tag.value)} name="tags" type="checkbox" className="h-4 w-4 text-purple-600 border-gray-300 rounded" />
+                                                <label htmlFor={'tag-' + tag.value} className="pl-3 block text-sm font-medium text-gray-700">{tag.name}</label>
                                             </div>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                            <div className="">
-                                <div ref={feedWrapperRef} data-id="feed" className="w-full relative inline-block text-left">
-                                    <div>
-                                        {status && (
-                                            <span onClick={toggleFeedDropdown} className="rounded-md shadow-sm">
-                                                <button type="button" className={`${state.feed ? 'border-indigo-600' : 'border-gray-300'} w-full inline-flex justify-center rounded-md border  px-2 py-2 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:ring-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150`} id="options-menu" aria-haspopup="true" aria-expanded="true">
-
-                                                    <span className="w-full truncate uppercase">
-                                                        {
-                                                            state.feed ?
-                                                                <>
-                                                                    {getFeedName()}
-                                                                </>
-                                                                :
-                                                                'Feed'
-                                                        }
-                                                    </span>
-                                                    <svg className="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                                        <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                                                    </svg>
-                                                </button>
-                                            </span>
-                                        )}
-                                    </div>
-                                    {openFeedDropdown && (
-                                        <div className="origin-top-left absolute left-0 mt-2 w-56 rounded-md shadow-lg z-20">
-                                            <div className="rounded-md bg-white ring-1 ring-black ring-opacity-5">
-                                                <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                                                    {feeds?.map((feed, i) => (
-                                                        <a key={i} href={void (0)} onClick={() => {
-
-                                                            if(state.feed === feed.id ){
-                                                                dispatch({ type: ActionType.DeselectFeed})
-                                                                dispatch({ type: ActionType.SetAvailableCategories, payload: []})
-                                                                dispatch({ type: ActionType.DeselectCategory })
-                                                            }else{
-                                                                dispatch({ type: ActionType.SelectFeed, payload: feed.id })
-                                                                dispatch({ type: ActionType.SetAvailableCategories, payload: feed.categories })
-                                                                dispatch({ type: ActionType.DeselectCategory })
-                                                            }
-                                                        }} className={`${feed.id === state.feed ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white'} cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900`} role="menuitem">
-                                                            {feed.name ? feed.name : feed.id}
-                                                        </a>
-                                                    ))}
-                                                    <>
-
-                                                        {(
-                                                            <div className="w-full mt-2 flex justify-center">
-                                                                {state.feed &&
-                                                                    <span className="hidden sm:block mr-3">
-                                                                        <button onClick={(e) => {
-                                                                            dispatch({ type: ActionType.DeselectFeed })
-                                                                            dispatch({ type: ActionType.SetAvailableCategories, payload: []})
-                                                                            dispatch({ type: ActionType.DeselectCategory })
-                                                                        }} className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Clear</button>
-                                                                    </span>}
-                                                                <span className="hidden sm:block">
-                                                                    <button onClick={(e) => {
-                                                                        toggleFeedDropdown()
-                                                                    }} className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Close</button>
-                                                                </span>
-                                                            </div>
-                                                        )}
-
-                                                    </>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                            <div className="">
-                                <div ref={catWrapperRef} data-id="category" className="relative inline-block w-full">
-                                    <div>
-                                        {(
-                                            <span onClick={toggleCateDropdown} className="rounded-md shadow-sm">
-                                                <button type="button" className={`${state.category ? 'border-indigo-600' : 'border-gray-300'} w-full inline-flex justify-center rounded-md border  px-2 py-2 bg-white text-xs leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:ring-blue active:bg-gray-50 active:text-gray-800 transition ease-in-out duration-150 cursor-not-allowed`} id="options-menu" aria-haspopup="true" aria-expanded="true">
-                                                    <span className="w-full truncate uppercase">
-
-                                                        {state.category ?
-                                                            getCategoryTitle() : 'Category'
-                                                        }
-                                                    </span>
-                                                    <svg className="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                                        <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                                                    </svg>
-                                                </button>
-                                            </span>
-                                        )}
-                                    </div>
-                                    {openCategoryDropdown && (
-                                        <div className="origin-top-left absolute left-0 mt-2 w-56 rounded-md shadow-lg z-20">
-                                            <div className="rounded-md bg-white ring-1 ring-black ring-opacity-5">
-                                                <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                                                    {state.availableCategories?.map((cat, i) => (
-                                                        <a key={i} href={void (0)} onClick={() => {
-                                                            if (state.category === cat.number) {
-                                                                dispatch({ type: ActionType.DeselectCategory })
-                                                            } else {
-                                                                dispatch({ type: ActionType.SelectCategory, payload: cat.number })
-                                                            }
-                                                        }} className={`${state.category === cat.number ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 bg-white'} flex items-center cursor-pointer block px-4 py-1 text-xs leading-5 focus:outline-none focus:bg-gray-100 focus:text-gray-900`} role="menuitem">
-                                                            {cat.hex && <FontAwesomeIcon  className="w-4 h-4 fill-current mr-2" icon={['fas', 'circle']} style={{color: getColorCode(cat)}}/>}
-                                                            {cat.title}
-                                                        </a>
-                                                    ))}
-                                                    <>
-
-                                                        {(
-                                                            <div className="w-full mt-2 flex justify-center">
-                                                                {state.category &&
-                                                                    <span className="hidden sm:block mr-3">
-                                                                        <button onClick={(e) => {
-                                                                            dispatch({ type: ActionType.DeselectCategory })
-                                                                        }} className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Clear</button>
-                                                                    </span>}
-                                                                <span className="hidden sm:block">
-                                                                    <button onClick={(e) => {
-                                                                        toggleCateDropdown()
-                                                                    }} className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Close</button>
-                                                                </span>
-                                                            </div>
-                                                        )}
-                                                    </>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    )}
+                                        )
+                                    })}
                                 </div>
                             </div>
                         </div>
-                        <div className="w-full p-2 space-x-2 flex">
-                            <button onClick={(e) => {
-                                onSubmit(state)
-                                toggleFilterDropdown()
-                            }} className="text-white text-sm bg-indigo-600 hover:bg-indigo-800 rounded w-1/2 p-2">Submit</button>
-                            <button onClick={(e) => {
-                                clearAll()
-                            }} className="text-gray-800 text-sm border border-indigo-600 hover:bg-gray-200 rounded w-1/2 p-2">Clear All</button>
+                        <div>
+                            <div>
+                                <h3 className="text-sm font-medium tracking-wide text-gray-500 uppercase">
+                                    Status
+                                </h3>
+                            </div>
+                            <div className="max-w-lg">
+                                <div className="mt-4 space-y-4">
+                                    {status.map(state => {
+                                        return (
+                                            <div key={state.name} className="flex items-center h-5">
+                                                <input ref={register} id={'status-' + state.name} value={state.name} defaultChecked={values.states.includes(state.name)} name="states" type="checkbox" className="h-4 w-4 text-purple-600 border-gray-300 rounded" />
+                                                <label htmlFor={'status-' + state.name} className="pl-3 block text-sm font-medium text-gray-700">{state.value}</label>
+                                            </div>
+                                        )
+                                    })}
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div>
+                                <h3 className="text-sm font-medium tracking-wide text-gray-500 uppercase">
+                                    Feed
+                                </h3>
+                            </div>
+                            <div>
+                                <div className="max-w-lg">
+                                    <div className="mt-4 space-y-4">
+                                        {feeds.map(feed => {
+                                            return (
+                                                <div key={feed.id} className="flex items-center">
+                                                    <input id={'feed-' + feed.id} ref={register} value={feed.id} defaultChecked={values.feed === feed.id} name="feed" type="radio" className="h-4 w-4 text-purple-600 border-gray-300" />
+                                                    <label htmlFor={'feed-' + feed.id} className="pl-3 block text-sm font-medium text-gray-700">
+                                                        {feed.name}
+                                                    </label>
+                                                </div>
+                                            )
+                                        })}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div>
+                                <h3 className="text-sm font-medium tracking-wide text-gray-500 uppercase">
+                                    Category
+                                </h3>
+                            </div>
+                            <div>
+                                <div className="max-w-lg">
+                                    <div className="mt-4 space-y-4">
+                                        {availableCategories.map(category => {
+                                            return (
+                                                <div key={category.number} className="flex items-center">
+                                                    <input id={'category-' + category.number} ref={register} value={category.number} defaultChecked={values.category === category.number} name="category" type="radio" className="h-4 w-4 text-purple-600 border-gray-300" />
+                                                    <label
+                                                        htmlFor={'category-' + category.number}
+                                                        className="ml-3 flex items-center text-sm font-medium px-2 rounded-md "
+                                                        style={{ width: '180px', backgroundColor: getColorCode(category), color: pickTextColorBasedOnBgColorSimple(category.hex, '#fff', '#000') }}
+                                                    >
+                                                        {category.title}
+                                                    </label>
+                                                </div>
+                                            )
+                                        })}
+                                        {availableCategories.length === 0 && <p className="text-sm font-medium ">No categories are available</p>}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div className="bg-gray-50">
+                        <div className="max-w-7xl mx-auto space-y-6 px-4 py-5 sm:space-y-0 sm:space-x-10 sm:px-6 lg:px-8">
+                            <div className="flex justify-between">
+
+                                <div className="flex">
+                                    <label className="w-24 mr-2 block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
+                                        From date
+                                    </label>
+                                    <DayPickerInput
+                                        dayPickerProps={{ firstDayOfWeek: 1 }}
+                                        classNames={{
+                                            overlay: 'override-DayPickerInput-Overlay',
+                                            overlayWrapper: 'DayPickerInput-OverlayWrapper ',
+                                            container: (errors.date ? 'border-red-500 text-red-600 ' : 'border-transparent ') + 'text-sm form-input block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5 bg-white'
+                                        }}
+                                        format='YYYY-MM-DD'
+                                        placeholder='YYYY-MM-DD'
+                                        formatDate={(date) => moment(date).format('YYYY-MM-DD')}
+                                        value={values.date}
+                                        onDayChange={(date) => {
+                                            const mDate = moment(date, 'YYYY-MM-DD', true)
+
+                                            if (mDate.isValid()) {
+                                                const formattedDate = moment(date).format('YYYY-MM-DD')
+                                                setValue('date', formattedDate, {
+                                                    shouldDirty: true,
+                                                    shouldValidate: true
+                                                })
+                                                clearErrors('date')
+                                            } else {
+                                                setError('date', {
+                                                    type: 'invalidDate',
+                                                    message: 'Invalid date input'
+                                                })
+                                            }
+                                        }} />
+                                    {errors.date && <p className="mt-1 text-sm text-red-500">{errors.date.message}</p>}
+                                </div>
+                                <div className="">
+                                    <button onClick={(e) => {
+                                        reset(defaultValues)
+                                        setAvailableCategories([])
+                                    }} type="button" className="mr-3 text-gray-800 text-sm border border-indigo-600 hover:bg-gray-200 w-24 rounded p-2">Clear All</button>
+
+                                    <SubmitButton loading={false} label='Submit' />
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            )}
+                </form>
+
+            </FormProvider>
+
         </div>
     )
 }
