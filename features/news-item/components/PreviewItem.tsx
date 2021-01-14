@@ -215,11 +215,11 @@ const PreviewItem = (props) => {
                                                                 {newsCredit.link_text}
                                                             </span>
                                                         </div>
-                                                        <div className="ml-4 flex-shrink-0">
+                                                        {newsCredit.url && <div className="ml-4 flex-shrink-0">
                                                             <a href={newsCredit.url} target="_blank" className="font-medium text-indigo-600 hover:text-indigo-500">
                                                                 Link
                                                             </a>
-                                                        </div>
+                                                        </div>}
                                                     </li>
                                                 )
                                             })}
@@ -245,11 +245,11 @@ const PreviewItem = (props) => {
                                                                 {newsCredit.link_text}
                                                             </span>
                                                         </div>
-                                                        <div className="ml-4 flex-shrink-0">
+                                                        {newsCredit.url && <div className="ml-4 flex-shrink-0">
                                                             <a href={newsCredit.url} target="_blank" className="font-medium text-indigo-600 hover:text-indigo-500">
                                                                 Link
                                                             </a>
-                                                        </div>
+                                                        </div>}
                                                     </li>
                                                 )
                                             })}

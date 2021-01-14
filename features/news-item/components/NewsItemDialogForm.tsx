@@ -61,11 +61,11 @@ const schema = yup.object().shape({
     })).default([]),
     newsCredits: yup.array(yup.object().shape({
         title: yup.string().required().label('Title'),
-        url: yup.string().required().label('Url')
+        url: yup.string().label('Url')
     })).default([]),
     visualCredits: yup.array(yup.object().shape({
         title: yup.string().required().label('Title'),
-        url: yup.string().required().label('Url')
+        url: yup.string().label('Url')
     })).default([])
 })
 
@@ -387,7 +387,7 @@ const NewsItemDialogForm = (props: Props) => {
                     </div>
                     <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
                     
-                    <div className={(!newsItemFormIsVisible? 'animate__fadeOutUp':'animate__fadeInDown') +' animate__animated animate__faster inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle  sm:w-full md:w-2/3'} role="dialog" aria-modal="true" aria-labelledby="modal-headline">
+                    <div className={(!newsItemFormIsVisible? 'animate__fadeOutUp':'animate__fadeInDown') +' animate__animated animate__faster inline-block align-bottom bg-white rounded-lg text-left shadow-xl transform transition-all sm:my-8 sm:align-middle  sm:w-full md:w-2/3'} role="dialog" aria-modal="true" aria-labelledby="modal-headline">
                         <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
 
                             <div className="hidden sm:block absolute top-0 right-0 pt-4 pr-4">
