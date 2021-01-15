@@ -57,13 +57,18 @@ const Filter = (props: Props) => {
 
     useEffect(() => {
         if (values.feed) {
+            const categoryNumbers: string[] = []
             const matchedFeed = feeds.find(feed => feed.id === values.feed)
             console.log(matchedFeed)
             setAvailableCategories(matchedFeed.categories)
-
+            if(matchedFeed){
+                matchedFeed.categories.forEach(category=>{
+                    categoryNumbers.push(category.number + '')
+                })
+            }
             if (
                 !matchedFeed ||
-                (matchedFeed && !matchedFeed.categories.map(category => category.number).includes(values.category))) {
+                (matchedFeed && !categoryNumbers.includes(values.category))) {
                 setValue('category', '')
             }
         } else {
@@ -89,7 +94,6 @@ const Filter = (props: Props) => {
     }
 
     const submit = (data: Inputs) => {
-        console.log('data', data)
         onSubmit(data)
     }
 
@@ -174,7 +178,7 @@ const Filter = (props: Props) => {
                                         {availableCategories.map(category => {
                                             return (
                                                 <div key={category.number} className="flex items-center">
-                                                    <input id={'category-' + category.number} ref={register} value={category.number+''} defaultChecked={values.category === category.number} name="category" type="radio" className="h-4 w-4 text-purple-600 border-gray-300" />
+                                                    <input id={'category-' + category.number} ref={register} value={category.number+''} defaultChecked={values.category ===(category.number+'')} name="category" type="radio" className="h-4 w-4 text-purple-600 border-gray-300" />
                                                     <label
                                                         htmlFor={'category-' + category.number}
                                                         className="ml-3 flex items-center text-sm font-medium px-2 rounded-md "
