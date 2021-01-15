@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import dynamic from 'next/dynamic'
 
-// import ReactQuill from 'react-quill'
+import { ConfirmationContext } from "contexts";
+
+import notify from 'utils/notify'
 import TimeAgo from 'react-timeago'
 
 const QuillNoSSRWrapper = dynamic(import('react-quill'), {
@@ -39,7 +41,8 @@ const Comment = (props: Props) => {
         onRemove
     } = props
 
-    const {currentUser} = useSelector((state: RootState)=>state.auth)
+    const confirm = useContext(ConfirmationContext)
+    const { currentUser } = useSelector((state: RootState) => state.auth)
     const [mode, setMode] = useState<CommentMode>(CommentMode.Add)
     const [comment, setComment] = useState(null);
     const [body, setBody] = useState('');
@@ -77,8 +80,7 @@ const Comment = (props: Props) => {
             }
 
         } catch (err) {
-            // TODO show error message
-            console.log(err)
+            notify('danger')
         } finally {
             setLoading(false)
         }
@@ -86,18 +88,21 @@ const Comment = (props: Props) => {
     }
 
     const remove = async function () {
-        try {
 
-            setLoading(true)
+        confirm({
+            variant: 'danger'
+        }).then(async () => {
+            try {
+                setLoading(true)
 
-            await onRemove(comment.id)
+                await onRemove(comment.id)
+            } catch (err) {
+                notify('danger')
+            } finally {
+                setLoading(false)
+            }
+        })
 
-        } catch (err) {
-            // TODO show error message
-            console.log('error', err)
-        } finally {
-            setLoading(false)
-        }
     }
 
     return (
@@ -107,7 +112,7 @@ const Comment = (props: Props) => {
                     <span className="text-lg font-medium leading-none text-white">{mode === 'view' ? comment?.user.first_name.charAt(0) + comment?.user.last_name.charAt(0) : currentUser.first_name.charAt(0) + currentUser.last_name.charAt(0)}</span>
                 </span>
             </div>
-            <div className="w-full -ml-2 bg-gray-100 px-2 py-0.5 rounded-2xl">
+            <div className={([CommentMode.Add, CommentMode.Edit].includes(mode) && !isLoading ? 'bg-white' : 'bg-gray-100') + ' w-full -ml-2  px-2 py-0.5 rounded-2xl'}>
                 {isLoading && (
                     <div className="box-border p-4">
                         <div className="flex flex-row text-grey justify-center items-center">
@@ -156,7 +161,7 @@ const Comment = (props: Props) => {
                         <div className="wysiwyg w-full space-y-1 px-2 pr-5 pb-4">
                             <div>
                                 <span style={{
-                                    overflowWrap: 'break-word', 
+                                    overflowWrap: 'break-word',
                                     wordWrap: 'break-word',
                                     hyphens: 'auto'
                                 }} className="text-base text-gray-600" dangerouslySetInnerHTML={{ __html: comment?.text }} ></span>
@@ -165,11 +170,12 @@ const Comment = (props: Props) => {
                     </>
                 }
                 {!isLoading && [CommentMode.Add, CommentMode.Edit].includes(mode) &&
-                    <div className="w-full px-2 py-4">
-                        <div className="w-full bg-white p-2 border rounded">
+                    <div className="w-full">
+                        <div className="w-full bg-white p-2">
                             <QuillNoSSRWrapper theme="snow" value={body} onChange={setBody} />
-                            <div className="flex space-x-2">
-                                <button onClick={submit} className="px-2 py-1 bg-green-500 text-white text-sm mt-2 rounded">Submit</button>
+                            <div className="flex space-x-2 justify-end mt-2">
+                                {comment && <button onClick={() => setMode(CommentMode.View)} className="btn btn-default">Cancel</button>}
+                                <button onClick={submit} className="btn btn-green">Submit</button>
                             </div>
                         </div>
                     </div>
