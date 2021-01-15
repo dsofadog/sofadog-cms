@@ -27,7 +27,7 @@ const NewsItemsHeader = (props: Props) => {
         tags: string[];
         states: string[];
         feed: string;
-        category?: number | null;
+        category?: string;
         date?: string | null;
     }>(null)
 

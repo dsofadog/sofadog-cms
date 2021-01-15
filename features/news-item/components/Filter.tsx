@@ -15,7 +15,7 @@ type Props = {
 }
 
 type Inputs = {
-    category?: number | null;
+    category?: string | null;
     tags: string[];
     states: string[];
     feed: string;
@@ -23,7 +23,7 @@ type Inputs = {
 }
 
 const schema = yup.object().shape({
-    category: yup.number().label('Category'),
+    category: yup.string().label('Category').default(''),
     tags: yup.array(yup.string()).label('Tags').default([]),
     states: yup.array(yup.string()).label('States').default([]),
     feed: yup.string().label('Feed').default(''),
@@ -174,7 +174,7 @@ const Filter = (props: Props) => {
                                         {availableCategories.map(category => {
                                             return (
                                                 <div key={category.number} className="flex items-center">
-                                                    <input id={'category-' + category.number} ref={register} value={category.number} defaultChecked={values.category === category.number} name="category" type="radio" className="h-4 w-4 text-purple-600 border-gray-300" />
+                                                    <input id={'category-' + category.number} ref={register} value={category.number+''} defaultChecked={values.category === category.number} name="category" type="radio" className="h-4 w-4 text-purple-600 border-gray-300" />
                                                     <label
                                                         htmlFor={'category-' + category.number}
                                                         className="ml-3 flex items-center text-sm font-medium px-2 rounded-md "
