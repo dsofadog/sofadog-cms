@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 type Props = {
     active: boolean;
     message?: string;
-    children: any;
+    children?: any;
 }
 
 const Loader = (props: Props) => {

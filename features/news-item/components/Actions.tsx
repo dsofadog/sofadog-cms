@@ -77,6 +77,9 @@ const Actions = (props: ActionsProps) => {
         }
     }, [newsItem?.state])
 
+    useEffect(() => {
+        console.log('clips', clips)
+    }, [clips])
 
     const isStateOwner = () => {
         return newsItem?.owners[newsItem?.state] &&
@@ -175,29 +178,29 @@ const Actions = (props: ActionsProps) => {
                             <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
                         </div>
                         <span className="hidden sm:inline-block sm:align-middle sm:h-screen"></span>&#8203;
-						<div className="w-full h-screen overflow-y-auto inline-block align-bottom bg-white rounded-lg px-4 pb-4 text-left overflow-hidden shadow-xl transform transition-all md:align-middle md:max-w-6xl" role="dialog" aria-modal="true" aria-labelledby="modal-headline">
+						<div className="w-auto overflow-y-auto inline-block align-bottom bg-white rounded-lg px-4 pb-4 text-left overflow-hidden shadow-xl transform transition-all md:align-middle" role="dialog" aria-modal="true" aria-labelledby="modal-headline">
                             <div>
-                                <div className="flex py-4 top-0 sticky bg-white z-10">
+                                <div className="flex pt-4 top-0 sticky bg-white z-10">
                                     <div className="w-1/2 px-4 sm:px-6 flex justify-start">
-                                        <h2 className="text-gray-500 text-base font-bold uppercase tracking-wide">Clips</h2>
+                                        <h3 className="text-lg leading-6 font-medium text-gray-900" id="modal-headline">
+                                            Clips
+                                        </h3>
                                     </div>
                                     <div className="w-1/2 flex justify-end">
                                         <FontAwesomeIcon onClick={() => setIsClips(false)} className="w-4 h-4 text-gray-400 hover:text-indigo-600 cursor-pointer" icon={['fas', 'times']} />
                                     </div>
                                 </div>
-                                <div className="mt-2">
-
-                                    <div className="h-full overflow-y-auto align-middle md:flex flex-wrap min-w-full px-4 sm:px-6 md:px-6 py-4">
-                                        {clips?.video.sort((a, b) => a.aspect_ratio - b.aspect_ratio)
-                                            .map((clip, i) => (
-                                                <div key={i} className="mx-auto sm:mx-0 w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5 h-82 sm:pr-4 mb-4">
-                                                    <div className="w-full text-sm text-center">Aspect Ratio: {clip.aspect_ratio}</div>
-                                                    <PreviewClip videoUrl={clip.url} />
-                                                </div>
-                                            ))}
-
+                                    <div className="py-4 flex justify-center">
+                                        <div className="flex">
+                                            {clips?.video.sort((a, b) => a.aspect_ratio - b.aspect_ratio)
+                                                .map((clip, i) => (
+                                                    <div key={i} className="px-2">
+                                                        <div className="w-full text-sm text-center">Aspect Ratio: {clip.aspect_ratio}</div>
+                                                        <PreviewClip videoUrl={clip.url} thumbnails={clip.thumbnails} />
+                                                    </div>
+                                                ))}
+                                        </div>
                                     </div>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -242,7 +245,7 @@ const Actions = (props: ActionsProps) => {
                                 onClick={() => {
                                     confirm({
                                         variant: 'danger'
-                                    }).then(()=>{
+                                    }).then(() => {
                                         dispatch(remove(newsItem?.id))
                                     })
                                 }}
