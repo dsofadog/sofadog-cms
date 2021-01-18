@@ -67,9 +67,9 @@ const auth = createSlice({
             state.error = 'Something went wrong'
         }
     },
-    extraReducers: (builder)=>{
-        builder.addCase(REHYDRATE, (state: any, action: any)=>{
-            if(action.payload?.auth.isAuthenticated){
+    extraReducers: (builder) => {
+        builder.addCase(REHYDRATE, (state: any, action: any) => {
+            if (action.payload?.auth.isAuthenticated) {
                 tokenManager.setToken(action.payload.auth.token)
             }
         })
@@ -95,7 +95,7 @@ export const login = (email: string, password: string): AppThunk => async dispat
 
         tokenManager.setToken(loginRes.token)
 
-        if(!loginRes.user.on_shift){
+        if (!loginRes.user.on_shift) {
             const toggleShiftRes = await toggleShiftAPI(email)
             loginRes.user.on_shift = toggleShiftRes.user.on_shift
         }
@@ -103,7 +103,11 @@ export const login = (email: string, password: string): AppThunk => async dispat
         dispatch(loginSuccess(loginRes))
 
     } catch (err) {
-        dispatch(loginFailed(err.response.data.error_message))
+        let message = 'Something went wrong'
+        if (err.response && err.response.data && err.response.data.error_message) {
+            message = err.response.data.error_message
+        }
+        dispatch(loginFailed(message))
     }
 }
 
