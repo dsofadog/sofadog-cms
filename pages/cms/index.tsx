@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import NProgress from "nprogress";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { scroller } from "react-scroll";
 import useInfiniteScroll from 'react-infinite-scroll-hook';
 import moment from 'moment'
 import _ from 'lodash'
@@ -27,6 +26,7 @@ import {
     showNewsItemForm
 } from 'features/news-item/slices/news-item.slice'
 import notify from 'utils/notify';
+import { usePrevious } from 'rooks';
 
 type Params = {
     token: string;
@@ -63,6 +63,7 @@ const Demo = () => {
     const tags = CmsConstant.Tags;
     const status = CmsConstant.Status;
 
+    const topRef = useRef()
     const router = useRouter();
     const dispatch = useDispatch()
 
@@ -71,6 +72,8 @@ const Demo = () => {
     const [newsItemFormIsVisible, setNewsItemFormIsVisible] = useState<boolean>(false)
     const [selectedNewsItem, selectNewsItem] = useState<any>()
     const [searchId, setSearchId] = useState(router.query?.id)
+    const [firstNewsItem, setFirstNewsItem] = useState<any>(null)
+    const previousFirstNewsItem = usePrevious(firstNewsItem)
 
     const [params, setParams] = useState<Params>({
         token: tokenManager.getToken(),
@@ -115,6 +118,24 @@ const Demo = () => {
             setNewsItemFormIsVisible(true)
         }
     }, [_newsItemFormIsVisible])
+
+    useEffect(()=>{
+        setFirstNewsItem(newsItems[0] || null)
+    }, [newsItems])
+
+    useEffect(()=>{
+        const delayScroll = ()=>{
+            if(firstNewsItem){
+                if(previousFirstNewsItem && previousFirstNewsItem.id !== firstNewsItem.id){
+                    setTimeout(()=>{
+                        scrollToTop()
+                    }, 1000)
+                }
+            }
+        }
+       
+        delayScroll()
+    }, [firstNewsItem])
 
     useEffect(() => {
         if (progressBarLoading) {
@@ -162,12 +183,10 @@ const Demo = () => {
         }
     }
 
-    const scrollToSection = () => {
-        scroller.scrollTo("sfd-top", {
-            duration: 800,
-            delay: 0,
-            smooth: "easeInOutQuart",
-        });
+    const scrollToTop = () => {
+        (topRef as any).current.scrollIntoView({
+            behavior: 'smooth'
+        })
     };
 
     return (
@@ -196,7 +215,6 @@ const Demo = () => {
                     }}
                     onNewClicked={() => {
                         dispatch(showNewsItemForm())
-                        scrollToSection();
                     }}
                     viewMode={toggleAppView ? 'table' : 'list'}
                     onViewModeChange={(viewMode) => {
@@ -210,7 +228,8 @@ const Demo = () => {
                     )}
 
                     <div ref={infiniteRef as React.RefObject<HTMLDivElement>} className="max-w-7xl mx-auto">
-                        <div className="sfd-top invisible"></div>
+                        <div ref={topRef}></div>
+                        
                         <div className={`${toggleAppView ? 'flex flex-col' : 'hidden'}`}>
                             <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8 mt-5">
                                 <div style={{ minHeight: '30rem' }} className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
@@ -265,6 +284,7 @@ const Demo = () => {
 
 
                         <div className={`${!toggleAppView ? 'flex flex-col' : 'hidden'}`}>
+
                             {newsItems?.map(item => (
                                 <div key={item.id}>
                                     <PreviewItem
@@ -317,7 +337,7 @@ const Demo = () => {
                 {
                     !scrollLoading && newsItems && (
                         <div className="fixed bottom-0 right-0 mb-4 mr-4 z-50 cursor-pointer">
-                            <FontAwesomeIcon onClick={(e) => scrollToSection()} className="w-12 h-12 p-2 rounded-full cursor-pointer text-white bg-blue-500 hover:bg-blue-600" icon={['fas', 'arrow-up']} />
+                            <FontAwesomeIcon onClick={(e) => scrollToTop()} className="w-12 h-12 p-2 rounded-full cursor-pointer text-white bg-blue-500 hover:bg-blue-600" icon={['fas', 'arrow-up']} />
                         </div>
                     )
                 }
