@@ -19,14 +19,29 @@ const NavHeader = () => {
                                 </svg>
                             </button>
                         </div>
-                        <div className="flex-shrink-0 flex items-center space-x-2">
-                            <a href="/cms">
-                                <img className="h-8 w-auto cursor-pointer" src="/color-logo.png" alt="So.Fa.Dog" />
-                            </a>
-                            <a href="/cms">
-                                <img className="h-4 w-auto cursor-pointer" src="/logo-title-white.png" alt="So.Fa.Dog" />
-                            </a>
+                        <div className="flex items-center space-x-2">
+                            <div className="flex-shrink-0 flex items-center space-x-2 mr-5">
+                                <a href="/cms">
+                                    <img className="h-8 w-auto cursor-pointer" src="/color-logo.png" alt="So.Fa.Dog" />
+                                </a>
+                                <a href="/cms">
+                                    <img className="h-4 w-auto cursor-pointer" src="/logo-title-white.png" alt="So.Fa.Dog" />
+                                </a>
+                            </div>
+
+                            <div className="space-x-4">
+                                <Link href="/cms" >
+                                    <a className="bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium">News Items</a>
+                                </Link>
+
+                                <Link href="/cms/stock-videos" >
+                                    <a className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Stock Video Storage</a>
+
+                                </Link>
+                            </div>
+
                         </div>
+
                     </div>
                     <div className="flex items-center space-x-2">
                         <HeaderProfileComponent />
