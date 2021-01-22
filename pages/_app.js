@@ -1,3 +1,4 @@
+import Head from 'next/head';
 import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
 import 'styles/globals.css';
@@ -39,19 +40,23 @@ const TopProgressBar = dynamic(
 function MyApp({ Component, pageProps }) {
 
   return (
-    <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
-        <ConfirmationProvider >
-          <AccessControlProvider>
-            <TopProgressBar />
-            <ReactNotification />
-            <Component {...pageProps} />
-          </AccessControlProvider>
-        </ConfirmationProvider>
+    <>
+      <Head>
+        <title>So.Fa.Dog-CMS</title>
+      </Head>
+      <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+          <ConfirmationProvider >
+            <AccessControlProvider>
+              <TopProgressBar />
+              <ReactNotification />
+              <Component {...pageProps} />
+            </AccessControlProvider>
+          </ConfirmationProvider>
 
-      </PersistGate>
-    </Provider>
-
+        </PersistGate>
+      </Provider>
+    </>
   )
 }
 
