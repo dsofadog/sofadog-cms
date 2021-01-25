@@ -29,6 +29,7 @@ type Props = {
     onAdd?: (text: string) => void;
     onEdit?: (text: string, commentId: string) => void;
     onRemove?: (commentId: string) => void;
+    hideComments?: ()=>void;
 }
 
 const Comment = (props: Props) => {
@@ -38,7 +39,8 @@ const Comment = (props: Props) => {
         comment: originalComment,
         onAdd,
         onEdit,
-        onRemove
+        onRemove,
+        hideComments
     } = props
 
     const confirm = useContext(ConfirmationContext)
@@ -174,7 +176,7 @@ const Comment = (props: Props) => {
                         <div className="w-full bg-white p-2">
                             <QuillNoSSRWrapper theme="snow" value={body} onChange={setBody} />
                             <div className="flex space-x-2 justify-end mt-2">
-                                {comment && <button onClick={() => setMode(CommentMode.View)} className="btn btn-default">Cancel</button>}
+                                <button onClick={() => mode === CommentMode.Add ? hideComments() : setMode(CommentMode.View)} className="btn btn-default">Cancel</button>
                                 <button onClick={submit} className="btn btn-green">Submit</button>
                             </div>
                         </div>

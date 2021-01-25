@@ -275,7 +275,7 @@ const PreviewItem = (props) => {
                                 className="text-sm font-bold text-gray-800 cursor-pointer hover:underline"
                             >Comments</label>
                         </div>
-                        {commentVisibility && <Comments newsItem={newsItem} />}
+                        {commentVisibility && <Comments hideComments={()=>setCommentVisibility(false)} newsItem={newsItem} />}
                     </div>
                 </div>
             </div>

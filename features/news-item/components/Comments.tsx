@@ -6,12 +6,13 @@ import httpCms from 'utils/http-cms';
 import tokenManager from 'utils/token-manager'
 
 type Props = {
-    newsItem: any
+    newsItem: any;
+    hideComments: ()=>void
 }
 
 const Comments = (props: Props) => {
 
-    const { newsItem } = props
+    const { newsItem, hideComments } = props
 
     const [comments, setComments] = useState([])
 
@@ -51,7 +52,7 @@ const Comments = (props: Props) => {
                     {comments?.map((comment, i) => (
                         <Comment mode={CommentMode.View} comment={comment} onEdit={edit} onRemove={remove} />
                     ))}
-                    <Comment mode={CommentMode.Add} onAdd={add} />
+                    <Comment hideComments={hideComments} mode={CommentMode.Add} onAdd={add} />
                 </div>
             </div>
         </>
