@@ -1,20 +1,19 @@
 import { useEffect, useState, useContext } from 'react';
-import dynamic from 'next/dynamic'
+
+import * as yup from 'yup'
+import { useForm, FormProvider } from 'react-hook-form'
+import { yupResolver } from "@hookform/resolvers/yup";
 
 import { ConfirmationContext } from "contexts";
 
 import notify from 'utils/notify'
 import TimeAgo from 'react-timeago'
 
-const QuillNoSSRWrapper = dynamic(import('react-quill'), {
-    ssr: false,
-    loading: () => <p>Loading ...</p>,
-})
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { useSelector } from 'react-redux';
 import { RootState } from 'rootReducer';
+import Editor from 'component/common/Editor';
 
 
 export enum CommentMode {
@@ -29,8 +28,23 @@ type Props = {
     onAdd?: (text: string) => void;
     onEdit?: (text: string, commentId: string) => void;
     onRemove?: (commentId: string) => void;
-    hideComments?: ()=>void;
+    hideComments?: () => void;
 }
+
+interface Inputs {
+    comment: string;
+}
+
+const schema = yup.object().shape({
+    comment: yup.string().required().label('Comment').test('empty', 'Comment is a required field', html => {
+        const span = document.createElement('span')
+        span.innerHTML = html
+        const text = span.textContent || span.innerText
+        return !!text
+    })
+})
+
+const defaultValues = schema.cast({})
 
 const Comment = (props: Props) => {
 
@@ -43,41 +57,66 @@ const Comment = (props: Props) => {
         hideComments
     } = props
 
+    const methods = useForm<Inputs>({
+        resolver: yupResolver(schema),
+        defaultValues,
+    })
+    const { handleSubmit, errors, watch, setValue, reset, trigger } = methods
+
+    const values = watch()
+
     const confirm = useContext(ConfirmationContext)
     const { currentUser } = useSelector((state: RootState) => state.auth)
     const [mode, setMode] = useState<CommentMode>(CommentMode.Add)
     const [comment, setComment] = useState(null);
-    const [body, setBody] = useState('');
     const [isLoading, setLoading] = useState(false)
 
     useEffect(() => {
         setMode(originalMode)
     }, [originalMode])
 
+    console.log(errors)
+
     useEffect(() => {
         if (mode === CommentMode.Edit) {
-            setBody(comment?.text)
+            console.log('comment?.text', comment?.text)
+            reset({ comment: comment?.text })
+            trigger()
+            reloadComment()
         }
     }, [mode])
 
     useEffect(() => {
         if (originalComment) {
             setComment(originalComment)
-            setBody(originalComment.body)
+            reset({ comment: comment?.text })
+            trigger()
+            reloadComment()
         }
     }, [originalComment])
 
-    const submit = async function () {
+    const reloadComment = () => {
+        setLoading(true)
+        setTimeout(() => {
+            setLoading(false)
+        }, 500)
+    }
+    const submit = async function (data: Inputs) {
 
         try {
+
+            const castedData = schema.cast(data)
 
             setLoading(true)
 
             if (mode === CommentMode.Add) {
-                await onAdd(body)
-                setBody('')
+                await onAdd(castedData.comment)
+                setValue('comment', '', {
+                    shouldDirty: true,
+                    shouldValidate: true
+                })
             } else if (mode === CommentMode.Edit) {
-                await onEdit(body, comment.id)
+                await onEdit(castedData.comment, comment.id)
                 setMode(CommentMode.View)
             }
 
@@ -174,11 +213,19 @@ const Comment = (props: Props) => {
                 {!isLoading && [CommentMode.Add, CommentMode.Edit].includes(mode) &&
                     <div className="w-full">
                         <div className="w-full bg-white p-2">
-                            <QuillNoSSRWrapper theme="snow" value={body} onChange={setBody} />
-                            <div className="flex space-x-2 justify-end mt-2">
-                                <button onClick={() => mode === CommentMode.Add ? hideComments() : setMode(CommentMode.View)} className="btn btn-default">Cancel</button>
-                                <button onClick={submit} className="btn btn-green">Submit</button>
-                            </div>
+                            <FormProvider {...methods}>
+                                <form onSubmit={handleSubmit(submit)}>
+                                    <Editor
+                                        name="comment"
+                                        defaultValue={values.comment}
+                                        error={errors.comment && errors.comment?.message}
+                                    />
+                                    <div className="flex space-x-2 justify-end mt-2">
+                                        <button type="button" onClick={() => mode === CommentMode.Add ? hideComments() : setMode(CommentMode.View)} className="btn btn-default">Cancel</button>
+                                        <button type="submit" className="btn btn-green">Submit</button>
+                                    </div>
+                                </form>
+                            </FormProvider>
                         </div>
                     </div>
                 }
