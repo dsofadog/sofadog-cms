@@ -41,7 +41,7 @@ const NewsItemsHeader = (props: Props) => {
                 category: filter.category,
                 state: filter.states.join(),
                 feed_id: filter.feed,
-                title: search
+                title: encodeURI(search)
             })
         }
     }, [filter])
@@ -55,7 +55,7 @@ const NewsItemsHeader = (props: Props) => {
             onSubmitParams({
                 ...params,
                 date: moment.utc().format("YYYY-MM-DD"),
-                title: search
+                title: encodeURI(search)
             })
         }
     }
