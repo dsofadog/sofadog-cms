@@ -43,6 +43,7 @@ function MyApp({ Component, pageProps }) {
     <>
       <Head>
         <title>So.Fa.Dog-CMS</title>
+        <link rel="icon" href="/color-logo.ico" />
       </Head>
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
