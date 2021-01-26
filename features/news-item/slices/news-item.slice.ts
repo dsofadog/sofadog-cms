@@ -113,10 +113,15 @@ const newsItem = createSlice({
         },
         requestFailed(state: NewsItemState, action: PayloadAction<any>) {
             const { error, type } = action.payload
+            let errorMesssage: string
+            if(error.response){
+                const {status, data} = error.response
+                errorMesssage = btoa(JSON.stringify({code: status, body: data}))
+            }
             state.progressBarLoading = false
             state.scrollLoading = false
             state.scrollLoadingMessage = null
-            state.fetchErrorMessage = type === 'fetch' ? 'Something went wrong' : null
+            state.fetchErrorMessage = type === 'fetch' ? 'Something went wrong' + (errorMesssage? ': '+ errorMesssage: '') : null
             state.notificationErrorMessage = type === 'notification' ? (error.response?.data?.message || 'Something went wrong') : null
         },
         reset(state: NewsItemState) {
