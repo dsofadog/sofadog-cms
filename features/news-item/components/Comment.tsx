@@ -6,7 +6,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 
 import { ConfirmationContext } from "contexts";
 
-import notify from 'utils/notify'
+// import notify from 'utils/notify'
 import TimeAgo from 'react-timeago'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -75,7 +75,7 @@ const Comment = (props: Props) => {
         setMode(originalMode)
     }, [originalMode])
 
-    console.log(errors)
+    // console.log(errors)
 
     useEffect(() => {
         if (mode === CommentMode.Edit) {
@@ -103,28 +103,21 @@ const Comment = (props: Props) => {
     }
     const submit = async function (data: Inputs) {
 
-        try {
+        const castedData = schema.cast(data)
 
-            const castedData = schema.cast(data)
+        setLoading(true)
 
-            setLoading(true)
-
-            if (mode === CommentMode.Add) {
-                await onAdd(castedData.comment)
-                setValue('comment', '', {
-                    shouldDirty: true,
-                    shouldValidate: true
-                })
-            } else if (mode === CommentMode.Edit) {
-                await onEdit(castedData.comment, comment.id)
-                setMode(CommentMode.View)
-            }
-
-        } catch (err) {
-            notify('danger')
-        } finally {
-            setLoading(false)
+        if (mode === CommentMode.Add) {
+            onAdd(castedData.comment)
+            setValue('comment', '', {
+                shouldDirty: true,
+                shouldValidate: true
+            })
+        } else if (mode === CommentMode.Edit) {
+            onEdit(castedData.comment, comment.id)
+            setMode(CommentMode.View)
         }
+
 
     }
 
@@ -133,15 +126,8 @@ const Comment = (props: Props) => {
         confirm({
             variant: 'danger'
         }).then(async () => {
-            try {
-                setLoading(true)
-
-                await onRemove(comment.id)
-            } catch (err) {
-                notify('danger')
-            } finally {
-                setLoading(false)
-            }
+            setLoading(true)
+            onRemove(comment.id)
         })
 
     }

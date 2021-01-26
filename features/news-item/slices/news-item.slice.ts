@@ -7,6 +7,9 @@ import { read as readAPI } from 'features/news-item/api/read.api'
 import { remove as removeAPI } from 'features/news-item/api/remove.api'
 import { update as updateAPI } from 'features/news-item/api/update.api'
 import { uploadVideo as uploadVideoAPI } from 'features/news-item/api/upload-video'
+import { addComment as addCommentAPI} from 'features/news-item/api/add-comment.api'
+import { updateComment as updateCommentAPI} from 'features/news-item/api/update-comment.api'
+import { removeComment as removeCommentAPI} from 'features/news-item/api/remove-comment.api'
 import { AppThunk } from 'store'
 import _ from 'lodash'
 import moment from 'moment'
@@ -111,6 +114,11 @@ const newsItem = createSlice({
         removeNewsItem(state: NewsItemState, action: PayloadAction<any>) {
             state.newsItems = state.newsItems.filter(newsItem => newsItem.id !== action.payload.id)
         },
+        setComments(state: NewsItemState, action: PayloadAction<any>){
+            const {newsItemId, comments} = action.payload
+            const newsItem = state.newsItems.find(newsItem=>newsItem.id === newsItemId)
+            newsItem.comments = comments
+        },
         requestFailed(state: NewsItemState, action: PayloadAction<any>) {
             const { error, type } = action.payload
             let errorMesssage: string
@@ -151,6 +159,7 @@ export const {
     concatNewsItems,
     updateNewsItem,
     removeNewsItem,
+    setComments,
     requestFailed,
     reset
 } = newsItem.actions
@@ -310,5 +319,36 @@ export const refresh = (id: string): AppThunk => async dispatch => {
         dispatch(requestFailed({ type: 'notification', error }))
     } finally {
         dispatch(newsItemLoadingEnd(id))
+    }
+}
+
+
+export const addComment = (newsItemId: string, comment: string): AppThunk => async dispatch =>{
+    try {
+        const res = await addCommentAPI(newsItemId, comment)
+
+        dispatch(setComments({newsItemId, comments: res.comments}))
+    } catch (error){
+        dispatch(requestFailed({ type: 'notification', error }))
+    }
+}
+
+export const updateComment = (newsItemId: string, commentId: string, comment: string): AppThunk => async dispatch =>{
+    try {
+        const res = await updateCommentAPI(newsItemId, commentId, comment)
+
+        dispatch(setComments({newsItemId, comments: res.comments}))
+    } catch (error){
+        dispatch(requestFailed({ type: 'notification', error }))
+    }
+}
+
+export const removeComment = (newsItemId: string, commentId: string): AppThunk => async dispatch =>{
+    try {
+        const res = await removeCommentAPI(newsItemId, commentId)
+
+        dispatch(setComments({newsItemId, comments: res.comments}))
+    } catch (error){
+        dispatch(requestFailed({ type: 'notification', error }))
     }
 }
