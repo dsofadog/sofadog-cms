@@ -313,7 +313,7 @@ const Demo = () => {
                         <div className="box-border p-4">
                             <div className="flex flex-row justify-center items-center">
                                 <FontAwesomeIcon className="w-12 h-12 p-2 rounded-full" icon={['fas', 'exclamation-circle']} />
-                                <p style={{width: '600px', 'overflow-wrap': 'break-word'}}>{fetchErrorMessage}</p>
+                                <p style={{width: '600px', overflowWrap: 'break-word'}}>{fetchErrorMessage}</p>
                             </div>
                             <div className="flex flex-row justify-center items-center">
                                 <button type="button" onClick={() => {
