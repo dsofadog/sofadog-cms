@@ -110,6 +110,7 @@ const NewsItemDialogForm = (props: Props) => {
     const { progressBarLoading } = useSelector((state: RootState) => state.newsItem)
     const dispatch = useDispatch()
 
+    const [submitDisabled, setSubmitDisabled] = useState<boolean>(false)
     const [activeTab, setActiveTab] = useState<Tab>(Tab.BasicInformation)
     const [activeLanguage, setActiveLanguage] = useState<Language>(Language.English)
     const [activeCreditType, setActiveCreditType] = useState<CreditType>(CreditType.NewsCredits)
@@ -119,6 +120,20 @@ const NewsItemDialogForm = (props: Props) => {
     useEffect(() => {
         register('dueDate')
     }, [])
+
+
+    useEffect(()=>{
+        const run = ()=>{
+            if(progressBarLoading){
+                setSubmitDisabled(true)
+            }else{
+                setTimeout(()=>{
+                    setSubmitDisabled(false)
+                }, 400)
+            }
+        }
+        run()
+    }, [progressBarLoading])
 
     useEffect(() => {
         if (feeds) {
@@ -670,7 +685,7 @@ const NewsItemDialogForm = (props: Props) => {
                             <SubmitButton
                                 form='news-item-form'
                                 label='Save'
-                                loading={progressBarLoading}
+                                loading={submitDisabled}
                             />
                             <button onClick={close} type="button" className="mr-2 mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm">
                                 Cancel
