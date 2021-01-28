@@ -39,6 +39,15 @@ const initialState: NewsItemState = {
     notificationErrorMessage: null
 }
 
+const filterNonDuplicatesNewsItems = (setA: any[], setB: any[])=>{
+    const filteredNewsItems = setA.filter(newsItemA => {
+        const matchedNewsItem = setB.find(newsItemB=>newsItemB.id===newsItemA.id)
+        console.log('matchedNewsItem', matchedNewsItem)
+        return !matchedNewsItem
+    });
+    return filteredNewsItems
+}
+
 const newsItem = createSlice({
     name: 'newsItem',
     initialState,
@@ -99,13 +108,15 @@ const newsItem = createSlice({
 
         },
         addNewsItem(state: NewsItemState, action: PayloadAction<any>) {
-            state.newsItems = [action.payload, ...state.newsItems]
+            const filteredNewsItems = filterNonDuplicatesNewsItems([action.payload], state.newsItems)
+            state.newsItems = [...filteredNewsItems, ...state.newsItems]
         },
         setNewsItems(state: NewsItemState, action: PayloadAction<any>) {
             state.newsItems = [...action.payload]
         },
         concatNewsItems(state: NewsItemState, action: PayloadAction<any>) {
-            state.newsItems = [...state.newsItems, ...action.payload]
+            const filteredNewsItems = filterNonDuplicatesNewsItems(action.payload, state.newsItems);
+            state.newsItems = [...state.newsItems, ...filteredNewsItems]
         },
         updateNewsItem(state: NewsItemState, action: PayloadAction<any>) {
             const matchedNewsItem = state.newsItems.find(newsItem => newsItem.id === action.payload.id)
