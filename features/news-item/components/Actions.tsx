@@ -231,10 +231,10 @@ const Actions = (props: ActionsProps) => {
                                 </span>
                             </button>
                             <button
-                                disabled={newsItem?.loading}
+                                disabled={newsItem?.loading || newsItem?.state === 'pushed_to_feed'}
                                 onClick={onEdit}
                                 type="button"
-                                className={(newsItem?.loading ? 'cursor-not-allowed disabled:opacity-50 ' : '') + '-ml-px relative inline-flex items-center px-2 py-2 border border-gray-300 bg-white text-gray-500 hover:bg-gray-50 focus:z-10 focus:outline-none'}
+                                className={(newsItem?.loading || newsItem?.state === 'pushed_to_feed'? 'cursor-not-allowed disabled:opacity-50 ' : '') + '-ml-px relative inline-flex items-center px-2 py-2 border border-gray-300 bg-white text-gray-500 hover:bg-gray-50 focus:z-10 focus:outline-none'}
                             >
                                 <span className="sr-only">Edit</span>
                                 {/*  Heroicon name: chevron-right */}
