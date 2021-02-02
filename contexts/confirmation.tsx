@@ -26,7 +26,7 @@ const ConfirmationProvider = ({ children }) => {
     };
 
     const handleClose = () => {
-        if (confirmationState.catchOnCancel && awaitingPromiseRef.current) {
+        if (confirmationState.catchOnCancel || awaitingPromiseRef.current) {
             awaitingPromiseRef.current.reject();
         }
 
