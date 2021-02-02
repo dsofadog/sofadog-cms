@@ -32,8 +32,8 @@ const Users = () => {
             <div className="flex items-center justify-between px-4 py-5 sm:px-6">
                 <div className="flex items-center">
                     {mode !== Mode.View && <button type="button" className="btn btn-default mr-5" onClick={() => setMode(Mode.View)}>
-                        <FontAwesomeIcon className="w-3 mr-2" icon={['fas', 'chevron-left']} />
-                    Back
+                        <FontAwesomeIcon className="w-3 h-3 md:mr-2" icon={['fas', 'chevron-left']} />
+                    <span className="hidden md:block">Back</span>
                 </button>}
                     <h3 className="text-lg leading-6 font-medium text-gray-900">
                         {mode === Mode.View && 'Users'}
@@ -43,8 +43,8 @@ const Users = () => {
                 </div>
 
                 {mode === Mode.View && <button type="button" className={'btn btn-green'} onClick={() => setMode(Mode.Add)}>
-                    <FontAwesomeIcon className="w-3 mr-2" icon={['fas', 'plus']} />
-                    New
+                    <FontAwesomeIcon className="w-3 h3 md:mr-2" icon={['fas', 'plus']} />
+                    <span className="hidden md:block">New</span>
                 </button>}
             </div>
 
