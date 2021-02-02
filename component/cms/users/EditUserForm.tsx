@@ -221,7 +221,7 @@ const EditUserForm = (props: Props) => {
             <div className="px-5 py-3 border-b">
                 <div className="sm:hidden">
                     <label htmlFor="tabs" className="sr-only">Select a tab</label>
-                    <select id="tabs" name="tabs" className="block w-full focus:ring-indigo-500 focus:border-indigo-500 border-gray-300 rounded-md">
+                    <select onChange={(e)=>setCurrentTab(e.target.value as Tab)} id="tabs" name="tabs" className="block w-full focus:ring-indigo-500 focus:border-indigo-500 border-gray-300 rounded-md">
                         <option value={Tab.BasicInformation}>Basic Information</option>
                         <option value={Tab.Roles}>Roles</option>
                         <option value={Tab.ChangePassword}>Change password</option>
