@@ -85,6 +85,7 @@ const Category = (props: Props) => {
 
         setRemoving(true)
         await onRemove(category, ()=>{
+            console.log('stop removing')
             setRemoving(false)
         })
             
@@ -96,7 +97,7 @@ const Category = (props: Props) => {
                 <a onClick={() => setMode(Mode.Edit)} className="cursor-pointer block hover:bg-gray-50">
                     <div className="px-4 py-4 sm:px-6 flex justify-between items-center">
                         <div className="flex flex-1 items-center justify-between">
-                            <p className="text-sm font-medium text-black">
+                            <p className="text-xs md:text-sm font-medium text-black">
                                 <span className="mr-5 inline-flex items-center px-2.5 py-0.5 rounded-md text-sm font-medium bg-gray-100 text-gray-800">
                                     {updatedCategory?.number}
                                 </span>
@@ -106,9 +107,9 @@ const Category = (props: Props) => {
                             </p>
                             <div >
                                 <p
-                                    style={{ width: '180px', backgroundColor: updatedCategory?.hex, color: pickTextColorBasedOnBgColorSimple(updatedCategory?.hex, '#fff', '#000') }}
-                                    className="inline-flex justify-center items-center px-2.5 py-0.5 rounded-md text-sm font-mediumx">
-                                    {_.upperFirst(updatedCategory?.colour)}: {updatedCategory?.hex}
+                                    style={{ backgroundColor: updatedCategory?.hex, color: pickTextColorBasedOnBgColorSimple(updatedCategory?.hex, '#fff', '#000') }}
+                                    className="w-16 md:w-52 inline-flex justify-center items-center px-2.5 py-0.5 rounded-md text-xs sm:text-sm font-mediumx">
+                                    <span className="hidden md:inline">{_.upperFirst(updatedCategory?.colour)}:</span> {updatedCategory?.hex}
                                 </p>
                             </div>
                         </div>

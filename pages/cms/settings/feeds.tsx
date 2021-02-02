@@ -38,17 +38,17 @@ const Feeds = () => {
                 <div className="flex items-center">
                     {mode !== Mode.ViewFeeds && (
                         <button type="button" className="btn btn-default mr-5" onClick={() => {
-                            if(mode === Mode.EditFeed || mode === Mode.AddCategory){
+                            if (mode === Mode.EditFeed || mode === Mode.AddCategory) {
                                 setMode(Mode.ViewFeed)
-                            }else{
+                            } else {
                                 setMode(Mode.ViewFeeds)
                             }
                         }}>
-                            <FontAwesomeIcon className="w-3 mr-2" icon={['fas', 'chevron-left']} />
-                            Back
+                            <FontAwesomeIcon className="w-3 h-3 md:mr-2" icon={['fas', 'chevron-left']} />
+                            <span className="hidden md:block">Back</span>
                         </button>)
                     }
-                    <h3 className="text-lg leading-6 font-medium text-gray-900">
+                    <h3 className="text-sm md:text-lg leading-6 font-medium text-gray-900">
                         {mode === Mode.ViewFeeds && 'Feeds'}
                         {mode === Mode.AddFeed && 'Create feed'}
                         {mode === Mode.EditFeed && 'Edit feed'}
@@ -57,23 +57,25 @@ const Feeds = () => {
                     </h3>
                 </div>
 
-                {mode === Mode.ViewFeeds && <button type="button" className={'btn btn-green'} onClick={() => setMode(Mode.AddFeed)}>
-                    <FontAwesomeIcon className="w-3 mr-2" icon={['fas', 'plus']} />
-                    New
-                </button>}
-                {mode === Mode.ViewFeed && (
-                <div>
-                <button type="button" className={'btn btn-default'} onClick={() => setMode(Mode.EditFeed)}>
-                    <FontAwesomeIcon className="w-3 mr-2" icon={['fas', 'pen']} />
-                    Edit feed
-                </button>
-                <button type="button" className={'btn btn-default ml-3'} onClick={() => setMode(Mode.AddCategory)}>
-                    <FontAwesomeIcon className="w-3 mr-2" icon={['fas', 'plus']} />
-                    Add category
-                </button>
+                <div className="flex items-center">
+                    {mode === Mode.ViewFeeds && <button type="button" className={'btn btn-green'} onClick={() => setMode(Mode.AddFeed)}>
+                        <FontAwesomeIcon className="w-3 h-3 md:mr-2" icon={['fas', 'plus']} />
+                        <span className="hidden md:block">New</span>
+                    </button>}
+                    {mode === Mode.ViewFeed && (
+                        <>
+                            <button type="button" className={'btn btn-default'} onClick={() => setMode(Mode.EditFeed)}>
+                                <FontAwesomeIcon className="w-3 h-3 md:mr-2" icon={['fas', 'pen']} />
+                                <span className="hidden md:block">Edit feed</span>
+                            </button>
+                            <button type="button" className={'btn btn-default ml-3'} onClick={() => setMode(Mode.AddCategory)}>
+                                <FontAwesomeIcon className="w-3 h-3 md:mr-2" icon={['fas', 'plus']} />
+                                <span className="hidden md:block">Add category</span>
+                            </button>
+                        </>
+
+                    )}
                 </div>
-                
-                )}
             </div>
 
             <div className="border-t">
@@ -84,14 +86,14 @@ const Feeds = () => {
                         }
                     }} />}
                     {mode === Mode.ViewFeed && <Feed feed={feed} />}
-                    {mode === Mode.EditFeed && <EditFeedForm feed={feed} onUpdated={(feed)=>{
+                    {mode === Mode.EditFeed && <EditFeedForm feed={feed} onUpdated={(feed) => {
                         setFeed(feed)
-                    }}/>}
+                    }} />}
                     {mode === Mode.ViewFeeds && <FeedList onFeedSelect={(feed) => setFeed(feed)} />}
-                    {mode === Mode.AddCategory && <CreateCategoryForm feed={feed} onCreated={(feed)=>{
+                    {mode === Mode.AddCategory && <CreateCategoryForm feed={feed} onCreated={(feed) => {
                         setFeed(feed)
                         setMode(Mode.ViewFeed)
-                    }}/>}
+                    }} />}
                 </div>
             </div>
 
