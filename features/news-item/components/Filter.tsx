@@ -102,7 +102,7 @@ const Filter = (props: Props) => {
             <FormProvider {...methods}>
                 <form onSubmit={handleSubmit(submit)}>
 
-                    <div className="mt-4 pb-8 w-full grid grid-cols-4 gap-2 px-4 sm:px-6 lg:px-8 pt-2 max-w-7xl mx-auto">
+                    <div className="mt-4 pb-8 w-full grid md:grid-cols-1 md:grid-cols-4 gap-2 px-4 sm:px-6 lg:px-8 pt-2 max-w-7xl mx-auto">
 
                         <div>
                             <div>
@@ -123,7 +123,7 @@ const Filter = (props: Props) => {
                                 </div>
                             </div>
                         </div>
-                        <div>
+                        <div className="mt-3 sm:mt-0">
                             <div>
                                 <h3 className="text-sm font-medium tracking-wide text-gray-500 uppercase">
                                     Status
@@ -142,7 +142,7 @@ const Filter = (props: Props) => {
                                 </div>
                             </div>
                         </div>
-                        <div>
+                        <div className="mt-3 sm:mt-0">
                             <div>
                                 <h3 className="text-sm font-medium tracking-wide text-gray-500 uppercase">
                                     Feed
@@ -166,7 +166,7 @@ const Filter = (props: Props) => {
                             </div>
                         </div>
 
-                        <div>
+                        <div className="mt-3 sm:mt-0">
                             <div>
                                 <h3 className="text-sm font-medium tracking-wide text-gray-500 uppercase">
                                     Category
@@ -199,9 +199,9 @@ const Filter = (props: Props) => {
 
                     <div className="bg-gray-50">
                         <div className="max-w-7xl mx-auto space-y-6 px-4 py-5 sm:space-y-0 sm:space-x-10 sm:px-6 lg:px-8">
-                            <div className="flex justify-between">
+                            <div className="grid grid-cols-2 md:grid-cols-3 items-end gap-4">
 
-                                <div className="flex">
+                                <div className="col-span-1 md:col-start-1 md:col-end-2">
                                     <label className="w-24 mr-2 block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">
                                         From date
                                     </label>
@@ -235,7 +235,8 @@ const Filter = (props: Props) => {
                                         }} />
                                     {errors.date && <p className="mt-1 text-sm text-red-500">{errors.date.message}</p>}
                                 </div>
-                                <div className="">
+                                
+                                <div className="col-span-1 md:col-start-3 md:col-end-4 flex justify-end">
                                     <button onClick={(e) => {
                                         reset(defaultValues)
                                         setAvailableCategories([])

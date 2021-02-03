@@ -23,7 +23,7 @@ const NavHeader = () => {
                             <a href="/cms">
                                 <img className="h-8 w-auto cursor-pointer" src="/color-logo.png" alt="So.Fa.Dog" />
                             </a>
-                            <a href="/cms">
+                            <a href="/cms" className="hidden md:block">
                                 <img className="h-4 w-auto cursor-pointer" src="/logo-title-white.png" alt="So.Fa.Dog" />
                             </a>
                         </div>

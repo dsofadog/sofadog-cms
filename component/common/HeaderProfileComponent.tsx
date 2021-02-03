@@ -44,12 +44,12 @@ const HeaderProfileComponent = () => {
 
 
     return (
-        <div ref={profileWrapperRef} data-id="profile" className="relative inline-block text-center mr-5">
+        <div ref={profileWrapperRef} data-id="profile" className="relative inline-block text-center mr-2 md:mr-5">
             <div className="cursor-pointer flex items-center" onClick={() => toggleProfileDropdown()} >
-                <span className="inline-flex items-center justify-center h-12 w-12 rounded-full sfd-btn-primary">
+                <span className="inline-flex items-center justify-center h-10 w-10 md:h-12 md:w-12 rounded-full sfd-btn-primary">
                     <span className="text-lg font-medium leading-none text-white">{currentUser.first_name.charAt(0) + currentUser.last_name.charAt(0)}</span>
                 </span>
-                <div className="ml-3">
+                <div className="hidden md:block ml-3">
                     <p className="text-sm font-medium text-white">
                         {currentUser.first_name} {currentUser.last_name}
                     </p>
