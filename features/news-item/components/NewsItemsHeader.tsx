@@ -116,7 +116,7 @@ const NewsItemsHeader = (props: Props) => {
 
 
                         <div className="col-span-4 md:col-span-4 pt-2 md:pt-0">
-                            <div className="flex justify-center md:justify-between md:justify-end">
+                            <div className="flex justify-center md:justify-end">
 
                                 <button type="button" onClick={toggleFilter} className="btn btn-default mr-3">
                                     <FontAwesomeIcon className="w-3 h-3 md:mr-2" icon={['fas', 'filter']} />
