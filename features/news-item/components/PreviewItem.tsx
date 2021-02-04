@@ -88,18 +88,18 @@ const PreviewItem = (props) => {
             </div>
         </div>
         <div className="grid grid-cols-12">
-            <div className="col-span-2"></div>
-            <div className="col-span-10 bg-white shadow rounded-t-lg border-t-8" style={{ borderColor: getColorCode() }}>
-                <div className="grid grid-cols-7 gap-4 flex items-center px-3" style={{ minHeight: '60px' }}>
+            <div className="md:col-span-2"></div>
+            <div className="col-span-12 md:col-span-10 bg-white shadow rounded-t-lg border-t-8" style={{ borderColor: getColorCode() }}>
+                <div className="flex flex-col-reverse md:grid md:grid-cols-7 md:gap-4 flex items-center px-3" style={{ minHeight: '60px' }}>
 
-                    <div className="md:col-span-2 sm:col-span-7 flex items-center">
-                        <button type="button" onClick={() => setSummary(!summary)} className="btn btn-default mr-5">
+                    <div className="my-2 md:my-0 md:col-span-2 w-full md:w-auto flex items-center justify-between">
+                        <button style={{paddingTop: '0.4rem', paddingBottom: '0.4rem'}} type="button" onClick={() => setSummary(!summary)} className="btn btn-default mr-5">
                             <FontAwesomeIcon className="w-3 h-3 mr-2" icon={['fas', summary ? 'caret-down' : 'caret-up']} />
                             {summary ? 'Expand' : 'Collapse'}
                         </button>
                         <div className="sm:hidden">
                             <label htmlFor="tabs" className="sr-only">Select a tab</label>
-                            <select id="tabs-language" name="tabs" className="block w-full focus:ring-indigo-500 focus:border-indigo-500 border-gray-300 rounded-md">
+                            <select id="tabs-language" name="tabs" className="block w-full focus:ring-indigo-500 focus:border-indigo-500 border-gray-300 rounded-md py-1">
                                 <option selected={activeLanguage === Language.English}>English</option>
                                 <option selected={activeLanguage === Language.Estonian}>Estonian</option>
                             </select>
@@ -115,10 +115,10 @@ const PreviewItem = (props) => {
                             </nav>
                         </div>
                     </div>
-                    <div className="md:col-span-3 sm:col-span-7">
+                    <div className="mt-2 mb-1 md:my-0 w-full md:w-auto md:col-span-3 sm:col-span-7">
                         <Owners newsItem={newsItem} />
                     </div>
-                    <div className="md:col-span-2 sm:col-span-7">
+                    <div className="mt-2 md:my-0 w-full md:w-auto md:col-span-2 sm:col-span-7">
                         <Actions newsItem={newsItem} onEdit={onEdit} />
                     </div>
                 </div>
@@ -130,7 +130,7 @@ const PreviewItem = (props) => {
 
 
             <div
-                className="col-span-2">
+                className="col-span-12 md:col-span-2">
                     {loadingThumbnails &&
 
                         <span className="w-full flex items-center justify-center sfd-btn-primary-static rounded-l-lg shadow-xl">
@@ -154,7 +154,7 @@ const PreviewItem = (props) => {
 
 
 
-            <div className="col-span-10 bg-white shadow border-t border-b">
+            <div className="col-span-12 md:col-span-10 bg-white shadow border-t border-b">
              
                 <div className="px-6 py-6">
                     <NewsItemHeaderSection newsItem={newsItem} />
@@ -264,8 +264,8 @@ const PreviewItem = (props) => {
                     </div>
                 </div>
             </div>
-            <div className="col-span-2"></div>
-            <div className="col-span-10 bg-white shadow rounded-b-lg">
+            <div className="md:col-span-2"></div>
+            <div className="col-span-12 md:col-span-10 bg-white shadow rounded-b-lg">
                 <div className="px-6 py-6">
                     <div className="w-full">
                         <div className="w-full flex text-center justify-end space-x-2">
