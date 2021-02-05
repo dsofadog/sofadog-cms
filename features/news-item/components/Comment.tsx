@@ -134,7 +134,7 @@ const Comment = (props: Props) => {
 
     return (
         <div className="w-full flex">
-            <div className="w-auto mt-2 flex z-10">
+            <div className="hidden md:block w-auto mt-2 flex z-10">
                 <span className="inline-flex items-center justify-center h-14 w-14 border-4 border-white rounded-full sfd-btn-primary">
                     <span className="text-lg font-medium leading-none text-white">{mode === 'view' ? comment?.user.first_name.charAt(0) + comment?.user.last_name.charAt(0) : currentUser.first_name.charAt(0) + currentUser.last_name.charAt(0)}</span>
                 </span>
@@ -150,13 +150,13 @@ const Comment = (props: Props) => {
                 )}
                 {!isLoading && mode === CommentMode.View &&
                     <>
-                        <div className="flex flex-row p-2">
-                            <div>
+                        <div className="grid grid-cols-1 md:flex p-2 md:justify-between md:items-center">
+                            <div className="col-span-1 md:block">
                                 <span className="text-base font-bold text-gray-800">{comment?.user.first_name} {comment?.user.last_name}, </span>
                                 <span className="text-base text-gray-600">{comment?.user.job_title}</span>
                             </div>
-                            <div className="flex-grow"></div>
-                            <div data-id="action" className="text-sm text-gray-600 flex justify-end space-x-2">
+                            <div className="hidden md:flex-grow"></div>
+                            <div data-id="action" className="col-span-1 text-sm text-gray-600 flex md:justify-end space-x-2">
                                 <span><TimeAgo date={comment?.created_at} /></span>
 
                                 {currentUser.email === comment?.user.email && (
