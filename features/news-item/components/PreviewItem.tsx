@@ -89,7 +89,7 @@ const PreviewItem = (props) => {
         </div>
         <div className="grid grid-cols-12">
             <div className="md:col-span-2"></div>
-            <div className="col-span-12 md:col-span-10 bg-white shadow rounded-t-lg border-t-8" style={{ borderColor: getColorCode() }}>
+            <div className="col-span-12 md:col-span-10 bg-white shadow md:rounded-t-lg border-t-8" style={{ borderColor: getColorCode() }}>
                 <div className="flex flex-col-reverse md:grid md:grid-cols-7 md:gap-4 flex items-center px-3" style={{ minHeight: '60px' }}>
 
                     <div className="my-2 md:my-0 md:col-span-2 w-full md:w-auto flex items-center justify-between">
@@ -142,9 +142,9 @@ const PreviewItem = (props) => {
                     {!loadingThumbnails && (newsItem?.thumbnails[0] && newsItem?.thumbnails[0].url
                         ? <img
                             src={newsItem?.thumbnails[0].url}
-                            className="rounded-l-lg shadow-xl"
+                            className="md:rounded-l-lg shadow-xl"
                         />
-                        : <span className="w-full flex items-center justify-center sfd-btn-primary-static rounded-l-lg shadow-xl">
+                        : <span className="w-full flex items-center justify-center sfd-btn-primary-static md:rounded-l-lg shadow-xl">
                             <span style={{ paddingTop: '133%' }}></span>
                             <FontAwesomeIcon className="w-16 h-16 text-white" icon={['fas', 'image']} />
                             {/* <span className="text-lg font-medium leading-none text-white">N</span> */}
@@ -265,7 +265,7 @@ const PreviewItem = (props) => {
                 </div>
             </div>
             <div className="md:col-span-2"></div>
-            <div className="col-span-12 md:col-span-10 bg-white shadow rounded-b-lg">
+            <div className="col-span-12 md:col-span-10 bg-white shadow md:rounded-b-lg">
                 <div className="px-6 py-6">
                     <div className="w-full">
                         <div className="w-full flex text-center justify-end space-x-2">
