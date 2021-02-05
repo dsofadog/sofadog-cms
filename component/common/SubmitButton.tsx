@@ -5,13 +5,15 @@ type Props = {
     label: string;
     loading: boolean;
     form?: string;
+    className?: string;
 }
 
 const SubmitButton = (props: Props) => {
 
-    const { label, loading, form } = props
+    const {className, label, loading, form } = props
 
     return <ProcessingButton 
+    className={className}
     form={form}
     color='purple' 
     label={label} 
