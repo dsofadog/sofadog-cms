@@ -14,7 +14,6 @@ export async function remove(id: string) {
         return data
 
     } catch (err) {
-        return {stock_video: {id}}
-        // throw err
+        throw err
     }
 }

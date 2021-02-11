@@ -1,8 +1,7 @@
 import dynamic from 'next/dynamic'
 import { useFormContext } from 'react-hook-form'
-import { useEffect } from 'react'
 
-const QuillNoSSRWrapper = dynamic(import('react-quill'), {
+const QuillNoSSRWrapper = dynamic(import('./QuillEditor'), {
     ssr: false,
     loading: () => <p>Loading ...</p>,
 })
@@ -15,6 +14,7 @@ type Props = {
 const Editor = (props: Props)=>{
     const {name, defaultValue, error} = props
     const {register, setValue, trigger} = useFormContext()
+    
 
     return (
         <>
@@ -26,10 +26,10 @@ const Editor = (props: Props)=>{
             className="hidden" 
             />
             <QuillNoSSRWrapper
-            className={error?'has-error': ''}
+            error={error}
             defaultValue={defaultValue}
             onChange={(e)=>{
-                console.log('editor on change',e)
+                // console.log('editor on change',e)
                 setValue(name, e, {
                     shouldDirty: true,
                     shouldValidate: true
@@ -44,22 +44,3 @@ const Editor = (props: Props)=>{
 }
 
 export default Editor
-
-
-
-{/* <input 
-            ref={register}
-            name={`englishDescriptions[${index}].text`}
-            type="text" 
-            className="hidden" 
-            />
-            <QuillNoSSRWrapper
-            defaultValue={values.englishDescriptions[index]?.text}
-            onChange={(e)=>{
-                console.log(e)
-                setValue(`englishDescriptions[${index}].text`, e, {
-                    shouldDirty: true,
-                    shouldValidate: true
-                })
-            }}
-        /> */}

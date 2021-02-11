@@ -1,6 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 type Props = {
+    className?: string;
     icon?: any;
     color: 'purple' | 'green' | 'white' | 'red';
     label: string;
@@ -12,10 +13,11 @@ type Props = {
 }
 
 const ProcessingButton = (props: Props) => {
-    const { color, icon, form, label, loading, onClicked, type, disabled } = props
-    const css = color === 'white' 
-    ? 'btn btn-default'
-    : `bg-${color}-700 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-${color}-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-${color}-500 sm:w-auto`
+    const { className, color, icon, form, label, loading, onClicked, type, disabled } = props
+    const css = (color === 'white'
+        ? 'btn btn-default'
+        : `bg-${color}-700 border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-${color}-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-${color}-500 sm:w-auto`)
+        + (className ? ' ' + className : '')
     return (
         <button
             form={form}

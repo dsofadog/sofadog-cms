@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 
 import ReactPlayer from 'react-player';
 import Loader from 'component/common/Loader';
+import tokenManager from 'utils/token-manager'
 
 const PreviewClip = (props) => {
 
@@ -38,7 +39,7 @@ const PreviewClip = (props) => {
                             className='react-player'
                             width='auto'
                             height='600px'
-                            url={url.video}
+                            url={tokenManager.attachToken(url.video)}
                             controls={true}
                             playsinline
                             playbackRate={1.0}

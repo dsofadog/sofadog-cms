@@ -1,4 +1,3 @@
-import Link from "next/link"
 import Tippy from '@tippyjs/react';
 import moment from 'moment'
 
@@ -12,18 +11,14 @@ const NewsItemHeaderSection = (props: Props) => {
     return (
         <div>
             {compressed && <h2 className="text-sm text-gray-800 font-medium mr-auto">
-                <Link href={`/cms?id=${newsItem?.id}`}>
-                    <a>{newsItem?.title}</a>
-                </Link>
+                <a href={`/cms?id=${newsItem?.id}`} target="_blank">{newsItem?.title}</a>
             </h2>}
 
 
             {!compressed && <h2>
-                <Link href={`/cms?id=${newsItem?.id}`}>
-                    <a className="mt-2 block text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
-                        {newsItem?.title}
-                    </a>
-                </Link>
+                <a href={`/cms?id=${newsItem?.id}`} target="_blank" className="mt-2 block text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+                    {newsItem?.title}
+                </a>
             </h2>
             }
 

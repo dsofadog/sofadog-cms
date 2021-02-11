@@ -1,6 +1,6 @@
 
 import _ from 'lodash'
-import {v4 as uuid} from 'uuid'
+import { v4 as uuid } from 'uuid'
 import { useState, useCallback } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
@@ -47,9 +47,16 @@ const VideoDialogForm = (props: Props) => {
         dispatch(hideVideoForm())
     }
 
+    const onKeyUp = (e) => {
+        if (e.which === 13) {
+            setTags([...tags, { id: uuid(), name: tag }])
+            setTag('')
+        }
+    }
+
     const submit = async () => {
 
-        dispatch(create(video.video_file, tags.map(tag=>tag.name)))
+        dispatch(create(video.video_file, tags.map(tag => tag.name)))
 
     }
 
@@ -59,7 +66,7 @@ const VideoDialogForm = (props: Props) => {
             <div className="fixed z-30 inset-0 overflow-y-auto">
                 <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
 
-            
+
                     <div className={(!videoFormIsVisible ? 'animate__fadeOut' : 'animate__fadeIn') + ' animate__animated animate__faster fixed inset-0 transition-opacity'} aria-hidden="true">
                         <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
                     </div>
@@ -96,10 +103,10 @@ const VideoDialogForm = (props: Props) => {
                                                         <div className="flex space-x-1">
                                                             <span className="flex-grow relative z-0 inline-flex shadow-sm rounded-md">
                                                                 <button
-                                                                    disabled={_video?.loading}
+                                                                    disabled={_video?.loading || progressBarLoading}
                                                                     onClick={() => setVideo(null)}
                                                                     type="button"
-                                                                    className={(_video?.loading ? 'cursor-not-allowed disabled:opacity-50 ' : '') + 'flex-grow justify-center relative inline-flex items-center px-4 py-2 rounded-bl-md border border-gray-300 bg-white text-xs font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500'}
+                                                                    className={(_video?.loading || progressBarLoading ? 'cursor-not-allowed disabled:opacity-50 ' : '') + 'flex-grow justify-center relative inline-flex items-center px-4 py-2 rounded-bl-md border border-gray-300 bg-white text-xs font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500'}
                                                                 >
                                                                     Cancel
                                                                 </button>
@@ -161,21 +168,21 @@ const VideoDialogForm = (props: Props) => {
                                                     </label>
                                                     <div className="my-1 grid grid-cols-4 gap-3">
                                                         <div className="col-span-3">
-                                                            <input value={tag} onChange={(e: any)=>{
-                                                                 setTag(e.target.value)
-                                                                 console.log(e.target.value)
+                                                            <input value={tag} onKeyUp={(e) => onKeyUp(e)} onChange={(e: any) => {
+                                                                setTag(e.target.value)
+                                                                console.log(e.target.value)
                                                             }} type="text" name="first_name" id="first_name" autoComplete="given-name" className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" />
                                                         </div>
                                                         <div className="col-span-1">
-                                                            <button className={(!tag? 'cursor-not-allowed disabled:opacity-50 ': '')+ 'btn btn-purple'} disabled={!tag} type="button" onClick={() => {
-                                                                setTags([...tags, {id: uuid(), name: tag}])
+                                                            <button className={(!tag ? 'cursor-not-allowed disabled:opacity-50 ' : '') + 'btn btn-purple'} disabled={!tag} type="button" onClick={() => {
+                                                                setTags([...tags, { id: uuid(), name: tag }])
                                                                 setTag('')
                                                             }}>Add</button>
                                                         </div>
                                                     </div>
 
                                                     {tags.map(tag => {
-                                                        return (<span  key={tag.id} className="mr-1 inline-flex rounded-md items-center py-0.5 pl-2.5 pr-1 text-sm font-medium bg-indigo-100 text-indigo-700">
+                                                        return (<span key={tag.id} className="mr-1 inline-flex rounded-md items-center py-0.5 pl-2.5 pr-1 text-sm font-medium bg-indigo-100 text-indigo-700">
                                                             {tag.name}
                                                             <button onClick={() => {
                                                                 setTags(_.reject(tags, ['id', tag.id]))
@@ -202,9 +209,9 @@ const VideoDialogForm = (props: Props) => {
                             <ProcessingButton
                                 onClicked={submit}
                                 disabled={!video}
-                                color='purple' 
+                                color='purple'
                                 label='Save'
-                                loading={progressBarLoading} 
+                                loading={progressBarLoading}
                                 type='button' />
                             <button onClick={close} type="button" className="mr-2 mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm">
                                 Cancel

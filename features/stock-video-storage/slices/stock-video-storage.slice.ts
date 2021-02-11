@@ -8,6 +8,7 @@ import _ from 'lodash'
 interface StockVideoStorageState {
     videoFormIsVisible: boolean;
     videos: any[];
+    hasMoreVideos: boolean;
     progressBarLoading: boolean;
     scrollLoading: boolean;
     scrollLoadingMessage: string | null;
@@ -18,6 +19,7 @@ interface StockVideoStorageState {
 const initialState: StockVideoStorageState = {
     videoFormIsVisible: false,
     videos: [],
+    hasMoreVideos: true,
     progressBarLoading: false,
     scrollLoading: false,
     scrollLoadingMessage: null,
@@ -68,7 +70,12 @@ const stockVideoStorage = createSlice({
             state.videos = [...action.payload]
         },
         concatVideos(state: StockVideoStorageState, action: PayloadAction<any>) {
-            state.videos = [...state.videos, ...action.payload]
+            if(action.payload.length>0){
+                state.videos = [...state.videos, ...action.payload]
+                state.hasMoreVideos = true
+            }else{
+                state.hasMoreVideos = false
+            }
         },
         removeVideo(state: StockVideoStorageState, action: PayloadAction<any>) {
             state.videos = state.videos.filter(video => video.id !== action.payload.id)
@@ -76,6 +83,7 @@ const stockVideoStorage = createSlice({
         requestFailed(state: StockVideoStorageState, action: PayloadAction<any>) {
             const { error, type } = action.payload
             state.progressBarLoading = false
+            state.hasMoreVideos = false
             state.scrollLoading = false
             state.scrollLoadingMessage = null
             state.fetchErrorMessage = type === 'fetch' ? 'Something went wrong' : null
@@ -83,6 +91,7 @@ const stockVideoStorage = createSlice({
         },
         reset(state: StockVideoStorageState) {
             state.videos = []
+            state.hasMoreVideos = true
             state.progressBarLoading = false
             state.scrollLoading = false
             state.scrollLoadingMessage = null

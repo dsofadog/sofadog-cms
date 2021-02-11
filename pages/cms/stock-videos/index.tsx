@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import NProgress from "nprogress";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { scroller } from "react-scroll";
 import useInfiniteScroll from 'react-infinite-scroll-hook';
 import _ from 'lodash'
 
@@ -32,13 +31,14 @@ type Params = {
 
 
 const defaultPagination = {
-    page: 1,
+    page: 0,
 }
 
 const StockVideos = () => {
 
 
     const {
+        hasMoreVideos,
         notificationErrorMessage,
         fetchErrorMessage,
         progressBarLoading,
@@ -50,6 +50,7 @@ const StockVideos = () => {
 
     const dispatch = useDispatch()
 
+    const topRef = useRef()
     const [isVideoPreviewVisible, setIsVideoPreviewVisible] = useState(false);
     const [previewVideo, setPreviewVideo] = useState<{url: string; thumbnail: string}>(null);
     const [videoFormIsVisible, setVideoFormIsVisible] = useState<boolean>(false)
@@ -61,7 +62,7 @@ const StockVideos = () => {
     })
     const infiniteRef = useInfiniteScroll({
         loading: scrollLoading,
-        hasNextPage: true,
+        hasNextPage: hasMoreVideos,
         onLoadMore: () => {
             console.log('in onLoadMore')
             setParams({
@@ -115,12 +116,10 @@ const StockVideos = () => {
         }
     }
 
-    const scrollToSection = () => {
-        scroller.scrollTo("sfd-top", {
-            duration: 800,
-            delay: 0,
-            smooth: "easeInOutQuart",
-        });
+    const scrollToTop = () => {
+        (topRef as any).current.scrollIntoView({
+            behavior: 'smooth'
+        })
     };
 
     return (
@@ -131,18 +130,18 @@ const StockVideos = () => {
                     params={params}
                     onSubmitParams={(newParams) => {
                         dispatch(resetVideos())
-                        setParams(newParams)
+                        setParams({...newParams, page: 0})
                     }}
                     onRefresh={() => {
                         dispatch(resetVideos())
                         setParams({
                             ...params,
-                            page: 1
+                            page: 0
                         })
                     }}
                     onNewClicked={() => {
                         dispatch(showVideoForm())
-                        scrollToSection();
+                        scrollToTop();
                     }}
                 />
 
@@ -184,13 +183,14 @@ const StockVideos = () => {
                     )}
 
                     <div ref={infiniteRef as React.RefObject<HTMLDivElement>} className="max-w-7xl mx-auto">
-                        <div className="sfd-top invisible"></div>
+                        <div ref={topRef}></div>
+                        {/* <div className="sfd-top invisible"></div> */}
 
                         <div className="m-8 ">
 
 
 
-                            <ul className="space-y-12 sm:grid sm:grid-cols-2 sm:gap-x-6 sm:gap-y-12 sm:space-y-0 lg:grid-cols-4 lg:gap-x-8">
+                            <ul className="space-y-12 sm:grid sm:grid-cols-2 sm:gap-x-6 sm:gap-y-12 sm:space-y-0 md:grid-cols-3 lg:grid-cols-4 lg:gap-x-8">
                                 {videos?.map(video => (
                                     <PreviewVideo
                                         onViewClick={() => {
@@ -227,7 +227,7 @@ const StockVideos = () => {
                                     dispatch(resetVideos())
                                     setParams({
                                         ...params,
-                                        page: 1
+                                        page: 0
                                     })
                                 }} className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Retry</button>
                             </div>
@@ -235,12 +235,20 @@ const StockVideos = () => {
 
                         </div>
                     )}
+
+                    { !scrollLoading && !hasMoreVideos && videos.length===0 &&
+                    <div className="box-border p-4">
+                        <div className="flex flex-row justify-center items-center">
+                        <p>No results found</p>
+                        </div>
+                        </div>
+                    }
                 </div>
 
                 {
                     !scrollLoading && videos && (
                         <div className="fixed bottom-0 right-0 mb-4 mr-4 z-50 cursor-pointer">
-                            <FontAwesomeIcon onClick={(e) => scrollToSection()} className="w-12 h-12 p-2 rounded-full cursor-pointer text-white bg-blue-500 hover:bg-blue-600" icon={['fas', 'arrow-up']} />
+                            <FontAwesomeIcon onClick={(e) => scrollToTop()}  className="w-12 h-12 p-2 rounded-full cursor-pointer text-white bg-blue-500 hover:bg-blue-600" icon={['fas', 'arrow-up']} />
                         </div>
                     )
                 }

@@ -1,20 +1,19 @@
 import { useEffect, useState, useContext } from 'react';
-import dynamic from 'next/dynamic'
+
+import * as yup from 'yup'
+import { useForm, FormProvider } from 'react-hook-form'
+import { yupResolver } from "@hookform/resolvers/yup";
 
 import { ConfirmationContext } from "contexts";
 
-import notify from 'utils/notify'
+// import notify from 'utils/notify'
 import TimeAgo from 'react-timeago'
-
-const QuillNoSSRWrapper = dynamic(import('react-quill'), {
-    ssr: false,
-    loading: () => <p>Loading ...</p>,
-})
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { useSelector } from 'react-redux';
 import { RootState } from 'rootReducer';
+import Editor from 'component/common/Editor';
 
 
 export enum CommentMode {
@@ -29,7 +28,23 @@ type Props = {
     onAdd?: (text: string) => void;
     onEdit?: (text: string, commentId: string) => void;
     onRemove?: (commentId: string) => void;
+    hideComments?: () => void;
 }
+
+interface Inputs {
+    comment: string;
+}
+
+const schema = yup.object().shape({
+    comment: yup.string().required().label('Comment').test('empty', 'Comment is a required field', html => {
+        const span = document.createElement('span')
+        span.innerHTML = html
+        const text = span.textContent || span.innerText
+        return !!text
+    })
+})
+
+const defaultValues = schema.cast({})
 
 const Comment = (props: Props) => {
 
@@ -38,52 +53,71 @@ const Comment = (props: Props) => {
         comment: originalComment,
         onAdd,
         onEdit,
-        onRemove
+        onRemove,
+        hideComments
     } = props
+
+    const methods = useForm<Inputs>({
+        resolver: yupResolver(schema),
+        defaultValues,
+    })
+    const { handleSubmit, errors, watch, setValue, reset, trigger } = methods
+
+    const values = watch()
 
     const confirm = useContext(ConfirmationContext)
     const { currentUser } = useSelector((state: RootState) => state.auth)
     const [mode, setMode] = useState<CommentMode>(CommentMode.Add)
     const [comment, setComment] = useState(null);
-    const [body, setBody] = useState('');
     const [isLoading, setLoading] = useState(false)
 
     useEffect(() => {
         setMode(originalMode)
     }, [originalMode])
 
+    // console.log(errors)
+
     useEffect(() => {
         if (mode === CommentMode.Edit) {
-            setBody(comment?.text)
+            console.log('comment?.text', comment?.text)
+            reset({ comment: comment?.text })
+            trigger()
+            reloadComment()
         }
     }, [mode])
 
     useEffect(() => {
         if (originalComment) {
             setComment(originalComment)
-            setBody(originalComment.body)
+            reset({ comment: comment?.text })
+            trigger()
+            reloadComment()
         }
     }, [originalComment])
 
-    const submit = async function () {
-
-        try {
-
-            setLoading(true)
-
-            if (mode === CommentMode.Add) {
-                await onAdd(body)
-                setBody('')
-            } else if (mode === CommentMode.Edit) {
-                await onEdit(body, comment.id)
-                setMode(CommentMode.View)
-            }
-
-        } catch (err) {
-            notify('danger')
-        } finally {
+    const reloadComment = () => {
+        setLoading(true)
+        setTimeout(() => {
             setLoading(false)
+        }, 500)
+    }
+    const submit = async function (data: Inputs) {
+
+        const castedData = schema.cast(data)
+
+        setLoading(true)
+
+        if (mode === CommentMode.Add) {
+            onAdd(castedData.comment)
+            setValue('comment', '', {
+                shouldDirty: true,
+                shouldValidate: true
+            })
+        } else if (mode === CommentMode.Edit) {
+            onEdit(castedData.comment, comment.id)
+            setMode(CommentMode.View)
         }
+
 
     }
 
@@ -92,22 +126,15 @@ const Comment = (props: Props) => {
         confirm({
             variant: 'danger'
         }).then(async () => {
-            try {
-                setLoading(true)
-
-                await onRemove(comment.id)
-            } catch (err) {
-                notify('danger')
-            } finally {
-                setLoading(false)
-            }
+            setLoading(true)
+            onRemove(comment.id)
         })
 
     }
 
     return (
         <div className="w-full flex">
-            <div className="w-auto mt-2 flex z-10">
+            <div className="hidden md:block w-auto mt-2 flex z-10">
                 <span className="inline-flex items-center justify-center h-14 w-14 border-4 border-white rounded-full sfd-btn-primary">
                     <span className="text-lg font-medium leading-none text-white">{mode === 'view' ? comment?.user.first_name.charAt(0) + comment?.user.last_name.charAt(0) : currentUser.first_name.charAt(0) + currentUser.last_name.charAt(0)}</span>
                 </span>
@@ -123,13 +150,13 @@ const Comment = (props: Props) => {
                 )}
                 {!isLoading && mode === CommentMode.View &&
                     <>
-                        <div className="flex flex-row p-2">
-                            <div>
+                        <div className="grid grid-cols-1 md:flex p-2 md:justify-between md:items-center">
+                            <div className="col-span-1 md:block">
                                 <span className="text-base font-bold text-gray-800">{comment?.user.first_name} {comment?.user.last_name}, </span>
                                 <span className="text-base text-gray-600">{comment?.user.job_title}</span>
                             </div>
-                            <div className="flex-grow"></div>
-                            <div data-id="action" className="text-sm text-gray-600 flex justify-end space-x-2">
+                            <div className="hidden md:flex-grow"></div>
+                            <div data-id="action" className="col-span-1 text-sm text-gray-600 flex md:justify-end space-x-2">
                                 <span><TimeAgo date={comment?.created_at} /></span>
 
                                 {currentUser.email === comment?.user.email && (
@@ -172,11 +199,19 @@ const Comment = (props: Props) => {
                 {!isLoading && [CommentMode.Add, CommentMode.Edit].includes(mode) &&
                     <div className="w-full">
                         <div className="w-full bg-white p-2">
-                            <QuillNoSSRWrapper theme="snow" value={body} onChange={setBody} />
-                            <div className="flex space-x-2 justify-end mt-2">
-                                {comment && <button onClick={() => setMode(CommentMode.View)} className="btn btn-default">Cancel</button>}
-                                <button onClick={submit} className="btn btn-green">Submit</button>
-                            </div>
+                            <FormProvider {...methods}>
+                                <form onSubmit={handleSubmit(submit)}>
+                                    <Editor
+                                        name="comment"
+                                        defaultValue={values.comment}
+                                        error={errors.comment && errors.comment?.message}
+                                    />
+                                    <div className="flex space-x-2 justify-end mt-2">
+                                        <button type="button" onClick={() => mode === CommentMode.Add ? hideComments() : setMode(CommentMode.View)} className="btn btn-default">Cancel</button>
+                                        <button type="submit" className="btn btn-green">Submit</button>
+                                    </div>
+                                </form>
+                            </FormProvider>
                         </div>
                     </div>
                 }

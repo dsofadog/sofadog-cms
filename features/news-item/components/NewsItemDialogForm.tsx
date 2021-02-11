@@ -78,9 +78,9 @@ type Props = {
 const NewsItemDialogForm = (props: Props) => {
 
     const { newsItem } = props
-    const {newsItemFormIsVisible} = useSelector((state: RootState)=>state.newsItem)
-    const {feeds} = useSelector((state: RootState)=> state.feed)
- 
+    const { newsItemFormIsVisible } = useSelector((state: RootState) => state.newsItem)
+    const { feeds } = useSelector((state: RootState) => state.feed)
+
     const tags = CmsConstant.Tags
     const methods = useForm<Inputs>({
         resolver: yupResolver(schema),
@@ -110,6 +110,7 @@ const NewsItemDialogForm = (props: Props) => {
     const { progressBarLoading } = useSelector((state: RootState) => state.newsItem)
     const dispatch = useDispatch()
 
+    const [submitDisabled, setSubmitDisabled] = useState<boolean>(false)
     const [activeTab, setActiveTab] = useState<Tab>(Tab.BasicInformation)
     const [activeLanguage, setActiveLanguage] = useState<Language>(Language.English)
     const [activeCreditType, setActiveCreditType] = useState<CreditType>(CreditType.NewsCredits)
@@ -119,6 +120,20 @@ const NewsItemDialogForm = (props: Props) => {
     useEffect(() => {
         register('dueDate')
     }, [])
+
+
+    useEffect(() => {
+        const run = () => {
+            if (progressBarLoading) {
+                setSubmitDisabled(true)
+            } else {
+                setTimeout(() => {
+                    setSubmitDisabled(false)
+                }, 400)
+            }
+        }
+        run()
+    }, [progressBarLoading])
 
     useEffect(() => {
         if (feeds) {
@@ -163,8 +178,8 @@ const NewsItemDialogForm = (props: Props) => {
         }
     }, [newsItem])
 
-    
-    const close = ()=>{
+
+    const close = () => {
         dispatch(hideNewsItemForm())
     }
 
@@ -376,34 +391,67 @@ const NewsItemDialogForm = (props: Props) => {
         )
     }
 
+    const hasError = (key) => {
+        return (
+            // Errors in basic information
+            (Tab[key] === Tab.BasicInformation &&
+                (
+                    errors.title ||
+                    errors.feed ||
+                    errors.category ||
+                    errors.dueDate
+                )
+            )
+
+            ||
+
+            // Errors in descriptions
+            (Tab[key] === Tab.Descriptions &&
+                (
+                    (errors.englishDescriptions && errors.englishDescriptions.length > 0) ||
+                    (errors.estonianDescriptions && errors.estonianDescriptions.length > 0)
+                )
+            )
+
+            ||
+
+            // Errors in credits
+            (Tab[key] === Tab.Credits &&
+                (
+                    (errors.newsCredits && errors.newsCredits.length > 0) ||
+                    (errors.visualCredits && errors.visualCredits.length > 0)
+                )
+            )
+        )
+    }
 
     return (
         <>
             <div className="fixed z-30 inset-0 overflow-y-auto">
                 <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
 
-                    <div className={(!newsItemFormIsVisible? 'animate__fadeOut':'animate__fadeIn') +' animate__animated animate__faster fixed inset-0 transition-opacity'} aria-hidden="true">
+                    <div className={(!newsItemFormIsVisible ? 'animate__fadeOut' : 'animate__fadeIn') + ' animate__animated animate__faster fixed inset-0 transition-opacity'} aria-hidden="true">
                         <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
                     </div>
                     <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-                    
-                    <div className={(!newsItemFormIsVisible? 'animate__fadeOutUp':'animate__fadeInDown') +' animate__animated animate__faster inline-block align-bottom bg-white rounded-lg text-left shadow-xl transform transition-all sm:my-8 sm:align-middle  sm:w-full md:w-2/3'} role="dialog" aria-modal="true" aria-labelledby="modal-headline">
+
+                    <div className={(!newsItemFormIsVisible ? 'animate__fadeOutUp' : 'animate__fadeInDown') + ' animate__animated animate__faster inline-block align-bottom bg-white rounded-lg text-left shadow-xl transform transition-all sm:my-8 sm:align-middle  sm:w-full md:w-2/3'} role="dialog" aria-modal="true" aria-labelledby="modal-headline">
                         <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
 
                             <div className="hidden sm:block absolute top-0 right-0 pt-4 pr-4">
                                 <button onClick={close} type="button" className="bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                     <span className="sr-only">Close</span>
                                     <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
                                     </svg>
                                 </button>
                             </div>
                             <div className="sm:flex sm:items-start mb-10">
 
-                                <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:mr-4 sm:text-left w-full">
+                                <div className="mt-3 sm:mt-0 sm:ml-4 sm:mr-4 sm:text-left w-full">
                                     <h3 className="text-lg leading-6 font-medium text-gray-900" id="modal-headline">
-                                        {newsItem? 'Edit': 'Create'} news item
-                                </h3>
+                                        {newsItem ? 'Edit' : 'Create'} news item
+                                    </h3>
 
                                     <div className="mt-2">
                                         <FormProvider {...methods}>
@@ -411,10 +459,19 @@ const NewsItemDialogForm = (props: Props) => {
                                                 <div>
                                                     <div className="sm:hidden">
                                                         <label htmlFor="tabs" className="sr-only">Select a tab</label>
-                                                        <select id="tabs" name="tabs" className="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-                                                            <option selected>Basic information</option>
-                                                            <option>Descriptions</option>
-                                                            <option>Credits</option>
+                                                        <select onChange={(e) => setActiveTab(e.target.value as Tab)} id="tabs" name="tabs" className="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                                                                {Object.keys(Tab).map(key => {
+                                                                    return (
+                                                                        <option 
+                                                                        key={key} 
+                                                                        value={Tab[key]} 
+                                                                        selected={activeTab === Tab[key]}
+                                                                        >
+                                                                            {hasError(key) && '[Error] '}
+                                                                            {_.upperFirst(Tab[key]).replace('_', ' ')}
+                                                                        </option>
+                                                                    )
+                                                                })}
                                                         </select>
                                                     </div>
                                                     <div className="hidden sm:block">
@@ -423,42 +480,12 @@ const NewsItemDialogForm = (props: Props) => {
                                                                 {Object.keys(Tab).map(key => {
                                                                     return (
                                                                         <a
+                                                                            key={key}
                                                                             onClick={() => setActiveTab(Tab[key])}
                                                                             className={(activeTab === Tab[key] ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300') + `  inline-flex items-center border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm cursor-pointer`}
                                                                         >
                                                                             {
-                                                                                (
-                                                                                    // Errors in basic information
-                                                                                    (Tab[key] === Tab.BasicInformation &&
-                                                                                        (
-                                                                                            errors.title ||
-                                                                                            errors.feed ||
-                                                                                            errors.category ||
-                                                                                            errors.dueDate
-                                                                                        )
-                                                                                    )
-
-                                                                                    ||
-
-                                                                                    // Errors in descriptions
-                                                                                    (Tab[key] === Tab.Descriptions &&
-                                                                                        (
-                                                                                            (errors.englishDescriptions && errors.englishDescriptions.length > 0) ||
-                                                                                            (errors.estonianDescriptions && errors.estonianDescriptions.length > 0)
-                                                                                        )
-                                                                                    )
-
-                                                                                    ||
-
-                                                                                    // Errors in credits
-                                                                                    (Tab[key] === Tab.Credits &&
-                                                                                        (
-                                                                                            (errors.newsCredits && errors.newsCredits.length > 0) ||
-                                                                                            (errors.visualCredits && errors.visualCredits.length > 0)
-                                                                                        )
-                                                                                    )
-                                                                                )
-
+                                                                                hasError(key)
                                                                                 && <FontAwesomeIcon className="h-3 w-3 mr-2 text-red-400" icon={['fas', 'exclamation-circle']} />}
                                                                             {_.upperFirst(Tab[key]).replace('_', ' ')}
                                                                         </a>
@@ -487,7 +514,7 @@ const NewsItemDialogForm = (props: Props) => {
                                                             </div>
 
                                                             <div className="mt-3">
-                                                                <div className="w-full grid grid-cols-2 gap-3">
+                                                                <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-3">
                                                                     <div className="col-span-1">
                                                                         <label className="block text-sm font-medium text-gray-700">
                                                                             Feed
@@ -665,11 +692,12 @@ const NewsItemDialogForm = (props: Props) => {
                             </div>
                         </div>
 
-                        <div className="bg-gray-50 px-4 py-3 sm:px-10 sm:flex sm:flex-row-reverse">
+                        <div className="bg-gray-50 px-4 py-3 sm:px-10  sm:grid grid-cols-1 md:flex md:flex-row-reverse">
                             <SubmitButton
+                                className="w-full"
                                 form='news-item-form'
                                 label='Save'
-                                loading={progressBarLoading}
+                                loading={submitDisabled}
                             />
                             <button onClick={close} type="button" className="mr-2 mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm">
                                 Cancel

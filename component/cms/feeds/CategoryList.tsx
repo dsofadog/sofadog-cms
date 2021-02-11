@@ -40,11 +40,16 @@ const CategoryList = (props: Props) => {
 
                 notify('success')
             } catch (err) {
-                notify('danger')
+                if(err){
+                    notify('danger')
+                }
             } finally {
                 setLoading(false)
                 callback()
             }
+        }).catch(()=>{
+            setLoading(false)
+            callback()
         })
 
 
