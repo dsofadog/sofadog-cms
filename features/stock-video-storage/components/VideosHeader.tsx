@@ -48,7 +48,7 @@ const VideosHeader = (props: Props) => {
                                     <button onClick={(e) => {
                                         onSubmitParams({
                                             ...params,
-                                            tag: search
+                                            tag: encodeURI(search)
                                         })
                                     }} className="-ml-px relative inline-flex items-center space-x-2 px-4 py-2 text-sm font-medium rounded-r-md text-white bg-indigo-500 hover:bg-indigo-400 focus:outline-none focus:shadow-outline-indigo focus:border-indigo-600 active:bg-indigo-600">
                                         <FontAwesomeIcon className="w-3 h-3" icon={['fas', 'search']} />
