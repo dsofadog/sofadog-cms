@@ -45,21 +45,31 @@ function AccessControlProvider({ children }) {
   //   setCurrentToken(token)
   // }, [token])
 
-    useEffect(()=>{
-      if(isAuthenticated){
-        dispatch(queryFeeds())
-      }
-    }, [isAuthenticated])
+  useEffect(() => {
+    if (isAuthenticated) {
+      dispatch(queryFeeds())
+    }
+  }, [isAuthenticated])
 
   // Route restrictions
 
-  if (routeType === RouteType.BackOffice && !isAuthenticated) {
-    router.push('/')
-  }
-
-  if (routeType === RouteType.Public && isAuthenticated) {
-    router.push('/cms')
-  }
+  useEffect(()=>{
+    if (routeType === RouteType.BackOffice && !isAuthenticated) {
+      router.push('/')
+    }
+  
+    if (routeType === RouteType.BackOffice && isAuthenticated) {
+      if(router.pathname === '/cms/stock-videos' && !(hasRole('video_editor') || hasRole('lead_video_editor') || hasRole('super_admin'))){
+        router.push('/cms')
+      }
+    }
+  
+  
+    if (routeType === RouteType.Public && isAuthenticated) {
+      router.push('/cms')
+    }
+  })
+  
 
   // Roles and permissions functions 
 

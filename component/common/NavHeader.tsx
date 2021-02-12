@@ -3,7 +3,10 @@ import Link from "next/link"
 import HeaderProfileComponent from "./HeaderProfileComponent"
 import NotificationBell from "./NotificationBell"
 import { useRouter } from "next/router"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useContext } from "react"
+import { useSelector } from "react-redux"
+import { RootState } from "rootReducer"
+import { AccessControlContext } from "contexts"
 
 enum Route {
     NewsItems = 'news-items',
@@ -12,6 +15,8 @@ enum Route {
 const NavHeader = () => {
 
     const router = useRouter()
+    const { hasRole } = useContext(AccessControlContext)
+
     const [route, setRoute] = useState<Route>(Route.NewsItems)
     const [menuVisibility, setMenuVisibility] = useState<boolean>(false)
 
@@ -49,9 +54,9 @@ const NavHeader = () => {
                                                 <a className={(route === Route.NewsItems ? 'bg-purple-900 text-white' : 'text-gray-600 ') + ' px-3 py-2 rounded-md text-sm font-medium'}>News Items</a>
                                             </Link>
 
-                                            <Link href="/cms/stock-videos" >
+                                            {(hasRole('video_editor') || hasRole('lead_video_editor') || hasRole('super_admin')) && <Link href="/cms/stock-videos" >
                                                 <a className={(route === Route.StockVideos ? 'bg-purple-900 text-white' : 'text-gray-600 ') + ' px-3 py-2 rounded-md text-sm font-medium'}>Stock Video Storage</a>
-                                            </Link>
+                                            </Link>}
                                         </div>
                                     </div>
                                 </div>
@@ -74,10 +79,9 @@ const NavHeader = () => {
                                     <a className={(route === Route.NewsItems ? 'bg-gray-900 text-white' : 'text-gray-300') + ' px-3 py-2 rounded-md text-sm font-medium'}>News Items</a>
                                 </Link>
 
-                                <Link href="/cms/stock-videos" >
+                                {(hasRole('video_editor') || hasRole('lead_video_editor') || hasRole('super_admin')) && <Link href="/cms/stock-videos" >
                                     <a className={(route === Route.StockVideos ? 'bg-gray-900 text-white' : 'text-gray-300') + ' px-3 py-2 rounded-md text-sm font-medium'}>Stock Video Storage</a>
-
-                                </Link>
+                                </Link>}
                             </div>
                         </div>
 
