@@ -20,7 +20,7 @@ const VideosHeader = (props: Props) => {
         if (e.which === 13) {
             onSubmitParams({
                 ...params,
-                tag: search
+                tag: encodeURI(search)
             })
         }
     }
