@@ -34,7 +34,7 @@ const PreviewClip = (props) => {
                 <div className={'relative flex-shrink-0'}>
                     <div className="relative block w-full h-full rounded overflow-hidden focus:outline-none focus:ring">
 
-                        <ReactPlayer
+                        {!loading && <ReactPlayer
                             ref={myRef}
                             className='react-player'
                             width='auto'
@@ -44,7 +44,7 @@ const PreviewClip = (props) => {
                             playsinline
                             playbackRate={1.0}
                             volume={0.8}
-                        />
+                        />}
 
                     </div>
                 </div>
